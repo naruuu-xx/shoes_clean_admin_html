@@ -29,10 +29,10 @@ export const JeecgListMixin = {
         total: 0
       },
       /* 排序参数 */
-      isorter:{
-        column: 'createTime',
-        order: 'desc',
-      },
+      // isorter:{
+      //   column: 'id',
+      //   order: 'desc',
+      // },
       /* 筛选参数 */
       filters: {},
       /* table加载状态 */
