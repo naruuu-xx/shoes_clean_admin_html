@@ -3,16 +3,16 @@
     <j-form-container :disabled="formDisabled">
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="小程序open_id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openId">-->
-<!--              <a-input v-model="model.openId" placeholder="请输入小程序open_id"  ></a-input>-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="推荐人用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="pId">-->
-<!--              <a-input v-model="model.pId" placeholder="请输入推荐人用户id"  ></a-input>-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
+          <a-col :span="24">
+            <a-form-model-item label="小程序open_id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openId">
+              <a-input v-model="model.openId" placeholder="请输入小程序open_id"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="推荐人用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="pId">
+              <a-input v-model="model.pId" placeholder="请输入推荐人用户id"  ></a-input>
+            </a-form-model-item>
+          </a-col>
           <a-col :span="24">
             <a-form-model-item label="微信昵称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="nicakname">
               <a-input v-model="model.nicakname" placeholder="请输入微信昵称"  ></a-input>
@@ -20,7 +20,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="avatar">
-              <j-image-upload v-model="model.avatar" placeholder="请输入头像"  ></j-image-upload>
+              <j-image-upload v-model="model.avatar" ></j-image-upload>
 <!--              <a-input ></a-input>-->
             </a-form-model-item>
           </a-col>
@@ -104,9 +104,9 @@
            ],
         },
         url: {
-          add: "/org.jeecg.modules.shoes/shoeUser/add",
-          edit: "/org.jeecg.modules.shoes/shoeUser/edit",
-          queryById: "/org.jeecg.modules.shoes/shoeUser/queryById"
+          add: "/shoes/shoeUser/add",
+          edit: "/shoes/shoeUser/edit",
+          queryById: "/shoes/shoeUser/queryById"
         }
       }
     },

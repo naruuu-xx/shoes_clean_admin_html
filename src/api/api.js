@@ -19,6 +19,8 @@ const checkOnlyUser = (params)=>getAction("/sys/user/checkOnlyUser",params);
 //改变密码
 const changePassword = (params)=>putAction("/sys/user/changePassword",params);
 
+
+
 //权限管理
 const addPermission= (params)=>postAction("/sys/permission/add",params);
 const editPermission= (params)=>putAction("/sys/permission/edit",params);
@@ -100,6 +102,8 @@ export const transitRESTful = {
   http: (url, parameter) => httpAction(getTransitURL(url), parameter),
 }
 
+const changeLogisticsPassword =  (params)=>putAction("/shoes/shoeLogistics/changePassword",params);
+
 export {
   addRole,
   editRole,
@@ -155,7 +159,8 @@ export {
   saveDeptRolePermission,
   queryMyDepartTreeList,
   getUserNoticeInfo,
-  getDictItemsFromCache
+  getDictItemsFromCache,
+  changeLogisticsPassword
 }
 
 

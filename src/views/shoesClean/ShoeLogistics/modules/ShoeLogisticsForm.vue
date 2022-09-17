@@ -4,29 +4,18 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-              <a-input v-model="model.name" placeholder="请输入名称"  ></a-input>
+            <a-form-model-item label=" 姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+              <a-input v-model="model.name" placeholder="请输入 姓名"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="轮播图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="image">
-              <j-image-upload isMultiple  v-model="model.image" ></j-image-upload>
+            <a-form-model-item label=" 手机号（账号）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
+              <a-input v-model="model.phone" placeholder="请输入 手机号（账号）"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="跳转地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="url">
-              <a-input v-model="model.url" placeholder="请输入跳转地址"  ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="状态:0=关闭,1=开启" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
+            <a-form-model-item label=" 状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
               <j-switch v-model="model.status"  ></j-switch>
-<!--              <switch v-model="model.status"></switch>-->
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
-              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -41,7 +30,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'ShoeBannerForm',
+    name: 'ShoeLogisticsForm',
     components: {
     },
     props: {
@@ -51,15 +40,11 @@
         default: false,
         required: false
       }
-
     },
     data () {
       return {
         model:{
-            status:{
-              options: [1,0],
-            }
-
+            status:[1,0],
          },
         labelCol: {
           xs: { span: 24 },
@@ -72,26 +57,20 @@
         confirmLoading: false,
         validatorRules: {
            name: [
-              { required: true, message: '请输入名称!'},
+              { required: true, message: '请输入 姓名!'},
            ],
-           image: [
-              { required: true, message: '请输入轮播图!'},
-           ],
-           url: [
-              { required: true, message: '请输入跳转地址!'},
+           phone: [
+              { required: true, message: '请输入 手机号（账号）!'},
+              { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
            status: [
-              { required: true, message: '请输入状态:0=关闭,1=开启!'},
-           ],
-           weight: [
-              { required: true, message: '请输入权重!'},
-              { pattern: /^-?\d+\.?\d*$/, message: '请输入数字!'},
+              { required: true, message: '请输入 状态:0=禁用,1=正常!'},
            ],
         },
         url: {
-          add: "/shoes/shoeBanner/add",
-          edit: "/shoes/shoeBanner/edit",
-          queryById: "/shoes/shoeBanner/queryById"
+          add: "/shoes/shoeLogistics/add",
+          edit: "/shoes/shoeLogistics/edit",
+          queryById: "/shoes/shoeLogistics/queryById"
         }
       }
     },
@@ -109,7 +88,6 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
-        console.log("eeee!"+record);
         this.model = Object.assign({}, record);
         this.visible = true;
       },
@@ -121,7 +99,7 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            if(!this.model.bannerId){
+            if(!this.model.logisticsId){
               httpurl+=this.url.add;
               method = 'post';
             }else{

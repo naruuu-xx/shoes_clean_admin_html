@@ -38,7 +38,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="id"
+        rowKey="bannerId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -78,7 +78,7 @@
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
               <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.bannerId)">
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -95,11 +95,11 @@
 
 <script>
 
-  import '@assets/less/TableExpand.less'
+  import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeBannerModal from './modules/ShoeBannerModal'
-  import {filterMultiDictText} from '@comp/dict/JDictSelectUtil'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
     name: 'ShoeBannerList',
@@ -112,16 +112,16 @@
         description: 'shoe_banner管理页面',
         // 表头
         columns: [
-          {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          },
+          // {
+          //   title: '#',
+          //   dataIndex: '',
+          //   key:'rowIndex',
+          //   width:60,
+          //   align:"center",
+          //   customRender:function (t,r,index) {
+          //     return parseInt(index)+1;
+          //   }
+          // },
           {
             title:'名称',
             align:"center",
@@ -139,24 +139,16 @@
             dataIndex: 'url'
           },
           {
-            title:'状态',
+            title:'状态:0=关闭,1=开启',
             align:"center",
             dataIndex: 'status',
-            customRender: (text) => (text ? filterMultiDictText(this.dictOptions['status'], text) : ''),
+            customRender: (text) => (filterMultiDictText(this.dictOptions['status'], text)),
           },
           {
             title:'权重',
             align:"center",
             dataIndex: 'weight'
           },
-          // {
-          //   title:'删除时间',
-          //   align:"center",
-          //   dataIndex: 'deleteTime',
-          //   customRender:function (text) {
-          //     return !text?"":(text.length>10?text.substr(0,10):text)
-          //   }
-          // },
           {
             title: '操作',
             dataIndex: 'action',
@@ -179,7 +171,7 @@
       }
     },
     created() {
-      this.$set(this.dictOptions, 'status', [{text:'是',value:'Y'},{text:'否',value:'N'}])
+      this.$set(this.dictOptions, 'status', [{text:'开启',value:'1'},{text:'关闭',value:'0'}])
     this.getSuperFieldList();
     },
     computed: {
@@ -197,7 +189,6 @@
         fieldList.push({type:'string',value:'url',text:'跳转地址',dictCode:''})
         fieldList.push({type:'switch',value:'status',text:'状态:0=关闭,1=开启'})
         fieldList.push({type:'int',value:'weight',text:'权重',dictCode:''})
-        fieldList.push({type:'date',value:'deleteTime',text:'删除时间'})
         this.superFieldList = fieldList
       }
     }
