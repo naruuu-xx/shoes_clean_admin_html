@@ -103,6 +103,7 @@ export const transitRESTful = {
 }
 
 const changeLogisticsPassword =  (params)=>putAction("/shoes/shoeLogistics/changePassword",params);
+const changeCourierPassword =  (params)=>putAction("/shoeCourier/shoeCourier/changePassword",params);
 
 export {
   addRole,
@@ -160,7 +161,8 @@ export {
   queryMyDepartTreeList,
   getUserNoticeInfo,
   getDictItemsFromCache,
-  changeLogisticsPassword
+  changeLogisticsPassword,
+  changeCourierPassword
 }
 
 

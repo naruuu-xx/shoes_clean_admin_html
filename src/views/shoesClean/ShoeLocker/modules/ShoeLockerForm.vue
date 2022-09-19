@@ -3,13 +3,13 @@
     <j-form-container :disabled="formDisabled">
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
-          <a-col :span="24">
-            <a-form-model-item label="区域" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode">
-              <a-select v-model="model.orgCode" style="width: 100%">
-                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" :key="item.orgCode.toString()" >{{ item.departName }}</a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label="区域" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode">-->
+<!--              <a-select v-model="model.orgCode" style="width: 100%">-->
+<!--                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" :key="item.orgCode.toString()" >{{ item.departName }}</a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
               <a-input v-model="model.lockerCode" placeholder="请输入机柜编码"  ></a-input>
@@ -157,7 +157,7 @@
     created () {
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
-      this.getAreaList();
+      // this.getAreaList();
     },
     methods: {
       add () {
@@ -194,23 +194,10 @@
             let city = this.model.province[1];
             let area = this.model.province[2];
 
-            let lockerCode = "";
-
-            if (!this.model.lockerId) {
-              lockerCode = this.model.orgCode + this.model.lockerCode;
-            } else {
-              lockerCode = this.model.lockerCode;
-              for (let i = 0 ; i < this.areaList.length ; i ++) {
-                let element = this.areaList[i].orgCode;
-                lockerCode = lockerCode.replace(element, "");
-              }
-              lockerCode = this.model.orgCode + lockerCode;
-            }
-
             let data = {
               "lockerId": this.model.lockerId,
               "orgCode": this.model.orgCode,
-              "lockerCode": lockerCode,
+              "lockerCode": this.model.lockerCode,
               "status": this.model.status,
               "province": province,
               "city": city,

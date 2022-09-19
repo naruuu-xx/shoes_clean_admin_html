@@ -87,7 +87,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="id"
+        rowKey="lockerId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -156,6 +156,7 @@
   import ShoeLockerModal from './modules/ShoeLockerModal'
   import Area from '@/components/_util/Area'
   import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
+  import {mapGetters} from 'vuex';
 
   export default {
     name: 'ShoeLockerList',
