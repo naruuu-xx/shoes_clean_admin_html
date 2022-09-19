@@ -14,6 +14,25 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
+              <a-input v-model="model.lockerCode" placeholder="请输入机柜编码"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <template v-if="!model.logisticsId">
+              <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="password" >
+                <a-input v-model="model.password" type="password" placeholder="请输入登录密码" />
+              </a-form-model-item>
+              <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="confirmpassword">
+                <a-input v-model="model.confirmpassword" type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" />
+              </a-form-model-item>
+            </template>
+
+          </a-col>
+
+
+          <a-col :span="24">
             <a-form-model-item label=" 状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
               <j-switch v-model="model.status"  ></j-switch>
             </a-form-model-item>
@@ -26,8 +45,8 @@
 
 <script>
 
-  import { httpAction, getAction } from '@/api/manage'
-  import { validateDuplicateValue } from '@/utils/util'
+  // import { httpAction, getAction } from '@/api/manage'
+  // import { validateDuplicateValue } from '@/utils/util'
 
   export default {
     name: 'ShoeLogisticsForm',
@@ -43,8 +62,10 @@
     },
     data () {
       return {
+        confirmDirty: false,
         model:{
             status:[1,0],
+          password:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -66,6 +87,13 @@
            status: [
               { required: true, message: '请输入 状态:0=禁用,1=正常!'},
            ],
+          lockerCode:[
+            { required: true, message: '请输入机柜编码'},
+          ],
+          password: [{required: true,pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
+            {validator: this.validateToNextPassword,trigger: 'change'}],
+          confirmpassword: [{required: true, message: '请重新输入登录密码!',},
+            { validator: this.compareToFirstPassword,}],
         },
         url: {
           add: "/shoes/shoeLogistics/add",
@@ -88,6 +116,7 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
+        console.log(record);
         this.model = Object.assign({}, record);
         this.visible = true;
       },
@@ -119,6 +148,27 @@
           }
 
         })
+      },
+      validateToNextPassword (rule, value, callback) {
+        const confirmpassword=this.model.confirmpassword;
+        if (value && confirmpassword && value !== confirmpassword) {
+          callback('两次输入的密码不一样！');
+        }
+        if (value && this.confirmDirty) {
+          this.$refs.form.validateField(['confirmpassword']);
+        }
+        callback();
+      },
+      compareToFirstPassword (rule, value, callback) {
+        if (value && value !== this.model.password) {
+          callback('两次输入的密码不一样！');
+        } else {
+          callback()
+        }
+      },
+      handleConfirmBlur  (e) {
+        const value = e.target.value
+        this.confirmDirty = this.confirmDirty || !!value
       },
     }
   }

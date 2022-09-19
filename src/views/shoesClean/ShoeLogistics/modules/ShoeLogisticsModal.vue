@@ -25,7 +25,7 @@
         title:'',
         width:800,
         visible: false,
-        disableSubmit: false
+        disableSubmit: false,
       }
     },
     methods: {

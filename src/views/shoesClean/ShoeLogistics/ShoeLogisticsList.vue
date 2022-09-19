@@ -38,7 +38,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_logistics')">导出</a-button>-->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
@@ -161,6 +161,11 @@
             dataIndex: 'name'
           },
           {
+            title: '机柜编码',
+            align:"center",
+            dataIndex: 'lockerCode'
+          },
+          {
             title:' 手机号（账号）',
             align:"center",
             dataIndex: 'phone'
@@ -181,7 +186,8 @@
           }
         ],
         url: {
-          list: "/shoes/shoeLogistics/list",
+          // list: "/shoes/shoeLogistics/list",
+          list: "/shoes/shoeLogistics/queryList",
           delete: "/shoes/shoeLogistics/delete",
           deleteBatch: "/shoes/shoeLogistics/deleteBatch",
           exportXlsUrl: "/shoes/shoeLogistics/exportXls",
