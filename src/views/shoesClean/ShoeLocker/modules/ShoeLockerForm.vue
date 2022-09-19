@@ -6,7 +6,7 @@
           <a-col :span="24">
             <a-form-model-item label="区域" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode">
               <a-select v-model="model.orgCode" style="width: 100%">
-                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" >{{ item.departName }}</a-select-option>
+                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" :key="item.orgCode.toString()" >{{ item.departName }}</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
