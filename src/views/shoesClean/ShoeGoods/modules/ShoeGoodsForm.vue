@@ -23,14 +23,38 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="主图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="images">
-<!--              <a-textarea v-model="model.images" rows="4" placeholder="请输入主图" />-->
-              <j-image-upload text="上传" v-model="model.images" is-multiple="true" ></j-image-upload>
+            <a-form-model-item label="描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="describe">
+              <a-input v-model="model.describe" placeholder="请输入描述"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="describe">
-              <a-input v-model="model.describe" placeholder="请输入描述"  ></a-input>
+            <a-form-model-item label="商品规格" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="describe">
+
+            </a-form-model-item>
+          </a-col>
+          <a-col style="padding: 0px 95px 0px 155px ">
+
+            <a-form-model-item >
+              <a-table
+                ref="table"
+                size="small"
+                :scroll="{x:true}"
+                bordered
+                rowKey="goodsId"
+                :columns="columns"
+                :dataSource="dataSource"
+                :pagination="ipagination"
+                :loading="loading"
+                class="j-table-force-nowrap"
+                @change="handleTableChange">
+
+
+              </a-table>
+            </a-form-model-item>
+
+            <a-form-model-item label="主图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="images">
+              <!--              <a-textarea v-model="model.images" rows="4" placeholder="请输入主图" />-->
+              <j-image-upload text="上传" v-model="model.images" is-multiple="true"></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -82,9 +106,13 @@
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
   import JImageUpload from '@/components/jeecg/JImageUpload'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import { mixinDevice } from '@/utils/mixin'
+
 
   export default {
     name: 'ShoeGoodsForm',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
     },
     props: {
@@ -134,6 +162,24 @@
           queryById: "/shoes/shoeGoods/queryById"
         },
         typeList:[],
+        dataSource:[],
+        columns:[
+          {
+          title: '产品名称',
+          align:"center",
+          dataIndex: 'skuTitle',
+            width:10,
+
+        },
+          {
+            title: '价格',
+            align: "center",
+            dataIndex: "price",
+            width:10,
+
+          },
+
+        ],
 
       }
     },
@@ -193,7 +239,8 @@
 
           }
         })
-      }
+      },
+
     },
   }
 </script>
