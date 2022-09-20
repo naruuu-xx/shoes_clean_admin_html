@@ -23,6 +23,13 @@
               <a-input-password v-model="model.password" placeholder="请输入 密码" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerId">
+              <a-select v-model="model.lockerId">
+                <a-select-option v-for="i in lockerList" :value="i.lockerId+''" :key="i.lockerId">{{i.lockerCode}}</a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
 <!--          <a-col :span="24">-->
 <!--            <a-form-model-item label=" 总配送单数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">-->
 <!--              <a-input-number v-model="model.num" placeholder="请输入 总配送单数" style="width: 100%" />-->
@@ -136,7 +143,8 @@
           add: "/shoeCourier/shoeCourier/add",
           edit: "/shoeCourier/shoeCourier/edit",
           queryById: "/shoeCourier/shoeCourier/queryById"
-        }
+        },
+        lockerList:[],
       }
     },
     computed: {
@@ -145,6 +153,7 @@
       },
     },
     created () {
+      this.getLockerList();
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
@@ -163,6 +172,8 @@
       },
       edit (record) {
         this.model = Object.assign({}, record);
+        this.model.lockerId = record.lockerId.toString();
+        this.model.lockerCode = record.lockerCode;
         this.visible = true;
       },
       submitForm () {
@@ -181,7 +192,6 @@
                method = 'put';
             }
 
-
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -193,9 +203,15 @@
               that.confirmLoading = false;
             })
           }
-
         })
       },
+      getLockerList(){
+        httpAction("/shoes/shoeLocker/lockerList", null, "get").then((res) => {
+          if (res.success) {
+            this.lockerList = res.result;
+          }
+        })
+      }
     }
   }
 </script>
