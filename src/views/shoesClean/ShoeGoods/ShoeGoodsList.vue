@@ -55,6 +55,7 @@
         </template>
         <template slot="imgSlot" slot-scope="text,record">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+          <video v-else-if="text.indexOf('mp4')>0" :src="getImgView(text)" :onclick="text" style="max-width:80px;font-size: 12px;font-style: italic;" ></video>
           <img v-else :src="getImgView(text)" :preview="record.goodsId" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
@@ -106,6 +107,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeGoodsModal from './modules/ShoeGoodsModal'
   import { filterMultiDictText } from '@comp/dict/JDictSelectUtil'
+  import { getFileAccessHttpUrl } from '@api/manage'
 
   export default {
     name: 'ShoeGoodsList',
@@ -124,6 +126,13 @@
         else{
           return "修复";
         }
+      }
+
+      function imagerender(text) {
+        if(text && text.indexOf(",")>0){
+          text = text.substring(0,text.indexOf(","))
+        }
+        return getFileAccessHttpUrl(text)
       }
 
       return {
@@ -156,12 +165,13 @@
             align:"center",
             dataIndex: 'title'
           },
-          {
-            title:'主图',
-            align:"center",
-            dataIndex: 'images',
-            scopedSlots: {customRender: 'imgSlot'}
-          },
+          // {
+          //   title:'主图',
+          //   align:"center",
+          //   dataIndex: 'images',
+          //   scopedSlots: {customRender: 'imgSlot'}
+          //   //customRender:(text) => (imagerender(text)),
+          // },
           // {
           //   title:'描述',
           //   align:"center",
