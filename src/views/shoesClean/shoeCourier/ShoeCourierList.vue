@@ -4,11 +4,11 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="机柜编码">
-              <a-input placeholder="请输入机柜编码" v-model="queryParam.lockerCode"></a-input>
-            </a-form-item>
-          </a-col>
+<!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="机柜编码">-->
+<!--              <a-input placeholder="请输入机柜编码" v-model="queryParam.lockerCode"></a-input>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 姓名">
               <a-input placeholder="请输入 姓名" v-model="queryParam.name"></a-input>
@@ -167,15 +167,15 @@
           //   align:"center",
           //   dataIndex: 'courierId'
           // },
-          // {
-          //   title:'机柜编码',
-          //   align:"center",
-          //   dataIndex: 'lockerCode'
-          // },
           {
             title:' 姓名',
             align:"center",
             dataIndex: 'name'
+          },
+          {
+            title:'机柜编码',
+            align:"center",
+            dataIndex: 'lockerCode'
           },
           {
             title:' 电话（账号）',
@@ -243,7 +243,8 @@
           }
         ],
         url: {
-          list: "/shoeCourier/shoeCourier/list",
+          // list: "/shoeCourier/shoeCourier/list",
+          list: "/shoeCourier/shoeCourier/queryList",
           delete: "/shoeCourier/shoeCourier/delete",
           deleteBatch: "/shoeCourier/shoeCourier/deleteBatch",
           exportXlsUrl: "/shoeCourier/shoeCourier/exportXls",
