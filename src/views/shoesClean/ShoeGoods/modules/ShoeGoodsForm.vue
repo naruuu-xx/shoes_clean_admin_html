@@ -33,23 +33,30 @@
             </a-form-model-item>
           </a-col>
           <a-col style="padding: 0px 95px 0px 155px ">
-
             <a-form-model-item >
-              <a-table
-                ref="table"
-                size="small"
-                :scroll="{x:true}"
-                bordered
-                rowKey="goodsId"
-                :columns="columns"
-                :dataSource="dataSource"
-                :pagination="ipagination"
-                :loading="loading"
-                class="j-table-force-nowrap"
-                @change="handleTableChange">
+              <div>
+                <a-button class="editable-add-btn" @click="handleAdd">
+                  Add
+                </a-button>
+                <a-table bordered :data-source="dataSource" :columns="columns" ref="table">
+                  <template slot="skuTitle" slot-scope="text, record">
+                    <editable-cell :text="text" @change="onCellChange(record.key, 'skuTitle', $event)" />
+                  </template>
+                  <template slot="price" slot-scope="text, record">
+                    <editable-cell :text="text" @change="onCellChange(record.key, 'price',$event)"/>
+                  </template>
+                  <template slot="operation" slot-scope="text, record">
+                    <a-popconfirm
+                      v-if="dataSource.length"
+                      title="Sure to delete?"
+                      @confirm="() => onDelete(record.key)"
+                    >
+                      <a href="javascript:;">Delete</a>
+                    </a-popconfirm>
+                  </template>
+                </a-table>
+              </div>
 
-
-              </a-table>
             </a-form-model-item>
 
             <a-form-model-item label="主图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="images">
@@ -102,18 +109,57 @@
 </template>
 
 <script>
-
+import {ref} from 'vue'
   import { httpAction, getAction } from '@/api/manage'
-  import { validateDuplicateValue } from '@/utils/util'
-  import JImageUpload from '@/components/jeecg/JImageUpload'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { mixinDevice } from '@/utils/mixin'
 
+
+  const EditableCell = {
+    template: `
+      <div class="editable-cell">
+        <div v-if="editable" class="editable-cell-input-wrapper">
+          <a-input :value="value" @change="handleChange" @pressEnter="check" /><a-icon
+            type="check"
+            class="editable-cell-icon-check"
+            @click="check"
+          />
+        </div>
+        <div v-else class="editable-cell-text-wrapper">
+          {{ value || ' ' }}
+          <a-icon type="edit" class="editable-cell-icon" @click="edit" />
+        </div>
+      </div>
+    `,
+    props: {
+      text: String,
+    },
+    data() {
+      return {
+        value: this.text,
+        editable: false,
+      };
+    },
+    methods: {
+      handleChange(e) {
+        const value = e.target.value;
+        this.value = value;
+      },
+      check() {
+        this.editable = false;
+        this.$emit('change', this.value);
+      },
+      edit() {
+        this.editable = true;
+      },
+    },
+  };
 
   export default {
     name: 'ShoeGoodsForm',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
+      EditableCell,
     },
     props: {
       //表单禁用
@@ -137,12 +183,6 @@
         },
         confirmLoading: false,
         validatorRules: {
-           goodsId: [
-              { required: true, message: '请输入ID!'},
-           ],
-           type: [
-              { required: true, message: '请选择类型!'},
-           ],
            title: [
               { required: true, message: '请输入商品名称!'},
            ],
@@ -153,7 +193,7 @@
               { required: true, message: '请输入权重!'},
            ],
            status: [
-              { required: true, message: '请输入状态:0=下架,1=上架!'},
+              { required: true, message: '请输入状态'},
            ],
         },
         url: {
@@ -162,24 +202,39 @@
           queryById: "/shoes/shoeGoods/queryById"
         },
         typeList:[],
-        dataSource:[],
-        columns:[
+        dataSource:[
+          {
+            key:'0',
+            skuTitle: 'ces0',
+            price:'0',
+          }
+
+        ],
+        columns: [
           {
           title: '产品名称',
           align:"center",
           dataIndex: 'skuTitle',
-            width:10,
+            scopedSlots: { customRender: 'skuTitle' },
+
 
         },
           {
             title: '价格',
             align: "center",
             dataIndex: "price",
-            width:10,
+            scopedSlots: { customRender: 'price' },
 
+          },
+          {
+            title: '操作',
+            dataIndex: 'operation',
+            scopedSlots: { customRender: 'operation' },
           },
 
         ],
+        count:0,
+
 
       }
     },
@@ -195,6 +250,32 @@
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
+      onCellChange(key, dataIndex, value) {
+        const dataSource = [...this.dataSource];
+
+        const target = dataSource.find(item => item.key === key);
+        if (target) {
+          target[dataIndex] = value;
+          this.dataSource = dataSource;
+        }
+      },
+      onDelete(key) {
+        console.log("这是key："+key);
+        const dataSource = [...this.dataSource];
+        console.log(dataSource);
+        this.dataSource = dataSource.filter(item => item.key !== key);
+      },
+      handleAdd() {
+        const { count, dataSource } = this;
+        const newData = {
+          key: count,
+          skuTitle: 'ces',
+          price:'1',
+        };
+        this.dataSource = [...dataSource, newData];
+        this.count = count + 1;
+      },
+
       add () {
         this.modelDefault.type="repair";
         this.edit(this.modelDefault);
@@ -244,3 +325,48 @@
     },
   }
 </script>
+
+<style lang="less">
+.editable-cell {
+  position: relative;
+}
+
+.editable-cell-input-wrapper,
+.editable-cell-text-wrapper {
+  padding-right: 24px;
+}
+
+.editable-cell-text-wrapper {
+  padding: 5px 24px 5px 5px;
+}
+
+.editable-cell-icon,
+.editable-cell-icon-check {
+  position: absolute;
+  right: 0;
+  width: 20px;
+  cursor: pointer;
+}
+
+.editable-cell-icon {
+  line-height: 18px;
+  display: none;
+}
+
+.editable-cell-icon-check {
+  line-height: 28px;
+}
+
+.editable-cell:hover .editable-cell-icon {
+  display: inline-block;
+}
+
+.editable-cell-icon:hover,
+.editable-cell-icon-check:hover {
+  color: #108ee9;
+}
+
+.editable-add-btn {
+  margin-bottom: 8px;
+}
+</style>
