@@ -71,7 +71,7 @@
         model:{
             status:[1,0],
           password:'',
-          lockerId:0,
+          lockerId:'',
           lockerCode:'',
          },
         labelCol: {

@@ -137,8 +137,9 @@
       },
       beforeUpload: function(file){
         var fileType = file.type;
-        if(fileType.indexOf('image')<0){
-          this.$message.warning('请上传图片');
+        console.log(fileType);
+        if(fileType.indexOf('image')<0&&fileType.indexOf("video")<0){
+          this.$message.warning('请上传图片或视频');
           return false;
         }
       },
