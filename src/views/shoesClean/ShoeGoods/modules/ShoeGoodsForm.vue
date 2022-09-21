@@ -3,20 +3,6 @@
     <j-form-container :disabled="formDisabled">
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="goodsId">-->
-<!--              <a-input-number v-model="model.goodsId" placeholder="请输入ID" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-<!--          <a-col :span="24">-->
-<!--            <template v-if="!model.goodsId">-->
-<!--              <a-form-model-item label="类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type" >-->
-<!--                <a-select v-model="model.type">-->
-<!--                  <a-select-option  value="repair" >修复</a-select-option>-->
-<!--                </a-select>-->
-<!--              </a-form-model-item>-->
-<!--            </template>-->
-<!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
               <a-input v-model="model.title" placeholder="请输入商品名称"  ></a-input>
@@ -27,47 +13,43 @@
               <a-input v-model="model.describe" placeholder="请输入描述"  ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="商品规格" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="describe">
-
-            </a-form-model-item>
-          </a-col>
-          <a-col style="padding: 0px 95px 0px 155px ">
-            <a-form-model-item >
-              <div>
+          <a-col :span="24" >
+            <a-form-model-item label="商品规格" :labelCol="labelCol" :wrapperCol="wrapperCol" >
                 <a-button class="editable-add-btn" @click="handleAdd">
-                  Add
+                  添加
                 </a-button>
-                <a-table bordered :data-source="dataSource" :columns="columns" ref="table">
-                  <template slot="skuTitle" slot-scope="text, record">
-                    <editable-cell :text="text" @change="onCellChange(record.key, 'skuTitle', $event)" />
+                <a-table bordered :data-source="dataSource" :columns="columns" >
+                  <template slot="skuTitle" slot-scope="text, record" prop="skuTitle">
+                    <editable-cell :text="text" @change="onCellChange(record.key, 'skuTitle', $event)" v-model="model.skuTitle" />
                   </template>
-                  <template slot="price" slot-scope="text, record">
-                    <editable-cell :text="text" @change="onCellChange(record.key, 'price',$event)"/>
+                  <template slot="price" slot-scope="text, record" prop="price">
+                    <editable-cell :text="text" @change="onCellChange(record.key, 'price',$event)" v-model="model.price"/>
                   </template>
                   <template slot="operation" slot-scope="text, record">
                     <a-popconfirm
                       v-if="dataSource.length"
-                      title="Sure to delete?"
+                      title="确定要删除该规格么?"
                       @confirm="() => onDelete(record.key)"
                     >
-                      <a href="javascript:;">Delete</a>
+                      <a href="javascript:;">删除</a>
                     </a-popconfirm>
                   </template>
                 </a-table>
-              </div>
+
 
             </a-form-model-item>
+          </a-col>
 
+          <a-col :span="24">
             <a-form-model-item label="主图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="images">
               <!--              <a-textarea v-model="model.images" rows="4" placeholder="请输入主图" />-->
-              <j-image-upload text="上传" v-model="model.images" is-multiple="true"></j-image-upload>
+              <j-image-upload text="上传" v-model="model.images" :isMultiple = "true"></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="详情" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="content">
 <!--              <a-textarea v-model="model.content" rows="4" placeholder="请输入详情" />-->
-              <JEditor v-model="model.content" placeholder="请输入详情" :init="init"></JEditor>
+              <JEditor v-model="model.content" placeholder="请输入详情" ></JEditor>
             </a-form-model-item>
 
           </a-col>
@@ -92,16 +74,6 @@
               <j-switch v-model="model.status"  ></j-switch>
             </a-form-model-item>
           </a-col>
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="删除状态:0=正常,1=删除" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="delFlag">-->
-<!--              <a-input-number v-model="model.delFlag" placeholder="请输入删除状态:0=正常,1=删除" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="删除时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="deleteTime">-->
-<!--              <j-date placeholder="请选择删除时间" v-model="model.deleteTime"  style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -109,51 +81,58 @@
 </template>
 
 <script>
-import {ref} from 'vue'
   import { httpAction, getAction } from '@/api/manage'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { mixinDevice } from '@/utils/mixin'
 
 
-  const EditableCell = {
-    template: `
-      <div class="editable-cell">
-        <div v-if="editable" class="editable-cell-input-wrapper">
-          <a-input :value="value" @change="handleChange" @pressEnter="check" /><a-icon
-            type="check"
-            class="editable-cell-icon-check"
-            @click="check"
-          />
-        </div>
-        <div v-else class="editable-cell-text-wrapper">
-          {{ value || ' ' }}
-          <a-icon type="edit" class="editable-cell-icon" @click="edit" />
-        </div>
-      </div>
-    `,
-    props: {
-      text: String,
+const EditableCell = {
+  template: `
+    <div class="editable-cell">
+    <div v-if="editable" class="editable-cell-input-wrapper">
+      <a-input :value="value" @change="handleChange" @pressEnter="check" :value="value" @input="inputChange" /><a-icon
+      type="check"
+      class="editable-cell-icon-check"
+      @click="check"
+    />
+    </div>
+    <div v-else class="editable-cell-text-wrapper">
+      {{ value || ' ' }}
+      <a-icon type="edit" class="editable-cell-icon" @click="edit" />
+    </div>
+    </div>
+  `,
+  props: {
+    text: String,
+  },
+  model: {
+    prop: "value", //绑定的值，通过父组件传递
+    event: "input" //自定义时间名
+  },
+  data() {
+    return {
+      value: this.text,
+      editable: false,
+    };
+  },
+  methods: {
+
+    handleChange(e) {
+      const value = e.target.value;
+      this.value = value;
     },
-    data() {
-      return {
-        value: this.text,
-        editable: false,
-      };
+    inputchange(e){
+        this.$emit("input", e.target.value);
     },
-    methods: {
-      handleChange(e) {
-        const value = e.target.value;
-        this.value = value;
-      },
-      check() {
-        this.editable = false;
-        this.$emit('change', this.value);
-      },
-      edit() {
-        this.editable = true;
-      },
+    check() {
+      this.editable = false;
+      this.$emit('change', this.value);
     },
-  };
+    edit() {
+      this.editable = true;
+    },
+  },
+};
 
   export default {
     name: 'ShoeGoodsForm',
@@ -192,6 +171,15 @@ import {ref} from 'vue'
            weight: [
               { required: true, message: '请输入权重!'},
            ],
+          goodsSku:[
+            {required: true, message: '请填写商品规格！'},
+          ],
+          skuTitle: [
+            {required: true, message: '请填写规格名称!'},
+          ],
+          price:[
+            {required: true, message:'测'},
+          ],
            status: [
               { required: true, message: '请输入状态'},
            ],
@@ -203,11 +191,6 @@ import {ref} from 'vue'
         },
         typeList:[],
         dataSource:[
-          {
-            key:'0',
-            skuTitle: 'ces0',
-            price:'0',
-          }
 
         ],
         columns: [
@@ -269,8 +252,8 @@ import {ref} from 'vue'
         const { count, dataSource } = this;
         const newData = {
           key: count,
-          skuTitle: 'ces',
-          price:'1',
+          skuTitle: '',
+          price:'',
         };
         this.dataSource = [...dataSource, newData];
         this.count = count + 1;
@@ -286,6 +269,7 @@ import {ref} from 'vue'
       },
       submitForm () {
         const that = this;
+        console.log(that.model.skuTitle);
         // 触发表单验证
         this.$refs.form.validate(valid => {
           if (valid) {
