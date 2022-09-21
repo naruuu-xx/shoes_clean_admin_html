@@ -136,7 +136,10 @@
               { required: true, message: '请选择 状态'},
            ],
            delFlag: [
-              { required: true, message: '请输入 删除状态:0=正常,1=删除!'},
+            { required: true, message: '请输入 删除状态:0=正常,1=删除!'},
+           ],
+           lockerId: [
+            { required: true, message: '请选择快递柜!'},
            ],
         },
         url: {
