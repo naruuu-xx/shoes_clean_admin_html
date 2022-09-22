@@ -110,7 +110,7 @@
               { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
            idcard: [
-              { required: true, message: '请输入 身份证!'},
+              { required: false, message: '请输入 身份证!'},
               {validator: this.validateIdCard}
            ],
            password: [
