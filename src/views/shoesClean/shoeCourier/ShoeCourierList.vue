@@ -120,6 +120,9 @@
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
+<!--              <a-menu-item>-->
+<!--                <a @click="unbind(record.courierId)">解绑快递柜</a>-->
+<!--              </a-menu-item>-->
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
@@ -160,6 +163,7 @@ import ShoeCourierModal from './modules/ShoeCourierModal'
 import ShoeScheduleList from "./shoeSchedule/ShoeScheduleList";
 import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil"
 import PasswordModal from './modules/PasswordModal'
+import {deleteAction} from "../../../api/manage";
 
 export default {
   name: 'ShoeCourierList',
@@ -271,7 +275,7 @@ export default {
         deleteBatch: "/shoeCourier/shoeCourier/deleteBatch",
         exportXlsUrl: "/shoeCourier/shoeCourier/exportXls",
         importExcelUrl: "shoeCourier/shoeCourier/importExcel",
-
+        unbind: "/shoeCourier/shoeCourier/unbind"
       },
       dictOptions: {},
       superFieldList: [],
@@ -320,6 +324,18 @@ export default {
       this.$refs.ShoeScheduleList.scheduleVisible = true;
       this.$refs.ShoeScheduleList.initDataByDIY(record.courierId);
       this.$refs.ShoeScheduleList.dataSource = [];
+    },
+    unbind(courierId){
+      deleteAction(this.url.unbind, {id: courierId}).then((res) => {
+        if (res.success) {
+          //重新计算分页问题
+          this.reCalculatePage(1)
+          this.$message.success(res.message);
+          this.loadData();
+        } else {
+          this.$message.warning(res.message);
+        }
+      });
     }
   }
 }
