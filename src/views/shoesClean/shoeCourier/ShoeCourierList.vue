@@ -11,13 +11,13 @@
           <!--          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 姓名">
-              <a-input placeholder="请输入 姓名" v-model="queryParam.name"></a-input>
+              <a-input placeholder="请输入 姓名" v-model="queryParam.name" autocomplete="off"></a-input>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label=" 电话（账号）">
-                <a-input placeholder="请输入 电话（账号）" v-model="queryParam.phone"></a-input>
+              <a-form-item label=" 电话">
+                <a-input placeholder="请输入 电话" v-model="queryParam.phone"  autocomplete="off"></a-input>
               </a-form-item>
             </a-col>
             <!--            <a-col :xl="10" :lg="11" :md="12" :sm="24">-->
@@ -123,9 +123,9 @@
 <!--              <a-menu-item>-->
 <!--                <a @click="unbind(record.courierId)">解绑快递柜</a>-->
 <!--              </a-menu-item>-->
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
+<!--              <a-menu-item>-->
+<!--                <a @click="handleDetail(record)">详情</a>-->
+<!--              </a-menu-item>-->
               <a-menu-item>
                 <a href="javascript:;" @click="handleChangePassword(record.phone, record.courierId)">密码</a>
               </a-menu-item>
@@ -204,7 +204,7 @@ export default {
           dataIndex: 'lockerCode'
         },
         {
-          title: ' 电话（账号）',
+          title: ' 电话',
           align: "center",
           dataIndex: 'phone'
         },
@@ -251,14 +251,14 @@ export default {
             return filterDictTextByCache('shoe_courier_status', text);
           },
         },
-        {
-          title: ' 删除状态',
-          align: "center",
-          dataIndex: 'delFlag',
-          customRender: (text) => {
-            return filterDictTextByCache('shoe_courier_del_flag', text);
-          },
-        },
+        // {
+        //   title: ' 删除状态',
+        //   align: "center",
+        //   dataIndex: 'delFlag',
+        //   customRender: (text) => {
+        //     return filterDictTextByCache('shoe_courier_del_flag', text);
+        //   },
+        // },
         {
           title: '操作',
           dataIndex: 'action',

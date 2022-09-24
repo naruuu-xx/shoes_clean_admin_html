@@ -12,7 +12,7 @@
           <!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
-              <a-input v-model="model.lockerCode" placeholder="请输入机柜编码"></a-input>
+              <a-input v-model="model.lockerCode" placeholder="请输入机柜编码" autocomplete="off"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -20,12 +20,12 @@
               <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
               <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
-              <al-cascader v-model="model.province" level="3" data-type="name"/>
-            </a-form-model-item>
-          </a-col>
+<!--              <al-cascader v-model="model.province" level="3" data-type="name"/>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
           <!--          <a-col :span="24">-->
           <!--            <a-form-model-item label="市" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="city">-->
           <!--             <j-area-linkage type="cascader" v-model="model.city" placeholder="请输入省市区"  />-->
@@ -38,29 +38,43 @@
           <!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
-              <a-textarea v-model="model.address" placeholder="请输入详细地址" id="c-address"></a-textarea>
+<!--              <a-input v-model="model.address" placeholder="请输入详细地址" id="c-address" :change="addressOnchange()"></a-input>-->
+              <a-input-search v-model="model.address" placeholder="请输入详细地址" id="c-address" enter-button @search="onSearch(model.address)" autocomplete="off"></a-input-search>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="log">
-<!--              <a-input-number v-model="model.log" placeholder="请输入经度" style="width: 100%" id="c-lng" />-->
-<!--              <input type="number" placeholder="请输入经度" id="c-lng">-->
-              <input v-model="model.log" style="width: 100%; height: 40px;border: 5px solid #ffffff;" placeholder="请输入经度" id="c-lng"/>
+              <a-input-number v-model="model.log" placeholder="请输入经度" style="width: 100%" id="c-lng" disabled="true"/>
+<!--              <input v-model="model.log" style="width: 100%; height: 40px;border: 5px solid #ffffff;" placeholder="请输入经度" id="c-lng"/>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lat">
-              <a-input-number v-model="model.lat" placeholder="请输入纬度" style="width: 100%" id="c-lat"/>
+              <a-input-number v-model="model.lat" placeholder="请输入纬度" style="width: 100%" id="c-lat" disabled="true"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="地图选点" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <div id="tencentMapBox" style="width:auto;height:400px;"></div>
-            </a-form-model-item>
+            <a-row>
+              <a-col :span="16">
+<!--                <a-form-model-item label="" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+                  <div id="tencentMapBox" style="width:auto;height:400px;margin-left: 200px;margin-bottom: 30px"></div>
+<!--                </a-form-model-item>-->
+              </a-col>
+              <a-col :span="8">
+                <div id="container-text" style="width:auto;height: 400px;margin-left: 5px; overflow-y:auto;">
+                  <div v-model="searchList" v-for="(item, index) in searchList" style="margin-bottom: 10px" v-on:click="selectAddress(item)">
+                    <span style="font-size: 14px">{{ index + 1 }}、{{ item.title }}</span><br>
+                    <span style="font-size: 12px; color: #7A7B7D">{{ item.address }}</span>
+                    <span style="display: none">{{ item.location.lat }}</span>
+                    <span style="display: none">{{ item.location.lng }}</span>
+                  </div>
+                </div>
+              </a-col>
+            </a-row>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
-              <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 100%"/>
+              <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 100%"  autocomplete="off"/>
             </a-form-model-item>
           </a-col>
           <!--          <a-col :span="24">-->
@@ -182,6 +196,8 @@ export default {
       markerList: [],
       markerEventList: [],
       areaJson: [],
+
+      searchList: [],
       //=================
     }
   },
@@ -199,7 +215,7 @@ export default {
   },
   mounted() {
     // this.initMap();
-    this.initMapByJQ();
+    // this.initMapByJQ();
   },
   methods: {
     add() {
@@ -207,16 +223,28 @@ export default {
       this.model = {
         status: 1,
       };
+      let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
+      this.option = {
+        center: center,// 设置地图中心点坐标
+        zoom: 12, // 设置地图缩放级别
+        mapTypeId: qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
+      };
+      // this.initMap();
+      this.initMapByJQ(24.500646, 118.126990);
     },
     edit(record) {
       this.model = Object.assign({}, record);
-      let province = record.province;
-      let city = record.city;
-      let area = record.area;
-      this.model.province = [province, city, area];
       this.model.orgCode = record.orgCode + "";
       this.model.departName = record.departName;
+      let center = new qq.maps.LatLng(record.lat, record.log);// 设置地图中心点坐标
+      this.option = {
+          center: center,// 设置地图中心点坐标
+          zoom: 16, // 设置地图缩放级别
+          mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
+      };
       this.visible = true;
+      // this.initMap();
+      this.initMapByJQ(record.lat, record.log);
     },
     submitForm() {
       const that = this;
@@ -235,18 +263,18 @@ export default {
           }
 
           //处理省市区
-          let province = this.model.province[0];
-          let city = this.model.province[1];
-          let area = this.model.province[2];
+          // let province = this.model.province[0];
+          // let city = this.model.province[1];
+          // let area = this.model.province[2];
 
           let data = {
             "lockerId": this.model.lockerId,
             "orgCode": this.model.orgCode,
             "lockerCode": this.model.lockerCode,
             "status": this.model.status,
-            "province": province,
-            "city": city,
-            "area": area,
+            "province": this.model.province,
+            "city": this.model.city,
+            "area": this.model.area,
             "address": this.model.address,
             "log": this.model.log,
             "lat": this.model.lat,
@@ -280,14 +308,15 @@ export default {
     //以下是腾讯地图的方法
     //位置信息在地图上展示
     //js直接改造的方法
-    initMapByJQ(){
+    initMapByJQ(lat, lng){
       let _this = this;
 
-      let center = new TMap.LatLng(24.500646, 118.126990);//设置中心点坐标(厦门sm)
+      let center = new TMap.LatLng(lat, lng);//设置中心点坐标(厦门sm)
+
       //初始化地图
       this.map = new TMap.Map("tencentMapBox", {
-        pitch: 30, //设置俯仰角度（0~45）
-        zoom: 14,//设置地图缩放级别
+        //pitch: 30, //设置俯仰角度（0~45）
+        zoom: 12,//设置地图缩放级别
         center: center //设置地图中心点坐标
       });
       //初始化marker图层
@@ -295,6 +324,16 @@ export default {
         id: 'marker-layer',
         map: this.map
       });
+
+      if (this.model.lockerId) {
+        _this.markerLayer.updateGeometries([
+          {
+            "styleId": "marker",
+            "id": "1",
+            "position": new TMap.LatLng(this.model.lat, this.model.log)
+          }
+        ])
+      }
 
       //绑定点击事件
       this.map.on('click', function (evt) {
@@ -310,16 +349,102 @@ export default {
         //经纬度赋值给input框
         var lat = evt.latLng.getLat().toFixed(6);
         var lng = evt.latLng.getLng().toFixed(6);
-        $('#c-lng').val(lng);
-        this.model.log = lng;
-        $('#c-lat').val(lat);
-        this.model.lat = lat
+        // $('#c-lng').val(lng);
+        // _this.model.log = lng;
+        // $('#c-lat').val(lat);
+        // _this.model.lat = lat
+        // $('#c-address').val()
 
+        let model1 = {
+          log: lng,
+          lat: lat
+        }
+
+        $.ajax({
+          type: "get",
+          async: false,
+          url: "https://apis.map.qq.com/ws/geocoder/v1",
+          data: {
+            location: evt.latLng.getLat() + "," + evt.latLng.getLng(),
+            key: '4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U',
+            get_poi: 1,
+            output: "jsonp"
+          },
+          dataType: "jsonp",
+          //jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+          //jsonpCallback:"?",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
+          success: function(res){
+            if (res.status === 0) {
+              let address = res.result !== undefined ? res.result.address : "";
+              let lng = res.result !== undefined ? res.result.location.lng: null;
+              let lat = res.result !== undefined ? res.result.location.lat: null;
+
+              _this.model.address = address;
+              $("#c-address").val(address);
+
+              _this.model.log = lng;
+              $('#c-lng').val(lng);
+
+              _this.model.lat = lat;
+              $('#c-lat').val(lat);
+
+              _this.model.province = res.result.address_component.province !== undefined ? res.result.address_component.province : "";
+              _this.model.city = res.result.address_component.city !== undefined ? res.result.address_component.city : "";
+              _this.model.area = res.result.address_component.district !== undefined ? res.result.address_component.district : "";
+            }
+          },
+          error: function(){
+            //  alert('fail');
+          }
+        })
       })
+    },
+    onSearch(searchValue){
+      let _this = this;
+      $.ajax({
+        url: 'https://apis.map.qq.com/ws/place/v1/search',
+        type: 'GET',
+        async: false,
+        data: {
+          boundary: "region(厦门,1)",
+          key: '4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U',
+          output: "jsonp",
+          keyword: searchValue,
+          page_size: 20,
+          orderby: '_distance'
+        },
+        dataType: "jsonp",
+        success: function (res) {
+          let str = '';
+          _this.searchList = res.data;
+        }
+      })
+    },
+    selectAddress(obj){
+      let lat = obj.location.lat;
+      let lng = obj.location.lng;
 
+      this.model.address = obj.address;
+      $("#c-address").val(obj.address);
 
+      this.model.log = lng;
+      $('#c-lng').val(lng);
 
+      this.model.lat = lat;
+      $('#c-lat').val(lat);
 
+      this.model.province = obj.ad_info.province;
+      this.model.city = obj.ad_info.city;
+      this.model.area = obj.ad_info.district;
+
+      this.markerLayer.updateGeometries([
+        {
+          "styleId": "marker",
+          "id": "1",
+          "position": new TMap.LatLng(lat, lng)
+        }
+      ])
+      this.map.setCenter(new TMap.LatLng(lat, lng))
     },
     initMap() {
       let me = this;
@@ -359,10 +484,13 @@ export default {
       } else {
         this.initcityService();
       }
-
+      let marker = null;
       //点击获取地址
       window.qq.maps.event.addListener(this.map, "click", function (e) {
-        let url = "https://apis.map.qq.com/ws/geocoder/v1/?location=" + e.latLng.getLat() + "," + e.latLng.getLng() + "&key=" + me.mapKey + "&output=jsonp&callback=?"
+        marker = new window.qq.maps.Marker({
+          map: this.map,
+          position: e.latLng
+        })
 
         $.ajax({
           type: "get",
@@ -380,10 +508,23 @@ export default {
           success: function(res){
             console.log(res);
             if (res.status === 0) {
-              me.model.address = res.result !== undefined ? res.result.address : "";
-              $("c-address").val(res.result !== undefined ? res.result.address : "");
-              me.model.log = res.result !== undefined ? res.result.location.lng: null;
-              me.model.lat = res.result !== undefined ? res.result.location.lat: null;
+              let address = res.result !== undefined ? res.result.address : "";
+              let lng = res.result !== undefined ? res.result.location.lng: null;
+              let lat = res.result !== undefined ? res.result.location.lat: null;
+
+              me.model.address = address;
+              $("#c-address").val(address);
+
+              me.model.log = lng;
+              $('#c-lng').val(lng);
+
+              me.model.lat = lat;
+              $('#c-lat').val(lat);
+
+              me.model.province = res.result.address_component.province !== undefined ? res.result.address_component.province : "";
+              me.model.city = res.result.address_component.city !== undefined ? res.result.address_component.city : "";
+              me.model.area = res.result.address_component.district !== undefined ? res.result.address_component.district : "";
+
               // me.mapLatLng =
               //   res.result != undefined
               //     ? [res.result.location.lat, res.result.location.lng]
@@ -394,8 +535,12 @@ export default {
             //  alert('fail');
           }
         })
-
       });
+      new window.qq.maps.Geocoder({
+        complete: function (result) {
+          console.log(result);
+        }
+      })
     },
     initcityService() {
       let me = this;
@@ -549,10 +694,10 @@ export default {
 
       this.markerEventList = [];
       this.markerList = [];
-      res.data.forEach((item, index) => {
+      // res.result.forEach((item, index) => {
         let latlng = new window.qq.maps.LatLng(
-          item.location.lat,
-          item.location.lng
+          res.result.location.lat,
+          res.result.location.lng
         );
         latlngBounds.extend(latlng);
         //创建Marker
@@ -561,7 +706,7 @@ export default {
           position: latlng,
           zIndex: 10,
         });
-        marker.index = index;
+        marker.index = 1;
         marker.isClicked = false;
         this.setAnchor(marker, false);
         this.markerList.push(marker);
@@ -599,7 +744,7 @@ export default {
           })
         );
         this.map.fitBounds(latlngBounds);
-      });
+      // });
       if (this.markerList.length > 0) {
         this.map.setCenter(this.markerList[0].position);
       }
@@ -618,7 +763,7 @@ export default {
       marker.setIcon(icon);
     },
     //选择地址
-    selectAddress(index) {
+    selectAddress_(index) {
       this.setCurrentAddress(index);
       this.setFlagClicked(index);
       this.map.setCenter(this.markerList[index].position);
