@@ -38,17 +38,19 @@
           <!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
-              <a-textarea v-model="model.address" placeholder="请输入详细地址"></a-textarea>
+              <a-textarea v-model="model.address" placeholder="请输入详细地址" id="c-address"></a-textarea>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="log">
-              <a-input-number v-model="model.log" placeholder="请输入经度" style="width: 100%"/>
+<!--              <a-input-number v-model="model.log" placeholder="请输入经度" style="width: 100%" id="c-lng" />-->
+<!--              <input type="number" placeholder="请输入经度" id="c-lng">-->
+              <input v-model="model.log" style="width: 100%; height: 40px;border: 5px solid #ffffff;" placeholder="请输入经度" id="c-lng"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lat">
-              <a-input-number v-model="model.lat" placeholder="请输入纬度" style="width: 100%"/>
+              <a-input-number v-model="model.lat" placeholder="请输入纬度" style="width: 100%" id="c-lat"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -77,6 +79,7 @@
 import {httpAction, getAction} from '@/api/manage'
 import {validateDuplicateValue} from '@/utils/util'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
+import $ from 'jquery'
 
 let map, marker, polygon, drawingManager, lngLat, ap;
 
@@ -155,13 +158,6 @@ export default {
       areaList: [],
       //以下变量与腾讯地图相关
       //=================
-      // position: [
-      //   {
-      //     longitude: 0,//经度
-      //     latitude: 0,//纬度
-      //     city: ''
-      //   }
-      // ]
       map: null,
       temp: null,
       option: {
@@ -169,7 +165,8 @@ export default {
         zoom: 12, // 设置地图缩放级别
         mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
       },
-      markerLayer: [],
+      //markerLayer: [],
+      markerLayer: '',
       markIsHover: false,
       HoverInfo: {
         lat: null,
@@ -194,15 +191,22 @@ export default {
     },
   },
   created() {
-    //备份model原始值
+    //备份model原始值address
     this.modelDefault = JSON.parse(JSON.stringify(this.model));
+    // this.$nextTick(() => {
+    //   this.initMapByJQ()
+    // })
   },
   mounted() {
-    this.initMap();
+    // this.initMap();
+    this.initMapByJQ();
   },
   methods: {
     add() {
-      this.edit(this.modelDefault);
+      // this.edit(this.modelDefault);
+      this.model = {
+        status: 1,
+      };
     },
     edit(record) {
       this.model = Object.assign({}, record);
@@ -275,84 +279,47 @@ export default {
     //=====================================================
     //以下是腾讯地图的方法
     //位置信息在地图上展示
-    setMapData() {
-      var myLatlng = new qq.maps.LatLng(this.position.latitude, this.position.longitude);
-      var myOptions = {
-        zoom: 11,
-        center: myLatlng,
-        mapTypeId: qq.maps.MapTypeId.ROADMAP
-      }
-      //获取dom元素添加地图信息
-      map = new qq.maps.Map(document.getElementById("container"), myOptions)
-      //给定位的位置添加图片标注
-      marker = new qq.maps.Marker({
-        position: myLatlng,
-        map: map,
-        draggable: true //允许鼠标拖动
-      })
-    },
-    initMap01() {
-      var myLatlng = new window.qq.maps.LatLng(24.500646, 118.126990);
-      var myOptions = {
-        zoom: 12,
-        center: myLatlng,
-      }
-      let map = new qq.maps.Map(document.getElementById("tencentMapBox"), myOptions);
-      //给定位的位置添加图片标注
-      marker = new qq.maps.Marker({
-        position: myLatlng,
-        map: map,
-        draggable: true //允许鼠标拖动
+    //js直接改造的方法
+    initMapByJQ(){
+      let _this = this;
+
+      let center = new TMap.LatLng(24.500646, 118.126990);//设置中心点坐标(厦门sm)
+      //初始化地图
+      this.map = new TMap.Map("tencentMapBox", {
+        pitch: 30, //设置俯仰角度（0~45）
+        zoom: 14,//设置地图缩放级别
+        center: center //设置地图中心点坐标
       });
-      this.mouseClick();
-    },
-    //鼠标点击地图，获得相应位置信息
-    mouseClick() {
-      const _this = this;
-      qq.maps.event.addListener(map, 'click', function (event) {
-        if (!marker) {
-          new qq.maps.Marker({
-            position: event.latLng,
-            map: map
-          })
-          return
-        }
-        marker.setPosition(event.latLng);
-        _this.position.latitude = event.latLng.getLat();
-        _this.position.longitude = event.latLng.getLng();
-        console.log(this.position);
-      })
-    },
-    initMap02() {
-      this.temp = document.getElementById('tencentMapBox');
-      // const config = {
-      //   viewMode: '2D'
-      // };
-      // const option = Object.assign(this.option, config)
-
-      this.map = new qq.maps.Map(this.temp, this.option);
-
-      window.qq.maps.event.addListener(this.map, 'click', function (event) {
-        this.position.latitude = event.latLng.getLat();
-        this.position.latitude = this.model.lat;
-        this.position.longitude = event.latLng.getLng();
-        this.position.longitude = this.model.log;
-        // console.log(this.position);
-      })
-
-      // this.initMarkerLayer();
-    },
-    initMarkerLayer() {
-      // 监听点击事件添加marker
-      new TMap.MultiMarker({
+      //初始化marker图层
+      _this.markerLayer = new TMap.MultiMarker({
         id: 'marker-layer',
-        styles: {
-          'highlight': new TMap.MarkerStyle({
-            'src': 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/marker-pink.png'
-          })
-        },
         map: this.map
+      });
+
+      //绑定点击事件
+      this.map.on('click', function (evt) {
+        //修改标记
+        _this.markerLayer.updateGeometries([
+          {
+            "styleId": "marker",
+            "id": "1",
+            "position": evt.latLng,
+          }
+        ])
+
+        //经纬度赋值给input框
+        var lat = evt.latLng.getLat().toFixed(6);
+        var lng = evt.latLng.getLng().toFixed(6);
+        $('#c-lng').val(lng);
+        this.model.log = lng;
+        $('#c-lat').val(lat);
+        this.model.lat = lat
+
       })
+
+
+
+
     },
     initMap() {
       let me = this;
@@ -400,18 +367,27 @@ export default {
         $.ajax({
           type: "get",
           async: false,
-          url: url,
+          url: "https://apis.map.qq.com/ws/geocoder/v1",
+          data: {
+            location: e.latLng.getLat() + "," + e.latLng.getLng(),
+            key: '4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U',
+            get_poi: 1,
+            output: "jsonp"
+          },
           dataType: "jsonp",
-          jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-          jsonpCallback:"?",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-          success: function(json){
+          //jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+          //jsonpCallback:"?",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
+          success: function(res){
             console.log(res);
-            if (res.status == 0) {
-              me.mapAddress = res.result != undefined ? res.result.address : "";
-              me.mapLatLng =
-                res.result != undefined
-                  ? [res.result.location.lat, res.result.location.lng]
-                  : null;
+            if (res.status === 0) {
+              me.model.address = res.result !== undefined ? res.result.address : "";
+              $("c-address").val(res.result !== undefined ? res.result.address : "");
+              me.model.log = res.result !== undefined ? res.result.location.lng: null;
+              me.model.lat = res.result !== undefined ? res.result.location.lat: null;
+              // me.mapLatLng =
+              //   res.result != undefined
+              //     ? [res.result.location.lat, res.result.location.lng]
+              //     : null;
             }
           },
           error: function(){
@@ -419,35 +395,6 @@ export default {
           }
         })
 
-        // httpAction(url, null, "get").then((res) => {
-        //   console.log(res);
-        //   if (res.status == 0) {
-        //     me.mapAddress = res.result != undefined ? res.result.address : "";
-        //     me.mapLatLng =
-        //       res.result != undefined
-        //         ? [res.result.location.lat, res.result.location.lng]
-        //         : null;
-        //   }
-        // });
-
-        // me.$jsonp(
-        //   "http://apis.map.qq.com/ws/geocoder/v1/?location=" +
-        //   e.latLng.getLat() +
-        //   "," +
-        //   e.latLng.getLng() +
-        //   "&key=" +
-        //   me.mapKey +
-        //   "&output=jsonp&callback=?"
-        // ).then((res) => {
-        //   console.log(res);
-        //   if (res.status == 0) {
-        //     me.mapAddress = res.result != undefined ? res.result.address : "";
-        //     me.mapLatLng =
-        //       res.result != undefined
-        //         ? [res.result.location.lat, res.result.location.lng]
-        //         : null;
-        //   }
-        // });
       });
     },
     initcityService() {
