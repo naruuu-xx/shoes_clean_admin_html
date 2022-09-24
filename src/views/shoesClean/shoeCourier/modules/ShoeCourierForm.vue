@@ -136,7 +136,7 @@
               { required: true, message: '请选择 状态'},
            ],
            delFlag: [
-              { required: true, message: '请输入 删除状态:0=正常,1=删除!'},
+              { required: true, message: '请选择 删除状态!'},
            ],
           lockerId: [
               { required: true, message: '请选择快递柜!'},
@@ -171,7 +171,10 @@
         }
       },
       add () {
-        this.edit(this.modelDefault);
+        // this.edit(this.modelDefault);
+        this.model = {
+          status: 1
+        }
       },
       edit (record) {
         this.model = Object.assign({}, record);
