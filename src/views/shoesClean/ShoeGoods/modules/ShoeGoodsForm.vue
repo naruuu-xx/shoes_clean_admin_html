@@ -15,78 +15,122 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商品规格">
-              <!--                <a-button class="editable-add-btn" @click="handleAdd">-->
-              <!--                  添加-->
-              <!--                </a-button>-->
-              <!--                <a-table bordered :data-source="dataSource" :columns="columns" >-->
-              <!--                  <template slot="skuTitle" slot-scope="text, record, index" prop="skuTitle">-->
-              <!--                    <editable-cell :text="text" @change="onCellChange(record.key, 'skuTitle', $event)" v-model="record.skuTitle" />-->
-              <!--                  </template>-->
-              <!--                  <template slot="price" slot-scope="text, record,index" prop="price">-->
-              <!--                    <editable-cell :text="text" @change="onCellChange(record.key, 'price',$event)" v-model="record.price"/>-->
-              <!--                  </template>-->
-              <!--                  <template slot="operation" slot-scope="text, record">-->
-              <!--                    <a-popconfirm-->
-              <!--                      v-if="dataSource.length"-->
-              <!--                      title="确定要删除该规格么?"-->
-              <!--                      @confirm="() => onDelete(record.key)"-->
-              <!--                    >-->
-              <!--                      <a href="javascript:;">删除</a>-->
-              <!--                    </a-popconfirm>-->
-              <!--                  </template>-->
-              <!--                </a-table>-->
+<!--              <a-table :columns="columns" :data-source="data" bordered>-->
+<!--                <template-->
+<!--                  v-for="col in ['skuTitle',  'price']"-->
+<!--                  :slot="col"-->
+<!--                  slot-scope="text, record, index"-->
+<!--                  v-for="(item,idx) in model.skuTable"-->
+<!--                >-->
+<!--                  <div :key="col" >-->
+<!--                    <a-input-->
+<!--                      v-if="col == 'skuTitle'"-->
+<!--                      v-model="model.skuTable[idx].skuTitle"-->
+<!--                      :value="text"-->
+<!--                      placeholder="请输入名称"-->
+<!--                      style="margin: -5px 0"-->
 
-              <a-table :columns="columns" :data-source="data" bordered>
-                <template
-                  v-for="col in ['skuTitle',  'price']"
-                  :slot="col"
-                  slot-scope="text, record, index"
-                >
-                  <div :key="col" >
-                    <a-input
-                      v-if="col == 'skuTitle'"
-                      v-model="data[index].skuTitle"
-                      :value="text"
-                      placeholder="请输入名称"
-                      style="margin: -5px 0"
+<!--                    />-->
+<!--                    <a-input-->
+<!--                      v-if="col == 'price'"-->
+<!--                      v-model="model.skuTable[idx].price"-->
+<!--                      :value="text"-->
+<!--                      placeholder="请输入价格"-->
+<!--                      style="margin: -5px 0"-->
 
-                    />
-                    <a-input
-                      v-if="col == 'price'"
-                      v-model="data[index].price"
-                      :value="text"
-                      placeholder="请输入价格"
-                      style="margin: -5px 0"
+<!--                    />-->
+<!--                  </div>-->
+<!--                </template>-->
+<!--                <template slot="operation" slot-scope="text, record, index">-->
+<!--                  <div class="editable-row-operations">-->
+<!--        <span>-->
+<!--          <a-button-->
+<!--            icon="plus"-->
+<!--            shape="circle"-->
+<!--            type="primary"-->
+<!--            @click="() => addItem(record.key)"-->
+<!--          />-->
+<!--          <a-button-->
+<!--            icon="minus"-->
+<!--            shape="circle"-->
+<!--            type="primary"-->
+<!--            @click="() => deleteItem(record.key)"-->
+<!--          />-->
+<!--        </span>-->
+<!--                  </div>-->
+<!--                </template>-->
+<!--              </a-table>-->
 
-                    />
-                    <!-- <template v-else>
-                      {{ text }}
-                    </template> -->
-                  </div>
+<!--              <a-table :columns="columns" :data-source="data" bordered>-->
+<!--                <template-->
+<!--                  v-for="(item, idx) in model.skuTable"-->
+
+<!--                  slot-scope="text, record, index"-->
+
+<!--                >-->
+<!--                  <div >-->
+<!--                    <a-input-->
+<!--                      v-model="model.skuTable[idx].skuTitle"-->
+<!--                      :value="text"-->
+<!--                      placeholder="请输入名称"-->
+<!--                      style="margin: -5px 0"-->
+<!--                    />-->
+<!--                    <a-input-->
+<!--                      v-model="model.skuTable[idx].price"-->
+<!--                      :value="text"-->
+<!--                      placeholder="请输入价格"-->
+<!--                      style="margin: -5px 0"-->
+<!--                    />-->
+<!--                  </div>-->
+<!--                </template>-->
+<!--                <template slot="operation" slot-scope="text, record, index">-->
+<!--                  <div class="editable-row-operations">-->
+<!--        <span>-->
+<!--          <a-button-->
+<!--            icon="plus"-->
+<!--            shape="circle"-->
+<!--            type="primary"-->
+<!--            @click="() => addItem(record.key)"-->
+<!--          />-->
+<!--          <a-button-->
+<!--            icon="minus"-->
+<!--            shape="circle"-->
+<!--            type="primary"-->
+<!--            @click="() => deleteItem(record.key)"-->
+<!--          />-->
+<!--        </span>-->
+<!--                  </div>-->
+<!--                </template>-->
+<!--              </a-table>-->
+              <a-button class="editable-add-btn" @click="handleAdd">
+                Add
+              </a-button>
+              <a-table bordered :data-source="model.skuTable" :columns="columns"
+                        prop="skuTable">
+                <template slot="skuTitle" slot-scope="text,index, record" prop="skuTitle">
+                  <editable-cell :text="text" @change="onCellChange(record, 'skuTitle', $event)" />
                 </template>
-                <template slot="operation" slot-scope="text, record, index">
-                  <div class="editable-row-operations">
-        <span>
-          <a-button
-            icon="plus"
-            shape="circle"
-            type="primary"
-            @click="() => addItem(record.key)"
-          />
-          <a-button
-            icon="minus"
-            shape="circle"
-            type="primary"
-            @click="() => deleteItem(record.key)"
-          />
-        </span>
-                  </div>
+                <template slot = "price" slot-scope="text,index, record" prop="price">
+                  <editable-cell :text="text" @change="onCellChange(record,'price',$event)" />
+                </template>
+                <template slot="operation" slot-scope="text, record">
+                  <a-popconfirm
+                    title="Sure to delete?"
+                    @confirm="() => onDelete(record)"
+                  >
+                    <a href="javascript:;">Delete</a>
+                  </a-popconfirm>
                 </template>
               </a-table>
 
 
             </a-form-model-item>
           </a-col>
+
+<!--          <div>-->
+<!--               {{model.skuTable[0].price}}-->
+<!--          </div>-->
+
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="主图" prop="images">
@@ -129,91 +173,82 @@
 </template>
 
 <script>
-import { httpAction } from '@/api/manage'
+import { getAction, httpAction } from '@/api/manage'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import { mixinDevice } from '@/utils/mixin'
+import signMd5Utils from '@/utils/encryption/signMd5Utils'
+import { axios } from '@/utils/request'
 
-//
-// const EditableCell = {
-//   template: `
-//     <div class="editable-cell">
-//     <div v-if="editable" class="editable-cell-input-wrapper">
-//       <a-input :value="value" @change="handleChange" @pressEnter="check"  @input="inputChange" /><a-icon
-//       type="check"
-//       class="editable-cell-icon-check"
-//       @click="check"
-//     />
-//     </div>
-//     <div v-else class="editable-cell-text-wrapper">
-//       {{ value || ' ' }}
-//       <a-icon type="edit" class="editable-cell-icon" @click="edit" />
-//     </div>
-//     </div>
-//   `,
-//   props: {
-//     text: String,
-//   },
-//   model: {
-//     prop: "value", //绑定的值，通过父组件传递
-//     event: "input" //自定义时间名
-//   },
-//   data() {
-//     return {
-//       value: this.text,
-//       editable: false,
-//     };
-//   },
-//   methods: {
-//
-//     handleChange(e) {
-//       const value = e.target.value;
-//       this.value = value;
-//     },
-//     inputChange(e){
-//         this.$emit("input", e.target.value);
-//     },
-//     check() {
-//       this.editable = false;
-//       this.$emit('change', this.value);
-//     },
-//     edit() {
-//       this.editable = true;
-//     },
-//   },
-// };
 
-// const columns = [
-//   {
-//     title: '规格名称',
-//     dataIndex: 'skuTitle',
-//     scopedSlots: { customRender: 'skuTitle' },
-//   },
-//   {
-//     title: '价格',
-//     dataIndex: 'price',
-//     scopedSlots: { customRender: 'price' },
-//
-//   },
-//   {
-//     title: 'operation',
-//     dataIndex: 'operation',
-//     scopedSlots: { customRender: 'operation' },
-//   },
-// ]
+const EditableCell = {
+  template: `
+    <div class="editable-cell">
+    <div v-if="editable" class="editable-cell-input-wrapper">
 
-const data = []
-data.push({
-  key: data.length,
-  skuTitle: '',
-  price: '',
-})
+      <a-input :value="value" @change="handleChange" @pressEnter="check" @input="inputChange"/>
+      <a-icon
+        type="check"
+        class="editable-cell-icon-check"
+        @click="check"
+      />
+    </div>
+    <div v-else class="editable-cell-text-wrapper">
+      {{ value || ' ' }}
+      <a-icon type="edit" class="editable-cell-icon" @click="edit"/>
+    </div>
+    </div>
+  `,
+  props: {
+    text: String | Number,
+  },
+  model: {
+    prop: "value",
+    event: "input",
+  },
+  data() {
+    return {
+      value: this.text,
+      editable: false,
+    };
+  },
+  methods: {
+
+    handleChange(e) {
+      const value = e.target.value;
+      this.value = value;
+    },
+    inputChange(e){
+
+
+        this.$emit("input", e.target.value);
+    },
+    check() {
+      this.editable = false;
+      this.$emit('change', this.value);
+    },
+    edit() {
+      this.editable = true;
+    },
+  },
+};
+
+
+
+
+// for(let i in model.skuTable){
+//   data.push(model.skuTable[i]);
+// }
+
+
+
 export default {
   name: 'ShoeGoodsForm',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
-    // EditableCell,
+    EditableCell,
   },
   props: {
+
     //表单禁用
     disabled: {
       type: Boolean,
@@ -222,13 +257,15 @@ export default {
     }
   },
   data() {
-    this.cacheData = data.map(item => ({ ...item }))
+
     return {
       key: 0,
-      data,
+
       editingKey: '',
 
-      model: {},
+      model: {
+        skuTable:[],
+      },
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 },
@@ -262,11 +299,15 @@ export default {
         ],
       },
       url: {
+        list: "/shoes/shoeGoodsSku/list",
         add: '/shoes/shoeGoods/add',
         edit: '/shoes/shoeGoods/edit',
         queryById: '/shoes/shoeGoods/queryById'
       },
-      typeList: [],
+
+
+      count:0,
+
       columns : [
         {
           title: '规格名称',
@@ -284,117 +325,136 @@ export default {
           dataIndex: 'operation',
           scopedSlots: { customRender: 'operation' },
         },
-      ]
-      // columns: [
-      //   {
-      //   title: '产品名称',
-      //   align:"center",
-      //   dataIndex: 'skuTitle',
-      //     scopedSlots: { customRender: 'skuTitle' },
-      //
-      //
-      // },
-      //   {
-      //     title: '价格',
-      //     align: "center",
-      //     dataIndex: "price",
-      //     scopedSlots: { customRender: 'price' },
-      //
-      //   },
-      //   {
-      //     title: '操作',
-      //     dataIndex: 'operation',
-      //     scopedSlots: { customRender: 'operation' },
-      //   },
-      //
-      // ],
-      // count:0,
+      ],
+
+
 
     }
   },
   computed: {
+
     formDisabled() {
       return this.disabled
     },
   },
   created() {
-    this.getTypeList()
     //备份model原始值
-    this.model.type = 'repair'
+    //  this.loadData(this.model.goodsId);
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
+
   },
   methods: {
 
-    matchState(state = '', reg) {
-      return !!String(state).match(reg)//返回true/false
-    },
-
-    addItem(key) {
-      console.log(key)
-      this.data.splice(key + 1, 0, {
-        key: '',
-        skuTitle: '',
-        price: '',
-      })
-      this.data.forEach((item, index) => {
-        item.key = index
-      })
-      // alert('所有的数据直接收集到data里面了，查看vue工具可以看收集的数据，给后台传参数的时候把这个数据处理一下，转换为后台需要的格式')
-    },
-    deleteItem(key) {
-      console.log(key)
-      if (this.data.length === 1) {
-        return
-      }
-      this.data.splice(key, 1)
-      this.data.forEach((item, index) => {
-        item.key = index
-      })
-    },
-
-    // onCellChange(key, dataIndex, value) {
-    //   const dataSource = [...this.dataSource];
-    //
-    //   const target = dataSource.find(item => item.key === key);
-    //   if (target) {
-    //     target[dataIndex] = value;
-    //     this.dataSource = dataSource;
+    // loadData(goodsId) {
+    //   if(!this.url.list){
+    //     this.$message.error("请设置url.list属性!")
+    //     return
     //   }
-    // },
-    // onDelete(key) {
-    //   console.log("这是key："+key);
-    //   const dataSource = [...this.dataSource];
-    //   console.log(dataSource);
-    //   this.dataSource = dataSource.filter(item => item.key !== key);
-    // },
-    // handleAdd() {
-    //   const { count, dataSource } = this;
-    //   const newData = [
-    //     {
-    //       key: count,
-    //       skuTitle: '',
-    //       price:'',
+    //  // var params = this.getQueryParams();//查询条件
+    //   this.loading = true;
+    //   console.log(typeof goodsId);
+    //   const params = {goodsId: goodsId,};
+    //
+    //   getAction(this.url.list,params).then((res) => {
+    //     if (res.success) {
+    //       //update-begin---author:zhangyafei    Date:20201118  for：适配不分页的数据列表------------
+    //           // console.log(res);
+    //       this.dataSource = res.result.records||res.result;
+    //       console.log("datasorce :       "+this.dataSource);
+    //       if(res.result.total)
+    //       {
+    //         this.ipagination.total = res.result.total;
+    //       }else{
+    //         this.ipagination.total = 0;
+    //       }
+    //       //update-end---author:zhangyafei    Date:20201118  for：适配不分页的数据列表------------
+    //     }else{
+    //       this.$message.warning(res.message)
     //     }
-    //   ];
-    //   this.dataSource = [...dataSource, newData];
-    //   this.count = count + 1;
+    //   }).finally(() => {
+    //     this.loading = false
+    //   })
     // },
+
+    // addItem(record){
+    //   console.log(record)
+    //   const len = record.skuTable.length;
+    //   record.skuTable.splice(len+1, 0,{
+    //     skuTitle:'',
+    //     price:'',
+    //   })
+    // },
+    //
+
+
+    // deleteItem(record){
+    //   if(record.skuTable.length == 1){
+    //     return
+    //   }
+    //   const len = record.skuTable.length;
+    //   record.skuTable.splice(len,1)
+    // },
+
+    exceptSkuId(value){
+      if(value.key !== null){
+        return value.key !== value
+      }
+    },
+
+    onCellChange(record, dataIndex, value) {
+
+
+      const dataSource = [... this.model.skuTable];
+      console.log(dataSource[record])
+
+      const target = dataSource[record];
+      if (target) {
+        target[dataIndex] = value;
+        this.model.skuTable = dataSource;
+      }
+    },
+    onDelete(record) {
+      /**
+       * 删除存在有bug，待修复。
+       * @type {*[]}
+       */
+      const dataSource = [...this.model.skuTable];
+      record.delFLag = 1;
+      this.model.skuTable = dataSource.filter(item => item.skuId !== record.skuId);
+
+    },
+    handleAdd() {
+
+      const dataSource  = this.model.skuTable;
+
+
+      let skuids=  [];
+      let count = 0;
+
+      const newData = {
+        skuId : count ,
+        skuTitle: '',
+        price:'',
+      };
+      this.model.skuTable = [...dataSource, newData];
+      this.count = count + 1;
+      console.log(this.model.skuTable);
+
+    },
+
 
     add() {
-      this.modelDefault.type = 'repair'
       this.edit(this.modelDefault)
     },
     edit(record) {
-      console.log('123')
-      console.log(record);
-      // this.model = Object.assign({}, record)
-      // this.model.skuTable = this.data
-      // this.visible = true
+     // this.loadData(record.goodsId);
+     //
+      this.model = Object.assign({}, record)
+      this.visible = true
     },
     submitForm() {
       const that = this
-      console.log(that.model.skuTitle)
-      console.log(this.data)
+      console.log(this.model)
       // 触发表单验证
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -421,14 +481,7 @@ export default {
         }
 
       })
-    },
-    getTypeList() {
-      httpAction('/shoes/shoeGoods/typeList', null, 'get').then((res) => {
-        if (res.success) {
-          this.typeList = res.result
 
-        }
-      })
     },
 
   },

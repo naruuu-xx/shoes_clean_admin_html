@@ -77,6 +77,7 @@
 
     methods: {
       show (phone) {
+
         this.form.resetFields();
         this.visible = true;
         this.model.phone = phone;
