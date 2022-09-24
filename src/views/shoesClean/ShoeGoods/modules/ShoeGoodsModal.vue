@@ -36,6 +36,8 @@
         })
       },
       edit (record) {
+
+        console.log("edit.."+record)
         this.visible=true
         this.$nextTick(()=>{
           this.$refs.realForm.edit(record);

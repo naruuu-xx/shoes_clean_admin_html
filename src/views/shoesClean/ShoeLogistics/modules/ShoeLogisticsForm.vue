@@ -69,7 +69,7 @@
       return {
         confirmDirty: false,
         model:{
-            status:[1,0],
+          status:[1,0],
           password:'',
           lockerId:'',
           lockerCode:'',
@@ -126,6 +126,7 @@
       },
       edit (record) {
         // record.lockerId = this.model.lockerId;
+        console.log(record);
         console.log("codeId     :"+record.lockerId);
         this.model = Object.assign({}, record);
         this.model.lockerId = record.lockerId.toString();
