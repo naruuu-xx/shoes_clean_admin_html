@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="机柜编码">
-              <a-input placeholder="请输入机柜编码" v-model="queryParam.lockerCode"></a-input>
+              <a-input placeholder="请输入机柜编码" v-model="queryParam.lockerCode" autocomplete="off"></a-input>
             </a-form-item>
           </a-col>
 <!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
@@ -230,11 +230,11 @@
             align:"center",
             dataIndex: 'lat'
           },
-          {
-            title:'添加时间',
-            align:"center",
-            dataIndex: 'createTime'
-          },
+          // {
+          //   title:'添加时间',
+          //   align:"center",
+          //   dataIndex: 'createTime'
+          // },
           {
             title:'格子数',
             align:"center",
