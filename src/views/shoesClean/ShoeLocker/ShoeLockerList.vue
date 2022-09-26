@@ -223,12 +223,12 @@
           {
             title:'经度',
             align:"center",
-            dataIndex: 'log'
+            dataIndex: 'longitude'
           },
           {
             title:'纬度',
             align:"center",
-            dataIndex: 'lat'
+            dataIndex: 'latitude'
           },
           // {
           //   title:'添加时间',
