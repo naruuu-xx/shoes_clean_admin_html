@@ -43,14 +43,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="log">
-              <a-input-number v-model="model.log" placeholder="请输入经度" style="width: 100%" id="c-lng" disabled="true"/>
-<!--              <input v-model="model.log" style="width: 100%; height: 40px;border: 5px solid #ffffff;" placeholder="请输入经度" id="c-lng"/>-->
+            <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="longitude">
+              <a-input-number v-model="model.longitude" placeholder="请输入经度" style="width: 100%" id="c-lng" disabled="true"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lat">
-              <a-input-number v-model="model.lat" placeholder="请输入纬度" style="width: 100%" id="c-lat" disabled="true"/>
+            <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="latitude">
+              <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat" disabled="true"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -72,11 +71,11 @@
               </a-col>
             </a-row>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
-              <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 100%"  autocomplete="off"/>
-            </a-form-model-item>
-          </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">-->
+<!--              <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 100%"  autocomplete="off"/>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
           <!--          <a-col :span="24">-->
           <!--            <a-form-model-item label="空闲格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="free">-->
           <!--              <a-input-number v-model="model.free" placeholder="请输入空闲格子数" style="width: 100%" />-->
@@ -135,11 +134,11 @@ export default {
         status: [
           {required: true, message: '请选择状态'},
         ],
-        log: [
+        longitude: [
           {required: true, message: '请输入经度!'},
           {pattern: /^-?\d+\.?\d*$/, message: '请输入数字!'},
         ],
-        lat: [
+        latitude: [
           {required: true, message: '请输入纬度!'},
           {pattern: /^-?\d+\.?\d*$/, message: '请输入数字!'},
         ],
@@ -182,10 +181,7 @@ export default {
       //markerLayer: [],
       markerLayer: '',
       markIsHover: false,
-      HoverInfo: {
-        lat: null,
-        lng: null
-      },
+
       mapKey: "4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U",
       mapLatLng: null,
       mapCity: "",
@@ -209,13 +205,8 @@ export default {
   created() {
     //备份model原始值address
     this.modelDefault = JSON.parse(JSON.stringify(this.model));
-    // this.$nextTick(() => {
-    //   this.initMapByJQ()
-    // })
   },
   mounted() {
-    // this.initMap();
-    // this.initMapByJQ();
   },
   methods: {
     add() {
@@ -229,22 +220,20 @@ export default {
         zoom: 12, // 设置地图缩放级别
         mapTypeId: qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
       };
-      // this.initMap();
       this.initMapByJQ(24.500646, 118.126990);
     },
     edit(record) {
       this.model = Object.assign({}, record);
       this.model.orgCode = record.orgCode + "";
       this.model.departName = record.departName;
-      let center = new qq.maps.LatLng(record.lat, record.log);// 设置地图中心点坐标
+      let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
       this.option = {
           center: center,// 设置地图中心点坐标
           zoom: 16, // 设置地图缩放级别
           mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
       };
       this.visible = true;
-      // this.initMap();
-      this.initMapByJQ(record.lat, record.log);
+      this.initMapByJQ(record.latitude, record.longitude);
     },
     submitForm() {
       const that = this;
@@ -276,8 +265,8 @@ export default {
             "city": this.model.city,
             "area": this.model.area,
             "address": this.model.address,
-            "log": this.model.log,
-            "lat": this.model.lat,
+            "longitude": this.model.longitude,
+            "latitude": this.model.latitude,
             "num": this.model.num
           }
 
@@ -330,7 +319,7 @@ export default {
           {
             "styleId": "marker",
             "id": "1",
-            "position": new TMap.LatLng(this.model.lat, this.model.log)
+            "position": new TMap.LatLng(this.model.latitude, this.model.longitude)
           }
         ])
       }
@@ -350,15 +339,10 @@ export default {
         var lat = evt.latLng.getLat().toFixed(6);
         var lng = evt.latLng.getLng().toFixed(6);
         // $('#c-lng').val(lng);
-        // _this.model.log = lng;
+        // _this.model.longitude = lng;
         // $('#c-lat').val(lat);
-        // _this.model.lat = lat
+        // _this.model.latitude = lat
         // $('#c-address').val()
-
-        let model1 = {
-          log: lng,
-          lat: lat
-        }
 
         $.ajax({
           type: "get",
@@ -382,10 +366,10 @@ export default {
               _this.model.address = address;
               $("#c-address").val(address);
 
-              _this.model.log = lng;
+              _this.model.longitude = lng;
               $('#c-lng').val(lng);
 
-              _this.model.lat = lat;
+              _this.model.latitude = lat;
               $('#c-lat').val(lat);
 
               _this.model.province = res.result.address_component.province !== undefined ? res.result.address_component.province : "";
@@ -427,10 +411,10 @@ export default {
       this.model.address = obj.address;
       $("#c-address").val(obj.address);
 
-      this.model.log = lng;
+      this.model.longitude = lng;
       $('#c-lng').val(lng);
 
-      this.model.lat = lat;
+      this.model.latitude = lat;
       $('#c-lat').val(lat);
 
       this.model.province = obj.ad_info.province;
@@ -446,369 +430,6 @@ export default {
       ])
       this.map.setCenter(new TMap.LatLng(lat, lng))
     },
-    initMap() {
-      let me = this;
-      //初始化地图
-      let mapContainer = document.getElementById("tencentMapBox");
-      this.map = new window.qq.maps.Map(mapContainer, this.option);
-
-      //创建label
-      this.mapLabel = new window.qq.maps.Label({
-        map: this.map,
-        offset: new window.qq.maps.Size(15, -12),
-        draggable: false,
-        clickable: false,
-      })
-
-      this.map.setOptions({
-        draggableCursor: "crosshair",
-      })
-
-      mapContainer.addEventListener("mouseenter", function (e) {
-        me.mapLabel.setMap(me.map);
-      });
-      mapContainer.addEventListener("mouseleave", function (e) {
-        me.mapLabel.setMap(null);
-      });
-
-      window.qq.maps.event.addListener(this.map, "mousemove", function (e) {
-        var latlng = e.latLng;
-        me.mapLabel.setPosition(latlng);
-        me.mapLabel.setContent(
-          latlng.getLat().toFixed(6) + "," + latlng.getLng().toFixed(6)
-        );
-      });
-
-      if (this.mapLatLng != null) {
-        this.locationService();
-      } else {
-        this.initcityService();
-      }
-      let marker = null;
-      //点击获取地址
-      window.qq.maps.event.addListener(this.map, "click", function (e) {
-        marker = new window.qq.maps.Marker({
-          map: this.map,
-          position: e.latLng
-        })
-
-        $.ajax({
-          type: "get",
-          async: false,
-          url: "https://apis.map.qq.com/ws/geocoder/v1",
-          data: {
-            location: e.latLng.getLat() + "," + e.latLng.getLng(),
-            key: '4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U',
-            get_poi: 1,
-            output: "jsonp"
-          },
-          dataType: "jsonp",
-          //jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-          //jsonpCallback:"?",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-          success: function(res){
-            console.log(res);
-            if (res.status === 0) {
-              let address = res.result !== undefined ? res.result.address : "";
-              let lng = res.result !== undefined ? res.result.location.lng: null;
-              let lat = res.result !== undefined ? res.result.location.lat: null;
-
-              me.model.address = address;
-              $("#c-address").val(address);
-
-              me.model.log = lng;
-              $('#c-lng').val(lng);
-
-              me.model.lat = lat;
-              $('#c-lat').val(lat);
-
-              me.model.province = res.result.address_component.province !== undefined ? res.result.address_component.province : "";
-              me.model.city = res.result.address_component.city !== undefined ? res.result.address_component.city : "";
-              me.model.area = res.result.address_component.district !== undefined ? res.result.address_component.district : "";
-
-              // me.mapLatLng =
-              //   res.result != undefined
-              //     ? [res.result.location.lat, res.result.location.lng]
-              //     : null;
-            }
-          },
-          error: function(){
-            //  alert('fail');
-          }
-        })
-      });
-      new window.qq.maps.Geocoder({
-        complete: function (result) {
-          console.log(result);
-        }
-      })
-    },
-    initcityService() {
-      let me = this;
-      //当位定前位置
-      let cityService = new window.qq.maps.CityService({
-        complete: function (result) {
-          console.log(result);
-          me.map.setCenter(result.detail.latLng);
-          me.mapCity = result.detail.name;
-        },
-      });
-      cityService.searchLocalCity();
-    },
-    //按坐标获取位置信息
-    locationService() {
-      let me = this;
-
-      let url = "https://apis.map.qq.com/ws/geocoder/v1/?location=" + this.mapLatLng[0] + "," + this.mapLatLng[1] + "&key=" + this.mapKey + "&output=jsonp&callback=?"
-      httpAction(url, null, "get").then((res) => {
-        if (res.status == 0 && res.result) {
-          let center = new window.qq.maps.LatLng(
-            this.mapLatLng[0],
-            this.mapLatLng[1]
-          );
-          this.map.panTo(center);
-          let marker = new window.qq.maps.Marker({
-            position: center,
-            map: this.map,
-          });
-          me.mapAddress = res.result.address;
-          me.mapCity = res.result.address_component.city;
-        }
-      });
-
-      // this.$jsonp(
-      //   "http://apis.map.qq.com/ws/geocoder/v1/?location=" +
-      //   this.mapLatLng[0] +
-      //   "," +
-      //   this.mapLatLng[1] +
-      //   "&key=" +
-      //   this.mapKey +
-      //   "&output=jsonp&callback=?"
-      // ).then((res) => {
-      //   if (res.status == 0 && res.result) {
-      //     let center = new window.qq.maps.LatLng(
-      //       this.mapLatLng[0],
-      //       this.mapLatLng[1]
-      //     );
-      //     this.map.panTo(center);
-      //     let marker = new window.qq.maps.Marker({
-      //       position: center,
-      //       map: this.map,
-      //     });
-      //     me.mapAddress = res.result.address;
-      //     me.mapCity = res.result.address_component.city;
-      //   }
-      // });
-    },
-    //查询地址信息
-    handleSearch() {
-      if (!util.isNullEmpty(this.searchForm.key)) {
-        let url = "https://apis.map.qq.com/ws/place/v1/search?keyword=" + this.searchForm.key + "&boundary=region(" + this.mapCity + ",0)&page_size=9&page_index=1&key=" + this.mapKey + "&output=jsonp&&callback=?"
-
-        httpAction(url, null, "get").then((res) => {
-          console.log(res);
-          if (res.status == 0) {
-            res.data.map((item, index) => {
-              item.id = "mapItem" + index;
-              item.active = false;
-              item.hover = false;
-              return item;
-            });
-            this.addressList = res.data;
-            this.setMarker(res);
-            this.map.setZoom(14);
-          }
-        });
-
-        // this.$jsonp(
-        //   "http://apis.map.qq.com/ws/place/v1/search?keyword=" +
-        //   this.searchForm.key +
-        //   "&boundary=region(" +
-        //   this.mapCity +
-        //   ",0)&page_size=9&page_index=1&key=" +
-        //   this.mapKey +
-        //   "&output=jsonp&&callback=?"
-        // ).then((res) => {
-        //   console.log(res);
-        //   if (res.status == 0) {
-        //     res.data.map((item, index) => {
-        //       item.id = "mapItem" + index;
-        //       item.active = false;
-        //       item.hover = false;
-        //       return item;
-        //     });
-        //     this.addressList = res.data;
-        //     this.setMarker(res);
-        //     this.map.setZoom(14);
-        //   }
-        // });
-      } else {
-        this.addressList = [];
-
-        let url = "https://apis.map.qq.com/ws/geocoder/v1/?region=" + this.mapCity + "&address=" + this.mapCity + "&key=" + this.mapKey + "&output=jsonp&&callback=?"
-
-        httpAction(url, null, "get").then((res) => {
-          if (res.status == 0) {
-            this.map.setCenter(
-              new window.qq.maps.LatLng(
-                res.result.location.lat,
-                res.result.location.lng
-              )
-            );
-            this.map.setZoom(14);
-          }
-        });
-
-        // this.$jsonp(
-        //   "http://apis.map.qq.com/ws/geocoder/v1/?region=" +
-        //   this.mapCity +
-        //   "&address=" +
-        //   this.mapCity +
-        //   "&key=" +
-        //   this.mapKey +
-        //   "&output=jsonp&&callback=?"
-        // ).then((res) => {
-        //   if (res.status == 0) {
-        //     this.map.setCenter(
-        //       new window.qq.maps.LatLng(
-        //         res.result.location.lat,
-        //         res.result.location.lng
-        //       )
-        //     );
-        //     this.map.setZoom(14);
-        //   }
-        // });
-      }
-    },
-    setMarker(res) {
-      //设置Marker
-      let me = this;
-      let latlngBounds = new window.qq.maps.LatLngBounds();
-      //删除Marker
-      this.markerList.forEach((item) => {
-        item.setMap(null);
-      });
-      //删除Marker事件
-      this.markerEventList.forEach((item) => {
-        window.qq.maps.event.removeListener(item);
-      });
-
-      this.markerEventList = [];
-      this.markerList = [];
-      // res.result.forEach((item, index) => {
-        let latlng = new window.qq.maps.LatLng(
-          res.result.location.lat,
-          res.result.location.lng
-        );
-        latlngBounds.extend(latlng);
-        //创建Marker
-        let marker = new window.qq.maps.Marker({
-          map: this.map,
-          position: latlng,
-          zIndex: 10,
-        });
-        marker.index = 1;
-        marker.isClicked = false;
-        this.setAnchor(marker, false);
-        this.markerList.push(marker);
-        //点击事件
-        this.markerEventList.push(
-          window.qq.maps.event.addDomListener(marker, "click", function () {
-            me.setFlagClicked(this.index);
-          })
-        );
-        this.markerEventList.push(
-          window.qq.maps.event.addDomListener(marker, "mouseover", function () {
-            me.setCurrentMarker(this.index, true);
-            me.hoverAddress(this.index, true);
-            me.mapLabel.setContent(
-              this.position.getLat().toFixed(6) +
-              "," +
-              this.position.getLng().toFixed(6)
-            );
-            me.mapLabel.setPosition(this.position);
-            me.mapLabel.setOptions({
-              offset: new window.qq.maps.Size(15, -20),
-            });
-            document
-              .getElementById("mapItem" + this.index)
-              .scrollIntoView({behavior: "smooth"});
-          })
-        );
-        this.markerEventList.push(
-          window.qq.maps.event.addDomListener(marker, "mouseout", function () {
-            me.setCurrentMarker(this.index, false);
-            me.hoverAddress(this.index, false);
-            me.mapLabel.setOptions({
-              offset: new window.qq.maps.Size(15, -12),
-            });
-          })
-        );
-        this.map.fitBounds(latlngBounds);
-      // });
-      if (this.markerList.length > 0) {
-        this.map.setCenter(this.markerList[0].position);
-      }
-    },
-    setAnchor(marker, flag) {
-      let left = marker.index * 27;
-      let anchor = new window.qq.maps.Point(10, 30),
-        origin = new window.qq.maps.Point(left, flag ? 35 : 0),
-        size = new window.qq.maps.Size(27, 33),
-        icon = new window.qq.maps.MarkerImage(
-          "/images/marker10.png",
-          size,
-          origin,
-          anchor
-        );
-      marker.setIcon(icon);
-    },
-    //选择地址
-    selectAddress_(index) {
-      this.setCurrentAddress(index);
-      this.setFlagClicked(index);
-      this.map.setCenter(this.markerList[index].position);
-    },
-    hoverAddress(mapIndex, flag) {
-      this.addressList.map((item, index) => {
-        item.hover = flag ? index == mapIndex : flag;
-        return item;
-      });
-    },
-    setCurrentAddress(mapIndex) {
-      this.addressList.map((item, index) => {
-        item.active = index == mapIndex;
-        return item;
-      });
-    },
-    setCurrentMarker(index, flag) {
-      if (flag || (!flag && !this.markerList[index].isClicked)) {
-        this.setAnchor(this.markerList[index], flag);
-      }
-    },
-    setFlagClicked(mapIndex) {
-      this.markerList.map((item, index) => {
-        if (index == mapIndex) {
-          item.isClicked = true;
-          item.setZIndex(10);
-          this.setAnchor(item, true);
-          this.mapLatLng = [
-            item.getPosition().getLat().toFixed(6),
-            item.getPosition().getLng().toFixed(6),
-          ];
-          this.mapAddress = this.addressList[mapIndex].address;
-        } else {
-          item.isClicked = false;
-          item.setZIndex(9);
-          this.setAnchor(item, false);
-        }
-        return item;
-      });
-      this.setCurrentAddress(mapIndex);
-      document
-        .getElementById("mapItem" + mapIndex)
-        .scrollIntoView({ behavior: "smooth" });
-    },
-
   }
 }
 </script>
