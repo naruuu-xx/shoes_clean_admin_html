@@ -15,95 +15,8 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商品规格">
-<!--              <a-table :columns="columns" :data-source="data" bordered>-->
-<!--                <template-->
-<!--                  v-for="col in ['skuTitle',  'price']"-->
-<!--                  :slot="col"-->
-<!--                  slot-scope="text, record, index"-->
-<!--                  v-for="(item,idx) in model.skuTable"-->
-<!--                >-->
-<!--                  <div :key="col" >-->
-<!--                    <a-input-->
-<!--                      v-if="col == 'skuTitle'"-->
-<!--                      v-model="model.skuTable[idx].skuTitle"-->
-<!--                      :value="text"-->
-<!--                      placeholder="请输入名称"-->
-<!--                      style="margin: -5px 0"-->
-
-<!--                    />-->
-<!--                    <a-input-->
-<!--                      v-if="col == 'price'"-->
-<!--                      v-model="model.skuTable[idx].price"-->
-<!--                      :value="text"-->
-<!--                      placeholder="请输入价格"-->
-<!--                      style="margin: -5px 0"-->
-
-<!--                    />-->
-<!--                  </div>-->
-<!--                </template>-->
-<!--                <template slot="operation" slot-scope="text, record, index">-->
-<!--                  <div class="editable-row-operations">-->
-<!--        <span>-->
-<!--          <a-button-->
-<!--            icon="plus"-->
-<!--            shape="circle"-->
-<!--            type="primary"-->
-<!--            @click="() => addItem(record.key)"-->
-<!--          />-->
-<!--          <a-button-->
-<!--            icon="minus"-->
-<!--            shape="circle"-->
-<!--            type="primary"-->
-<!--            @click="() => deleteItem(record.key)"-->
-<!--          />-->
-<!--        </span>-->
-<!--                  </div>-->
-<!--                </template>-->
-<!--              </a-table>-->
-
-<!--              <a-table :columns="columns" :data-source="data" bordered>-->
-<!--                <template-->
-<!--                  v-for="(item, idx) in model.skuTable"-->
-
-<!--                  slot-scope="text, record, index"-->
-
-<!--                >-->
-<!--                  <div >-->
-<!--                    <a-input-->
-<!--                      v-model="model.skuTable[idx].skuTitle"-->
-<!--                      :value="text"-->
-<!--                      placeholder="请输入名称"-->
-<!--                      style="margin: -5px 0"-->
-<!--                    />-->
-<!--                    <a-input-->
-<!--                      v-model="model.skuTable[idx].price"-->
-<!--                      :value="text"-->
-<!--                      placeholder="请输入价格"-->
-<!--                      style="margin: -5px 0"-->
-<!--                    />-->
-<!--                  </div>-->
-<!--                </template>-->
-<!--                <template slot="operation" slot-scope="text, record, index">-->
-<!--                  <div class="editable-row-operations">-->
-<!--        <span>-->
-<!--          <a-button-->
-<!--            icon="plus"-->
-<!--            shape="circle"-->
-<!--            type="primary"-->
-<!--            @click="() => addItem(record.key)"-->
-<!--          />-->
-<!--          <a-button-->
-<!--            icon="minus"-->
-<!--            shape="circle"-->
-<!--            type="primary"-->
-<!--            @click="() => deleteItem(record.key)"-->
-<!--          />-->
-<!--        </span>-->
-<!--                  </div>-->
-<!--                </template>-->
-<!--              </a-table>-->
               <a-button class="editable-add-btn" @click="handleAdd">
-                Add
+                添加规格
               </a-button>
               <a-table bordered :data-source="model.skuTable" :columns="columns"
                         prop="skuTable">
@@ -115,15 +28,13 @@
                 </template>
                 <template slot="operation" slot-scope="text, record">
                   <a-popconfirm
-                    title="Sure to delete?"
+                    title="确定要删除该规格么？"
                     @confirm="() => onDelete(record)"
                   >
-                    <a href="javascript:;">Delete</a>
+                    <a href="javascript:;">删除</a>
                   </a-popconfirm>
                 </template>
               </a-table>
-
-
             </a-form-model-item>
           </a-col>
 
@@ -133,9 +44,16 @@
 
 
           <a-col :span="24">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="主图" prop="images">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="主图" prop="image">
               <!--              <a-textarea v-model="model.images" rows="4" placeholder="请输入主图" />-->
-              <j-image-upload v-model="model.images" :isMultiple="true" text="上传"></j-image-upload>
+              <j-image-upload v-model="model.image" :isMultiple="false" text="上传"></j-image-upload>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="轮播图" prop="banner">
+              <!--              <a-textarea v-model="model.images" rows="4" placeholder="请输入主图" />-->
+              <j-image-upload v-model="model.banner" :isMultiple="true" text="上传"></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
