@@ -134,7 +134,7 @@
           {
             title:'微信昵称',
             align:"center",
-            dataIndex: 'nicakname'
+            dataIndex: 'nickname'
           },
           {
             title:'头像',
@@ -201,7 +201,7 @@
         let fieldList=[];
         fieldList.push({type:'string',value:'openId',text:'小程序open_id'})
         fieldList.push({type:'string',value:'pId',text:'推荐人用户id'})
-        fieldList.push({type:'string',value:'nicakname',text:'微信昵称'})
+        fieldList.push({type:'string',value:'nickname',text:'微信昵称'})
         fieldList.push({type:'string',value:'avatar',text:'头像'})
         fieldList.push({type:'string',value:'phone',text:'手机号码'})
         fieldList.push({type:'int',value:'payAmount',text:'总支付金额（分）'})
