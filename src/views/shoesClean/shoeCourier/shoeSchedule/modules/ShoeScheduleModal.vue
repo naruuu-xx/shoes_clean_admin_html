@@ -32,13 +32,13 @@
       add (courierId, scheduleList) {
         this.visible=true
         this.$nextTick(()=>{
-          this.$refs.realForm.add(courierId, scheduleList);
+          this.$refs.realForm.add(courierId, scheduleList, this.title);
         })
       },
       edit (record, scheduleList) {
         this.visible=true
         this.$nextTick(()=>{
-          this.$refs.realForm.edit(record, scheduleList);
+          this.$refs.realForm.edit(record, scheduleList, this.title);
         })
       },
       close () {

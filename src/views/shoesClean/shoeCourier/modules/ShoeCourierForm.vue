@@ -5,22 +5,22 @@
         <a-row>
           <a-col :span="24">
             <a-form-model-item label=" 姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-              <a-input v-model="model.name" placeholder="请输入 姓名"  ></a-input>
+              <a-input v-model="model.name" placeholder="请输入 姓名" autocomplete="off"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 电话（账号）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
-              <a-input v-model="model.phone" placeholder="请输入 电话（账号）"  ></a-input>
+            <a-form-model-item label=" 电话" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
+              <a-input v-model="model.phone" placeholder="请输入 电话" autocomplete="off"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 身份证" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="idcard">
-              <a-input v-model="model.idcard" placeholder="请输入 身份证"  ></a-input>
+              <a-input v-model="model.idcard" placeholder="请输入 身份证" autocomplete="off"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" v-if="this.model.courierId === null || this.model.courierId === undefined">
-              <a-input-password v-model="model.password" placeholder="请输入 密码" />
+              <a-input-password v-model="model.password" placeholder="请输入 密码" autocomplete="off"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -106,11 +106,11 @@
               { required: true, message: '请输入 姓名!'},
            ],
            phone: [
-              { required: true, message: '请输入 电话（账号）!'},
+              { required: true, message: '请输入 电话!'},
               { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
            idcard: [
-              { required: true, message: '请输入 身份证!'},
+              { required: false, message: '请输入 身份证!'},
               {validator: this.validateIdCard}
            ],
            password: [
@@ -136,7 +136,7 @@
               { required: true, message: '请选择 状态'},
            ],
            delFlag: [
-              { required: true, message: '请输入 删除状态:0=正常,1=删除!'},
+              { required: true, message: '请选择 删除状态!'},
            ],
           lockerId: [
               { required: true, message: '请选择快递柜!'},
@@ -171,7 +171,10 @@
         }
       },
       add () {
-        this.edit(this.modelDefault);
+        // this.edit(this.modelDefault);
+        this.model = {
+          status: 1
+        }
       },
       edit (record) {
         this.model = Object.assign({}, record);

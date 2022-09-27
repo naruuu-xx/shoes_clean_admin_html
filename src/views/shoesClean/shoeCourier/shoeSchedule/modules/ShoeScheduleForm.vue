@@ -11,7 +11,9 @@
           <a-col :span="24">
             <a-form-model-item label=" 星期几" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="week">
               <j-multi-select-tag type="checkbox" v-model="model.week" dictCode="shoe_schedule_week"
-                                  placeholder="请选择 星期几"/>
+                                  placeholder="请选择 星期几" v-if="'新增' === title"/>
+              <j-dict-select-tag type="radio" v-model="model.week" dictCode="shoe_schedule_week"
+                                 placeholder="请选择 星期几" v-else-if="'编辑' === title"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -24,12 +26,12 @@
               <j-time placeholder="请选择 结束时间" v-model="model.endTime" style="width: 100%"/>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label=" 状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-              <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_schedule_status"
-                                 placeholder="请选择 状态:0=关闭,1=开启"/>
-            </a-form-model-item>
-          </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label=" 状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">-->
+<!--              <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_schedule_status"-->
+<!--                                 placeholder="请选择 状态:0=关闭,1=开启"/>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -81,7 +83,7 @@ export default {
           {required: true, message: '请输入 结束时间!'},
         ],
         status: [
-          {required: true, message: '请输入 状态:0=关闭,1=开启!'},
+          {required: false, message: '请输入 状态:0=关闭,1=开启!'},
         ],
       },
       url: {
@@ -90,6 +92,7 @@ export default {
         queryById: "/shoeSchedule/shoeSchedule/queryById"
       },
       scheduleList: [],
+      title: "",
     }
   },
   computed: {
@@ -102,15 +105,17 @@ export default {
     this.modelDefault = JSON.parse(JSON.stringify(this.model));
   },
   methods: {
-    add(courierId, scheduleList) {
+    add(courierId, scheduleList, title) {
       this.edit(this.modelDefault);
       this.model.courierId = courierId;
       this.scheduleList = scheduleList;
+      this.title = title;
     },
-    edit(record, scheduleList) {
+    edit(record, scheduleList, title) {
       this.model = Object.assign({}, record);
       this.visible = true;
       this.scheduleList = scheduleList;
+      this.title = title;
     },
     submitForm() {
       const that = this;
@@ -119,20 +124,6 @@ export default {
         if (valid) {
           let startTime = parseInt((this.model.startTime).replace(":", ""));
           let endTime = parseInt((this.model).endTime.replace(":", ""));
-
-          // console.log(this.scheduleList);
-          //
-          // console.log(this.model.week);
-          // let weekSplit = (this.model.week).split(",");
-          // console.log(weekSplit);
-          //
-          // for (let i = 0 ; i < this.scheduleList.length ; i ++) {
-          //   let scheduleListElement = this.scheduleList[i].week;
-          //     if (scheduleListElement){
-          //
-          //     }
-          //
-          // }
 
           if (startTime >= endTime) {
             that.$message.warning("开始时间不能大于等于结束时间");

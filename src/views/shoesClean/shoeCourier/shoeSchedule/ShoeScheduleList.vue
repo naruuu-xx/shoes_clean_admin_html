@@ -94,11 +94,11 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleEditByDIY(record)">编辑</a>
 
-<!--          <a-divider type="vertical" />-->
+          <a-divider type="vertical" />
 
-<!--          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">-->
-<!--            <a>删除</a>-->
-<!--          </a-popconfirm>-->
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDeleteByDIY(record.scheduleId)">
+            <a>删除</a>
+          </a-popconfirm>
 
 <!--          <a-dropdown>-->
 <!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
@@ -128,7 +128,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeScheduleModal from './modules/ShoeScheduleModal'
-  import {getAction} from "../../../../api/manage";
+  import {deleteAction, getAction} from "../../../../api/manage";
   import {filterDictTextByCache} from "../../../../components/dict/JDictSelectUtil";
 
   export default {
@@ -185,19 +185,19 @@
             align:"center",
             dataIndex: 'endTime'
           },
-          {
-            title:' 状态',
-            align:"center",
-            dataIndex: 'status',
-            customRender: (text) => {
-              return filterDictTextByCache('shoe_schedule_status', text);
-            }
-          },
-          {
-            title:' 创建时间',
-            align:"center",
-            dataIndex: 'createTime'
-          },
+          // {
+          //   title:' 状态',
+          //   align:"center",
+          //   dataIndex: 'status',
+          //   customRender: (text) => {
+          //     return filterDictTextByCache('shoe_schedule_status', text);
+          //   }
+          // },
+          // {
+          //   title:' 创建时间',
+          //   align:"center",
+          //   dataIndex: 'createTime'
+          // },
           // {
           //   title:' 更新时间',
           //   align:"center",
@@ -263,6 +263,19 @@
         this.$refs.modalForm.title = "编辑";
         this.$refs.modalForm.disableSubmit = false;
       },
+      handleDeleteByDIY(scheduleId){
+        var that = this;
+        deleteAction(that.url.delete, {id: scheduleId}).then((res) => {
+          if (res.success) {
+            //重新计算分页问题
+            that.reCalculatePage(1)
+            that.$message.success(res.message);
+            that.modalFormOkByDIY();
+          } else {
+            that.$message.warning(res.message);
+          }
+        });
+      },
       modalFormOkByDIY(){
         let data = {
           "courierId": this.courierId
@@ -298,7 +311,17 @@
         fieldList.push({type:'datetime',value:'createTime',text:' 创建时间'})
         fieldList.push({type:'datetime',value:'updateTime',text:' 更新时间'})
         this.superFieldList = fieldList
-      }
+      },
+      reCalculatePage(count){
+        //总数量-count
+        let total=this.ipagination.total-count;
+        //获取删除后的分页数
+        let currentIndex=Math.ceil(total/this.ipagination.pageSize);
+        //删除后的分页数<所在当前页
+        if(currentIndex<this.ipagination.current){
+          this.ipagination.current=currentIndex;
+        }
+      },
     }
   }
 </script>
