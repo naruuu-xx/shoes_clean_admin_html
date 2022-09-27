@@ -126,6 +126,10 @@
 
           <a @click="handleDetail(record)">详情</a>
 
+           <a-divider type="vertical" />
+
+          <a @click="handleGrid(record)">柜子状态</a>
+
 <!--          <a-dropdown>-->
 <!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
 <!--            <a-menu slot="overlay">-->
@@ -145,6 +149,7 @@
     </div>
 
     <shoe-locker-modal ref="modalForm" @ok="modalFormOk"></shoe-locker-modal>
+    <shoe-locker-grid-modal ref="gridModal"></shoe-locker-grid-modal>
   </a-card>
 </template>
 
@@ -154,6 +159,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeLockerModal from './modules/ShoeLockerModal'
+  import shoeLockerGridModal from './modules/shoeLockerGridModal'
   import Area from '@/components/_util/Area'
   import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
   import {mapGetters} from 'vuex';
@@ -162,7 +168,8 @@
     name: 'ShoeLockerList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeLockerModal
+      ShoeLockerModal,
+      shoeLockerGridModal
     },
     data () {
       return {
@@ -299,6 +306,10 @@
         fieldList.push({type:'int',value:'num',text:'格子数',dictCode:''})
         fieldList.push({type:'int',value:'free',text:'空闲格子数',dictCode:''})
         this.superFieldList = fieldList
+      },
+      handleGrid(record){
+        console.log(record);
+        this.$refs.gridModal.show(record);
       }
     }
   }
