@@ -14,8 +14,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="微信昵称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="nicakname">
-              <a-input v-model="model.nicakname" placeholder="请输入微信昵称"  ></a-input>
+            <a-form-model-item label="微信昵称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="nickname">
+              <a-input v-model="model.nickname" placeholder="请输入微信昵称"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -87,7 +87,7 @@
            pId: [
               { required: true, message: '请输入推荐人用户id!'},
            ],
-           nicakname: [
+           nickname: [
               { required: true, message: '请输入微信昵称!'},
            ],
            avatar: [

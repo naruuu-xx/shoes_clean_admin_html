@@ -55,8 +55,8 @@
         </template>
         <template slot="imgSlot" slot-scope="text,record">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <video v-else-if="text.indexOf('mp4')>0" :src="getImgView(text)" :onclick="text" style="max-width:80px;font-size: 12px;font-style: italic;" ></video>
-          <img v-else :src="getImgView(text)" :preview="record.goodsId" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+<!--          <video v-else-if="text.indexOf('mp4')>0" :src="getImgView(text)" :onclick="text" style="max-width:80px;font-size: 12px;font-style: italic;" ></video>-->
+          <img :src="getImgView(text)" :preview="record.goodsId" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
@@ -151,13 +151,13 @@
             align:"center",
             dataIndex: 'title'
           },
-          // {
-          //   title:'主图',
-          //   align:"center",
-          //   dataIndex: 'images',
-          //   scopedSlots: {customRender: 'imgSlot'}
-          //   //customRender:(text) => (imagerender(text)),
-          // },
+          {
+            title:'主图',
+            align:"center",
+            dataIndex: 'image',
+            scopedSlots: {customRender: 'imgSlot'},
+            // customRender:(text) => (imagerender(text)),
+          },
           // {
           //   title:'描述',
           //   align:"center",
@@ -247,7 +247,7 @@
         fieldList.push({type:'int',value:'goodsId',text:'ID'})
         fieldList.push({type:'string',value:'type',text:'类型:ordinary=普洗,fine=精洗,repair=修复'})
         fieldList.push({type:'string',value:'title',text:'商品名称'})
-        fieldList.push({type:'string',value:'images',text:'主图'})
+        fieldList.push({type:'string',value:'image',text:'主图'})
         fieldList.push({type:'string',value:'describe',text:'描述'})
         fieldList.push({type:'string',value:'content',text:'详情'})
         fieldList.push({type:'int',value:'sale',text:'销量'})
