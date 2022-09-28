@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: 'Jeecg-Boot Pro',
+        default: '鞋蜂后台管理系统',
         required: false
       },
       showTitle: {
