@@ -124,9 +124,9 @@
 
           <a-divider type="vertical" />
 
-          <a @click="handleDetail(record)">详情</a>
+<!--          <a @click="handleDetail(record)">详情</a>-->
 
-           <a-divider type="vertical" />
+<!--           <a-divider type="vertical" />-->
 
           <a @click="handleGrid(record)">柜子状态</a>
 

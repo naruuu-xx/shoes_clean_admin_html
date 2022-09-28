@@ -2,86 +2,88 @@
   <a-spin :spinning="confirmLoading">
     <j-form-container :disabled="formDisabled">
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
-        <a-row>
-          <!--          <a-col :span="24">-->
-          <!--            <a-form-model-item label="区域" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode">-->
-          <!--              <a-select v-model="model.orgCode" style="width: 100%">-->
-          <!--                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" :key="item.orgCode.toString()" >{{ item.departName }}</a-select-option>-->
-          <!--              </a-select>-->
-          <!--            </a-form-model-item>-->
-          <!--          </a-col>-->
-          <a-col :span="24">
-            <a-form-model-item label="机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
-              <a-input v-model="model.lockerCode" placeholder="请输入机柜编码" autocomplete="off"></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-              <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
-            </a-form-model-item>
-          </a-col>
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
-              <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
-<!--              <al-cascader v-model="model.province" level="3" data-type="name"/>-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-          <!--          <a-col :span="24">-->
-          <!--            <a-form-model-item label="市" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="city">-->
-          <!--             <j-area-linkage type="cascader" v-model="model.city" placeholder="请输入省市区"  />-->
-          <!--            </a-form-model-item>-->
-          <!--          </a-col>-->
-          <!--          <a-col :span="24">-->
-          <!--            <a-form-model-item label="区/县" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="area">-->
-          <!--             <j-area-linkage type="cascader" v-model="model.area" placeholder="请输入省市区"  />-->
-          <!--            </a-form-model-item>-->
-          <!--          </a-col>-->
-          <a-col :span="24">
-            <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
-<!--              <a-input v-model="model.address" placeholder="请输入详细地址" id="c-address" :change="addressOnchange()"></a-input>-->
-              <a-input-search v-model="model.address" placeholder="请输入详细地址" id="c-address" enter-button @search="onSearch(model.address)" autocomplete="off"></a-input-search>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="longitude">
-              <a-input-number v-model="model.longitude" placeholder="请输入经度" style="width: 100%" id="c-lng" disabled="true"/>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="latitude">
-              <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat" disabled="true"/>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-row>
-              <a-col :span="16">
-<!--                <a-form-model-item label="" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-                  <div id="tencentMapBox" style="width:auto;height:400px;margin-left: 200px;margin-bottom: 30px"></div>
-<!--                </a-form-model-item>-->
-              </a-col>
-              <a-col :span="8">
-                <div id="container-text" style="width:auto;height: 400px;margin-left: 5px; overflow-y:auto;">
-                  <div v-model="searchList" v-for="(item, index) in searchList" style="margin-bottom: 10px" v-on:click="selectAddress(item)">
-                    <span style="font-size: 14px">{{ index + 1 }}、{{ item.title }}</span><br>
-                    <span style="font-size: 12px; color: #7A7B7D">{{ item.address }}</span>
-                    <span style="display: none">{{ item.location.lat }}</span>
-                    <span style="display: none">{{ item.location.lng }}</span>
+        <div class="diyDiv">
+          <a-row>
+            <!--          <a-col :span="24">-->
+            <!--            <a-form-model-item label="区域" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode">-->
+            <!--              <a-select v-model="model.orgCode" style="width: 100%">-->
+            <!--                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" :key="item.orgCode.toString()" >{{ item.departName }}</a-select-option>-->
+            <!--              </a-select>-->
+            <!--            </a-form-model-item>-->
+            <!--          </a-col>-->
+            <a-col :span="24">
+              <a-form-model-item label="机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
+                <a-input v-model="model.lockerCode" placeholder="请输入机柜编码" autocomplete="off"></a-input>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
+                <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
+              </a-form-model-item>
+            </a-col>
+  <!--          <a-col :span="24">-->
+  <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
+                <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
+  <!--              <al-cascader v-model="model.province" level="3" data-type="name"/>-->
+  <!--            </a-form-model-item>-->
+  <!--          </a-col>-->
+            <!--          <a-col :span="24">-->
+            <!--            <a-form-model-item label="市" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="city">-->
+            <!--             <j-area-linkage type="cascader" v-model="model.city" placeholder="请输入省市区"  />-->
+            <!--            </a-form-model-item>-->
+            <!--          </a-col>-->
+            <!--          <a-col :span="24">-->
+            <!--            <a-form-model-item label="区/县" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="area">-->
+            <!--             <j-area-linkage type="cascader" v-model="model.area" placeholder="请输入省市区"  />-->
+            <!--            </a-form-model-item>-->
+            <!--          </a-col>-->
+            <a-col :span="24">
+              <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
+  <!--              <a-input v-model="model.address" placeholder="请输入详细地址" id="c-address" :change="addressOnchange()"></a-input>-->
+                <a-input-search v-model="model.address" placeholder="请输入详细地址" id="c-address" enter-button @search="onSearch(model.address)" autocomplete="off"></a-input-search>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="longitude">
+                <a-input-number v-model="model.longitude" placeholder="请输入经度" style="width: 100%" id="c-lng" disabled="true"/>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="latitude">
+                <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat" disabled="true"/>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
+              <a-row>
+                <a-col :span="16">
+  <!--                <a-form-model-item label="" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+                    <div id="tencentMapBox" style="width:auto;height:400px;margin-left: 200px;margin-bottom: 30px"></div>
+  <!--                </a-form-model-item>-->
+                </a-col>
+                <a-col :span="8">
+                  <div id="container-text" style="width:auto;height: 400px;margin-left: 5px; overflow-y:auto;">
+                    <div v-model="searchList" v-for="(item, index) in searchList" style="margin-bottom: 10px" v-on:click="selectAddress(item)">
+                      <span style="font-size: 14px">{{ index + 1 }}、{{ item.title }}</span><br>
+                      <span style="font-size: 12px; color: #7A7B7D">{{ item.address }}</span>
+                      <span style="display: none">{{ item.location.lat }}</span>
+                      <span style="display: none">{{ item.location.lng }}</span>
+                    </div>
                   </div>
-                </div>
-              </a-col>
-            </a-row>
-          </a-col>
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">-->
-<!--              <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 100%"  autocomplete="off"/>-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-          <!--          <a-col :span="24">-->
-          <!--            <a-form-model-item label="空闲格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="free">-->
-          <!--              <a-input-number v-model="model.free" placeholder="请输入空闲格子数" style="width: 100%" />-->
-          <!--            </a-form-model-item>-->
-          <!--          </a-col>-->
-        </a-row>
+                </a-col>
+              </a-row>
+            </a-col>
+  <!--          <a-col :span="24">-->
+  <!--            <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">-->
+  <!--              <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 100%"  autocomplete="off"/>-->
+  <!--            </a-form-model-item>-->
+  <!--          </a-col>-->
+            <!--          <a-col :span="24">-->
+            <!--            <a-form-model-item label="空闲格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="free">-->
+            <!--              <a-input-number v-model="model.free" placeholder="请输入空闲格子数" style="width: 100%" />-->
+            <!--            </a-form-model-item>-->
+            <!--          </a-col>-->
+          </a-row>
+        </div>
       </a-form-model>
     </j-form-container>
   </a-spin>
@@ -434,5 +436,9 @@ export default {
 }
 </script>
 <style>
-
+.diyDiv{
+  width: 100%;
+  height: 660px;
+  overflow-y: scroll;
+}
 </style>

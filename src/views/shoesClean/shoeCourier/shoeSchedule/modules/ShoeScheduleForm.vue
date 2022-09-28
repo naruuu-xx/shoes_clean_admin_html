@@ -18,12 +18,14 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="startTime">
-              <j-time placeholder="请选择 开始时间" v-model="model.startTime" style="width: 100%"/>
+<!--              <j-time placeholder="请选择开始时间" v-model="model.startTime" style="width: 100%"/>-->
+              <j-time-d-i-y placeholder="请选择开始时间" v-model="model.startTime" style="width: 100%"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="endTime">
-              <j-time placeholder="请选择 结束时间" v-model="model.endTime" style="width: 100%"/>
+<!--              <j-time placeholder="请选择结束时间" v-model="model.endTime" style="width: 100%"/>-->
+              <j-time-d-i-y placeholder="请选择结束时间" v-model="model.endTime" style="width: 100%"/>
             </a-form-model-item>
           </a-col>
 <!--          <a-col :span="24">-->
@@ -42,10 +44,13 @@
 
 import {httpAction, getAction} from '@/api/manage'
 import {validateDuplicateValue} from '@/utils/util'
+import JTimeDIY from "./JTimeDIY";
 
 export default {
   name: 'ShoeScheduleForm',
-  components: {},
+  components: {
+    JTimeDIY
+  },
   props: {
     //表单禁用
     disabled: {
