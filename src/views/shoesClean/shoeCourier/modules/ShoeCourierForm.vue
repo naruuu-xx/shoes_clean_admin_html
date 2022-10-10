@@ -13,11 +13,11 @@
               <a-input v-model="model.phone" placeholder="请输入 电话" autocomplete="off"></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label=" 身份证" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="idcard">
-              <a-input v-model="model.idcard" placeholder="请输入 身份证" autocomplete="off"></a-input>
-            </a-form-model-item>
-          </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label=" 身份证" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="idcard">-->
+<!--              <a-input v-model="model.idcard" placeholder="请输入 身份证" autocomplete="off"></a-input>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label=" 密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" v-if="this.model.courierId === null || this.model.courierId === undefined">
               <a-input-password v-model="model.password" placeholder="请输入 密码" autocomplete="off"/>
