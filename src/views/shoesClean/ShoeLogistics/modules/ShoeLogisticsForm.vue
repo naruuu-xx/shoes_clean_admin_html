@@ -92,12 +92,12 @@
               { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
            status: [
-              { required: true, message: '请输入 状态:0=禁用,1=正常!'},
+              { required: true, message: '请输入选择状态!'},
            ],
           lockerId:[
             { required: true, message: '请输入机柜编码'},
           ],
-          password: [{required: true,pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
+          password: [{required: true,pattern:/^.{6,16}$/,message: '请输入6到16位任意字符!'},
             {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{required: true, message: '请重新输入登录密码!'},
             { validator: this.compareToFirstPassword,}],

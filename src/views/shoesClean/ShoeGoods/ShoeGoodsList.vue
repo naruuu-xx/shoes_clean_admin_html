@@ -139,17 +139,16 @@
         description: 'shoe_goods管理页面',
         // 表头
         columns: [
-
+          {
+            title:'商品名称',
+            align:"center",
+            dataIndex: 'title'
+          },
           {
             title:'类型',
             align:"center",
             dataIndex: 'type',
             customRender:(text) => (typerender(text)),
-          },
-          {
-            title:'商品名称',
-            align:"center",
-            dataIndex: 'title'
           },
           {
             title:'主图',
