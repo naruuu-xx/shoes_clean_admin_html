@@ -9,8 +9,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 电话" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
-              <a-input v-model="model.phone" placeholder="请输入 电话" autocomplete="off"></a-input>
+            <a-form-model-item label=" 手机号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
+              <a-input v-model="model.phone" placeholder="请输入 手机号" autocomplete="off"></a-input>
             </a-form-model-item>
           </a-col>
 <!--          <a-col :span="24">-->
@@ -106,7 +106,7 @@
               { required: true, message: '请输入 姓名!'},
            ],
            phone: [
-              { required: true, message: '请输入 电话!'},
+              { required: true, message: '请输入 手机号!'},
               { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
            idcard: [
