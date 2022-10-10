@@ -9,7 +9,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 手机号（账号）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
+            <a-form-model-item label=" 手机号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
               <a-input v-model="model.phone" placeholder="请输入 手机号（账号）"  ></a-input>
             </a-form-model-item>
           </a-col>
@@ -27,9 +27,9 @@
               <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="password" >
                 <a-input v-model="model.password" type="password" placeholder="请输入登录密码" />
               </a-form-model-item>
-              <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="confirmpassword">
-                <a-input v-model="model.confirmpassword" type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" />
-              </a-form-model-item>
+<!--              <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="confirmpassword">-->
+<!--                <a-input v-model="model.confirmpassword" type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" />-->
+<!--              </a-form-model-item>-->
             </template>
 
           </a-col>

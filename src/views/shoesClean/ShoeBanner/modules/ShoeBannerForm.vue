@@ -19,7 +19,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="状态:0=关闭,1=开启" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
+            <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
               <j-switch v-model="model.status"  ></j-switch>
 <!--              <switch v-model="model.status"></switch>-->
             </a-form-model-item>
@@ -78,7 +78,7 @@
               { required: true, message: '请输入轮播图!'},
            ],
            url: [
-              { required: true, message: '请输入跳转地址!'},
+              { required: false, message: '请输入跳转地址!'},
            ],
            status: [
               { required: true, message: '请输入状态:0=关闭,1=开启!'},

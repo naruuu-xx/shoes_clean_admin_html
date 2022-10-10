@@ -33,42 +33,42 @@
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
       <a-col :span="7"><div class="grid-style">1</div></a-col>
       <a-col :span="7"><div class="grid-style">9</div></a-col>
-      <a-col :span="7"><div class="grid-style">14</div></a-col>
+      <a-col :span="7"><div class="grid-style">17</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
       <a-col :span="7"><div class="grid-style">2</div></a-col>
       <a-col :span="7"><div class="screen-style" style="border-left: 2px solid #000000;border-top: 2px solid #000000;border-right: 2px solid #000000">&nbsp;</div></a-col>
-      <a-col :span="7"><div class="grid-style">15</div></a-col>
+      <a-col :span="7"><div class="grid-style">18</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
       <a-col :span="7"><div class="grid-style">3</div></a-col>
       <a-col :span="7"><div class="screen-style" style="border-left: 2px solid #000000;border-right: 2px solid #000000">屏幕</div></a-col>
-      <a-col :span="7"><div class="grid-style">16</div></a-col>
+      <a-col :span="7"><div class="grid-style">19</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
       <a-col :span="7"><div class="grid-style">4</div></a-col>
       <a-col :span="7"><div class="screen-style" style="border-left: 2px solid #000000;border-bottom: 2px solid #000000;border-right: 2px solid #000000">&nbsp;</div></a-col>
-      <a-col :span="7"><div class="grid-style">17</div></a-col>
-    </a-row>
-    <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">5</div></a-col>
-      <a-col :span="7"><div class="grid-style">10</div></a-col>
-      <a-col :span="7"><div class="grid-style">18</div></a-col>
-    </a-row>
-    <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">6</div></a-col>
-      <a-col :span="7"><div class="grid-style">11</div></a-col>
-      <a-col :span="7"><div class="grid-style">19</div></a-col>
-    </a-row>
-    <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">7</div></a-col>
-      <a-col :span="7"><div class="grid-style">12</div></a-col>
       <a-col :span="7"><div class="grid-style">20</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">8</div></a-col>
+      <a-col :span="7"><div class="grid-style">5</div></a-col>
       <a-col :span="7"><div class="grid-style">13</div></a-col>
       <a-col :span="7"><div class="grid-style">21</div></a-col>
+    </a-row>
+    <a-row :gutter="16" type="flex" justify="space-around" align="middle">
+      <a-col :span="7"><div class="grid-style">6</div></a-col>
+      <a-col :span="7"><div class="grid-style">14</div></a-col>
+      <a-col :span="7"><div class="grid-style">22</div></a-col>
+    </a-row>
+    <a-row :gutter="16" type="flex" justify="space-around" align="middle">
+      <a-col :span="7"><div class="grid-style">7</div></a-col>
+      <a-col :span="7"><div class="grid-style">15</div></a-col>
+      <a-col :span="7"><div class="grid-style">23</div></a-col>
+    </a-row>
+    <a-row :gutter="16" type="flex" justify="space-around" align="middle">
+      <a-col :span="7"><div class="grid-style">8</div></a-col>
+      <a-col :span="7"><div class="grid-style">16</div></a-col>
+      <a-col :span="7"><div class="grid-style">24</div></a-col>
     </a-row>
   </j-modal>
 </template>
