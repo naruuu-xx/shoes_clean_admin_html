@@ -31,49 +31,58 @@
 <!--    </a-row>-->
 
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">1</div></a-col>
-      <a-col :span="7"><div class="grid-style">9</div></a-col>
-      <a-col :span="7"><div class="grid-style">17</div></a-col>
+      <a-col :span="7">
+<!--        <div class="grid-style" @click="openDoorByDevicenum(1)"><span>1</span></div><a-button>打开柜门</a-button></a-col>-->
+        <div class="grid-style" @click="openDoorByDevicenum(1)">
+          <span>1（打开柜门）</span>
+<!--          <a-button>打开柜门</a-button>-->
+        </div>
+
+      </a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(9)">9（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(17)">17（打开柜门）</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">2</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(2)">2（打开柜门）</div></a-col>
       <a-col :span="7"><div class="screen-style" style="border-left: 2px solid #000000;border-top: 2px solid #000000;border-right: 2px solid #000000">&nbsp;</div></a-col>
-      <a-col :span="7"><div class="grid-style">18</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(18)">18（打开柜门）</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">3</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(3)">3（打开柜门）</div></a-col>
       <a-col :span="7"><div class="screen-style" style="border-left: 2px solid #000000;border-right: 2px solid #000000">屏幕</div></a-col>
-      <a-col :span="7"><div class="grid-style">19</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(19)">19（打开柜门）</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">4</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(4)">4（打开柜门）</div></a-col>
       <a-col :span="7"><div class="screen-style" style="border-left: 2px solid #000000;border-bottom: 2px solid #000000;border-right: 2px solid #000000">&nbsp;</div></a-col>
-      <a-col :span="7"><div class="grid-style">20</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(20)">20（打开柜门）</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">5</div></a-col>
-      <a-col :span="7"><div class="grid-style">13</div></a-col>
-      <a-col :span="7"><div class="grid-style">21</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(5)">5（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(13)">13（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(21)">21（打开柜门）</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">6</div></a-col>
-      <a-col :span="7"><div class="grid-style">14</div></a-col>
-      <a-col :span="7"><div class="grid-style">22</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(6)">6（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(14)">14（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(22)">22（打开柜门）</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">7</div></a-col>
-      <a-col :span="7"><div class="grid-style">15</div></a-col>
-      <a-col :span="7"><div class="grid-style">23</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(7)">7（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(15)">15（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(23)">23（打开柜门）</div></a-col>
     </a-row>
     <a-row :gutter="16" type="flex" justify="space-around" align="middle">
-      <a-col :span="7"><div class="grid-style">8</div></a-col>
-      <a-col :span="7"><div class="grid-style">16</div></a-col>
-      <a-col :span="7"><div class="grid-style">24</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(8)">8（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(16)">16（打开柜门）</div></a-col>
+      <a-col :span="7"><div class="grid-style" @click="openDoorByDevicenum(24)">24（打开柜门）</div></a-col>
     </a-row>
   </j-modal>
 </template>
 
 <script>
+import {httpAction} from "../../../../api/manage";
+
 export default {
   name: "shoeLockerGridModal",
   data () {
@@ -81,6 +90,7 @@ export default {
       title: '快递柜格子展示',
       width: 600,
       visible: false,
+      devicenum: "",
       list: [
         {number: 1, state: 1},
         {number: 2, state: 1},
@@ -108,10 +118,29 @@ export default {
   },
   methods: {
     show(record){
+      this.devicenum = record.lockerCode;
       this.visible = true;
     },
     handleCancel () {
       this.visible = false;
+    },
+    openDoorByDevicenum(openNum){
+      const that = this;
+
+      let data = {
+        "devicenum":this.devicenum,
+        "openNum":openNum,
+        "openType":0
+      }
+
+      httpAction("/api/IoT/openDoorByDevicenum", data, 'post').then((res)=>{
+        let json = JSON.parse(res);
+        if (json.code === 0) {
+          that.$message.success("开门成功")
+        } else {
+          that.$message.warning(json.msg)
+        }
+      })
     }
   }
 }

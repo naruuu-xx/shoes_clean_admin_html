@@ -234,9 +234,14 @@ export default {
           dataIndex: 'amount'
         },
         {
+          title: ' 可提现金额',
+          align: "center",
+          dataIndex: 'withdrawalAmount'
+        },
+        {
           title: ' 提现中金额',
           align: "center",
-          dataIndex: 'withdrawal'
+          dataIndex: 'withdrawalingAmount'
         },
         {
           title: ' 冻结金额',

@@ -238,19 +238,19 @@
             scopedSlots: {customRender: "avatarslot"}
           },
 
-          {
-            title: '性别',
-            align: "center",
-            width: 80,
-            dataIndex: 'sex_dictText',
-            sorter: true
-          },
-          {
-            title: '生日',
-            align: "center",
-            width: 100,
-            dataIndex: 'birthday'
-          },
+          // {
+          //   title: '性别',
+          //   align: "center",
+          //   width: 80,
+          //   dataIndex: 'sex_dictText',
+          //   sorter: true
+          // },
+          // {
+          //   title: '生日',
+          //   align: "center",
+          //   width: 100,
+          //   dataIndex: 'birthday'
+          // },
           {
             title: '手机号码',
             align: "center",
@@ -258,17 +258,17 @@
             dataIndex: 'phone'
           },
           {
-            title: '部门',
+            title: '区域',
             align: "center",
             width: 180,
             dataIndex: 'orgCodeTxt'
           },
-          {
-            title: '负责部门',
-            align: "center",
-            width: 180,
-            dataIndex: 'departIds_dictText'
-          },
+          // {
+          //   title: '负责部门',
+          //   align: "center",
+          //   width: 180,
+          //   dataIndex: 'departIds_dictText'
+          // },
           {
             title: '状态',
             align: "center",
