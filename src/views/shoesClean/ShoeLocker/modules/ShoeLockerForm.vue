@@ -18,7 +18,7 @@
             </a-col>
             <a-col :span="24">
               <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num" v-if="model.lockerId !== null && model.lockerId !== '' && model.lockerId !== undefined">
-                <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 10%"  autocomplete="off"/>
+                <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 10%"  autocomplete="off" :disabled="true"/>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">

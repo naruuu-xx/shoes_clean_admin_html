@@ -129,6 +129,10 @@
 <!--           <a-divider type="vertical" />-->
 
           <a @click="handleGrid(record)">柜子状态</a>
+          <a-divider type="vertical" />
+          <a-popconfirm title="确定一键开柜吗？" @confirm="() => openAllDoor(record.lockerCode)">
+            <a>一键开柜</a>
+          </a-popconfirm>
 
 <!--          <a-dropdown>-->
 <!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
@@ -163,6 +167,7 @@
   import Area from '@/components/_util/Area'
   import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
   import {mapGetters} from 'vuex';
+  import {httpAction} from "../../../api/manage";
 
   export default {
     name: 'ShoeLockerList',
@@ -308,8 +313,21 @@
         this.superFieldList = fieldList
       },
       handleGrid(record){
-        console.log(record);
         this.$refs.gridModal.show(record);
+      },
+      openAllDoor(lockerCode){
+        const that = this;
+        let data = {
+          "devicenum":lockerCode
+        };
+        httpAction("/api/IoT/openAllDoor", data, 'post').then((res)=>{
+          let json = JSON.parse(res);
+          if (json.code === 0) {
+            that.$message.success("开门成功")
+          } else {
+            that.$message.warning(json.msg)
+          }
+        })
       }
     }
   }
