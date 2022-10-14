@@ -139,7 +139,7 @@
             dataIndex: 'url'
           },
           {
-            title:'状态:0=关闭,1=开启',
+            title:'状态',
             align:"center",
             dataIndex: 'status',
             customRender: (text) => (filterMultiDictText(this.dictOptions['status'], text)),
