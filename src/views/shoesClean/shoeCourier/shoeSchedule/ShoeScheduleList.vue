@@ -164,11 +164,11 @@
           //   align:"center",
           //   dataIndex: 'courierId'
           // },
-          {
-            title:' 配送员名字',
-            align:"center",
-            dataIndex: 'name'
-          },
+          // {
+          //   title:' 配送员名字',
+          //   align:"center",
+          //   dataIndex: 'name'
+          // },
           {
             title:' 星期',
             align:"center",
