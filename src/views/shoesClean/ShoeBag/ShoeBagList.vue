@@ -308,7 +308,7 @@
           ifr.style.frameborder = 'no';
           ifr.style.display = 'none';
           ifr.style.pageBreakBefore = 'always';
-          ifr.setAttribute('download', 'printPdf' + date + '.pdf');
+          // ifr.setAttribute('download', 'printPdf' + date + '.pdf');
           ifr.setAttribute('id', 'printPdf' + date + '.pdf');
           ifr.src = window.URL.createObjectURL(blob);
           document.body.appendChild(ifr);
@@ -323,8 +323,8 @@
         var ordonnance = document.getElementById(val).contentWindow;
         setTimeout(() => {
           // window.print()
-          ordonnance.print()
-          this.pdfLoading = false
+          ordonnance.print();
+          this.pdfLoading = false;
         }, 100)
       },
       testPrint(){
