@@ -17,6 +17,11 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
+              <a-form-model-item label="机柜名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+                <a-input v-model="model.name" placeholder="请输入机柜名称" autocomplete="off"></a-input>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
               <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num" v-if="model.lockerId !== null && model.lockerId !== '' && model.lockerId !== undefined">
                 <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 10%"  autocomplete="off" :disabled="true"/>
               </a-form-model-item>
@@ -262,6 +267,7 @@ export default {
             "lockerId": this.model.lockerId,
             "orgCode": this.model.orgCode,
             "lockerCode": this.model.lockerCode,
+            "name": this.model.name,
             "status": this.model.status,
             "province": this.model.province,
             "city": this.model.city,
