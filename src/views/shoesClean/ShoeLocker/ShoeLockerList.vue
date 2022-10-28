@@ -206,7 +206,7 @@
             align:"center",
             dataIndex: 'status',
             customRender: (text) => {
-              return filterDictTextByCache('status', text);
+              return filterDictTextByCache('shoe_locker_status', text);
             },
           },
           {
