@@ -1,0 +1,138 @@
+<template>
+  <j-modal
+    :title="title"
+    :width="1200"
+    :visible="visible"
+    switchFullscreen
+    @cancel="handleCancel"
+    cancelText="关闭"
+    :footer="null"
+    wrapClassName="full-modal">
+    <div style="margin-left: 20px">
+      <a-row>
+        <a-col :span="18">
+          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleOutOfStorage" />
+        </a-col>
+        <a-col :span="2"></a-col>
+        <a-col :span="4">
+          <a-row><a-button @click="handleOutOfStorage" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</span></a-button></a-row>
+          <a-row><a-button @click="emptyNo" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
+        </a-col>
+      </a-row>
+      <a-divider />
+      <a-row v-show="shoeOrderInfo">
+        <a-row style="margin-bottom: 30px">
+          <a-col :span="24">
+            <span class="content">订单编号：{{data.no}}</span>
+          </a-col>
+        </a-row>
+        <a-row style="margin-bottom: 30px">
+          <a-col :span="24">
+            <span class="content">商品名：{{data.title}}</span>
+          </a-col>
+        </a-row>
+        <a-row style="margin-bottom: 30px">
+          <a-col :span="24">
+            <span class="content">商品规格：{{data.skuTitle}}</span>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24">
+            <p class="content">照片：</p>
+            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
+                 :src="item" @click="showImage(item)">
+          </a-col>
+        </a-row>
+      </a-row>
+    </div>
+
+    <a-modal :zIndex="2000" :width="1000" :visible="showImageModal" :footer="null"
+             @cancel="handleShoeImageModalCancel()">
+      <img alt="example" style="width: 100%" :src="clickedImage">
+    </a-modal>
+
+  </j-modal>
+</template>
+
+<script>
+
+import {downFile, httpAction} from "../../../../../api/manage";
+
+export default {
+  name: "ShoeOutOfStorageModal",
+  components: {},
+  data() {
+    return {
+      visible: false,
+      title: '入库',
+      no: "",
+      data: {},
+      imageList: [],
+      showImageModal: false,
+      shoeOrderInfo: false,
+      clickedImage: "",
+    }
+  },
+  created() {
+  },
+  methods: {
+    show(record) {
+      this.visible = true;
+    },
+    handleCancel() {
+      this.visible = false;
+      this.data = {};
+      this.imageList = [];
+      this.shoeOrderInfo = false;
+    },
+    showImage(item) {
+      this.showImageModal = true;
+      this.clickedImage = item;
+    },
+    handleShoeImageModalCancel() {
+      this.showImageModal = false;
+      this.clickedImage = "";
+    },
+    handleOutOfStorage(){
+      //处理出库
+      if (this.no === "" || this.no === null || this.no === undefined) {
+        this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
+      } else {
+        let data = {
+          "no": this.no
+        }
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {
+          if (res.code !== 200) {
+            this.$message.warning(res.message);
+            return false;
+          } else {
+            this.data = {
+              "no": res.result.no,
+              "note": res.result.note,
+              "title": res.result.title,
+              "skuTitle": res.result.skuTitle
+            }
+            this.imageList = JSON.parse(res.result.orderImages);
+            this.shoeOrderInfo = true;
+            this.$message.success(res.message);
+          }
+        })
+      }
+    },
+    emptyNo(){
+      //清空输入框内容
+      this.no = "";
+      this.data = {};
+      this.imageList = [];
+      this.shoeOrderInfo = false;
+    },
+  }
+}
+</script>
+
+<style scoped>
+.content {
+  font-size: 20px;
+  color: #000000;
+}
+</style>

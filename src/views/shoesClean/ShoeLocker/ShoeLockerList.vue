@@ -191,11 +191,11 @@
             align:"center",
             dataIndex: 'lockerCode'
           },
-          // {
-          //   title:'机构编码',
-          //   align:"center",
-          //   dataIndex: 'orgCode'
-          // },
+          {
+            title:'机柜名称',
+            align:"center",
+            dataIndex: 'name'
+          },
           {
             title:'区域',
             align:"center",
