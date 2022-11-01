@@ -1,19 +1,27 @@
 <template>
-  <a-time-picker
-    :disabled="disabled || readOnly"
-    :placeholder="placeholder"
-    :value="momVal"
-    :format="dateFormat"
-    :minuteStep="10"
-    :getCalendarContainer="getCalendarContainer"
-    @change="handleTimeChange"
+<!--  <a-date-picker-->
+<!--    dropdownClassName="j-date-picker"-->
+<!--    :disabled="disabled || readOnly"-->
+<!--    :placeholder="placeholder"-->
+<!--    @change="handleDateChange"-->
+<!--    :value="momVal"-->
+<!--    :showTime="showTime"-->
+<!--    :format="dateFormat"-->
+<!--    :getCalendarContainer="getCalendarContainer"-->
+<!--    v-bind="$attrs"/>-->
+
+  <a-range-picker
+    :show-time="{ format: 'HH:mm', minuteStep: 5 }"
+    format="YYYY-MM-DD HH:mm"
+    :placeholder="['开始时间', '结束时间']"
+    @change="handleDateChange"
   />
 </template>
 
 <script>
   import moment from 'moment'
   export default {
-    name: 'JTimeDIY',
+    name: 'JDateTimeDIY',
     props: {
       placeholder:{
         type: String,
@@ -26,8 +34,14 @@
       },
       dateFormat:{
         type: String,
-        default: 'HH:mm',
+        default: 'YYYY-MM-DD HH:mm',
         required: false
+      },
+      //此属性可以被废弃了
+      triggerChange:{
+        type: Boolean,
+        required: false,
+        default: false
       },
       readOnly:{
         type: Boolean,
@@ -39,16 +53,21 @@
         required: false,
         default: false
       },
+      showTime:{
+        type: Boolean,
+        required: false,
+        default: false
+      },
       getCalendarContainer: {
         type: Function,
         default: (node) => node.parentNode
       }
     },
     data () {
-      let timeStr = this.value;
+      let dateStr = this.value;
       return {
         decorator:"",
-        momVal:!timeStr?null:moment(timeStr,this.dateFormat)
+        momVal:!dateStr?null:moment(dateStr,this.dateFormat)
       }
     },
     watch: {
@@ -62,8 +81,8 @@
     },
     methods: {
       moment,
-      handleTimeChange(mom,timeStr){
-        this.$emit('change', timeStr);
+      handleDateChange(mom,dateStr){
+        this.$emit('change', dateStr);
       }
     },
     //2.2新增 在组件内定义 指定父组件调用时候的传值属性和事件类型 这个牛逼

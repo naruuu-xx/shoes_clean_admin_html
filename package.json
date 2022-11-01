@@ -31,6 +31,7 @@
     "lodash.get": "^4.4.2",
     "lodash.pick": "^4.4.0",
     "md5": "^2.2.1",
+    "moment": "^2.29.4",
     "nprogress": "^0.2.0",
     "qiankun": "^2.5.1",
     "tinymce": "5.4.1",
