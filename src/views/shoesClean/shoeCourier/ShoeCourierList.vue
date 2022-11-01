@@ -20,13 +20,13 @@
                 <a-input placeholder="请输入 电话" v-model="queryParam.phone"  autocomplete="off"></a-input>
               </a-form-item>
             </a-col>
-            <!--            <a-col :xl="10" :lg="11" :md="12" :sm="24">-->
-            <!--              <a-form-item label=" 加入时间">-->
-            <!--                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>-->
-            <!--                <span class="query-group-split-cust"></span>-->
-            <!--                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>-->
-            <!--              </a-form-item>-->
-            <!--            </a-col>-->
+                        <a-col :xl="10" :lg="11" :md="12" :sm="24">
+                          <a-form-item label=" 加入时间">
+                            <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>
+                            <span class="query-group-split-cust"></span>
+                            <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>
+                          </a-form-item>
+                        </a-col>
           </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
