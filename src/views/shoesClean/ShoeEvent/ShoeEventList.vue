@@ -98,9 +98,9 @@
         <a-col :span="6"><div class="tableCell"><a-switch v-model:checked="item.eventStatus" @click="switchChange(item.eventStatusGroup, item.eventStatusName, item.eventStatus)" /></div></a-col>
         <a-col :span="6">
           <div class="tableCell" v-if="item.id === 1">
-            <a @click="couponSelect(item.couponId)">优惠券设置</a>
+            <a @click="couponSelect(item.id, item.couponId)">优惠券设置</a>
             <a-divider type="vertical" />
-            <a>查看详情</a>
+            <a @click="queryEventDetail">查看详情</a>
           </div>
           <div class="tableCell" v-else>
           </div>
@@ -111,6 +111,8 @@
 <!--    <shoe-coupon-modal ref="modalForm" @ok="modalFormOk"></shoe-coupon-modal>-->
 
     <coupon-select-modal ref="couponSelectModal" @ok="queryEventList"></coupon-select-modal>
+    <user-pull-detail-modal ref="userPullDetailModal"></user-pull-detail-modal>
+
 
   </a-card>
 </template>
@@ -123,12 +125,14 @@
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import {httpAction} from "../../../api/manage";
   import CouponSelectModal from "./modules/CouponSelectModal";
+  import UserPullDetailModal from "./modules/UserPullDetailModal";
 
   export default {
     name: 'ShoeCouponList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      CouponSelectModal
+      CouponSelectModal,
+      UserPullDetailModal
     },
     data () {
       return {
@@ -205,8 +209,11 @@
           }
         });
       },
-      couponSelect(couponId){
-        this.$refs.couponSelectModal.show(couponId);
+      couponSelect(id,couponId){
+        this.$refs.couponSelectModal.show(id,couponId);
+      },
+      queryEventDetail(){
+        this.$refs.userPullDetailModal.show();
       }
     }
   }
