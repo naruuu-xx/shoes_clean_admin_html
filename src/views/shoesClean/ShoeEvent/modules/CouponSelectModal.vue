@@ -32,15 +32,17 @@ export default {
       visible: false,
       couponList: [],
       selectedCoupon: "",
+      id: ""
     }
   },
   created() {
 
   },
   methods: {
-    show(couponId){
+    show(id, couponId){
       this.visible = true;
       this.selectedCoupon = couponId;
+      this.id = id;
       //获取优惠券列表
       httpAction("/ShoeEvent/ShoeEvent/getCouponList", null, "get").then((res) => {
         if (res.success) {
@@ -59,6 +61,7 @@ export default {
     },
     handleSave() {
       let data = {
+        "id": this.id,
         "couponId": this.selectedCoupon
       }
       httpAction("/ShoeEvent/ShoeEvent/updateEventBindingCoupon", data, "post").then((res) => {

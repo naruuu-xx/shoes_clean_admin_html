@@ -50,7 +50,6 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="testPrint">测试水洗唛</a-button>
       <a-button @click="addBag" type="primary" icon="plus">新增袋子</a-button>
       <a-button v-if="selectedRowKeys.length > 0" @click="printMultiple">一键打印</a-button>
       <a-button v-if="selectedRowKeys.length > 0" @click="batchDel">批量删除</a-button>
