@@ -29,7 +29,7 @@
                 <a-radio value="1">通用</a-radio>
                 <a-radio value="2">指定商品&nbsp;
                   <a-select
-                    v-model:value="model.rangeConfig"
+                    v-model:value="selectedGoods"
                     mode="multiple"
                     style="width: 400px;"
                     placeholder="请选择"
@@ -70,6 +70,25 @@
               <a-radio-group v-model:value="numRadio">
                 <a-radio value="1">不限量</a-radio>
                 <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px"></a-input-number>&nbsp;张</a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="发放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="way">
+              <a-radio-group v-model:value="model.way">
+                <a-radio value="0">自行领取</a-radio>
+                <a-radio value="1">系统发放</a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
+<!--              <a-input-number :min="1" v-model="model.receiveCount" style="width: 70px"></a-input-number>-->
+              <a-radio-group v-model:value="selectedReceiveCount">
+                <a-radio value="1">不限次</a-radio>
+                <a-radio value="2">一次</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
@@ -187,6 +206,8 @@
         goodsOptions: [],
         startAndEndTime: "",
         numRadio: "1",
+        selectedGoods: [],
+        selectedReceiveCount: "2",
       }
     },
     computed: {
@@ -211,7 +232,10 @@
           "numRadio": "1",
           "min": 0,
           "expireDay": 0,
-          "num": 0
+          "num": 0,
+          "way": "0",
+          "receiveCount": "2",
+
         };
         //弹窗出现的时候请求接口，获取商品列表
         httpAction("/ShoeCoupon/shoeCoupon/getGoodsTypeAndTitleList", null, "get").then((res) => {
@@ -250,7 +274,8 @@
             //满减金额
             let threshold = this.threshold;
             if (threshold === "1") {
-              this.model.min = 0;
+              // this.model.min = 0;
+              this.model = Object.assign(this.model, {"min": 0});
             } else if (threshold === "2") {
               if (this.model.num === "" || this.model.num === null || this.model.num === undefined) {
                 this.$message.warning("请填写最低使用金额")
@@ -261,13 +286,18 @@
             //使用范围
             let range = this.model.range;
             if (range === "1") {
-              this.model.rangeConfig = null;
+              // this.model.rangeConfig = null;
+              this.model = Object.assign(this.model, {"rangeConfig": null});
             } else if (range === "2") {
-              if (this.model.rangeConfig === "" || this.model.rangeConfig === null || this.model.rangeConfig === undefined) {
+              // if (this.model.rangeConfig === "" || this.model.rangeConfig === null || this.model.rangeConfig === undefined) {
+              if (this.selectedGoods.length < 1) {
                 this.$message.warning("请选择商品")
                 that.confirmLoading = false;
                 return false;
+              } else {
+                this.model.rangeConfig = this.selectedGoods.toString();
               }
+
             }
 
             //使用期限
@@ -280,24 +310,54 @@
               }
             } else if (expireType === "2") {
               let startAndEndTime = this.startAndEndTime;
-              console.log(startAndEndTime);
-              let startTime = startAndEndTime[0];
-              let endTime = startAndEndTime[1];
+              if (startAndEndTime.length <= 0) {
+                this.$message.warning("请选择日期和时间")
+                that.confirmLoading = false;
+                return false;
+              } else {
+                let startTime = startAndEndTime[0] + ":00";
+                let endTime = startAndEndTime[1] + ":00";
+                // this.model.startTime = startTime;
+                // this.model.endTime = endTime;
+                this.model = Object.assign(this.model, {"startTime": startTime, "endTime": endTime});
+              }
             }
 
-            console.log("the last line of defense");
+            //发放数量
+            let numRadio = this.numRadio;
+            if (numRadio === "1") {
+              // this.model.num = -1;
+              this.model = Object.assign(this.model, {"num": -1});
+            } else if (numRadio === "2") {
+              if (this.model.num === "" || this.model.num === null || this.model.num === undefined) {
+                this.$message.warning("请输入发放数量");
+                that.confirmLoading = false;
+                return false;
+              }
+            }
 
-            // httpAction(httpurl,this.model,method).then((res)=>{
-            //   if(res.success){
-            //     that.$message.success(res.message);
-            //     that.$emit('ok');
-            //   }else{
-            //     that.$message.warning(res.message);
-            //   }
-            // }).finally(() => {
-            //   that.confirmLoading = false;
-            // })
-            that.confirmLoading = false;
+            //用户可领取优惠券次数的判断
+            let receiveCount = this.selectedReceiveCount;
+            if (receiveCount === "1") {
+              this.model.receiveCount = "-1";
+            } else if (receiveCount === "2") {
+              this.model.receiveCount = "1";
+            }
+
+            // console.log("the last line of defense");
+            // console.log(this.model);
+
+            httpAction(httpurl,this.model,method).then((res)=>{
+              if(res.success){
+                that.$message.success(res.message);
+                that.$emit('ok');
+              }else{
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+            })
+            // that.confirmLoading = false;
           }
 
         })

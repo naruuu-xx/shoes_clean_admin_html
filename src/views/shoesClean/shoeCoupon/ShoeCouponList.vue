@@ -178,7 +178,16 @@
           {
             title:'剩余数量',
             align:"center",
-            dataIndex: 'remainNum'
+            dataIndex: 'remainNum',
+            customRender: (text) => {
+              let value = text;
+
+              if (text < 0) {
+                value = "不限量"
+              }
+
+              return value;
+            }
           },
           {
             title:'领取人数',
