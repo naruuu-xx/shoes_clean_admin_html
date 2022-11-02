@@ -226,27 +226,42 @@ export default {
         {
           title: ' 总收入',
           align: "center",
-          dataIndex: 'income'
+          dataIndex: 'income',
+          customRender: (text) => {
+            return (text * 0.01).toFixed(0);
+          }
         },
         {
           title: ' 账户金额',
           align: "center",
-          dataIndex: 'amount'
+          dataIndex: 'amount',
+          customRender: (text) => {
+            return (text * 0.01).toFixed(0);
+          }
         },
         {
           title: ' 可提现金额',
           align: "center",
-          dataIndex: 'withdrawalAmount'
+          dataIndex: 'withdrawalAmount',
+          customRender: (text) => {
+            return (text * 0.01).toFixed(0);
+          }
         },
         {
           title: ' 提现中金额',
           align: "center",
-          dataIndex: 'withdrawalingAmount'
+          dataIndex: 'withdrawalingAmount',
+          customRender: (text) => {
+            return (text * 0.01).toFixed(0);
+          }
         },
         {
           title: ' 冻结金额',
           align: "center",
-          dataIndex: 'frozenAmount'
+          dataIndex: 'frozenAmount',
+          customRender: (text) => {
+            return (text * 0.01).toFixed(0);
+          }
         },
         {
           title: ' 登录状态',
