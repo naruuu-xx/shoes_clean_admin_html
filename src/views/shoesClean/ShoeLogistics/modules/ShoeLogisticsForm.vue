@@ -14,10 +14,9 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerId">
-<!--              <a-input v-model="model.lockerId" placeholder="请输入机柜编码"  ></a-input>-->
-              <a-select v-model="model.lockerId">
-                <a-select-option v-for="i in lockerList" :value="i.lockerId+''" :key="i.lockerId">{{i.lockerCode}}</a-select-option>
+            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
+              <a-select v-model="model.lockerCodeList" mode="multiple">
+                <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.lockerCode}}</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -69,10 +68,10 @@
       return {
         confirmDirty: false,
         model:{
-          status:[1,0],
+          status:'1',
           password:'',
-          lockerId:'',
-          lockerCode:'',
+          lockerIdList:[],
+          lockerCodeList:[],
          },
         labelCol: {
           xs: { span: 24 },
@@ -94,7 +93,7 @@
            status: [
               { required: true, message: '请输入选择状态!'},
            ],
-          lockerId:[
+          lockerCodeList:[
             { required: true, message: '请输入机柜编码'},
           ],
           password: [{required: true,pattern:/^.{6,16}$/,message: '请输入6到16位任意字符!'},
@@ -125,12 +124,8 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
-        // record.lockerId = this.model.lockerId;
-        console.log(record);
-        console.log("codeId     :"+record.lockerId);
         this.model = Object.assign({}, record);
-        this.model.lockerId = record.lockerId.toString();
-        this.model.lockerCode = record.lockerCode;
+        //this.model.lockerCodeList = record.lockerCodeList;
         this.visible = true;
       },
       submitForm () {
@@ -148,6 +143,7 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
+            that.setModel();
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -189,6 +185,16 @@
             this.lockerList = res.result;
           }
         })
+      },
+      setModel(){
+        const that = this;
+        let lockerIdList = [];
+        for(let i = 0; i < that.lockerList.length; i++){
+          if(that.model.lockerCodeList.indexOf(that.lockerList[i].lockerCode) != -1){
+            lockerIdList.push(that.lockerList[i].lockerId);
+          }
+        }
+        that.model.lockerIdList = lockerIdList;
       }
     }
   }
