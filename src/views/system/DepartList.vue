@@ -78,7 +78,7 @@
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName" label="名称">
                 <a-input placeholder="请输入名称" v-model="model.departName" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code">
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="orgTypeHideFlg">
                 <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>
               </a-form-model-item>
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="所属区域">
@@ -122,7 +122,7 @@
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="手机号" prop="mobile">
                 <a-input placeholder="请输入手机号" v-model="model.mobile" />
               </a-form-model-item>
-              <a-form-model-item  :labelCol="labelCol" :wrapperCol="wrapperCol"  label="地址">
+              <a-form-model-item  :labelCol="labelCol" :wrapperCol="wrapperCol"  label="地址" :hidden="orgTypeHideFlg">
                 <a-input placeholder="请输入地址" v-model="model.address"/>
               </a-form-model-item>
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="备注">
@@ -140,9 +140,9 @@
             </a-empty>
           </a-card>
         </a-tab-pane>
-        <a-tab-pane tab="部门权限" key="2" forceRender>
-          <depart-auth-modal ref="departAuth"/>
-        </a-tab-pane>
+<!--        <a-tab-pane tab="部门权限" key="2" forceRender>-->
+<!--          <depart-auth-modal ref="departAuth"/>-->
+<!--        </a-tab-pane>-->
       </a-tabs>
 
     </a-col>
@@ -255,7 +255,8 @@
           importExcelUrl: "sys/sysDepart/importExcel",
         },
         orgCategoryDisabled:false,
-        oldDirectorUserIds:""
+        oldDirectorUserIds:"",
+        orgTypeHideFlg:true
       }
     },
     computed: {
@@ -398,6 +399,10 @@
         this.hiding = false
         let record = e.node.dataRef
         console.log('onSelect-record', record)
+        // 判断一级部门时，隐藏工厂特定编码和地址
+        this.validatorRules.code[0].required = record.orgType != 1;
+        this.orgTypeHideFlg = record.orgType == 1;
+
         this.currSelected = Object.assign({}, record)
         this.model = this.currSelected
         this.selectedKeys = [record.key]
