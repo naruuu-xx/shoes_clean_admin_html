@@ -22,8 +22,8 @@
     <a-spin :spinning="confirmLoading">
       <a-form-model ref="form" :model="model" :rules="validatorRules">
 
-        <a-form-model-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="username">
-          <a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>
+        <a-form-model-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
+          <a-input placeholder="请输入手机号码(账号)" v-model="model.phone" />
         </a-form-model-item>
 
         <template v-if="!model.id">
@@ -44,9 +44,7 @@
 <!--          <a-input placeholder="请输入工号" v-model="model.workNo" />-->
 <!--        </a-form-model-item>-->
 
-        <a-form-model-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
-          <a-input placeholder="请输入手机号码" v-model="model.phone" />
-        </a-form-model-item>
+
 
 <!--        <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
 <!--          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>-->
@@ -161,14 +159,12 @@
         disableSubmit:false,
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
-          username:[{required: true, message: '请输入用户账号!'},
-            {validator: this.validateUsername,}],
           password: [{required: true,pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
             {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{required: true, message: '请重新输入登录密码!',},
             { validator: this.compareToFirstPassword,}],
           realname:[{ required: true, message: '请输入用户名称!' }],
-          phone: [{required: true, message: '请输入手机号!'}, {validator: this.validatePhone}],
+          phone: [{required: true, message: '请输入手机号(账号)!'}, {validator: this.validatePhone}],
           email: [{validator: this.validateEmail}],
           roles:{},
           workNo:[ { required: true, message: '请输入工号' },
@@ -353,13 +349,13 @@
             obj.then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
+                that.close();
                 that.$emit('ok');
               }else{
                 that.$message.warning(res.message);
               }
             }).finally(() => {
               that.confirmLoading = false;
-              that.close();
             })
           }else{
             return false;
@@ -432,21 +428,6 @@
             callback("请输入正确格式的邮箱!")
           }
         }
-      },
-      validateUsername(rule, value, callback){
-        var params = {
-          tableName: 'sys_user',
-          fieldName: 'username',
-          fieldVal: value,
-          dataId: this.userId
-        };
-        duplicateCheck(params).then((res) => {
-          if (res.success) {
-            callback()
-          } else {
-            callback("用户名已存在!")
-          }
-        })
       },
       validateWorkNo(rule, value, callback){
         var params = {
