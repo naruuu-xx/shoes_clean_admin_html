@@ -21,7 +21,7 @@
           hasFeedback>
           <a-input id="departName" placeholder="请输入名称" v-model="model.departName"/>
         </a-form-model-item>
-        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code">
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="seen">
           <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>
         </a-form-model-item>
         <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="区域" hasFeedback>
@@ -75,7 +75,8 @@
         <a-form-model-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="地址">
+          label="地址"
+          :hidden="seen">
           <a-input placeholder="请输入地址" v-model="model.address"/>
         </a-form-model-item>
         <!--        <a-form-model-item-->
@@ -172,6 +173,8 @@ export default {
         this.dictDisabled = true;
       }
       this.edit(depart);
+      // 判断一级部门时，隐藏工厂特定编码和地址
+      this.validatorRules.code[0].required = depart != null;
     },
     edit(record) {
       this.visible = true;
@@ -183,6 +186,8 @@ export default {
       } else {
         this.model.orgCategory = '2';
       }
+      // 判断一级部门时，隐藏工厂特定编码和地址
+      this.validatorRules.code[0].required = record != null;
     },
     close() {
       this.$emit('close');
