@@ -2,23 +2,23 @@
   <a-card :bordered="false">
     <div>
       <span>取件范围</span><br/>
-      <span>上门取件范围:<a-input-number  placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 150px" :min="0" />km(以快递柜为中心,半径多少km可取件)</span>
+      <span>上门取件范围:<a-input-number  placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 150px" :min="0" size="small" />km(以快递柜为中心,半径多少km可取件)</span>
     </div>
     <a-divider />
     <div>
       <span>配送费设置</span><br/>
       <span>(1)用户配送费</span><br/>
-      <span>在配送范围内每单配送费为<a-input-number  placeholder="输入金额" style="width: 150px" v-model="userCourierCost" :min="0" />元。</span><br/>
-      <span>满<a-input-number  placeholder="输入金额" style="width: 150px" v-model="courierReduce" :min="0" />元免配送费。</span><br/>
+      <span>在配送范围内每单配送费为<a-input-number  placeholder="输入金额" style="width: 150px" v-model="userCourierCost" :min="0" size="small" />元。</span><br/>
+      <span>满<a-input-number  placeholder="输入金额" style="width: 150px" v-model="courierReduce" :min="0" size="small" />元免配送费。</span><br/>
       <span>(2)配送员配送费</span><br/>
-      <span>同一订单第一双鞋配送费为<a-input-number  placeholder="输入金额" style="width: 150px" v-model="courierCost" :min="0" />元,每增加一双鞋增加配送费为
-        <a-input-number  placeholder="输入金额" style="width: 150px" v-model="courierCostIncrease" :min="0" />元。
+      <span>同一订单第一双鞋配送费为<a-input-number  placeholder="输入金额" style="width: 150px" v-model="courierCost" :min="0" size="small" />元,每增加一双鞋增加配送费为
+        <a-input-number  placeholder="输入金额" style="width: 150px" v-model="courierCostIncrease" :min="0" size="small" />元。
       </span>
     </div>
     <a-divider />
     <div>
       <span>提现设置</span><br/>
-      <span>余额冻结天数:<a-input-number  placeholder="输入天数" style="width: 150px" v-model="freezingTime" :min="0" />天</span><br/>
+      <span>余额冻结天数:<a-input-number  placeholder="输入天数" style="width: 150px" v-model="freezingTime" :min="0" size="small" />天</span><br/>
     </div>
     <a-button type="primary" @click="save">保存</a-button>
   </a-card>
@@ -108,4 +108,7 @@ export default {
 </script>
 <style scoped>
 @import '~@assets/less/common.less';
+  span{
+    display: block;
+  }
 </style>
