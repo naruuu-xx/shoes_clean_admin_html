@@ -222,7 +222,8 @@
           }
         ],
         url: {
-          list: "/ShoeBag/shoeBag/list",
+          // list: "/ShoeBag/shoeBag/list",
+          list: "/ShoeBag/shoeBag/queryList",
           delete: "/ShoeBag/shoeBag/delete",
           deleteBatch: "/ShoeBag/shoeBag/deleteBatch",
           exportXlsUrl: "/ShoeBag/shoeBag/exportXls",
