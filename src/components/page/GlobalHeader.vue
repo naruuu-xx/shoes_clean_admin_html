@@ -18,7 +18,7 @@
         @click="toggle"/>
 
       <span v-if="device === 'desktop'">欢迎进入 鞋蜂后台管理系统</span>
-      <span v-else>Jeecg-Boot</span>
+      <span v-else>鞋蜂后台管理系统</span>
 
       <user-menu :theme="theme"/>
     </div>
