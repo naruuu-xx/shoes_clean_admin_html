@@ -68,6 +68,7 @@
       return {
         confirmDirty: false,
         model:{
+          logisticsId:'',
           status:'1',
           password:'',
           lockerIdList:[],
@@ -115,7 +116,6 @@
       },
     },
     created () {
-      this.getLockerList();
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
@@ -126,6 +126,7 @@
       edit (record) {
         this.model = Object.assign({}, record);
         //this.model.lockerCodeList = record.lockerCodeList;
+        this.getLockerList();
         this.visible = true;
       },
       submitForm () {
@@ -180,7 +181,7 @@
         this.confirmDirty = this.confirmDirty || !!value
       },
       getLockerList(){
-        httpAction("/shoes/shoeLocker/lockerList", null, "get").then((res) => {
+        httpAction("/shoes/shoeLogistics/lockerList?logisticsId=" + this.model.logisticsId, "", "get").then((res) => {
           if (res.success) {
             this.lockerList = res.result;
           }
