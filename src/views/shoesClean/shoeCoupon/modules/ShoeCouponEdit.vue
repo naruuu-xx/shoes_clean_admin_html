@@ -1,127 +1,138 @@
 <template>
-  <a-spin :spinning="confirmLoading">
-    <j-form-container :disabled="formDisabled">
-      <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
-        <div class="diyDiv">
-          <a-row>
+  <j-modal
+    :title="title"
+    :width="width"
+    :visible="visible"
+    switchFullscreen
+    @ok="submitForm"
+    :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
+    @cancel="handleCancel"
+    cancelText="关闭">
 
-            <a-col :span="24">
-              <a-form-model-item label="优惠券名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-                <a-input v-model="model.name" placeholder="请输入优惠券名称" style="width: 200px" ></a-input>
-              </a-form-model-item>
-            </a-col>
-            <a-col :span="24">
-              <a-form-model-item label="优惠券面额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reduce">
-                <a-input-number :min="0" v-model="model.reduce" placeholder="请输入面额" style="width: 100px" />
-              </a-form-model-item>
-            </a-col>
-            <a-col :span="24">
-              <a-form-model-item label="使用门槛" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="min">
-                <a-radio-group v-model:value="threshold">
-                  <a-radio value="1">无门槛</a-radio>
-                  <a-radio value="2">满&nbsp;<a-input-number :min="0" v-model="model.min" style="width: 70px"></a-input-number>&nbsp;元可用</a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
+    <a-spin :spinning="confirmLoading">
+      <j-form-container :disabled="formDisabled">
+        <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
+          <div class="diyDiv">
+            <a-row>
 
-            <a-col :span="24">
-              <a-form-model-item label="适用范围" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="range">
-                <a-radio-group v-model:value="model.range">
-                  <a-radio value="1">通用</a-radio>
-                  <a-radio value="2">指定商品&nbsp;
-                    <a-select
-                      v-model:value="selectedGoods"
-                      mode="multiple"
-                      style="width: 400px;"
-                      placeholder="请选择"
-                      :options="goodsOptions"
-                      @change="handleChange"
-                    >
-                    </a-select>
-                  </a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
-            <a-col :span="24">
-              <a-form-model-item label="使用期限" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="expireType">
-  <!--              <a-input-number v-model="model.expireType" placeholder="请输入过期类型:1=领取后生效,2=固定时间" style="width: 100%" />-->
-                <a-radio-group v-model:value="model.expireType">
-                  <a-radio value="1">根据领取时间<br>
-                    领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数"></a-input-number>&nbsp;天后失效
-                  </a-radio>
-                  <a-radio value="2">自行设定时间<br>
-                    <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
-                  </a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="优惠券名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+                  <a-input v-model="model.name" placeholder="请输入优惠券名称" style="width: 200px" ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="优惠券面额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reduce">
+                  <a-input-number :min="0" v-model="model.reduce" placeholder="请输入面额" style="width: 100px" />
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="使用门槛" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="min">
+                  <a-radio-group v-model:value="threshold">
+                    <a-radio value="1">无门槛</a-radio>
+                    <a-radio value="2">满&nbsp;<a-input-number :min="0" v-model="model.min" style="width: 70px"></a-input-number>&nbsp;元可用</a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
 
-            <a-col :span="24">
-              <a-form-model-item label="用户类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="obj">
-                <a-radio-group v-model:value="model.obj">
-                  <a-radio value="new">仅新用户</a-radio>
-                  <a-radio value="old">仅老用户</a-radio>
-                  <a-radio value="all">全部</a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="适用范围" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="range">
+                  <a-radio-group v-model:value="model.range">
+                    <a-radio value="1">通用</a-radio>
+                    <a-radio value="2">指定商品&nbsp;
+                      <a-select
+                        v-model:value="selectedGoods"
+                        mode="multiple"
+                        style="width: 400px;"
+                        placeholder="请选择"
+                        :options="goodsOptions"
+                        @change="handleChange"
+                      >
+                      </a-select>
+                    </a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="使用期限" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="expireType">
+    <!--              <a-input-number v-model="model.expireType" placeholder="请输入过期类型:1=领取后生效,2=固定时间" style="width: 100%" />-->
+                  <a-radio-group v-model:value="model.expireType">
+                    <a-radio value="1">根据领取时间<br>
+                      领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数"></a-input-number>&nbsp;天后失效
+                    </a-radio>
+                    <a-radio value="2">自行设定时间<br>
+                      <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
+                    </a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
 
-            <a-col :span="24">
-              <a-form-model-item label="发放数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
-                <a-radio-group v-model:value="numRadio">
-                  <a-radio value="1">不限量</a-radio>
-                  <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px"></a-input-number>&nbsp;张</a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="用户类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="obj">
+                  <a-radio-group v-model:value="model.obj">
+                    <a-radio value="new">仅新用户</a-radio>
+                    <a-radio value="old">仅老用户</a-radio>
+                    <a-radio value="all">全部</a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
 
-            <a-col :span="24">
-              <a-form-model-item label="发放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="way">
-                <a-radio-group v-model:value="model.way">
-                  <a-radio value="0">自行领取</a-radio>
-                  <a-radio value="1">系统发放</a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="发放数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
+                  <a-radio-group v-model:value="numRadio">
+                    <a-radio value="1">不限量</a-radio>
+                    <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px"></a-input-number>&nbsp;张</a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
 
-            <a-col :span="24">
-              <a-form-model-item label="用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
-  <!--              <a-input-number :min="1" v-model="model.receiveCount" style="width: 70px"></a-input-number>-->
-                <a-radio-group v-model:value="selectedReceiveCount">
-                  <a-radio value="1">不限次</a-radio>
-                  <a-radio value="2">一次</a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="发放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="way">
+                  <a-radio-group v-model:value="model.way">
+                    <a-radio value="0">自行领取</a-radio>
+                    <a-radio value="1">系统发放</a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
 
-  <!--          <a-col :span="24">-->
-  <!--            <a-form-model-item label="状态:0=停止发放,1=正常发放" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">-->
-  <!--              <a-input-number v-model="model.status" placeholder="请输入状态:0=停止发放,1=正常发放" style="width: 100%" />-->
-  <!--            </a-form-model-item>-->
-  <!--          </a-col>-->
-            <a-col :span="24">
-              <a-form-model-item label="使用规则" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rules">
-                <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则" />
-              </a-form-model-item>
-            </a-col>
-  <!--          <a-col :span="24">-->
-  <!--            <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">-->
-  <!--              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%" />-->
-  <!--            </a-form-model-item>-->
-  <!--          </a-col>-->
-            <a-col :span="24">
-              <a-form-model-item label="发放状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-                <a-radio-group v-model:value="model.status">
-                  <a-radio value="0">启用</a-radio>
-                  <a-radio value="1">停用</a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-        </div>
-      </a-form-model>
-    </j-form-container>
-  </a-spin>
+              <a-col :span="24">
+                <a-form-model-item label="用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
+    <!--              <a-input-number :min="1" v-model="model.receiveCount" style="width: 70px"></a-input-number>-->
+                  <a-radio-group v-model:value="selectedReceiveCount">
+                    <a-radio value="1">不限次</a-radio>
+                    <a-radio value="2">一次</a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
+
+    <!--          <a-col :span="24">-->
+    <!--            <a-form-model-item label="状态:0=停止发放,1=正常发放" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">-->
+    <!--              <a-input-number v-model="model.status" placeholder="请输入状态:0=停止发放,1=正常发放" style="width: 100%" />-->
+    <!--            </a-form-model-item>-->
+    <!--          </a-col>-->
+              <a-col :span="24">
+                <a-form-model-item label="使用规则" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rules">
+                  <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则" />
+                </a-form-model-item>
+              </a-col>
+    <!--          <a-col :span="24">-->
+    <!--            <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">-->
+    <!--              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%" />-->
+    <!--            </a-form-model-item>-->
+    <!--          </a-col>-->
+              <a-col :span="24">
+                <a-form-model-item label="发放状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
+                  <a-radio-group v-model:value="model.status">
+                    <a-radio value="0">启用</a-radio>
+                    <a-radio value="1">停用</a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </div>
+        </a-form-model>
+      </j-form-container>
+    </a-spin>
+  </j-modal>
 </template>
 
 <script>
@@ -131,7 +142,7 @@
   import JDateTimeDIY from "./JDateTimeDIY";
 
   export default {
-    name: 'ShoeCouponForm',
+    name: 'ShoeCouponEdit',
     components: {
       JDateTimeDIY
     },
@@ -145,6 +156,10 @@
     },
     data () {
       return {
+        title:'编辑优惠券',
+        width:1200,
+        visible: false,
+        disableSubmit: false,
         model:{
          },
         labelCol: {
@@ -259,6 +274,9 @@
       edit (record) {
         this.model = Object.assign({}, record);
         this.visible = true;
+
+        //单选框的判断赋值
+
       },
       submitForm () {
         const that = this;
@@ -354,27 +372,30 @@
               this.model.receiveCount = "1";
             }
 
-            // console.log("==========the last line of defense==========");
-            // console.log(this.model);
+            console.log("==========the last line of defense==========");
+            console.log(this.model);
 
-            httpAction(httpurl,this.model,method).then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
-              }else{
-                that.$message.warning(res.message);
-              }
-            }).finally(() => {
-              that.confirmLoading = false;
-            })
-            // that.confirmLoading = false;
+            // httpAction(httpurl,this.model,method).then((res)=>{
+            //   if(res.success){
+            //     that.$message.success(res.message);
+            //     that.$emit('ok');
+            //   }else{
+            //     that.$message.warning(res.message);
+            //   }
+            // }).finally(() => {
+            //   that.confirmLoading = false;
+            // })
+            that.confirmLoading = false;
           }
 
         })
       },
       handleChange(){
         console.log("有改变")
-      }
+      },
+      close(){
+        this.visible = false;
+      },
     }
   }
 </script>

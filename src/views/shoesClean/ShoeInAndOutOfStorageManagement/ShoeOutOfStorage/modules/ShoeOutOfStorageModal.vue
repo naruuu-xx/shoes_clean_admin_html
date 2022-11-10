@@ -11,7 +11,7 @@
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleOutOfStorage" />
+          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleOutOfStorage" ref="autoInput" />
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
@@ -64,7 +64,7 @@ export default {
   data() {
     return {
       visible: false,
-      title: '入库',
+      title: '出库',
       no: "",
       data: {},
       imageList: [],
@@ -78,12 +78,17 @@ export default {
   methods: {
     show(record) {
       this.visible = true;
+      this.$nextTick(()=> {
+        this.$refs.autoInput.focus();
+      })
     },
     handleCancel() {
       this.visible = false;
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+      //关闭弹窗并刷新列表
+      this.$emit('ok');
     },
     showImage(item) {
       this.showImageModal = true;
@@ -104,6 +109,11 @@ export default {
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {
           if (res.code !== 200) {
             this.$message.warning(res.message);
+            //清空输入框并重新聚焦
+            this.no = "";
+            this.$nextTick(()=> {
+              this.$refs.autoInput.focus();
+            })
             return false;
           } else {
             this.data = {
@@ -115,6 +125,11 @@ export default {
             this.imageList = JSON.parse(res.result.orderImages);
             this.shoeOrderInfo = true;
             this.$message.success(res.message);
+            //清空输入框并重新聚焦
+            this.no = "";
+            this.$nextTick(()=> {
+              this.$refs.autoInput.focus();
+            })
           }
         })
       }

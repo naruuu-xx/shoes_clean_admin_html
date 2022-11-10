@@ -186,6 +186,14 @@
           //   align:"center",
           //   dataIndex: 'lockerId'
           // },
+          // {
+          //   title:'机柜类型',
+          //   align:"center",
+          //   dataIndex: 'type',
+          //   customRender: (text) => {
+          //     return filterDictTextByCache('shoe_locker_type', text);
+          //   },
+          // },
           {
             title:'机柜编码',
             align:"center",

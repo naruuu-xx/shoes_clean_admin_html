@@ -30,14 +30,14 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row>
-            <a-col :span="24">
-              <a-form-item label="2.用户协议：">
-<!--                <a-textarea v-model:value="model.userAgreement" style="width: 100%"/>-->
-                <j-editor v-model="model.userAgreement" style="width: 1300px"/>
-              </a-form-item>
-            </a-col>
-          </a-row>
+<!--          <a-row>-->
+<!--            <a-col :span="24">-->
+<!--              <a-form-item label="2.用户协议：">-->
+<!--&lt;!&ndash;                <a-textarea v-model:value="model.userAgreement" style="width: 100%"/>&ndash;&gt;-->
+<!--                <j-editor v-model="model.userAgreement" style="width: 1300px"/>-->
+<!--              </a-form-item>-->
+<!--            </a-col>-->
+<!--          </a-row>-->
         </div>
 
         <div style="margin-bottom: 20px">
