@@ -104,6 +104,9 @@
     </div>
 
     <shoe-coupon-modal ref="modalForm" @ok="modalFormOk"></shoe-coupon-modal>
+
+    <shoe-coupon-edit ref="shoeCouponEdit" @ok="modalFormOk"></shoe-coupon-edit>
+
   </a-card>
 </template>
 
@@ -114,12 +117,14 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeCouponModal from './modules/ShoeCouponModal'
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
+  import ShoeCouponEdit from "./modules/ShoeCouponEdit";
 
   export default {
     name: 'ShoeCouponList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeCouponModal
+      ShoeCouponModal,
+      ShoeCouponEdit
     },
     data () {
       return {

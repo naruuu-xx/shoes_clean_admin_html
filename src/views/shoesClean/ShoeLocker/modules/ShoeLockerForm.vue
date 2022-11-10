@@ -26,6 +26,11 @@
                 <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 10%"  autocomplete="off" :disabled="true"/>
               </a-form-model-item>
             </a-col>
+<!--            <a-col :span="24">-->
+<!--              <a-form-model-item label="机柜类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">-->
+<!--                <j-dict-select-tag type="radio" v-model="model.type" dictCode="shoe_locker_type" placeholder="请选择机柜类型"/>-->
+<!--              </a-form-model-item>-->
+<!--            </a-col>-->
             <a-col :span="24">
               <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
                 <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
@@ -55,12 +60,12 @@
             </a-col>
             <a-col :span="24">
               <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="longitude">
-                <a-input-number v-model="model.longitude" placeholder="请输入经度" style="width: 100%" id="c-lng" disabled="true"/>
+                <a-input-number v-model="model.longitude" placeholder="请输入经度" style="width: 100%" id="c-lng" :disabled="false"/>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
               <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="latitude">
-                <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat" disabled="true"/>
+                <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat" :disabled="false"/>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
@@ -137,6 +142,9 @@ export default {
         ],
         orgCode: [
           {required: true, message: '请选择区域!'},
+        ],
+        type: [
+          {required: true, message: '请选择机柜类型'},
         ],
         status: [
           {required: true, message: '请选择状态'},
@@ -220,6 +228,7 @@ export default {
       // this.edit(this.modelDefault);
       this.model = {
         status: 1,
+        type: "real",
       };
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
@@ -275,7 +284,8 @@ export default {
             "address": this.model.address,
             "longitude": this.model.longitude,
             "latitude": this.model.latitude,
-            "num": this.model.num
+            "num": this.model.num,
+            "type": this.model.type,
           }
 
           // console.log(data);
