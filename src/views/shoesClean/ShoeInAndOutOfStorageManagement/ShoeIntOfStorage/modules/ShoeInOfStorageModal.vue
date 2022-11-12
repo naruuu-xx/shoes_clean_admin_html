@@ -11,7 +11,7 @@
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo" />
+          <a-input style="height: 120px" v-model:value="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo"  ref="autoInput"/>
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
@@ -82,6 +82,9 @@ export default {
   methods: {
     show(record) {
       this.visible = true;
+      this.$nextTick(()=> {
+        this.$refs.autoInput.focus();
+      })
     },
     handleCancel() {
       this.visible = false;
@@ -105,6 +108,11 @@ export default {
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryOrderInfoByBagCode?bagCode=" + this.bagCode, null, "get").then((res) => {
           if (res.code !== 200) {
             this.$message.warning(res.message);
+            //清空输入框并重新聚焦
+            this.bagCode = "";
+            this.$nextTick(()=> {
+              this.$refs.autoInput.focus();
+            })
             return false;
           } else {
             this.data = {
@@ -116,6 +124,11 @@ export default {
             }
             this.imageList = JSON.parse(res.result.orderImages);
             this.shoeOrderInfo = true;
+            //清空输入框并重新聚焦
+            this.bagCode = "";
+            this.$nextTick(()=> {
+              this.$refs.autoInput.focus();
+            })
           }
         })
       }
