@@ -4,11 +4,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-          <!--            <a-form-item label="机柜编码">-->
-          <!--              <a-input placeholder="请输入机柜编码" v-model="queryParam.lockerCode"></a-input>-->
-          <!--            </a-form-item>-->
-          <!--          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 姓名">
               <a-input placeholder="请输入 姓名" v-model="queryParam.name" autocomplete="off"></a-input>
@@ -50,8 +45,6 @@
       <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
       <!--        <a-button type="primary" icon="import">导入</a-button>-->
       <!--      </a-upload>-->
-      <!-- 高级查询区域 -->
-      <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel">
@@ -199,9 +192,12 @@ export default {
           dataIndex: 'name'
         },
         {
-          title: '机柜编码',
+          title: '机柜数量',
           align: "center",
-          dataIndex: 'lockerCode'
+          dataIndex: 'lockerCodeList',
+          customRender: (text) => {
+                 return text.length;
+               },
         },
         {
           title: ' 电话',
@@ -304,7 +300,6 @@ export default {
     }
   },
   created() {
-    this.getSuperFieldList();
   },
   computed: {
     importExcelUrl: function () {
@@ -313,24 +308,6 @@ export default {
   },
   methods: {
     initDictConfig() {
-    },
-    getSuperFieldList() {
-      let fieldList = [];
-      fieldList.push({type: 'int', value: 'courierId', text: ' ID', dictCode: ''})
-      fieldList.push({type: 'string', value: 'lockerCode', text: '机柜编码', dictCode: ''})
-      fieldList.push({type: 'string', value: 'name', text: ' 姓名', dictCode: ''})
-      fieldList.push({type: 'string', value: 'phone', text: ' 电话（账号）', dictCode: ''})
-      fieldList.push({type: 'string', value: 'idcard', text: ' 身份证', dictCode: ''})
-      fieldList.push({type: 'string', value: 'password', text: ' 密码', dictCode: ''})
-      fieldList.push({type: 'int', value: 'num', text: ' 总配送单数', dictCode: ''})
-      fieldList.push({type: 'int', value: 'income', text: ' 总收入', dictCode: ''})
-      fieldList.push({type: 'int', value: 'amount', text: ' 账户金额', dictCode: ''})
-      fieldList.push({type: 'int', value: 'withdrawal', text: ' 提现中金额', dictCode: ''})
-      fieldList.push({type: 'int', value: 'frozenAmount', text: ' 冻结金额', dictCode: ''})
-      fieldList.push({type: 'int', value: 'status', text: ' 状态:0=禁止登录,1=正常', dictCode: ''})
-      fieldList.push({type: 'int', value: 'delFlag', text: ' 删除状态:0=正常,1=删除', dictCode: ''})
-      fieldList.push({type: 'datetime', value: 'createTime', text: ' 加入时间'})
-      this.superFieldList = fieldList
     },
     handleChangePassword(phone, courierId) {
       this.$refs.passwordmodal.show(phone, courierId);
