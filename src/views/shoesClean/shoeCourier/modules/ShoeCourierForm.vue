@@ -24,9 +24,9 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerId">
-              <a-select v-model="model.lockerId">
-                <a-select-option v-for="i in lockerList" :value="i.lockerId+''" :key="i.lockerId">{{i.lockerCode}}</a-select-option>
+            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
+              <a-select v-model="model.lockerCodeList" mode="multiple">
+                <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.lockerCode}}</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -138,7 +138,7 @@
            delFlag: [
               { required: true, message: '请选择 删除状态!'},
            ],
-          lockerId: [
+          lockerCodeList: [
               { required: true, message: '请选择快递柜!'},
            ],
         },
@@ -178,7 +178,6 @@
       },
       edit (record) {
         this.model = Object.assign({}, record);
-        this.model.lockerId = record.lockerId.toString();
         this.model.lockerCode = record.lockerCode;
         this.visible = true;
       },
@@ -197,7 +196,7 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-
+            that.setModel();
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -217,6 +216,16 @@
             this.lockerList = res.result;
           }
         })
+      },
+      setModel(){
+        const that = this;
+        let lockerIdList = [];
+        for(let i = 0; i < that.lockerList.length; i++){
+          if(that.model.lockerCodeList.indexOf(that.lockerList[i].lockerCode) != -1){
+            lockerIdList.push(that.lockerList[i].lockerId);
+          }
+        }
+        that.model.lockerIdList = lockerIdList;
       }
     }
   }
