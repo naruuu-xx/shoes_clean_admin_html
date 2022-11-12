@@ -26,7 +26,7 @@
           <a-col :span="24">
             <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
               <a-select v-model="model.lockerCodeList" mode="multiple">
-                <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.lockerCode}}</a-select-option>
+                <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
