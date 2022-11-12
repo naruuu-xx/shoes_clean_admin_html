@@ -38,7 +38,7 @@
           <a-tab-pane tab="用户信息" key="2">
             <Dept-User-Info ref="DeptUserInfo" @clearSelectedDepartKeys="clearSelectedDepartKeys"></Dept-User-Info>
           </a-tab-pane>
-          <a-tab-pane tab="部门角色" key="3" forceRender>
+          <a-tab-pane tab="区域角色" key="3" forceRender>
             <dept-role-info ref="DeptRoleInfo" @clearSelectedDepartKeys="clearSelectedDepartKeys"/>
           </a-tab-pane>
         </a-tabs>
