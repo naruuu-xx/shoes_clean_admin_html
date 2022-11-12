@@ -79,6 +79,8 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
+          <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.couponId)">
             <a>删除</a>
           </a-popconfirm>
@@ -146,7 +148,7 @@
             align:"center",
             dataIndex: 'reduce',
             customRender: (text) => {
-              return (text * 0.01).toFixed(0);
+              return (text * 0.01).toFixed(2);
             }
           },
           {
@@ -158,7 +160,7 @@
               if (text < 1) {
                 result = "无门槛";
               } else {
-                result = (text * 0.01).toFixed(0);
+                result = (text * 0.01).toFixed(2);
               }
               return result;
             }
@@ -270,6 +272,9 @@
         fieldList.push({type:'string',value:'addUserId',text:'添加人id'})
         fieldList.push({type:'string',value:'editUserId',text:'最后修改人id（首次添加为添加人id）'})
         this.superFieldList = fieldList
+      },
+      handleEdit(record) {
+        this.$refs.shoeCouponEdit.edit(record);
       }
     }
   }

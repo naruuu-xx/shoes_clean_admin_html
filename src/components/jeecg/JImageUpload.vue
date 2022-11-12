@@ -48,7 +48,7 @@
     name: 'JImageUpload',
     data(){
       return {
-        uploadAction:window._CONFIG['domianURL']+"/sys/common/upload",
+        uploadAction:window._CONFIG['domianURL']+"/sys/oss/file/upload",
         uploadLoading:false,
         picUrl:false,
         headers:{},
@@ -67,7 +67,7 @@
       bizPath:{
         type:String,
         required:false,
-        default:"temp"
+        default:"upload"
       },
       value:{
         type:[String,Array],
