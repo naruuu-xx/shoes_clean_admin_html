@@ -120,7 +120,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)" >编辑</a>
 
           <a-divider type="vertical" />
 
@@ -166,8 +166,8 @@
   import shoeLockerGridModal from './modules/shoeLockerGridModal'
   import Area from '@/components/_util/Area'
   import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
-  import {mapGetters} from 'vuex';
   import {httpAction} from "../../../api/manage";
+  import {mapGetters} from 'vuex';
 
   export default {
     name: 'ShoeLockerList',
@@ -290,6 +290,7 @@
     created() {
       this.pcaData = new Area()
     this.getSuperFieldList();
+      console.log(this.userInfo());
     },
     computed: {
       importExcelUrl: function(){
@@ -297,6 +298,7 @@
       },
     },
     methods: {
+      ...mapGetters(["userInfo"]),
       getPcaText(code){
         return this.pcaData.getText(code);
       },
@@ -329,11 +331,10 @@
           "devicenum":lockerCode
         };
         httpAction("/api/IoT/openAllDoor", data, 'post').then((res)=>{
-          let json = JSON.parse(res);
-          if (json.code === 0) {
+          if(res.code === 0){
             that.$message.success("开门成功")
           } else {
-            that.$message.warning(json.msg)
+            that.$message.warning(res.message);
           }
         })
       }
