@@ -91,6 +91,9 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+      this.bagCode = "";
+      //关闭弹窗并刷新列表
+      this.$emit('ok');
     },
     showImage(item) {
       this.showImageModal = true;
