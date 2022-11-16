@@ -118,7 +118,7 @@
         <div class="table-operator" :md="24" :sm="24">
           <a-button @click="handleAdd2" type="primary" icon="plus" style="margin-top: 16px">新增用户</a-button>
           <!--<a-button @click="handleEdit2" type="primary" icon="edit" style="margin-top: 16px">用户编辑</a-button>-->
-          <a-button @click="handleAddUserRole" type="primary" icon="plus" style="margin-top: 16px">已有用户</a-button>
+<!--          <a-button @click="handleAddUserRole" type="primary" icon="plus" style="margin-top: 16px">已有用户</a-button>-->
 
           <a-dropdown v-if="selectedRowKeys2.length > 0">
             <a-menu slot="overlay">
