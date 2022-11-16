@@ -80,6 +80,7 @@
                 <a-radio-group v-model:value="model.way">
                   <a-radio value="0">自行领取</a-radio>
                   <a-radio value="1">系统发放</a-radio>
+                  <a-radio value="2">卡包</a-radio>
                 </a-radio-group>
               </a-form-model-item>
             </a-col>
