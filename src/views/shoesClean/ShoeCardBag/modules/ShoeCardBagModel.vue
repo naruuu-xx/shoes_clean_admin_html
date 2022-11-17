@@ -37,7 +37,6 @@ export default {
     },
     edit (record) {
       this.visible=true
-      this.disableSubmit = true
       this.$nextTick(()=>{
         this.$refs.realForm.edit(record);
       })

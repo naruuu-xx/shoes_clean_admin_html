@@ -1,32 +1,32 @@
 <template>
   <a-spin :spinning="confirmLoading">
-    <j-form-container :disabled="formDisabled">
+    <j-form-container>
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <div>
           <a-row>
 
             <a-col :span="24">
               <a-form-model-item label="卡包名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-                <a-input v-model="model.name" placeholder="请输入卡包名称" style="width: 200px" :maxLength="50"></a-input>
+                <a-input v-model="model.name" placeholder="请输入卡包名称" style="width: 200px" :maxLength="50" :disabled="editDisabled"></a-input>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24" >
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="优惠卷选择">
-                <a-button class="editable-add-btn" @click="handleAdd">
+                <a-button class="editable-add-btn" @click="handleAdd" :disabled="editDisabled">
                   新增
                 </a-button>
                 <a-table bordered :data-source="model.cardCouponList" :columns="columns">
                   <template slot="couponId" slot-scope="text,index, record" prop="couponId">
-                    <a-select :text="text" @change="onCellChange(record, 'couponId', $event)" v-if="!formDisabled">
+                    <a-select :text="text" @change="onCellChange(record, 'couponId', $event)" v-if="!editDisabled">
                       <a-select-option v-for="i in couponList" :value="i.couponId" :key="i.couponId" >{{i.name}}</a-select-option>
                     </a-select>
                   </template>
                   <template slot="name" slot-scope="text,index, record" prop="name">
-                    <template v-if="formDisabled">{{text}}</template>
+                    <template v-if="editDisabled">{{text}}</template>
                   </template>
                   <template slot = "num" slot-scope="text,index, record" prop="num">
-                    <a-input-number defaultValue="1" :min="1" :step="1" :text="text" placeholder="请输入数量" style="width: 100px" @change="onCellChange(record,'num',$event)" v-if="!formDisabled"/>
+                    <a-input-number defaultValue="1" :min="1" :step="1" :text="text" placeholder="请输入数量" style="width: 100px" @change="onCellChange(record,'num',$event)" v-if="!editDisabled"/>
                     <template v-else>{{text}}</template>
                   </template>
                   <template slot="operation" slot-scope="text, record">
@@ -40,56 +40,56 @@
 
             <a-col :span="24">
               <a-form-model-item label="活动时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="startAndEndTime">
-                <a-range-picker format="YYYY-MM-DD HH:mm" v-model="model.startAndEndTime"/>
+                <a-range-picker format="YYYY-MM-DD HH:mm" v-model="model.startAndEndTime" :disabled="editDisabled"/>
 <!--                <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="model.startAndEndTime"/>-->
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="卡包数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
-                <a-input-number :min="1" :step="1" v-model="model.num" placeholder="请输入数量" style="width: 100px" />
+                <a-input-number :min="1" :step="1" v-model="model.num" placeholder="请输入数量" style="width: 100px"/>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="同一用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
-                <a-input-number :min="1" :step="1" v-model="model.receiveCount" placeholder="请输入次数" style="width: 100px" />
+                <a-input-number :min="1" :step="1" v-model="model.receiveCount" placeholder="请输入次数" style="width: 100px" :disabled="editDisabled"/>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="背景图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="image">
-                <j-image-upload v-model="model.image" :isMultiple="false" text="上传"></j-image-upload>
+                <j-image-upload v-model="model.image" :isMultiple="false" text="上传" :disabled="editDisabled"></j-image-upload>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="领取成功回复内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="successMessage">
-                <a-input v-model="model.successMessage" placeholder="请输入内容"  :maxLength="255"></a-input>
+                <a-input v-model="model.successMessage" placeholder="请输入内容"  :maxLength="255" :disabled="editDisabled"></a-input>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="重复领取回复内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="repeatMessage">
-                <a-input v-model="model.repeatMessage" placeholder="请输入内容"  :maxLength="255"></a-input>
+                <a-input v-model="model.repeatMessage" placeholder="请输入内容"  :maxLength="255" :disabled="editDisabled"></a-input>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="卡包已被领取完回复内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="failMessage">
-                <a-input v-model="model.failMessage" placeholder="请输入内容"  :maxLength="255"></a-input>
+                <a-input v-model="model.failMessage" placeholder="请输入内容"  :maxLength="255" :disabled="editDisabled"></a-input>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="未到领取时间回复内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="timeBeforeMessage">
-                <a-input v-model="model.timeBeforeMessage" placeholder="请输入内容"  :maxLength="255"></a-input>
+                <a-input v-model="model.timeBeforeMessage" placeholder="请输入内容"  :maxLength="255" :disabled="editDisabled"></a-input>
               </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="领取时间结束回复内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="timeAfterMessage">
-                <a-input v-model="model.timeAfterMessage" placeholder="请输入内容"  :maxLength="255"></a-input>
+                <a-input v-model="model.timeAfterMessage" placeholder="请输入内容"  :maxLength="255" :disabled="editDisabled"></a-input>
               </a-form-model-item>
             </a-col>
           </a-row>
@@ -109,8 +109,9 @@ export default {
   data () {
     return {
       confirmLoading: false,
-      formDisabled: false,
+      editDisabled: false,
       model:{
+        cardBagId:"",
         name:"",
         startAndEndTime:[],
         startTime:null,
@@ -192,6 +193,10 @@ export default {
         },
       ],
       couponList: [],
+      url: {
+        add: "/shoes/ShoeCardBag/add",
+        edit: "/shoes/ShoeCardBag/edit",
+      }
     }
   },
   created(){},
@@ -202,6 +207,7 @@ export default {
     add () {
       //隐藏名称
       this.columns = this.columns.filter(col => col.dataIndex !== "name");
+      this.editDisabled = false;
     },
     edit (record) {
       this.model = Object.assign({}, record);
@@ -209,16 +215,22 @@ export default {
       //隐藏下拉列表,操作
       this.columns = this.columns.filter(col => col.dataIndex !== "couponId");
       this.columns = this.columns.filter(col => col.dataIndex !== "operation");
-      this.formDisabled = true;
+      this.editDisabled = true;
     },
     submitForm () {
       const that = this;
       // 触发表单验证
       this.$refs.form.validate(valid => {
         if (valid && that.cardCouponListCheck()) {
-          that.model.startTime = that.model.startAndEndTime[0].format("YYYY-MM-DD HH:mm:ss");
-          that.model.endTime = that.model.startAndEndTime[1].format("YYYY-MM-DD HH:mm:ss");
-          httpAction("/shoes/ShoeCardBag/add",this.model,"post").then((res)=>{
+          let httpurl = '';
+          if(that.model.cardBagId){
+            httpurl = that.url.edit;
+          }else{
+            httpurl = that.url.add;
+            that.model.startTime = that.model.startAndEndTime[0].format("YYYY-MM-DD HH:mm:ss");
+            that.model.endTime = that.model.startAndEndTime[1].format("YYYY-MM-DD HH:mm:ss");
+          }
+          httpAction(httpurl, this.model,"post").then((res)=>{
             if(res.success){
               that.$message.success(res.message);
               that.$emit('ok');
@@ -234,6 +246,11 @@ export default {
     //校验优惠券列表
     cardCouponListCheck(){
       const that = this;
+
+      //编辑时
+      if(that.model.cardBagId){
+        return true;
+      }
       if(!that.model.cardCouponList || that.model.cardCouponList.length == 0){
         that.$message.warning("请选择优惠卷!");
         return false;
