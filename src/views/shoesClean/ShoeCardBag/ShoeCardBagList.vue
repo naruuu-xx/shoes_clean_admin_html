@@ -54,7 +54,7 @@
         <span slot="action" slot-scope="text, record">
           <a @click="previewModel(record)">卡包码</a>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record)">查看</a>
+          <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.cardBagId)">
             <a>删除</a>
