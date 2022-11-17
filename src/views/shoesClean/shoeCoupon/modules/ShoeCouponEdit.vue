@@ -124,8 +124,8 @@
               <a-col :span="24">
                 <a-form-model-item label="发放状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
                   <a-radio-group v-model:value="model.status">
-                    <a-radio value="0">启用</a-radio>
-                    <a-radio value="1">停用</a-radio>
+                    <a-radio value="0">停用</a-radio>
+                    <a-radio value="1">启用</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>

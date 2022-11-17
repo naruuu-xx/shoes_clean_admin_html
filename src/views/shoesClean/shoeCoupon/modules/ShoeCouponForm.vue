@@ -47,7 +47,7 @@
   <!--              <a-input-number v-model="model.expireType" placeholder="请输入过期类型:1=领取后生效,2=固定时间" style="width: 100%" />-->
                 <a-radio-group v-model:value="model.expireType">
                   <a-radio value="1">根据领取时间<br>
-                    领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数"></a-input-number>&nbsp;天后失效
+                    领取&nbsp;<a-input-number :min="1" v-model="model.expireDay" style="width: 70px" placeholder="天数"></a-input-number>&nbsp;天后失效
                   </a-radio>
                   <a-radio value="2">自行设定时间<br>
                     <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
@@ -113,8 +113,8 @@
             <a-col :span="24">
               <a-form-model-item label="发放状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
                 <a-radio-group v-model:value="model.status">
-                  <a-radio value="0">启用</a-radio>
-                  <a-radio value="1">停用</a-radio>
+                  <a-radio value="0">停用</a-radio>
+                  <a-radio value="1">启用</a-radio>
                 </a-radio-group>
               </a-form-model-item>
             </a-col>
@@ -242,7 +242,7 @@
           "obj": "new",
           "numRadio": "1",
           "min": 0,
-          "expireDay": 0,
+          "expireDay": 1,
           "num": 0,
           "way": "0",
           "receiveCount": "2",
@@ -320,6 +320,7 @@
                 return false;
               }
             } else if (expireType === "2") {
+              this.model.expireDay = 0;
               let startAndEndTime = this.startAndEndTime;
               if (startAndEndTime.length <= 0) {
                 this.$message.warning("请选择日期和时间")
