@@ -118,6 +118,7 @@ export default {
         endTime:null,
         num: 1,
         receiveCount: 1,
+        image:"",
         successMessage: "",
         repeatMessage: "",
         failMessage:"",
@@ -208,6 +209,7 @@ export default {
       //隐藏名称
       this.columns = this.columns.filter(col => col.dataIndex !== "name");
       this.editDisabled = false;
+      this.setDefaultModel();
     },
     edit (record) {
       this.model = Object.assign({}, record);
@@ -296,6 +298,15 @@ export default {
         }
       })
     },
+    setDefaultModel(){
+      const that = this;
+      that.model.image = "https://shoes-clean.oss-cn-shenzhen.aliyuncs.com/upload/20221118/背景图_1668740775824.png";
+      that.model.successMessage = "领取成功，快去看看吧";
+      that.model.repeatMessage = "已经领取过啦，不能在领了";
+      that.model.failMessage = "都被抢光啦，下次早点来吧";
+      that.model.timeBeforeMessage = "活动还没开始呢，晚点再来吧";
+      that.model.timeAfterMessage = "活动已经结束了，下次再来吧";
+    }
   }
 }
 </script>
