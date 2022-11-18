@@ -22,9 +22,11 @@
     <a-spin :spinning="confirmLoading">
       <a-form-model ref="form" :model="model" :rules="validatorRules">
 
-        <a-form-model-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
-          <a-input placeholder="请输入手机号码(账号)" v-model="model.phone" />
-        </a-form-model-item>
+        <template v-if="!model.id">
+          <a-form-model-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
+            <a-input placeholder="请输入手机号码(账号)" v-model="model.phone"  />
+          </a-form-model-item>
+        </template>
 
         <template v-if="!model.id">
           <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" >
