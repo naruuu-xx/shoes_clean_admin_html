@@ -43,7 +43,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -111,26 +110,6 @@
         description: 'shoe_user管理页面',
         // 表头
         columns: [
-          // {
-          //   title: '#',
-          //   dataIndex: '',
-          //   key:'rowIndex',
-          //   width:60,
-          //   align:"center",
-          //   customRender:function (t,r,index) {
-          //     return parseInt(index)+1;
-          //   }
-          // },
-          {
-            title:'小程序open_id',
-            align:"center",
-            dataIndex: 'openId'
-          },
-          {
-            title:'推荐人用户id',
-            align:"center",
-            dataIndex: 'pId'
-          },
           {
             title:'微信昵称',
             align:"center",
@@ -143,12 +122,17 @@
             scopedSlots: {customRender: 'imgSlot'}
           },
           {
+            title:'推荐人用户id',
+            align:"center",
+            dataIndex: 'pid'
+          },
+          {
             title:'手机号码',
             align:"center",
             dataIndex: 'phone'
           },
           {
-            title:'总支付金额（分）',
+            title:'总支付金额',
             align:"center",
             dataIndex: 'payAmount'
           },
@@ -204,8 +188,8 @@
         fieldList.push({type:'string',value:'nickname',text:'微信昵称'})
         fieldList.push({type:'string',value:'avatar',text:'头像'})
         fieldList.push({type:'string',value:'phone',text:'手机号码'})
-        fieldList.push({type:'int',value:'payAmount',text:'总支付金额（分）'})
-        fieldList.push({type:'int',value:'actualAmount',text:'实际消费金额'})
+        fieldList.push({type:'string',value:'payAmount',text:'总支付金额'})
+        fieldList.push({type:'string',value:'actualAmount',text:'实际消费金额'})
         fieldList.push({type:'date',value:'lastLoginTime',text:'最近登录时间'})
         this.superFieldList = fieldList
       }
