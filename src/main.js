@@ -62,7 +62,8 @@ Vue.use(preview)
 Vue.use(vueBus);
 Vue.use(JeecgComponents);
 Vue.use(VueAreaLinkage);
-
+Vue.prototype.$Map = window.TMap
+Vue.prototype.$Location = new window.qq.maps.Geolocation('4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U', '快递柜选址')
 SSO.init(() => {
   main()
 })

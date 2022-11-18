@@ -12,15 +12,15 @@
                   <a-input placeholder="" v-model="queryParam.roleName"></a-input>
                 </a-form-item>
               </a-col>
-              <!--
-              <a-col :md="11" :sm="12">
-                <a-form-item label="创建时间" :labelCol="{span: 5}" :wrapperCol="{span: 18, offset: 1}">
-                  <j-date v-model="queryParam.createTime_begin" :showTime="true" date-format="YYYY-MM-DD HH:mm:ss" style="width:45%" placeholder="请选择开始时间" ></j-date>
-                  <span style="width: 10px;">~</span>
-                  <j-date v-model="queryParam.createTime_end" :showTime="true" date-format="YYYY-MM-DD HH:mm:ss" style="width:45%" placeholder="请选择结束时间"></j-date>
-                </a-form-item>
-              </a-col>
-              -->
+
+<!--              <a-col :md="11" :sm="12">-->
+<!--                <a-form-item label="创建时间" :labelCol="{span: 5}" :wrapperCol="{span: 18, offset: 1}">-->
+<!--                  <j-date v-model="queryParam.createTime_begin" :showTime="true" date-format="YYYY-MM-DD HH:mm:ss" style="width:45%" placeholder="请选择开始时间" ></j-date>-->
+<!--                  <span style="width: 10px;">~</span>-->
+<!--                  <j-date v-model="queryParam.createTime_end" :showTime="true" date-format="YYYY-MM-DD HH:mm:ss" style="width:45%" placeholder="请选择结束时间"></j-date>-->
+<!--                </a-form-item>-->
+<!--              </a-col>-->
+
               <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
             <a-col :md="12" :sm="24">
                <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 21px">查询</a-button>
@@ -118,7 +118,7 @@
         <div class="table-operator" :md="24" :sm="24">
           <a-button @click="handleAdd2" type="primary" icon="plus" style="margin-top: 16px">新增用户</a-button>
           <!--<a-button @click="handleEdit2" type="primary" icon="edit" style="margin-top: 16px">用户编辑</a-button>-->
-          <a-button @click="handleAddUserRole" type="primary" icon="plus" style="margin-top: 16px">已有用户</a-button>
+<!--          <a-button @click="handleAddUserRole" type="primary" icon="plus" style="margin-top: 16px">已有用户</a-button>-->
 
           <a-dropdown v-if="selectedRowKeys2.length > 0">
             <a-menu slot="overlay">
@@ -251,7 +251,7 @@
             {
               title: '角色编码',
               align: 'center',
-              dataIndex: 'roleCode'
+              dataIndex:'roleCode'
             },
             {
               title: '角色名称',

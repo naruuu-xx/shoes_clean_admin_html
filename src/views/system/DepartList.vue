@@ -5,8 +5,8 @@
 
         <!-- 按钮操作区域 -->
         <a-row style="margin-left: 14px">
-          <a-button @click="handleAdd(1)" type="primary">添加部门</a-button>
-          <a-button @click="handleAdd(2)" type="primary">添加下级</a-button>
+          <a-button @click="handleAdd(1)" type="primary">添加区域</a-button>
+          <a-button @click="handleAdd(2)" type="primary">添加工厂</a-button>
           <a-button type="primary" icon="download" @click="handleExportXls('部门信息')">导出</a-button>
           <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
             <a-button type="primary" icon="import">导入</a-button>
@@ -21,7 +21,7 @@
               <a v-if="this.currSelected.title" style="margin-left: 10px" @click="onClearSelected">取消选择</a>
             </div>
           </a-alert>
-          <a-input-search @search="onSearch" style="width:100%;margin-top: 10px" placeholder="请输入部门名称"/>
+          <a-input-search @search="onSearch" style="width:100%;margin-top: 10px" placeholder="请输入区域名称"/>
           <!-- 树-->
           <a-col :md="10" :sm="24">
             <template>
@@ -63,9 +63,9 @@
             <a-menu-item key="5" @click="expandAll">展开所有</a-menu-item>
             <a-menu-item key="6" @click="closeAll">合并所有</a-menu-item>
           </a-menu>
-          <a-button>
-            树操作 <a-icon type="up" />
-          </a-button>
+<!--          <a-button>-->
+<!--            树操作 <a-icon type="up" />-->
+<!--          </a-button>-->
         </a-dropdown>
       </div>
       <!---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------>
@@ -75,10 +75,13 @@
         <a-tab-pane tab="基本信息" key="1" >
           <a-card :bordered="false" v-if="selectedKeys.length>0">
             <a-form-model ref="form" :model="model" :rules="validatorRules">
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName" label="机构名称">
-                <a-input placeholder="请输入机构/部门名称" v-model="model.departName" />
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName" label="名称">
+                <a-input placeholder="请输入名称" v-model="model.departName" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上级部门">
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="orgTypeHideFlg">
+                <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>
+              </a-form-model-item>
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="所属区域">
                 <a-tree-select
                   style="width:100%"
                   :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
@@ -110,16 +113,16 @@
                   </a-radio-group>
                 </template>
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="部门负责人">
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
                 <j-select-multi-user v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="排序">
-                <a-input-number v-model="model.departOrder" />
-              </a-form-model-item>
+<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="排序">-->
+<!--                <a-input-number v-model="model.departOrder" />-->
+<!--              </a-form-model-item>-->
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="手机号" prop="mobile">
                 <a-input placeholder="请输入手机号" v-model="model.mobile" />
               </a-form-model-item>
-              <a-form-model-item  :labelCol="labelCol" :wrapperCol="wrapperCol"  label="地址">
+              <a-form-model-item  :labelCol="labelCol" :wrapperCol="wrapperCol"  label="地址" :hidden="orgTypeHideFlg">
                 <a-input placeholder="请输入地址" v-model="model.address"/>
               </a-form-model-item>
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="备注">
@@ -127,7 +130,7 @@
               </a-form-model-item>
             </a-form-model>
             <div class="anty-form-btn">
-              <a-button @click="emptyCurrForm" type="default" htmlType="button" icon="sync">重置</a-button>
+<!--              <a-button @click="emptyCurrForm" type="default" htmlType="button" icon="sync">重置</a-button>-->
               <a-button @click="submitCurrForm" type="primary" htmlType="button" icon="form">保存</a-button>
             </div>
           </a-card>
@@ -239,6 +242,8 @@
         validatorRules: {
           departName: [{required: true, message: '请输入机构/部门名称!'}],
           orgCode: [{required: true, message: '请输入机构编码!'}],
+          code:[{ required: true, message: '请输入自定义编码!' },
+            { pattern: /^[A-Za-z]{2}$/, message: '请输入两位且只能为英文的自定义编码!'}],
           orgCategory:[{required: true, message: '请输入机构类型!'}],
           mobile: Vue.prototype.rules.mobile2
         },
@@ -250,7 +255,8 @@
           importExcelUrl: "sys/sysDepart/importExcel",
         },
         orgCategoryDisabled:false,
-        oldDirectorUserIds:""
+        oldDirectorUserIds:"",
+        orgTypeHideFlg:true
       }
     },
     computed: {
@@ -393,6 +399,10 @@
         this.hiding = false
         let record = e.node.dataRef
         console.log('onSelect-record', record)
+        // 判断一级部门时，隐藏工厂特定编码和地址
+        this.validatorRules.code[0].required = record.orgType != 1;
+        this.orgTypeHideFlg = record.orgType == 1;
+
         this.currSelected = Object.assign({}, record)
         this.model = this.currSelected
         this.selectedKeys = [record.key]
@@ -445,7 +455,7 @@
             //update-begin---author:wangshuai ---date:20200308  for：[JTC-119]在部门管理菜单下设置部门负责人
             this.currSelected.oldDirectorUserIds = this.oldDirectorUserIds
             //update-end---author:wangshuai ---date:20200308  for：[JTC-119]在部门管理菜单下设置部门负责人
-            
+
             httpAction(this.url.edit, this.currSelected, 'put').then((res) => {
               if (res.success) {
                 this.$message.success('保存成功!')
@@ -565,7 +575,7 @@
         }
       }
       //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
-      
+
     },
     created() {
       this.currFlowId = this.$route.params.id

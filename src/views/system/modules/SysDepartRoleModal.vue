@@ -7,23 +7,23 @@
     @ok="handleOk"
     @cancel="handleCancel"
     cancelText="关闭">
-    
+
     <a-spin :spinning="confirmLoading">
       <a-form-model  ref="form" :model="model" :rules="validatorRules">
-      
+
         <a-form-model-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           prop="roleName"
-          label="部门角色名称">
-          <a-input placeholder="请输入部门角色名称" v-model="model.roleName"/>
+          label="区域角色名称">
+          <a-input placeholder="请输入区域角色名称" v-model="model.roleName"/>
         </a-form-model-item>
         <a-form-model-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           prop="roleCode"
-          label="部门角色编码">
-          <a-input placeholder="请输入部门角色编码" v-model="model.roleCode"  :read-only="roleCodeRead"/>
+          label="区域角色编码">
+          <a-input placeholder="请输入区域角色编码" v-model="model.roleCode"  :read-only="roleCodeRead"/>
         </a-form-model-item>
         <a-form-model-item
           :labelCol="labelCol"
@@ -32,7 +32,7 @@
           label="描述">
           <a-input placeholder="请输入描述" v-model="model.description"/>
         </a-form-model-item>
-		
+
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -60,11 +60,11 @@
         confirmLoading: false,
         validatorRules:{
           roleName:[
-              { required: true, message: '请输入部门角色名称!' },
+              { required: true, message: '请输入区域角色名称!' },
               { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
             ],
           roleCode: [
-              { required: true, message: '请输入部门角色编码!'},
+              { required: true, message: '请输入区域角色编码!'},
               { min: 0, max: 64, message: '长度不超过 64 个字符', trigger: 'blur' },
               { validator: this.validateRoleCode}
             ],
@@ -88,9 +88,9 @@
       edit (record,departId) {
         this.departId = departId;
         this.model = Object.assign({}, record);
-        //update-begin---author:wangshuai ---date:20220104  for：[JTC-367]我的部门->部门角色 角色编码应该不可修改------------
+        //update-begin---author:wangshuai ---date:20220104  for：[JTC-367]我的区域->区域角色 角色编码应该不可修改------------
         this.roleCodeRead = !!this.model.roleCode
-        //update-end---author:wangshuai ---date:20220104  for：[JTC-367]我的部门->部门角色 角色编码应该不可修改------------
+        //update-end---author:wangshuai ---date:20220104  for：[JTC-367]我的区域->区域角色 角色编码应该不可修改------------
         this.visible = true;
       },
       close () {
@@ -135,7 +135,7 @@
       },
       validateRoleCode(rule, value, callback){
         if(/[\u4E00-\u9FA5]/g.test(value)){
-          callback("部门角色编码不可输入汉字!");
+          callback("区域角色编码不可输入汉字!");
         }else{
           var params = {
             tableName: "sys_depart_role",

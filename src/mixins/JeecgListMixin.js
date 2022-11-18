@@ -29,10 +29,10 @@ export const JeecgListMixin = {
         total: 0
       },
       /* 排序参数 */
-      isorter:{
-        column: 'createTime',
-        order: 'desc',
-      },
+      // isorter:{
+      //   column: 'id',
+      //   order: 'desc',
+      // },
       /* 筛选参数 */
       filters: {},
       /* table加载状态 */
@@ -169,6 +169,7 @@ export const JeecgListMixin = {
         return;
       } else {
         var ids = "";
+        console.log(this.selectedRowKeys);
         for (var a = 0; a < this.selectedRowKeys.length; a++) {
           ids += this.selectedRowKeys[a] + ",";
         }
@@ -224,6 +225,9 @@ export const JeecgListMixin = {
       console.log('currentIndex',currentIndex)
     },
     handleEdit: function (record) {
+      // console.log(record);
+      // console.log(typeof record.bannerId)
+
       this.$refs.modalForm.edit(record);
       this.$refs.modalForm.title = "编辑";
       this.$refs.modalForm.disableSubmit = false;

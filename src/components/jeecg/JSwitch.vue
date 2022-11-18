@@ -25,7 +25,7 @@
       options:{
         type:Array,
         required:false,
-        default:()=>['Y','N']
+        default:()=>[1,0]
       },
       query:{
         type: Boolean,

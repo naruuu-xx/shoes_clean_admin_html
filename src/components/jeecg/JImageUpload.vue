@@ -48,7 +48,7 @@
     name: 'JImageUpload',
     data(){
       return {
-        uploadAction:window._CONFIG['domianURL']+"/sys/common/upload",
+        uploadAction:window._CONFIG['domianURL']+"/sys/oss/file/upload",
         uploadLoading:false,
         picUrl:false,
         headers:{},
@@ -67,7 +67,7 @@
       bizPath:{
         type:String,
         required:false,
-        default:"temp"
+        default:"upload"
       },
       value:{
         type:[String,Array],
@@ -137,8 +137,9 @@
       },
       beforeUpload: function(file){
         var fileType = file.type;
-        if(fileType.indexOf('image')<0){
-          this.$message.warning('请上传图片');
+        console.log(fileType);
+        if(fileType.indexOf('image')<0&&fileType.indexOf("video")<0){
+          this.$message.warning('请上传图片或视频');
           return false;
         }
       },
