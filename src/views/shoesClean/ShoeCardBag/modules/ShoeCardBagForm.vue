@@ -300,7 +300,7 @@ export default {
     },
     setDefaultModel(){
       const that = this;
-      that.model.image = "https://shoes-clean.oss-cn-shenzhen.aliyuncs.com/upload/20221118/背景图_1668740775824.png";
+      that.model.image = "https://shoes-clean.oss-cn-shenzhen.aliyuncs.com/upload/20221118/微信图片_20221118145346_1668754455901.png";
       that.model.successMessage = "领取成功，快去看看吧";
       that.model.repeatMessage = "已经领取过啦，不能在领了";
       that.model.failMessage = "都被抢光啦，下次早点来吧";
