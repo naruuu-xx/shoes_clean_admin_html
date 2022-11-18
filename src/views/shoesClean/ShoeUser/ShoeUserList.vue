@@ -33,6 +33,7 @@
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
+<!--     TODO： 正式版发布时切记将 rowSelection 删去 -->
       <a-table
         ref="table"
         size="middle"
@@ -44,6 +45,7 @@
         :pagination="ipagination"
         :loading="loading"
         class="j-table-force-nowrap"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -76,11 +78,12 @@
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
-<!--              <a-menu-item>-->
-<!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">-->
-<!--                  <a>删除</a>-->
-<!--                </a-popconfirm>-->
-<!--              </a-menu-item>-->
+<!--     TODO：正式版本发布时请注释掉删除操作         -->
+              <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.userId)">
+                  <a>删除</a>
+                </a-popconfirm>
+              </a-menu-item>
             </a-menu>
           </a-dropdown>
         </span>
