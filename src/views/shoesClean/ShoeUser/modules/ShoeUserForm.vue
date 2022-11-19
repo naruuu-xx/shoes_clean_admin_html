@@ -3,14 +3,14 @@
     <j-form-container :disabled="formDisabled">
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
-          <a-col :span="24">
-            <a-form-model-item label="小程序open_id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openId">
-              <a-input v-model="model.openId" placeholder="请输入小程序open_id"  ></a-input>
-            </a-form-model-item>
-          </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label="小程序open_id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openId">-->
+<!--              <a-input v-model="model.openId" placeholder="请输入小程序open_id"  ></a-input>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="推荐人用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="pId">
-              <a-input v-model="model.pId" placeholder="请输入推荐人用户id"  ></a-input>
+              <a-input v-model="model.pid" placeholder="请输入推荐人用户id"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -30,8 +30,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="总支付金额（分）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="payAmount">
-              <a-input-number v-model="model.payAmount" placeholder="请输入总支付金额（分）" style="width: 100%" disabled/>
+            <a-form-model-item label="总支付金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="payAmount">
+              <a-input-number v-model="model.payAmount" placeholder="请输入总支付金额" style="width: 100%" disabled/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
