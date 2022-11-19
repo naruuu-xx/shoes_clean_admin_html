@@ -45,7 +45,6 @@
         :pagination="ipagination"
         :loading="loading"
         class="j-table-force-nowrap"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -77,12 +76,6 @@
             <a-menu slot="overlay">
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-<!--     TODO：正式版本发布时请注释掉删除操作         -->
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.userId)">
-                  <a>删除</a>
-                </a-popconfirm>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -151,14 +144,6 @@
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
-          },
-          {
-            title: '操作',
-            dataIndex: 'action',
-            align:"center",
-            fixed:"right",
-            width:147,
-            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
