@@ -74,7 +74,9 @@
                 <a-menu-item>
                   <a @click="handleEdit(record)">编辑</a>
                 </a-menu-item>
-                <a-menu-item>
+                <a-menu-item v-if="record.roleCode !=='admin' && record.roleCode !=='areaAdmin'
+                && record.roleCode !=='factoryAdmin' && record.roleCode !=='logisticsAdmin'&& record.roleCode !== 'courierAdmin'
+                  && record.roleCode !== 'factory'">
                   <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete1(record.id)">
                     <a>删除</a>
                   </a-popconfirm>
