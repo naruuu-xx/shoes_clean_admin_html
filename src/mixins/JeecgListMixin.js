@@ -20,7 +20,7 @@ export const JeecgListMixin = {
       ipagination:{
         current: 1,
         pageSize: 10,
-        pageSizeOptions: ['10', '20', '30'],
+        pageSizeOptions: ['10', '20', '30', '50', '100', '500'],
         showTotal: (total, range) => {
           return range[0] + "-" + range[1] + " 共" + total + "条"
         },
@@ -281,25 +281,25 @@ export const JeecgListMixin = {
         param['selections'] = this.selectedRowKeys.join(",")
       }
       console.log("导出参数",param)
-      downFile(this.url.exportXlsUrl,param).then((data)=>{
-        if (!data) {
-          this.$message.warning("文件下载失败")
-          return
-        }
-        if (typeof window.navigator.msSaveBlob !== 'undefined') {
-          window.navigator.msSaveBlob(new Blob([data],{type: 'application/vnd.ms-excel'}), fileName+'.xls')
-        }else{
-          let url = window.URL.createObjectURL(new Blob([data],{type: 'application/vnd.ms-excel'}))
-          let link = document.createElement('a')
-          link.style.display = 'none'
-          link.href = url
-          link.setAttribute('download', fileName+'.xls')
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link); //下载完成移除元素
-          window.URL.revokeObjectURL(url); //释放掉blob对象
-        }
-      })
+      // downFile(this.url.exportXlsUrl,param).then((data)=>{
+      //   if (!data) {
+      //     this.$message.warning("文件下载失败")
+      //     return
+      //   }
+      //   if (typeof window.navigator.msSaveBlob !== 'undefined') {
+      //     window.navigator.msSaveBlob(new Blob([data],{type: 'application/vnd.ms-excel'}), fileName+'.xls')
+      //   }else{
+      //     let url = window.URL.createObjectURL(new Blob([data],{type: 'application/vnd.ms-excel'}))
+      //     let link = document.createElement('a')
+      //     link.style.display = 'none'
+      //     link.href = url
+      //     link.setAttribute('download', fileName+'.xls')
+      //     document.body.appendChild(link)
+      //     link.click()
+      //     document.body.removeChild(link); //下载完成移除元素
+      //     window.URL.revokeObjectURL(url); //释放掉blob对象
+      //   }
+      // })
     },
     /* 导入 */
     handleImportExcel(info){

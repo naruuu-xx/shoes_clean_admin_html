@@ -125,17 +125,17 @@
           </a-row>
           <a-row v-if="statusInt > 0 && statusInt < 5">
             <a-col :span="24">
-              <div class="content-font-below">机柜编码-格子数：{{data.beforeLockerId}}-{{data.beforeGridNo}}</div>
+              <div class="content-font-below">机柜名称-格子数：{{data.lockerName}}-{{data.beforeGridNo}}</div>
             </a-col>
           </a-row>
-          <a-row v-if="statusInt >= 9 && statusInt <= 12 &&  '上门取件' === data.type">
+          <a-row v-if="statusInt >= 9 && statusInt <= 13 &&  '上门取件' === data.type">
             <a-col :span="24">
-              <div class="content-font-below">机柜编码-格子数：{{data.afterLockerId}}-{{data.afterGridNo}}</div>
+              <div class="content-font-below">机柜名称-格子数：{{data.lockerName}}-{{data.afterGridNo}}</div>
             </a-col>
           </a-row>
           <a-row v-if="statusInt >= 9 && statusInt <= 13 &&  '站点自寄' === data.type">
             <a-col :span="24">
-              <div class="content-font-below">机柜编码-格子数：{{data.afterLockerId}}-{{data.afterGridNo}}</div>
+              <div class="content-font-below">机柜名称-格子数：{{data.lockerName}}-{{data.afterGridNo}}</div>
             </a-col>
           </a-row>
 <!--          <a-row v-if="'已取消' === this.data.status">-->
@@ -153,6 +153,26 @@
 <!--              <div class="content-font-below">退款原因：{{refundComment}}</div>-->
 <!--            </a-col>-->
 <!--          </a-row>-->
+          <a-row v-if="'上门取件' === data.type">
+            <a-col :span="24">
+              <div class="content-font-below">配送员（取鞋）：{{courierNameByBefore}}</div>
+            </a-col>
+          </a-row>
+          <a-row v-if="'上门取件' === data.type">
+            <a-col :span="24">
+              <div class="content-font-below">配送员电话：{{courierPhoneByBefore}}</div>
+            </a-col>
+          </a-row>
+          <a-row v-if="'上门取件' === data.type">
+            <a-col :span="24">
+              <div class="content-font-below">配送员（送鞋）：{{courierNameByAfter}}</div>
+            </a-col>
+          </a-row>
+          <a-row v-if="'上门取件' === data.type">
+            <a-col :span="24">
+              <div class="content-font-below">配送员电话：{{courierPhoneByAfter}}</div>
+            </a-col>
+          </a-row>
         </a-col>
         <!-- 用户信息 -->
         <a-col :span="1"></a-col>
@@ -166,6 +186,16 @@
           <a-row>
             <a-col :span="24">
               <div class="content-font-below">用户姓名：{{data.name}}</div>
+            </a-col>
+          </a-row>
+          <a-row v-if="this.data.type === '上门取件'">
+            <a-col :span="24">
+              <div class="content-font-below">用户地址：{{userAddress}}</div>
+            </a-col>
+          </a-row>
+          <a-row v-if="this.data.type === '上门取件'">
+            <a-col :span="24">
+              <div class="content-font-below">预定时间：{{data.expect}}</div>
             </a-col>
           </a-row>
           <a-row>
@@ -389,7 +419,7 @@
 <script>
 import {filterDictTextByCache} from "../../../../components/dict/JDictSelectUtil";
 import JImageUploadByOneForShoeOrder from "../components/JImageUploadByOneForShoeOrder";
-import {httpAction} from "../../../../api/manage";
+import {getAction, httpAction} from "../../../../api/manage";
 
 export default{
   name: "ShoeOrderDetail",
@@ -416,6 +446,11 @@ export default{
       orderExceptionImagesList: [],
       afterDeliveryInfo: {},
       statusInt: 0,
+      userAddress: "",
+      courierNameByBefore: "",
+      courierPhoneByBefore: "",
+      courierNameByAfter: "",
+      courierPhoneByAfter: "",
     }
   },
   created() {
@@ -439,6 +474,17 @@ export default{
         orderInfo.type = "站点自寄";
       } else if (type === "service") {
         orderInfo.type = "上门取件";
+        //获取配送信息
+        let requestData = {
+          "orderId": orderInfo.orderId
+        };
+        getAction("/ShoeOrder/shoeOrder/getCourierInfo", requestData).then((res) => {
+          this.userAddress = res.result.address;
+          this.courierNameByBefore = res.result.courierNameByBefore;
+          this.courierPhoneByBefore = res.result.courierPhoneByBefore;
+          this.courierNameByAfter = res.result.courierNameByAfter === "无" ? "——" : res.result.courierNameByAfter;
+          this.courierPhoneByAfter = res.result.courierPhoneByAfter === "无" ? "——" : res.result.courierPhoneByAfter;
+        })
       }
 
       let orderImagesString = "";
@@ -530,6 +576,11 @@ export default{
       this.refundComment = "";
       this.refundCreateTime = "";
       this.refundSuccessTime = "";
+      this.userAddress = "";
+      this.courierNameByBefore = "";
+      this.courierPhoneByBefore = "";
+      this.courierNameByAfter = "";
+      this.courierPhoneByAfter = "";
     },
     previewModel(){
       this.previewVisible = true;

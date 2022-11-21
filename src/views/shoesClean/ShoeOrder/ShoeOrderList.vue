@@ -21,6 +21,13 @@
               </a-select>
             </a-form-item>
           </a-col>
+<!--          <a-col :xl="4" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="机柜名称">-->
+<!--              <a-select v-model="queryParam.lockerId" style="width: 180px">-->
+<!--                <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -35,7 +42,8 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
 <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出选中订单</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')">导出全部订单</a-button>
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
@@ -208,6 +216,11 @@
             align:"center",
             dataIndex: 'phone'
           },
+          {
+            title: "机柜名称",
+            align: "center",
+            dataIndex: 'lockerName'
+          },
           // {
           //   title:'总金额',
           //   align:"center",
@@ -337,10 +350,12 @@
           {"value":"11", "name":"配送员已接单（送件）"}, {"value":"12", "name":"配送员已取鞋"}, {"value":"13", "name":"已完成"},
           {"value":"14", "name":"退款中"}, {"value":"15", "name":"已退款"}, {"value":"16", "name":"已取消"},
           ],
+        lockerList: [],
       }
     },
     created() {
-    this.getSuperFieldList();
+      this.getSuperFieldList();
+      //获取机柜列表，放入下拉框
     },
     computed: {
       importExcelUrl: function(){
