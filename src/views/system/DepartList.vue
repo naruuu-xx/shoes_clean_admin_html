@@ -7,10 +7,6 @@
         <a-row style="margin-left: 14px">
           <a-button @click="handleAdd(1)" type="primary">添加区域</a-button>
           <a-button @click="handleAdd(2)" type="primary">添加工厂</a-button>
-          <a-button type="primary" icon="download" @click="handleExportXls('部门信息')">导出</a-button>
-          <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-            <a-button type="primary" icon="import">导入</a-button>
-          </a-upload>
           <a-button title="删除多条数据" @click="batchDel" type="default">批量删除</a-button>
           <!--<a-button @click="refresh" type="default" icon="reload" :loading="loading">刷新</a-button>-->
         </a-row>
@@ -78,9 +74,9 @@
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName" label="名称">
                 <a-input placeholder="请输入名称" v-model="model.departName" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="orgTypeHideFlg">
-                <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>
-              </a-form-model-item>
+<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="orgTypeHideFlg">-->
+<!--                <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>-->
+<!--              </a-form-model-item>-->
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="所属区域">
                 <a-tree-select
                   style="width:100%"
@@ -94,25 +90,25 @@
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode" label="机构编码">
                 <a-input disabled placeholder="请输入机构编码" v-model="model.orgCode" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="机构类型">
-                <template v-if="orgCategoryDisabled">
-                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
-                    <a-radio value="1">
-                      公司
-                    </a-radio>
-                  </a-radio-group>
-                </template>
-                <template v-else>
-                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
-                    <a-radio value="2">
-                      部门
-                    </a-radio>
-                    <a-radio value="3">
-                      岗位
-                    </a-radio>
-                  </a-radio-group>
-                </template>
-              </a-form-model-item>
+<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="机构类型">-->
+<!--                <template v-if="orgCategoryDisabled">-->
+<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
+<!--                    <a-radio value="1">-->
+<!--                      公司-->
+<!--                    </a-radio>-->
+<!--                  </a-radio-group>-->
+<!--                </template>-->
+<!--                <template v-else>-->
+<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
+<!--                    <a-radio value="2">-->
+<!--                      部门-->
+<!--                    </a-radio>-->
+<!--                    <a-radio value="3">-->
+<!--                      岗位-->
+<!--                    </a-radio>-->
+<!--                  </a-radio-group>-->
+<!--                </template>-->
+<!--              </a-form-model-item>-->
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
                 <j-select-multi-user v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
               </a-form-model-item>
@@ -242,7 +238,7 @@
         validatorRules: {
           departName: [{required: true, message: '请输入机构/部门名称!'}],
           orgCode: [{required: true, message: '请输入机构编码!'}],
-          code:[{ required: true, message: '请输入自定义编码!' },
+          code:[{ required: false, message: '请输入自定义编码!' },
             { pattern: /^[A-Za-z]{2}$/, message: '请输入两位且只能为英文的自定义编码!'}],
           orgCategory:[{required: true, message: '请输入机构类型!'}],
           mobile: Vue.prototype.rules.mobile2
@@ -516,7 +512,7 @@
                   that.onClearSelected()
                 }
               } else {
-                that.$message.warning('删除失败!')
+                that.$message.warning(resp.message)
               }
             })
           }

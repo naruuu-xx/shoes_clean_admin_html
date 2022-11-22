@@ -21,9 +21,9 @@
           hasFeedback>
           <a-input id="departName" placeholder="请输入名称" v-model="model.departName"/>
         </a-form-model-item>
-        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="seen">
-          <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>
-        </a-form-model-item>
+<!--        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="seen">-->
+<!--          <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>-->
+<!--        </a-form-model-item>-->
         <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="区域" hasFeedback>
           <a-tree-select
             style="width:100%"
@@ -136,7 +136,7 @@ export default {
       confirmLoading: false,
       validatorRules: {
         departName: [{required: true, message: '请输入机构/部门名称!'}],
-        code: [{required: true, message: '请输入自定义编码!'},
+        code: [{required: false, message: '请输入自定义编码!'},
           {pattern: /^[A-Za-z]{2}$/, message: '请输入两位且只能为英文的自定义编码!'}],
         orgCode: [{required: true, message: '请输入机构编码!'}],
         mobile: [{validator: this.validateMobile}],

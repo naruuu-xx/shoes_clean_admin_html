@@ -29,6 +29,7 @@
     <div class="table-operator">
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>-->
       <a-button type="primary" size="large" @click="handleInOfStorage()" style="width: 200px;height: 50px">入&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</a-button>
+      <a-button type="primary" size="large" @click="handleCreateWashedMark()" style="width: 200px;height: 50px">打印水洗唛</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -82,6 +83,8 @@
 <!--    <shoe-factory-order-detail-modal ref="shoeFactoryOrderDetailModal" @ok="modalFormOk"></shoe-factory-order-detail-modal>-->
     <shoe-in-of-storage-modal ref="shoeInOfStorageModal"  @ok="modalFormOk"></shoe-in-of-storage-modal>
 
+    <create-washed-mark-modal ref="createWashedMarkModal" @ok="modalFormOk"></create-washed-mark-modal>
+
   </a-card>
 </template>
 
@@ -91,12 +94,14 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeInOfStorageModal from "./modules/ShoeInOfStorageModal";
+  import CreateWashedMarkModal from "./modules/CreateWashedMarkModal";
 
   export default {
     name: 'ShoeOrderList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeInOfStorageModal
+      ShoeInOfStorageModal,
+      CreateWashedMarkModal
     },
     data () {
       return {
@@ -152,6 +157,9 @@
       },
       handleInOfStorage(){
         this.$refs.shoeInOfStorageModal.show();
+      },
+      handleCreateWashedMark() {
+        this.$refs.createWashedMarkModal.show();
       }
     }
   }
