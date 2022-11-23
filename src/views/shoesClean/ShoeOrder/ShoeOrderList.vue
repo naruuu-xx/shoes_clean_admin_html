@@ -146,36 +146,11 @@
         description: 'shoe_order管理页面',
         // 表头
         columns: [
-          // {
-          //   title:'订单ID',
-          //   align:"center",
-          //   dataIndex: 'orderId'
-          // },
-          // {
-          //   title:'父订单ID',
-          //   align:"center",
-          //   dataIndex: 'orderPId'
-          // },
           {
             title:'订单编号',
             align:"center",
             dataIndex: 'no'
           },
-          // {
-          //   title:'用户ID',
-          //   align:"center",
-          //   dataIndex: 'userId'
-          // },
-          // {
-          //   title:'商品ID',
-          //   align:"center",
-          //   dataIndex: 'goodsId'
-          // },
-          // {
-          //   title:'规格ID',
-          //   align:"center",
-          //   dataIndex: 'skuId'
-          // },
           {
             title:'商品名称',
             align:"center",
@@ -186,26 +161,6 @@
             align:"center",
             dataIndex: 'skuTitle'
           },
-          // {
-          //   title:'商品图片',
-          //   align:"center",
-          //   dataIndex: 'image'
-          // },
-          // {
-          //   title:'洗护前照片',
-          //   align:"center",
-          //   dataIndex: 'orderImages'
-          // },
-          // {
-          //   title:'订单备注',
-          //   align:"center",
-          //   dataIndex: 'note'
-          // },
-          // {
-          //   title:'期望上门取件时间',
-          //   align:"center",
-          //   dataIndex: 'expect'
-          // },
           {
             title:'姓名',
             align:"center",
@@ -221,16 +176,6 @@
             align: "center",
             dataIndex: 'lockerName'
           },
-          // {
-          //   title:'总金额',
-          //   align:"center",
-          //   dataIndex: 'totalPrice'
-          // },
-          // {
-          //   title:'应付金额',
-          //   align:"center",
-          //   dataIndex: 'price'
-          // },
           {
             title:'实付金额（元）',
             align:"center",
@@ -239,21 +184,11 @@
               return (text * 0.01).toFixed(2);
             }
           },
-          // {
-          //   title:'商品金额',
-          //   align:"center",
-          //   dataIndex: 'goodsPrice'
-          // },
-          // {
-          //   title:'配送费用',
-          //   align:"center",
-          //   dataIndex: 'courierPrice'
-          // },
-          // {
-          //   title:'优惠抵扣金额',
-          //   align:"center",
-          //   dataIndex: 'couponPrice'
-          // },
+          {
+            title:'下单时间',
+            align:"center",
+            dataIndex: 'createTime'
+          },
           {
             title:'订单状态',
             align:"center",
@@ -262,66 +197,6 @@
               return filterDictTextByCache('shoe_order_status', text);
             }
           },
-          // {
-          //   title:'机柜ID（下单）',
-          //   align:"center",
-          //   dataIndex: 'beforeLockerId'
-          // },
-          // {
-          //   title:'机柜格子编号（下单）',
-          //   align:"center",
-          //   dataIndex: 'beforeGridNo'
-          // },
-          // {
-          //   title:'机柜ID（配送）',
-          //   align:"center",
-          //   dataIndex: 'afterLockerId'
-          // },
-          // {
-          //   title:'机柜格子编号（配送）',
-          //   align:"center",
-          //   dataIndex: 'afterGridNo'
-          // },
-          // {
-          //   title:'工厂编码',
-          //   align:"center",
-          //   dataIndex: 'orgCode'
-          // },
-          // {
-          //   title:'袋子编码',
-          //   align:"center",
-          //   dataIndex: 'bagCode'
-          // },
-          // {
-          //   title:'异常历史:0=无,1=有',
-          //   align:"center",
-          //   dataIndex: 'hasException'
-          // },
-          // {
-          //   title:'订单类型:self=站点自寄,service=上门取件',
-          //   align:"center",
-          //   dataIndex: 'type'
-          // },
-          // {
-          //   title:'自提取件码',
-          //   align:"center",
-          //   dataIndex: 'code'
-          // },
-          // {
-          //   title:'取消时间',
-          //   align:"center",
-          //   dataIndex: 'cancelTime'
-          // },
-          // {
-          //   title:'付款时间',
-          //   align:"center",
-          //   dataIndex: 'payTime'
-          // },
-          // {
-          //   title:'完成时间',
-          //   align:"center",
-          //   dataIndex: 'finishTime'
-          // },
           {
             title: '操作',
             dataIndex: 'action',

@@ -195,6 +195,11 @@
           </a-row>
           <a-row v-if="this.data.type === '上门取件'">
             <a-col :span="24">
+              <div class="content-font-below">门牌号：{{door}}</div>
+            </a-col>
+          </a-row>
+          <a-row v-if="this.data.type === '上门取件'">
+            <a-col :span="24">
               <div class="content-font-below">预定时间：{{data.expect}}</div>
             </a-col>
           </a-row>
@@ -447,6 +452,7 @@ export default{
       afterDeliveryInfo: {},
       statusInt: 0,
       userAddress: "",
+      door: "",
       courierNameByBefore: "",
       courierPhoneByBefore: "",
       courierNameByAfter: "",
@@ -480,6 +486,7 @@ export default{
         };
         getAction("/ShoeOrder/shoeOrder/getCourierInfo", requestData).then((res) => {
           this.userAddress = res.result.address;
+          this.door = res.result.door;
           this.courierNameByBefore = res.result.courierNameByBefore;
           this.courierPhoneByBefore = res.result.courierPhoneByBefore;
           this.courierNameByAfter = res.result.courierNameByAfter === "无" ? "——" : res.result.courierNameByAfter;
