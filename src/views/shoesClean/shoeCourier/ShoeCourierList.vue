@@ -224,7 +224,7 @@ export default {
           align: "center",
           dataIndex: 'income',
           customRender: (text) => {
-            return (text * 0.01).toFixed(0);
+            return (text * 0.01).toFixed(2);
           }
         },
         {
@@ -232,7 +232,7 @@ export default {
           align: "center",
           dataIndex: 'amount',
           customRender: (text) => {
-            return (text * 0.01).toFixed(0);
+            return (text * 0.01).toFixed(2);
           }
         },
         {
@@ -240,7 +240,7 @@ export default {
           align: "center",
           dataIndex: 'withdrawalAmount',
           customRender: (text) => {
-            return (text * 0.01).toFixed(0);
+            return (text * 0.01).toFixed(2);
           }
         },
         {
@@ -248,7 +248,7 @@ export default {
           align: "center",
           dataIndex: 'withdrawalingAmount',
           customRender: (text) => {
-            return (text * 0.01).toFixed(0);
+            return (text * 0.01).toFixed(2);
           }
         },
         {
@@ -256,7 +256,7 @@ export default {
           align: "center",
           dataIndex: 'frozenAmount',
           customRender: (text) => {
-            return (text * 0.01).toFixed(0);
+            return (text * 0.01).toFixed(2);
           }
         },
         {
