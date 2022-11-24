@@ -15,14 +15,60 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="level">
-              <a-select v-model="model.level" allowClear="true">
-                <a-select-option v-for="i in levelTextList" :value="i.levelText" :key="i.levelText">{{i.levelText}}</a-select-option>
+              <a-select v-model="model.level" >
+                  <a-select-option value="1" >代理人</a-select-option>
+                  <a-select-option value="2" >投资人</a-select-option>
+
               </a-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="绑定小程序用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-              <j-search-select-tag v-model="model.userId" dict=""  />
+            <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+              <a-select
+                show-search
+                placeholder="选择或搜索需要绑定的用户"
+                option-filter-prop="children"
+                style="width: 200px"
+                :filter-option="filterOption"
+                v-model="model.userId"
+              >
+                <a-select-option  v-for="i in shoeUserList" :value="i.userId.toString()" :key="i.nickname">
+                  {{i.nickname}}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="绑定上级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="investorsPId" v-if="model.level == 2">
+              <a-select
+                show-search
+                placeholder="选择或搜索需要绑定的用户"
+                option-filter-prop="children"
+                style="width: 200px"
+                :filter-option="filterOption"
+                v-model="model.investorsPId"
+              >
+                <a-select-option  v-for="i in agentList" :value="i.userId.toString()" :key="i.nickname">
+                  {{i.nickname}}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="绑定机柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerId" >
+              <a-select
+                mode="multiple"
+                show-search
+                placeholder="选择或搜索需要绑定的用户"
+                option-filter-prop="children"
+                style="width: 200px"
+                :filter-option="filterOption"
+                v-model="model.lockerIds"
+              >
+                <a-select-option  v-for="i in lockerList" :value="i.lockerId" :key="i.name">
+                  {{i.name}}
+                </a-select-option>
+              </a-select>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -72,14 +118,21 @@
               { required: true, message: '请选择身份!'},
            ],
            userId: [
-              { required: true, message: '请输入绑定小程序用户id!'},
+              { required: true, message: '请选择绑定小程序用户id!'},
            ],
+          investorsPId:[
+            { required: false, message: '请选择绑定上级!'},
+          ]
         },
         url: {
-          add: "/org.jeecg.modules.shoes/shoeInvestors/add",
-          edit: "/org.jeecg.modules.shoes/shoeInvestors/edit",
-          queryById: "/org.jeecg.modules.shoes/shoeInvestors/queryById"
-        }
+          add: "/shoes/shoeInvestors/add",
+          edit: "/shoes/shoeInvestors/edit",
+          queryById: "/shoes/shoeInvestors/queryById"
+        },
+        levelTextList:[],
+        shoeUserList:[],
+        lockerList:[],
+        agentList:[]
       }
     },
     computed: {
@@ -89,9 +142,18 @@
     },
     created () {
        //备份model原始值
+      this.getLevelTextList();
+      this.getShoeUserList();
+      this.getLockerList();
+      this.getAgentList();
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        );
+      },
       add () {
         this.edit(this.modelDefault);
       },
@@ -107,7 +169,9 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            if(!this.model.id){
+            console.log("ceshi.....");
+            console.log(this.model.investorsId);
+            if(!this.model.investorsId){
               httpurl+=this.url.add;
               method = 'post';
             }else{
@@ -128,6 +192,37 @@
 
         })
       },
+      getLevelTextList(){
+        httpAction("/shoes/shoeInvestors/statusList", null, "get").then((res) => {
+          if (res){
+            this.levelTextList = res.result;
+            console.log(res.result);
+          }
+        })
+      },
+      getShoeUserList(){
+        httpAction("/shoes/shoeUser/shoeUserList",null, "get").then((res)=>{
+          if(res){
+            this.shoeUserList = res.result;
+
+          }
+        })
+      },
+      getLockerList(){
+        httpAction("/shoes/shoeLocker/lockerList",null,"get").then((res)=>{
+          if(res){
+            this.lockerList = res.result;
+          }
+        })
+      },
+      getAgentList(){
+        httpAction("/shoes/shoeInvestors/agentList", null, "get").then((res)=>{
+          if(res){
+            this.agentList = res.result;
+
+          }
+        })
+      }
     }
   }
 </script>
