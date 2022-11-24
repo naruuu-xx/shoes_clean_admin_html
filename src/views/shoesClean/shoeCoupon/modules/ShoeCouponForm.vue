@@ -246,7 +246,7 @@
           "num": 0,
           "way": "0",
           "receiveCount": "2",
-          "status": "0"
+          "status": "1"
         };
         //弹窗出现的时候请求接口，获取商品列表
         httpAction("/ShoeCoupon/shoeCoupon/getGoodsTypeAndTitleList", null, "get").then((res) => {
