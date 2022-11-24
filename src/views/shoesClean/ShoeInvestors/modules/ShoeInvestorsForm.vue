@@ -209,7 +209,7 @@
         })
       },
       getLockerList(){
-        httpAction("/shoes/shoeLocker/lockerList",null,"get").then((res)=>{
+        httpAction("/shoes/shoeLocker/investorsShoeLockerList",null,"get").then((res)=>{
           if(res){
             this.lockerList = res.result;
           }
