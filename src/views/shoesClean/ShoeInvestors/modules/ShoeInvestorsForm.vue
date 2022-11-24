@@ -16,9 +16,8 @@
           <a-col :span="24">
             <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="level">
               <a-select v-model="model.level" >
-                  <a-select-option value="1" >代理人</a-select-option>
-                  <a-select-option value="2" >投资人</a-select-option>
-
+                  <a-select-option value = "1" >代理人</a-select-option>
+                  <a-select-option value = "2" >投资人</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -65,7 +64,7 @@
                 :filter-option="filterOption"
                 v-model="model.lockerIds"
               >
-                <a-select-option  v-for="i in lockerList" :value="i.lockerId" :key="i.name">
+                <a-select-option  v-for="i in lockerList" :value="i.lockerId.toString()" :key="i.name">
                   {{i.name}}
                 </a-select-option>
               </a-select>
@@ -209,7 +208,7 @@
         })
       },
       getLockerList(){
-        httpAction("/shoes/shoeLocker/lockerList",null,"get").then((res)=>{
+        httpAction("/shoes/shoeLocker/investorsShoeLockerList",null,"get").then((res)=>{
           if(res){
             this.lockerList = res.result;
           }
