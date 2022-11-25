@@ -234,8 +234,8 @@
         let fieldList=[];
         fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
         fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
-        fieldList.push({type:'sel_user',value:'level',text:'身份'})
-        fieldList.push({type:'sel_search',value:'userId',text:'绑定小程序用户id',dictTable:"", dictText:'', dictCode:''})
+        fieldList.push({type:'string',value:'level',text:'身份'})
+        fieldList.push({type:'string',value:'userId',text:'绑定小程序用户id',dictCode:''})
         fieldList.push({type:'int',value:'num',text:'机柜数',dictCode:''})
         fieldList.push({type:'int',value:'income',text:'总收入',dictCode:''})
         fieldList.push({type:'int',value:'amount',text:'账户余额',dictCode:''})
