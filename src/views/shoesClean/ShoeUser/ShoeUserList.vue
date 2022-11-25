@@ -4,6 +4,22 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label=" 用户昵称">
+              <a-input placeholder="请输入用户昵称" v-model="queryParam.nickname" :allowClear="true"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label=" 手机号">
+              <a-input placeholder="请输入手机号" v-model="queryParam.phone" :allowClear="true"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -28,10 +44,10 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">-->
+<!--        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项-->
+<!--        <a style="margin-left: 24px" @click="onClearSelected">清空</a>-->
+<!--      </div>-->
 
 <!--     TODO： 正式版发布时切记将 rowSelection 删去 -->
       <a-table
@@ -39,7 +55,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="id"
+        rowKey="userId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -52,7 +68,7 @@
         </template>
         <template slot="imgSlot" slot-scope="text,record">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+          <img v-else :src="getImgView(text)" :preview="record.userId" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
@@ -68,23 +84,26 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>-->
+          <a @click="handleDistribute(record)">派发</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+<!--          <a-divider type="vertical" />-->
+<!--          <a-dropdown>-->
+<!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
+<!--            <a-menu slot="overlay">-->
+<!--              <a-menu-item>-->
+<!--                <a @click="handleDetail(record)">详情</a>-->
+<!--              </a-menu-item>-->
+<!--            </a-menu>-->
+<!--          </a-dropdown>-->
         </span>
 
       </a-table>
     </div>
 
     <shoe-user-modal ref="modalForm" @ok="modalFormOk"></shoe-user-modal>
+
+    <distribute-coupon-modal ref="distributeCouponModal" @ok="modalFormOk"></distribute-coupon-modal>
+
   </a-card>
 </template>
 
@@ -94,12 +113,14 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeUserModal from './modules/ShoeUserModal'
+  import DistributeCouponModal from "./modules/DistributeCouponModal";
 
   export default {
     name: 'ShoeUserList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeUserModal
+      ShoeUserModal,
+      DistributeCouponModal
     },
     data () {
       return {
@@ -107,7 +128,7 @@
         // 表头
         columns: [
           {
-            title:'微信昵称',
+            title:'用户昵称',
             align:"center",
             dataIndex: 'nickname'
           },
@@ -118,22 +139,17 @@
             scopedSlots: {customRender: 'imgSlot'}
           },
           {
-            title:'推荐人用户id',
-            align:"center",
-            dataIndex: 'pid'
-          },
-          {
             title:'手机号码',
             align:"center",
             dataIndex: 'phone'
           },
           {
-            title:'总支付金额',
+            title:'推荐人昵称',
             align:"center",
-            dataIndex: 'payAmount'
+            dataIndex: 'referrer'
           },
           {
-            title:'实际消费金额',
+            title:'总消费金额',
             align:"center",
             dataIndex: 'actualAmount'
           },
@@ -144,6 +160,14 @@
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
+          },
+          {
+            title: '操作',
+            dataIndex: 'action',
+            align:"center",
+            fixed:"right",
+            width:147,
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
@@ -180,6 +204,9 @@
         fieldList.push({type:'string',value:'actualAmount',text:'实际消费金额'})
         fieldList.push({type:'date',value:'lastLoginTime',text:'最近登录时间'})
         this.superFieldList = fieldList
+      },
+      handleDistribute(record) {
+        this.$refs.distributeCouponModal.show(record);
       }
     }
   }
