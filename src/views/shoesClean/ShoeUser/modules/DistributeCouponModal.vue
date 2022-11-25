@@ -22,7 +22,7 @@
           <a-form-model-item label="派送类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
             <a-radio-group v-model:value="type" @change="radioChange">
               <a-radio value="0">优惠券</a-radio>
-              <a-radio value="1">卡包</a-radio>
+<!--              <a-radio value="1">卡包</a-radio>-->
             </a-radio-group>
           </a-form-model-item>
         </a-col>
@@ -41,18 +41,18 @@
               <a-select-option v-for="item in couponList" :value="item.couponId" :key="item.couponId">{{item.name}}</a-select-option>
             </a-select>
           </a-form-model-item>
-          <a-form-model-item v-else-if="type === '1'" label="选择卡包" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
-            <a-select
-              v-model:value="selectOption"
-              show-search
-              placeholder="选择卡包"
-              style="width: 200px"
-              option-filter-prop="children"
-              :filter-option="filterOption"
-            >
-              <a-select-option v-for="item in cardBagList" :value="item.cardBagId" :key="item.cardBagId">{{item.name}}</a-select-option>
-            </a-select>
-          </a-form-model-item>
+<!--          <a-form-model-item v-else-if="type === '1'" label="选择卡包" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">-->
+<!--            <a-select-->
+<!--              v-model:value="selectOption"-->
+<!--              show-search-->
+<!--              placeholder="选择卡包"-->
+<!--              style="width: 200px"-->
+<!--              option-filter-prop="children"-->
+<!--              :filter-option="filterOption"-->
+<!--            >-->
+<!--              <a-select-option v-for="item in cardBagList" :value="item.cardBagId" :key="item.cardBagId">{{item.name}}</a-select-option>-->
+<!--            </a-select>-->
+<!--          </a-form-model-item>-->
         </a-col>
       </a-row>
       <a-row>
