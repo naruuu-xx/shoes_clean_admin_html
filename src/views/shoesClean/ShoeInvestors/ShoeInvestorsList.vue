@@ -47,12 +47,12 @@
 <!--      </a-upload>-->
 <!--       高级查询区域-->
 <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
-<!--      <a-dropdown v-if="selectedRowKeys.length > 0">-->
-<!--        <a-menu slot="overlay">-->
-<!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
-<!--        </a-menu>-->
-<!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
-<!--      </a-dropdown>-->
+      <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+        </a-menu>
+        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+      </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
@@ -67,7 +67,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="id"
+        rowKey="investorsId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -97,22 +97,22 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>-->
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
-<!--          <a-dropdown>-->
-<!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
-<!--            <a-menu slot="overlay">-->
-<!--              <a-menu-item>-->
-<!--                <a @click="handleDetail(record)">详情</a>-->
-<!--              </a-menu-item>-->
-<!--              <a-menu-item>-->
-<!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.investorsId)">-->
-<!--                  <a>删除</a>-->
-<!--                </a-popconfirm>-->
-<!--              </a-menu-item>-->
-<!--            </a-menu>-->
-<!--          </a-dropdown>-->
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a @click="handleDetail(record)">详情</a>
+              </a-menu-item>
+              <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.investorsId)">
+                  <a>删除</a>
+                </a-popconfirm>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
         </span>
 
       </a-table>
@@ -194,16 +194,16 @@
           {
             title:'添加人',
             align:"center",
-            dataIndex: 'addUserId'
+            dataIndex: 'realname'
           },
-          // {
-          //   title: '操作',
-          //   dataIndex: 'action',
-          //   align:"center",
-          //   fixed:"right",
-          //   width:147,
-          //   scopedSlots: { customRender: 'action' }
-          // }
+          {
+            title: '操作',
+            dataIndex: 'action',
+            align:"center",
+            fixed:"right",
+            width:147,
+            scopedSlots: { customRender: 'action' }
+          }
         ],
         url: {
           list: "/shoes/shoeInvestors/pageList",
