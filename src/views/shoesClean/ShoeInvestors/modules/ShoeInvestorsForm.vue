@@ -31,7 +31,7 @@
                 :filter-option="filterOption"
                 v-model="model.userId"
               >
-                <a-select-option  v-for="i in shoeUserList" :value="i.userId.toString()" :key="i.nickname">
+                <a-select-option  v-for="i in shoeUserList" :value="i.userId+''" :key="i.nickname">
                   {{i.nickname}}
                 </a-select-option>
               </a-select>
@@ -47,7 +47,7 @@
                 :filter-option="filterOption"
                 v-model="model.investorsPId"
               >
-                <a-select-option  v-for="i in agentList" :value="i.userId.toString()" :key="i.nickname">
+                <a-select-option  v-for="i in agentList" :value="i.userId" :key="i.nickname">
                   {{i.nickname}}
                 </a-select-option>
               </a-select>
@@ -64,7 +64,7 @@
                 :filter-option="filterOption"
                 v-model="model.lockerIds"
               >
-                <a-select-option  v-for="i in lockerList" :value="i.lockerId.toString()" :key="i.name">
+                <a-select-option  v-for="i in lockerList" :value="i.lockerId" :key="i.lockerId">
                   {{i.name}}
                 </a-select-option>
               </a-select>
@@ -157,7 +157,10 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
+
         this.model = Object.assign({}, record);
+
+
         this.visible = true;
       },
       submitForm () {
