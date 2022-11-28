@@ -194,10 +194,7 @@ export default {
         {
           title: '机柜数量',
           align: "center",
-          dataIndex: 'lockerCodeList',
-          customRender: (text) => {
-                 return text.length;
-               },
+          dataIndex: 'lockerNum',
         },
         {
           title: ' 电话',

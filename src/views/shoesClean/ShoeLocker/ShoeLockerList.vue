@@ -210,7 +210,17 @@
             dataIndex: 'departName'
           },
           {
-            title:'状态',
+            title:'格子数',
+            align:"center",
+            dataIndex: 'num'
+          },
+          {
+            title:'空闲格子数',
+            align:"center",
+            dataIndex: 'free'
+          },
+          {
+            title:'机柜状态',
             align:"center",
             dataIndex: 'status',
             customRender: (text) => {
@@ -218,23 +228,28 @@
             },
           },
           {
-            title:'省',
+            title:'在线状态',
             align:"center",
-            dataIndex: 'province',
-            // scopedSlots: {customRender: 'pcaSlot'}
+            dataIndex: 'onlineStatus',
+            customRender: (text) => {
+              return filterDictTextByCache('shoe_locker_online_status', text);
+            },
           },
-          {
-            title:'市',
-            align:"center",
-            dataIndex: 'city',
-            // scopedSlots: {customRender: 'pcaSlot'}
-          },
-          {
-            title:'区/县',
-            align:"center",
-            dataIndex: 'area',
-            // scopedSlots: {customRender: 'pcaSlot'}
-          },
+          // {
+          //   title:'省',
+          //   align:"center",
+          //   dataIndex: 'province',
+          // },
+          // {
+          //   title:'市',
+          //   align:"center",
+          //   dataIndex: 'city',
+          // },
+          // {
+          //   title:'区/县',
+          //   align:"center",
+          //   dataIndex: 'area',
+          // },
           {
             title:'详细地址',
             align:"center",
@@ -255,16 +270,6 @@
           //   align:"center",
           //   dataIndex: 'createTime'
           // },
-          {
-            title:'格子数',
-            align:"center",
-            dataIndex: 'num'
-          },
-          {
-            title:'空闲格子数',
-            align:"center",
-            dataIndex: 'free'
-          },
           {
             title: '操作',
             dataIndex: 'action',
