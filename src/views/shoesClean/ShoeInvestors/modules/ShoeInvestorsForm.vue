@@ -31,7 +31,7 @@
                 :filter-option="filterOption"
                 v-model="model.userId"
               >
-                <a-select-option  v-for="i in shoeUserList" :value="i.userId+''" :key="i.nickname">
+                <a-select-option  v-for="i in shoeUserList" :value="i.userId" :key="i.nickname">
                   {{i.nickname}}
                 </a-select-option>
               </a-select>
@@ -47,7 +47,7 @@
                 :filter-option="filterOption"
                 v-model="model.investorsPId"
               >
-                <a-select-option  v-for="i in agentList" :value="i.userId" :key="i.nickname">
+                <a-select-option  v-for="i in agentList" :value="i.investorsId" :key="i.nickname">
                   {{i.nickname}}
                 </a-select-option>
               </a-select>
@@ -112,6 +112,7 @@
            ],
            phone: [
               { required: true, message: '请输入手机号!'},
+             { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
            level: [
               { required: true, message: '请选择身份!'},
@@ -198,13 +199,13 @@
         httpAction("/shoes/shoeInvestors/statusList", null, "get").then((res) => {
           if (res){
             this.levelTextList = res.result;
-            console.log(res.result);
           }
         })
       },
       getShoeUserList(){
         httpAction("/shoes/shoeUser/shoeUserList",null, "get").then((res)=>{
           if(res){
+            console.log(res.result);
             this.shoeUserList = res.result;
 
           }
