@@ -157,7 +157,7 @@
           {
             title: '快递柜数',
             align:"center",
-            dataIndex: 'lockerCodeCount'
+            dataIndex: 'lockerNum',
           },
           {
             title:' 手机号（账号）',
