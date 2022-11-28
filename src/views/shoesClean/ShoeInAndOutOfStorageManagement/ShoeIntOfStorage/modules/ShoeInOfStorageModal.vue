@@ -148,6 +148,10 @@ export default {
       //
       // })
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
+        if (!res) {
+          this.$message.warning(res.message)
+          return
+        }
         const content = res;
         // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
         // 要不然无法进行打印
@@ -166,6 +170,7 @@ export default {
         this.doPrint('printPdf' + date + '.pdf')
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
+        this.$message.success("入库成功");
       })
     },
     // 打印
@@ -174,7 +179,6 @@ export default {
       setTimeout(() => {
         // window.print()
         ordonnance.print();
-        this.pdfLoading = false;
       }, 100)
     },
   }
