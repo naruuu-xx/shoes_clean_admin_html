@@ -6,14 +6,14 @@
         <a-row :gutter="24">
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="袋子编码">
-              <a-input placeholder="请输入袋子编码" v-model="queryParam.bagCode" style="width: 200px"></a-input>
+              <a-input placeholder="请输入袋子编码" v-model="queryParam.bagCode" style="width: 200px" ></a-input>
 
             </a-form-item>
           </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="状态">
 <!--              <a-input placeholder="请输入状态:0=异常,1=正常" v-model="queryParam.status"></a-input>-->
-              <a-select v-model="queryParam.status" style="width: 100px">
+              <a-select v-model="queryParam.status" style="width: 100px"  :allowClear='true'>
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -21,7 +21,7 @@
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="使用状态">
 <!--              <a-input placeholder="请输入使用状态:0=空闲,1=使用中" v-model="queryParam.useStatus"></a-input>-->
-              <a-select v-model="queryParam.useStatus" style="width: 100px">
+              <a-select v-model="queryParam.useStatus" style="width: 100px" :allowClear='true'>
                 <a-select-option v-for="item in useStatusOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
