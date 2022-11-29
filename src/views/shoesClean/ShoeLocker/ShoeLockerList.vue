@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="机柜编码">
               <a-input placeholder="请输入机柜编码" v-model="queryParam.lockerCode" autocomplete="off"></a-input>
             </a-form-item>

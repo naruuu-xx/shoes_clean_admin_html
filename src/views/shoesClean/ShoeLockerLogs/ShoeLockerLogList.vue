@@ -4,12 +4,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="机柜编号">
               <a-input placeholder="请输入机柜编号" v-model="queryParam.lockerCode"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="操作类型">
 <!--              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>-->
               <a-select v-model="queryParam.operationType">

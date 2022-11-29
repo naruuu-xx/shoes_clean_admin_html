@@ -87,7 +87,8 @@ export default {
         "no": this.no
       }
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
-        if (!res) {
+        console.log(res);
+        if (!res.success && res.success !== undefined) {
           this.$message.warning(res.message)
           return
         }
