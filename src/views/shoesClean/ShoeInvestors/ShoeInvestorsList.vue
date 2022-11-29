@@ -1,43 +1,51 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline" @keyup.enter.native="searchQuery">
-        <a-row :gutter="24">
-<!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-<!--            <a-form-item label=" ID">-->
-<!--              <a-input placeholder="请输入 ID" v-model="queryParam.logisticsId"></a-input>-->
+<!--    <div class="table-page-search-wrapper">-->
+<!--      <a-form layout="inline" @keyup.enter.native="searchQuery">-->
+<!--        <a-row :gutter="24">-->
+<!--          <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="姓名">-->
+<!--              <a-input placeholder="请输入姓名"  v-model="queryParam.name"></a-input>-->
 <!--            </a-form-item>-->
 <!--          </a-col>-->
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label=" 姓名">
-              <a-input placeholder="请输入 姓名" v-model="queryParam.name"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label=" 手机号（账号）">
-              <a-input placeholder="请输入 手机号（账号）" v-model="queryParam.phone"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-            </span>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div>
+<!--          <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="手机号">-->
+<!--              <a-input placeholder="请输入手机号"  v-model="queryParam.phone"></a-input>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
+
+<!--            <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
+<!--              <a-form-item label="身份">-->
+<!--                <a-select v-model="queryParam.level" AllClear="true">-->
+<!--                  <a-select-option value="1" >代理人</a-select-option>-->
+<!--                  <a-select-option value="2" >投资人</a-select-option>-->
+<!--                </a-select>-->
+<!--              </a-form-item>-->
+<!--            </a-col>-->
+<!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
+<!--            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">-->
+<!--              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>-->
+<!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
+<!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
+<!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
+<!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
+<!--              </a>-->
+<!--            </span>-->
+<!--          </a-col>-->
+<!--        </a-row>-->
+<!--      </a-form>-->
+<!--    </div>-->
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-<!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_logistics')">导出</a-button>-->
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_investors')">导出</a-button>-->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
-      <!-- 高级查询区域 -->
+<!--       高级查询区域-->
 <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
@@ -59,7 +67,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="logisticsId"
+        rowKey="investorsId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -95,14 +103,11 @@
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
-<!--              <a-menu-item>-->
-<!--                <a @click="handleDetail(record)">详情</a>-->
-<!--              </a-menu-item>-->
               <a-menu-item>
-                <a href="javascript:;" @click="handleChangePassword(record.phone)">密码</a>
+                <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
               <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.logisticsId)">
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.investorsId)">
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -113,8 +118,7 @@
       </a-table>
     </div>
 
-    <shoe-logistics-modal ref="modalForm" @ok="modalFormOk"></shoe-logistics-modal>
-    <password-modal ref="passwordmodal" @ok="passwordModalOk"></password-modal>
+    <shoe-investors-modal ref="modalForm" @ok="modalFormOk"></shoe-investors-modal>
   </a-card>
 </template>
 
@@ -123,20 +127,18 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import ShoeLogisticsModal from './modules/ShoeLogisticsModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import PasswordModal from './modules/PasswordModal'
+  import ShoeInvestorsModal from './modules/ShoeInvestorsModal'
+  import { httpAction } from '@api/manage'
 
   export default {
-    name: 'ShoeLogisticsList',
+    name: 'ShoeInvestorsList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeLogisticsModal,
-      PasswordModal
+      ShoeInvestorsModal
     },
     data () {
       return {
-        description: 'shoe_logistics管理页面',
+        description: 'shoe_investors管理页面',
         // 表头
         columns: [
           // {
@@ -150,25 +152,49 @@
           //   }
           // },
           {
-            title:' 姓名',
+            title:'姓名',
             align:"center",
             dataIndex: 'name'
           },
           {
-            title: '快递柜数',
-            align:"center",
-            dataIndex: 'lockerNum',
-          },
-          {
-            title:' 手机号（账号）',
+            title:'手机号',
             align:"center",
             dataIndex: 'phone'
           },
           {
-            title:' 状态 ',
+            title:'身份',
             align:"center",
-            dataIndex: 'status',
-            customRender: (text) => (filterMultiDictText(this.dictOptions['status'], text)),
+            dataIndex: 'levelText'
+          },
+          {
+            title:'机柜数',
+            align:"center",
+            dataIndex: 'num'
+          },
+          {
+            title: '订单数',
+            align: 'center',
+            dataIndex: 'orderNum'
+          },
+          {
+            title:'总收益',
+            align:"center",
+            dataIndex: 'income'
+          },
+          {
+            title:'余额',
+            align:"center",
+            dataIndex: 'amount'
+          },
+          // {
+          //   title:'提现中金额',
+          //   align:"center",
+          //   dataIndex: 'withdrawalingAmount'
+          // },
+          {
+            title:'添加人',
+            align:"center",
+            dataIndex: 'realname'
           },
           {
             title: '操作',
@@ -180,21 +206,21 @@
           }
         ],
         url: {
-          // list: "/shoes/shoeLogistics/list",
-          list: "/shoes/shoeLogistics/queryList",
-          delete: "/shoes/shoeLogistics/delete",
-          deleteBatch: "/shoes/shoeLogistics/deleteBatch",
-          exportXlsUrl: "/shoes/shoeLogistics/exportXls",
-          importExcelUrl: "shoes/shoeLogistics/importExcel",
+          list: "/shoes/shoeInvestors/pageList",
+          delete: "/shoes/shoeInvestors/delete",
+          deleteBatch: "/shoes/shoeInvestors/deleteBatch",
+          exportXlsUrl: "/shoes/shoeInvestors/exportXls",
+          importExcelUrl: "/shoes/shoeInvestors/importExcel",
 
         },
         dictOptions:{},
         superFieldList:[],
+        levelTextList:[],
       }
     },
     created() {
-      this.$set(this.dictOptions, 'status', [{text:'正常',value:'1'},{text:'禁用',value:'0'}])
     this.getSuperFieldList();
+    this.getLevelTextList();
     },
     computed: {
       importExcelUrl: function(){
@@ -206,17 +232,25 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'int',value:'logisticsId',text:' ID',dictCode:''})
-        fieldList.push({type:'string',value:'name',text:' 姓名',dictCode:''})
-        fieldList.push({type:'string',value:'phone',text:' 手机号（账号）',dictCode:''})
-        fieldList.push({type:'switch',value:'status',text:' 状态 '})
+        fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
+        fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
+        fieldList.push({type:'string',value:'level',text:'身份'})
+        fieldList.push({type:'string',value:'userId',text:'绑定小程序用户id',dictCode:''})
+        fieldList.push({type:'int',value:'num',text:'机柜数',dictCode:''})
+        fieldList.push({type:'int',value:'income',text:'总收入',dictCode:''})
+        fieldList.push({type:'int',value:'amount',text:'账户余额',dictCode:''})
+        fieldList.push({type:'int',value:'withdrawalingAmount',text:'提现中金额',dictCode:''})
+        fieldList.push({type:'string',value:'addUserId',text:'添加人',dictCode:''})
         this.superFieldList = fieldList
       },
-      handleChangePassword(phone) {
-        this.$refs.passwordmodal.show(phone);
-      },
-      passwordModalOk(){
 
+      getLevelTextList(){
+        httpAction("/shoes/shoeInvestors/statusList", null, "get").then((res) => {
+          if (res){
+            this.levelTextList = res.result;
+            console.log(res.result);
+          }
+        })
       }
     }
   }

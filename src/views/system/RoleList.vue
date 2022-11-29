@@ -6,7 +6,7 @@
       <!-- 搜索区域 -->
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :md="6" :sm="8">
+          <a-col :md="4" :sm="8">
             <a-form-item label="名称" :labelCol="{span: 5}" :wrapperCol="{span: 18, offset: 1}">
               <a-input placeholder="请输入名称查询" v-model="queryParam.roleName"></a-input>
             </a-form-item>
@@ -19,7 +19,7 @@
             </a-form-item>
           </a-col>
           <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-            <a-col :md="6" :sm="24">
+            <a-col :md="4" :sm="8">
               <a-button type="primary" @click="searchQuery">查询</a-button>
               <a-button style="margin-left: 8px" @click="searchReset">重置</a-button>
             </a-col>
@@ -31,10 +31,10 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator"  style="margin-top: 5px">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('角色信息')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('角色信息')">导出</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
 
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">

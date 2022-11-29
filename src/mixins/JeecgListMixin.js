@@ -20,7 +20,7 @@ export const JeecgListMixin = {
       ipagination:{
         current: 1,
         pageSize: 10,
-        pageSizeOptions: ['10', '20', '30'],
+        pageSizeOptions: ['10', '20', '30', '50', '100', '500'],
         showTotal: (total, range) => {
           return range[0] + "-" + range[1] + " 共" + total + "条"
         },
@@ -280,7 +280,7 @@ export const JeecgListMixin = {
       if(this.selectedRowKeys && this.selectedRowKeys.length>0){
         param['selections'] = this.selectedRowKeys.join(",")
       }
-      console.log("导出参数",param)
+      // console.log("导出参数",param)
       downFile(this.url.exportXlsUrl,param).then((data)=>{
         if (!data) {
           this.$message.warning("文件下载失败")

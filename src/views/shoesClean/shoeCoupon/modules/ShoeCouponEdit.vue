@@ -36,21 +36,22 @@
 
               <a-col :span="24">
                 <a-form-model-item label="适用范围" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="range">
-                  <a-radio-group v-model:value="model.range" :disabled="true">
-                    <a-radio value="1">通用</a-radio>
-                    <a-radio value="2">指定商品&nbsp;
-                      <a-select
-                        v-model:value="selectedGoods"
-                        mode="multiple"
-                        style="width: 400px;"
-                        placeholder="请选择"
-                        :options="goodsOptions"
-                        @change="handleChange"
-                        :disabled="true"
-                      >
-                      </a-select>
-                    </a-radio>
-                  </a-radio-group>
+<!--                  <a-radio-group v-model:value="model.range" :disabled="true">-->
+<!--                    <a-radio value="1">通用</a-radio>-->
+<!--                    <a-radio value="2">指定商品&nbsp;-->
+<!--                      <a-select-->
+<!--                        v-model:value="selectedGoods"-->
+<!--                        mode="multiple"-->
+<!--                        style="width: 400px;"-->
+<!--                        placeholder="请选择"-->
+<!--                        :options="goodsOptions"-->
+<!--                        @change="handleChange"-->
+<!--                        :disabled="true"-->
+<!--                      >-->
+<!--                      </a-select>-->
+<!--                    </a-radio>-->
+<!--                  </a-radio-group>-->
+                  <span>{{goodsOptions}}</span>
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
@@ -92,6 +93,7 @@
                   <a-radio-group v-model:value="model.way" :disabled="true">
                     <a-radio value="0">自行领取</a-radio>
                     <a-radio value="1">系统发放</a-radio>
+                    <a-radio value="2">卡包</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
@@ -195,12 +197,12 @@
           edit: "/ShoeCoupon/shoeCoupon/edit",
           queryById: "/ShoeCoupon/shoeCoupon/queryById"
         },
-        threshold: "1",
-        goodsOptions: [],
+        // threshold: "1",
+        goodsOptions: "",
         startAndEndTime: [],
-        numRadio: "1",
+        // numRadio: "1",
         selectedGoods: [],
-        selectedReceiveCount: "2",
+        // selectedReceiveCount: "2",
         min: "",
         reduce: "",
       }
@@ -269,13 +271,19 @@
         }
 
         //用户可领取优惠券次数的判断
-        let receiveCount = this.receiveCount;
+        let receiveCount = this.model.receiveCount;
         if (receiveCount < 0) {
           this.selectedReceiveCount = "1";
         } else {
           this.selectedReceiveCount = "2";
         }
 
+        let range = this.model.range;
+        if (range === "1") {
+          this.goodsOptions = "通用";
+        } else if (range === "2") {
+          this.goodsOptions = this.model.rangeConfig;
+        }
       },
       submitForm () {
         const that = this;

@@ -21,6 +21,13 @@
               </a-select>
             </a-form-item>
           </a-col>
+<!--          <a-col :xl="4" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="机柜名称">-->
+<!--              <a-select v-model="queryParam.lockerId" style="width: 180px">-->
+<!--                <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -35,8 +42,9 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
 <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>
-<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出选中订单</a-button>
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')">导出全部订单</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="i mportExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
       <!-- 高级查询区域 -->
@@ -138,36 +146,11 @@
         description: 'shoe_order管理页面',
         // 表头
         columns: [
-          // {
-          //   title:'订单ID',
-          //   align:"center",
-          //   dataIndex: 'orderId'
-          // },
-          // {
-          //   title:'父订单ID',
-          //   align:"center",
-          //   dataIndex: 'orderPId'
-          // },
           {
             title:'订单编号',
             align:"center",
             dataIndex: 'no'
           },
-          // {
-          //   title:'用户ID',
-          //   align:"center",
-          //   dataIndex: 'userId'
-          // },
-          // {
-          //   title:'商品ID',
-          //   align:"center",
-          //   dataIndex: 'goodsId'
-          // },
-          // {
-          //   title:'规格ID',
-          //   align:"center",
-          //   dataIndex: 'skuId'
-          // },
           {
             title:'商品名称',
             align:"center",
@@ -178,26 +161,6 @@
             align:"center",
             dataIndex: 'skuTitle'
           },
-          // {
-          //   title:'商品图片',
-          //   align:"center",
-          //   dataIndex: 'image'
-          // },
-          // {
-          //   title:'洗护前照片',
-          //   align:"center",
-          //   dataIndex: 'orderImages'
-          // },
-          // {
-          //   title:'订单备注',
-          //   align:"center",
-          //   dataIndex: 'note'
-          // },
-          // {
-          //   title:'期望上门取件时间',
-          //   align:"center",
-          //   dataIndex: 'expect'
-          // },
           {
             title:'姓名',
             align:"center",
@@ -208,16 +171,11 @@
             align:"center",
             dataIndex: 'phone'
           },
-          // {
-          //   title:'总金额',
-          //   align:"center",
-          //   dataIndex: 'totalPrice'
-          // },
-          // {
-          //   title:'应付金额',
-          //   align:"center",
-          //   dataIndex: 'price'
-          // },
+          {
+            title: "机柜名称",
+            align: "center",
+            dataIndex: 'lockerName'
+          },
           {
             title:'实付金额（元）',
             align:"center",
@@ -226,21 +184,11 @@
               return (text * 0.01).toFixed(2);
             }
           },
-          // {
-          //   title:'商品金额',
-          //   align:"center",
-          //   dataIndex: 'goodsPrice'
-          // },
-          // {
-          //   title:'配送费用',
-          //   align:"center",
-          //   dataIndex: 'courierPrice'
-          // },
-          // {
-          //   title:'优惠抵扣金额',
-          //   align:"center",
-          //   dataIndex: 'couponPrice'
-          // },
+          {
+            title:'下单时间',
+            align:"center",
+            dataIndex: 'createTime'
+          },
           {
             title:'订单状态',
             align:"center",
@@ -249,66 +197,6 @@
               return filterDictTextByCache('shoe_order_status', text);
             }
           },
-          // {
-          //   title:'机柜ID（下单）',
-          //   align:"center",
-          //   dataIndex: 'beforeLockerId'
-          // },
-          // {
-          //   title:'机柜格子编号（下单）',
-          //   align:"center",
-          //   dataIndex: 'beforeGridNo'
-          // },
-          // {
-          //   title:'机柜ID（配送）',
-          //   align:"center",
-          //   dataIndex: 'afterLockerId'
-          // },
-          // {
-          //   title:'机柜格子编号（配送）',
-          //   align:"center",
-          //   dataIndex: 'afterGridNo'
-          // },
-          // {
-          //   title:'工厂编码',
-          //   align:"center",
-          //   dataIndex: 'orgCode'
-          // },
-          // {
-          //   title:'袋子编码',
-          //   align:"center",
-          //   dataIndex: 'bagCode'
-          // },
-          // {
-          //   title:'异常历史:0=无,1=有',
-          //   align:"center",
-          //   dataIndex: 'hasException'
-          // },
-          // {
-          //   title:'订单类型:self=站点自寄,service=上门取件',
-          //   align:"center",
-          //   dataIndex: 'type'
-          // },
-          // {
-          //   title:'自提取件码',
-          //   align:"center",
-          //   dataIndex: 'code'
-          // },
-          // {
-          //   title:'取消时间',
-          //   align:"center",
-          //   dataIndex: 'cancelTime'
-          // },
-          // {
-          //   title:'付款时间',
-          //   align:"center",
-          //   dataIndex: 'payTime'
-          // },
-          // {
-          //   title:'完成时间',
-          //   align:"center",
-          //   dataIndex: 'finishTime'
-          // },
           {
             title: '操作',
             dataIndex: 'action',
@@ -337,10 +225,12 @@
           {"value":"11", "name":"配送员已接单（送件）"}, {"value":"12", "name":"配送员已取鞋"}, {"value":"13", "name":"已完成"},
           {"value":"14", "name":"退款中"}, {"value":"15", "name":"已退款"}, {"value":"16", "name":"已取消"},
           ],
+        lockerList: [],
       }
     },
     created() {
-    this.getSuperFieldList();
+      this.getSuperFieldList();
+      //获取机柜列表，放入下拉框
     },
     computed: {
       importExcelUrl: function(){

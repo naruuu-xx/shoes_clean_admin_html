@@ -6,56 +6,38 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
 
-          <a-col :md="6" :sm="12">
+          <a-col :md="4" :sm="8">
             <a-form-item label="账号">
               <!--<a-input placeholder="请输入账号查询" v-model="queryParam.username"></a-input>-->
               <j-input placeholder="输入账号模糊查询" v-model="queryParam.username"></j-input>
             </a-form-item>
           </a-col>
+          <a-col :md="4" :sm="8">
+            <a-form-item label="真实名字">
+              <a-input placeholder="请输入真实名字" v-model="queryParam.realname"></a-input>
+            </a-form-item>
+          </a-col>
 
-          <a-col :md="6" :sm="8">
-            <a-form-item label="性别">
-              <a-select v-model="queryParam.sex" placeholder="请选择性别">
+          <a-col :md="4" :sm="8">
+            <a-form-item label="手机号码">
+              <a-input placeholder="请输入手机号码查询" v-model="queryParam.phone"></a-input>
+            </a-form-item>
+          </a-col>
+
+          <a-col :md="4" :sm="8">
+            <a-form-item label="用户状态">
+              <a-select v-model="queryParam.status" placeholder="请选择">
                 <a-select-option value="">请选择</a-select-option>
-                <a-select-option value="1">男</a-select-option>
-                <a-select-option value="2">女</a-select-option>
+                <a-select-option value="1">正常</a-select-option>
+                <a-select-option value="2">冻结</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
 
-
-          <template v-if="toggleSearchStatus">
-            <a-col :md="6" :sm="8">
-              <a-form-item label="真实名字">
-                <a-input placeholder="请输入真实名字" v-model="queryParam.realname"></a-input>
-              </a-form-item>
-            </a-col>
-
-            <a-col :md="6" :sm="8">
-              <a-form-item label="手机号码">
-                <a-input placeholder="请输入手机号码查询" v-model="queryParam.phone"></a-input>
-              </a-form-item>
-            </a-col>
-
-            <a-col :md="6" :sm="8">
-              <a-form-item label="用户状态">
-                <a-select v-model="queryParam.status" placeholder="请选择">
-                  <a-select-option value="">请选择</a-select-option>
-                  <a-select-option value="1">正常</a-select-option>
-                  <a-select-option value="2">冻结</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </template>
-
-          <a-col :md="6" :sm="8">
+          <a-col :md="4" :sm="8">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
             </span>
           </a-col>
 
@@ -66,11 +48,11 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator" style="border-top: 5px">
       <a-button @click="handleAdd" type="primary" icon="plus" >添加用户</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('用户信息')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      <j-third-app-button biz-type="user" :selected-row-keys="selectedRowKeys" syncToApp syncToLocal @sync-finally="onSyncFinally"/>
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('用户信息')">导出</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
+<!--      <j-third-app-button biz-type="user" :selected-row-keys="selectedRowKeys" syncToApp syncToLocal @sync-finally="onSyncFinally"/>-->
       <a-button type="primary" icon="hdd" @click="recycleBinVisible=true">回收站</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay" @click="handleMenuClick">
@@ -92,7 +74,7 @@
           <a-icon type="down"/>
         </a-button>
       </a-dropdown>
-      <j-super-query :fieldList="superQueryFieldList" @handleSuperQuery="handleSuperQuery"/>
+<!--      <j-super-query :fieldList="superQueryFieldList" @handleSuperQuery="handleSuperQuery"/>-->
     </div>
 
     <!-- table区域-begin -->

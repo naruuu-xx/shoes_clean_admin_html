@@ -130,6 +130,10 @@ export default {
             this.$nextTick(()=> {
               this.$refs.autoInput.focus();
             })
+
+            //打印水洗唛
+            this.createWashedMark(res.result.no);
+
           }
         })
       }
@@ -140,6 +144,43 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+    },
+    createWashedMark(no){
+      let data = {
+        "no": no
+      }
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+        if (!res) {
+          this.$message.warning(res.message)
+          return
+        }
+        const content = res;
+        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
+        // 要不然无法进行打印
+        const blob = new Blob([content], { type: 'application/pdf' });
+        //=========================================================
+        var date = (new Date()).getTime();
+        var ifr = document.createElement('iframe');
+        ifr.style.frameborder = 'no';
+        ifr.style.display = 'none';
+        ifr.style.pageBreakBefore = 'always';
+        ifr.setAttribute('download', 'printPdf' + date + '.pdf');
+        ifr.setAttribute('id', 'printPdf' + date + '.pdf');
+        ifr.src = window.URL.createObjectURL(blob);
+        document.body.appendChild(ifr);
+
+        this.doPrint('printPdf' + date + '.pdf')
+        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
+        //=========================================================
+      })
+    },
+    // 打印
+    doPrint(val) {
+      var ordonnance = document.getElementById(val).contentWindow;
+      setTimeout(() => {
+        // window.print()
+        ordonnance.print();
+      }, 100)
     },
   }
 }

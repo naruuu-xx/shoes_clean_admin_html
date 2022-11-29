@@ -7,7 +7,7 @@
           <!-- 搜索区域 -->
           <a-form layout="inline" @keyup.enter.native="searchQuery">
             <a-row :gutter="24">
-              <a-col :md="12" :sm="8">
+              <a-col :md="4" :sm="8">
                 <a-form-item label="角色名称" :labelCol="{span: 5}" :wrapperCol="{span: 18, offset: 1}">
                   <a-input placeholder="" v-model="queryParam.roleName"></a-input>
                 </a-form-item>
@@ -34,10 +34,10 @@
         <div class="table-operator" style="margin: 5px 0 10px 2px">
           <a-button @click="handleAdd" type="primary" icon="plus">新建角色</a-button>
           <!--<a-button @click="handleEdit(model1)" type="primary" icon="plus">角色编辑</a-button>-->
-          <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-            <a-button type="primary" icon="import">导入</a-button>
-          </a-upload>
-          <a-button type="primary" icon="download" @click="handleExportXls('角色管理')">导出</a-button>
+<!--          <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--            <a-button type="primary" icon="import">导入</a-button>-->
+<!--          </a-upload>-->
+<!--          <a-button type="primary" icon="download" @click="handleExportXls('角色管理')">导出</a-button>-->
         </div>
 
         <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
@@ -74,7 +74,9 @@
                 <a-menu-item>
                   <a @click="handleEdit(record)">编辑</a>
                 </a-menu-item>
-                <a-menu-item>
+                <a-menu-item v-if="record.roleCode !=='admin' && record.roleCode !=='areaAdmin'
+                && record.roleCode !=='factoryAdmin' && record.roleCode !=='logisticsAdmin'&& record.roleCode !== 'courierAdmin'
+                  && record.roleCode !== 'factory'">
                   <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete1(record.id)">
                     <a>删除</a>
                   </a-popconfirm>

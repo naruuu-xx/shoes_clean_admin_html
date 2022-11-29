@@ -11,43 +11,15 @@
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo"  ref="autoInput"/>
+          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="handleInOfStorage"  ref="autoInput"/>
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
-          <a-row><a-button @click="queryOrderInfo" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">确&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认</span></a-button></a-row>
+          <a-row><a-button @click="handleInOfStorage" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button></a-row>
           <a-row><a-button @click="emptyBagCode" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
         </a-col>
       </a-row>
       <a-divider />
-      <a-row v-show="shoeOrderInfo">
-        <a-row>
-          <a-col :span="18">
-            <span class="content">订单编号：{{data.no}}</span>
-          </a-col>
-          <a-col :span="2"></a-col>
-          <a-col :span="4">
-            <a-button @click="handleInOfStorage" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
-          </a-col>
-        </a-row>
-        <a-row style="margin-bottom: 30px">
-          <a-col :span="24">
-            <span class="content">商品名：{{data.title}}</span>
-          </a-col>
-        </a-row>
-        <a-row style="margin-bottom: 30px">
-          <a-col :span="24">
-            <span class="content">商品规格：{{data.skuTitle}}</span>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="24">
-            <p class="content">照片：</p>
-            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
-                 :src="item" @click="showImage(item)">
-          </a-col>
-        </a-row>
-      </a-row>
     </div>
 
     <a-modal :zIndex="2000" :width="1000" :visible="showImageModal" :footer="null"
@@ -68,8 +40,8 @@ export default {
   data() {
     return {
       visible: false,
-      title: '入库',
-      bagCode: "",
+      title: '打印水洗唛',
+      no: "",
       data: {},
       imageList: [],
       showImageModal: false,
@@ -91,7 +63,7 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
-      this.bagCode = "";
+      this.no = "";
       //关闭弹窗并刷新列表
       this.$emit('ok');
     },
@@ -103,51 +75,18 @@ export default {
       this.showImageModal = false;
       this.clickedImage = "";
     },
-    queryOrderInfo(){
-      //查询订单信息
-      if (this.bagCode === "" || this.bagCode === null || this.bagCode === undefined) {
-        this.$message.warning("请扫码袋子编码或者手动输入袋子编码");
-      } else {
-        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryOrderInfoByBagCode?bagCode=" + this.bagCode, null, "get").then((res) => {
-          if (res.code !== 200) {
-            this.$message.warning(res.message);
-            //清空输入框并重新聚焦
-            this.bagCode = "";
-            this.$nextTick(()=> {
-              this.$refs.autoInput.focus();
-            })
-            return false;
-          } else {
-            this.data = {
-              "orderId": res.result.orderId,
-              "no": res.result.no,
-              "note": res.result.note,
-              "title": res.result.title,
-              "skuTitle": res.result.skuTitle
-            }
-            this.imageList = JSON.parse(res.result.orderImages);
-            this.shoeOrderInfo = true;
-            //清空输入框并重新聚焦
-            this.bagCode = "";
-            this.$nextTick(()=> {
-              this.$refs.autoInput.focus();
-            })
-          }
-        })
-      }
-    },
     emptyBagCode(){
       //清空输入框内容
-      this.bagCode = "";
+      this.no = "";
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
     },
     handleInOfStorage(){
-      // httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
-      //
-      // })
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
+      let data = {
+        "no": this.no
+      }
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
@@ -170,7 +109,7 @@ export default {
         this.doPrint('printPdf' + date + '.pdf')
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
-        this.$message.success("入库成功");
+        this.$message.success("打印成功");
       })
     },
     // 打印

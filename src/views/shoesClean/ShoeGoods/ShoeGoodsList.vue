@@ -4,6 +4,38 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="商品名称">
+              <a-input placeholder="请输入商品名称" v-model="queryParam.title"></a-input>
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="商品类型">
+              <!--              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>-->
+              <a-select v-model="queryParam.type" :allowClear="true">
+                <a-select-option v-for="i in typeList" :value="i.type" :key="i.type">{{i.type}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="商品状态">
+              <!--              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>-->
+              <a-select v-model="queryParam.statusText"  :allowClear = "true">
+                <a-select-option v-for="i in statusList" :value="i.statusText" :key="i.status">{{i.statusText}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
+              <!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
+              <!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
+              <!--              </a>-->
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -17,7 +49,7 @@
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
       <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
 <!--          <template v-if="!matchState(record.goodsId,/[12]/)">-->
@@ -107,7 +139,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeGoodsModal from './modules/ShoeGoodsModal'
   import { filterMultiDictText } from '@comp/dict/JDictSelectUtil'
-  import { getFileAccessHttpUrl } from '@api/manage'
+  import { getFileAccessHttpUrl, httpAction } from '@api/manage'
 
   export default {
     name: 'ShoeGoodsList',
@@ -220,11 +252,17 @@
         },
         dictOptions:{},
         superFieldList:[],
+        typeList:[],
+        statusList:[]
       }
     },
     created() {
     this.getSuperFieldList();
-    this.$set(this.dictOptions, 'status', [{text:'上架',value:'1'},{text:'下架',value:'0'}])
+    this.goodsTypeList();
+    this.goodsStatusList();
+    this.$set(this.dictOptions, 'status', [{text:'上架',value:'1'},{text:'下架',value:'0'}]);
+    console.log("----------------");
+    console.log(this.statusList);
     },
     computed: {
       importExcelUrl: function(){
@@ -256,8 +294,25 @@
         fieldList.push({type:'int',value:'delFlag',text:'删除状态:0=正常,1=删除'})
         fieldList.push({type:'date',value:'deleteTime',text:'删除时间'})
         this.superFieldList = fieldList
+      },
+      goodsTypeList(){
+        httpAction("/shoes/shoeGoodsSku/typeList", null, "get").then((res) => {
+          if (res){
+
+            this.typeList = res;
+          }
+        })
+      },
+      goodsStatusList(){
+        httpAction("/shoes/shoeGoodsSku/statusList", null, "get").then((res) => {
+          if (res){
+
+            this.statusList = res;
+          }
+        })
       }
     }
+
   }
 </script>
 <style scoped>

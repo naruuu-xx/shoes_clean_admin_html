@@ -16,7 +16,7 @@
                 <a-button class="editable-add-btn" @click="handleAdd" :disabled="editDisabled">
                   新增
                 </a-button>
-                <a-table bordered :data-source="model.cardCouponList" :columns="columns">
+                <a-table bordered :data-source="model.cardCouponList" :columns="columns" :pagination="paginations">
                   <template slot="couponId" slot-scope="text,index, record" prop="couponId">
                     <a-select :text="text" @change="onCellChange(record, 'couponId', $event)" v-if="!editDisabled">
                       <a-select-option v-for="i in couponList" :value="i.couponId" :key="i.couponId" >{{i.name}}</a-select-option>
@@ -110,6 +110,9 @@ export default {
     return {
       confirmLoading: false,
       editDisabled: false,
+      paginations:{
+        pageSize: 999
+      },
       model:{
         cardBagId:"",
         name:"",
