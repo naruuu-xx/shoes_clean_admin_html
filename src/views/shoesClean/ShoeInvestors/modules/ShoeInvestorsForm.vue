@@ -180,6 +180,8 @@
             }else{
               httpurl+=this.url.edit;
                method = 'put';
+              this.model.income = parseInt(this.model.income)*100;
+              this.model.amount = parseInt(this.model.amount)*100;
             }
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
