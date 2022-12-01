@@ -96,6 +96,7 @@
     data () {
       return {
         model:{
+          investorsId:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -142,7 +143,6 @@
     },
     created () {
        //备份model原始值
-      this.getLevelTextList();
       this.getShoeUserList();
       this.getLockerList();
       this.getAgentList();
@@ -158,9 +158,9 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
-
         this.model = Object.assign({}, record);
-
+        this.getLockerList();
+        this.getShoeUserList();
 
         this.visible = true;
       },
@@ -172,8 +172,6 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            console.log("ceshi.....");
-            console.log(this.model.investorsId);
             if(!this.model.investorsId){
               httpurl+=this.url.add;
               method = 'post';
@@ -197,15 +195,8 @@
 
         })
       },
-      getLevelTextList(){
-        httpAction("/shoes/shoeInvestors/statusList", null, "get").then((res) => {
-          if (res){
-            this.levelTextList = res.result;
-          }
-        })
-      },
       getShoeUserList(){
-        httpAction("/shoes/shoeUser/shoeUserList",null, "get").then((res)=>{
+        httpAction("/shoes/shoeUser/shoeUserList?investorsId="+this.model.investorsId,"", "get").then((res)=>{
           if(res){
             console.log(res.result);
             this.shoeUserList = res.result;
@@ -214,7 +205,7 @@
         })
       },
       getLockerList(){
-        httpAction("/shoes/shoeLocker/investorsShoeLockerList",null,"get").then((res)=>{
+        httpAction("/shoes/shoeLocker/investorsShoeLockerList?investorsId="+this.model.investorsId,"","get").then((res)=>{
           if(res){
             this.lockerList = res.result;
           }
