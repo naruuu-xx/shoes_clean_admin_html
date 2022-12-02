@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="4" :lg="7" :md="4" :sm="12">
             <a-form-item label="订单编号">
-              <a-input placeholder="请输入订单编号" v-model="queryParam.no"></a-input>
+              <a-input placeholder="请输入订单编号" v-model="queryParam.no" ></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
@@ -15,8 +15,13 @@
             </a-form-item>
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="机柜名称">
+              <a-input placeholder="请输入机柜名称" v-model="queryParam.lockerName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单状态">
-              <a-select v-model="queryParam.status">
+              <a-select v-model="queryParam.status" >
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
