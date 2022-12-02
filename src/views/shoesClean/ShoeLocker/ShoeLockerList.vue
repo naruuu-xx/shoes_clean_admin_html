@@ -168,6 +168,7 @@
   import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
   import {httpAction} from "../../../api/manage";
   import {mapGetters} from 'vuex';
+  import store from '@/store/'
 
   export default {
     name: 'ShoeLockerList',
@@ -305,6 +306,15 @@
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
     },
+    //==================================================================================================================
+    // mounted() {
+    //   //初始化websocket
+    //   this.initWebSocket()
+    // },
+    // destroyed: function () { // 离开页面生命周期函数
+    //   this.websocketclose();
+    // },
+    //==================================================================================================================
     methods: {
       ...mapGetters(["userInfo"]),
       getPcaText(code){
@@ -345,7 +355,41 @@
             that.$message.warning(res.message);
           }
         })
-      }
+      },
+      //================================================================================================================
+      // initWebSocket: function () {
+      //   // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
+      //   var userId = store.getters.userInfo.id;
+      //   let token = store.getters.token.toString();
+      //   var url = window._CONFIG['domianURL'].replace("https://","ws://").replace("http://","ws://")+"/websocket/"+userId;
+      //   this.websock = new WebSocket(url,[token]);
+      //   this.websock.onopen = this.websocketonopen;
+      //   this.websock.onerror = this.websocketonerror;
+      //   this.websock.onmessage = this.websocketonmessage;
+      //   this.websock.onclose = this.websocketclose;
+      // },
+      // websocketonopen: function () {
+      //   console.log("WebSocket连接成功");
+      // },
+      // websocketonerror: function (e) {
+      //   console.log("WebSocket连接发生错误");
+      // },
+      // websocketonmessage: function (e) {
+      //   var data = eval("(" + e.data + ")");
+      //   //处理订阅信息
+      //   if(data.cmd == "topic"){
+      //     //TODO 系统通知
+      //
+      //   }else if(data.cmd == "user"){
+      //     //TODO 用户消息
+      //     console.log(data.msgTxt);
+      //   }
+      // },
+      // websocketclose: function (e) {
+      //   console.log(e);
+      //   console.log("connection closed (" + e.code + ")");
+      // }
+      //================================================================================================================
     }
   }
 </script>
