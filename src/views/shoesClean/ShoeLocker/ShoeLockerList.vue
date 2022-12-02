@@ -212,7 +212,10 @@
           {
             title:'格子数',
             align:"center",
-            dataIndex: 'num'
+            dataIndex: 'num',
+            customRender: (text) => {
+              return text - 3;
+            },
           },
           {
             title:'空闲格子数',

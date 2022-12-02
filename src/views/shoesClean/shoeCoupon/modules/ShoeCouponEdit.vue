@@ -14,7 +14,15 @@
         <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
           <div class="diyDiv">
             <a-row>
-
+              <a-col :span="24">
+                <a-form-model-item label="发放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="way">
+                  <a-radio-group v-model:value="model.way" :disabled="true">
+                    <a-radio value="0">自行领取</a-radio>
+                    <a-radio value="1">平台发放</a-radio>
+                    <a-radio value="2">卡包</a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
               <a-col :span="24">
                 <a-form-model-item label="优惠券名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
                   <a-input v-model="model.name" placeholder="请输入优惠券名称" style="width: 200px" ></a-input>
@@ -36,33 +44,16 @@
 
               <a-col :span="24">
                 <a-form-model-item label="适用范围" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="range">
-<!--                  <a-radio-group v-model:value="model.range" :disabled="true">-->
-<!--                    <a-radio value="1">通用</a-radio>-->
-<!--                    <a-radio value="2">指定商品&nbsp;-->
-<!--                      <a-select-->
-<!--                        v-model:value="selectedGoods"-->
-<!--                        mode="multiple"-->
-<!--                        style="width: 400px;"-->
-<!--                        placeholder="请选择"-->
-<!--                        :options="goodsOptions"-->
-<!--                        @change="handleChange"-->
-<!--                        :disabled="true"-->
-<!--                      >-->
-<!--                      </a-select>-->
-<!--                    </a-radio>-->
-<!--                  </a-radio-group>-->
                   <span>{{goodsOptions}}</span>
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
                 <a-form-model-item label="使用期限" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="expireType">
-    <!--              <a-input-number v-model="model.expireType" placeholder="请输入过期类型:1=领取后生效,2=固定时间" style="width: 100%" />-->
                   <a-radio-group v-model:value="model.expireType" :disabled="true">
                     <a-radio value="1">根据领取时间<br>
                       领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数" :disabled="true"></a-input-number>&nbsp;天后失效
                     </a-radio>
                     <a-radio value="2"  v-if="this.model.startTime !== null">自行设定时间<br>
-<!--                      <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>-->
                       <span style="font-weight: bold">{{model.startTime+" ~ "+model.endTime}}</span>
                     </a-radio>
                   </a-radio-group>
@@ -81,41 +72,19 @@
 
               <a-col :span="24">
                 <a-form-model-item label="发放数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
-                  <a-radio-group v-model:value="numRadio">
+                  <a-radio-group v-model:value="numRadio" :disabled="numShouldDisabled">
                     <a-radio value="1">不限量</a-radio>
-                    <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px"></a-input-number>&nbsp;张</a-radio>
-                  </a-radio-group>
-                </a-form-model-item>
-              </a-col>
-
-              <a-col :span="24">
-                <a-form-model-item label="发放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="way">
-                  <a-radio-group v-model:value="model.way" :disabled="true">
-                    <a-radio value="0">自行领取</a-radio>
-                    <a-radio value="1">系统发放</a-radio>
-                    <a-radio value="2">卡包</a-radio>
+                    <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px" :disabled="numShouldDisabled"></a-input-number>&nbsp;张</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
 
               <a-col :span="24">
                 <a-form-model-item label="用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
-    <!--              <a-input-number :min="1" v-model="model.receiveCount" style="width: 70px"></a-input-number>-->
                   <a-radio-group v-model:value="selectedReceiveCount" :disabled="true">
                     <a-radio value="1">不限次</a-radio>
                     <a-radio value="2">一次</a-radio>
                   </a-radio-group>
-                </a-form-model-item>
-              </a-col>
-
-    <!--          <a-col :span="24">-->
-    <!--            <a-form-model-item label="状态:0=停止发放,1=正常发放" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">-->
-    <!--              <a-input-number v-model="model.status" placeholder="请输入状态:0=停止发放,1=正常发放" style="width: 100%" />-->
-    <!--            </a-form-model-item>-->
-    <!--          </a-col>-->
-              <a-col :span="24">
-                <a-form-model-item label="使用规则" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rules">
-                  <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则" />
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
@@ -131,6 +100,17 @@
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="使用规则" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rules">
+                  <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则" />
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
+                  <a-textarea v-model="model.note" rows="4" placeholder="请输入备注" />
+                </a-form-model-item>
+              </a-col>
+
             </a-row>
           </div>
         </a-form-model>
@@ -205,6 +185,7 @@
         // selectedReceiveCount: "2",
         min: "",
         reduce: "",
+        numShouldDisabled: false,
       }
     },
     computed: {
@@ -283,6 +264,14 @@
           this.goodsOptions = "通用";
         } else if (range === "2") {
           this.goodsOptions = this.model.rangeConfig;
+        }
+
+        //判断发放方式是 ”自行领取“ and ”平台发放“or”卡包“
+        let way = this.model.way;
+        if ("0" === way) {
+          this.numShouldDisabled = false;
+        } else {
+          this.numShouldDisabled = true;
         }
       },
       submitForm () {
