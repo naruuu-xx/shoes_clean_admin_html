@@ -101,11 +101,6 @@
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
-                <a-form-model-item label="使用规则" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rules">
-                  <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则" />
-                </a-form-model-item>
-              </a-col>
-              <a-col :span="24">
                 <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
                   <a-textarea v-model="model.note" rows="4" placeholder="请输入备注" />
                 </a-form-model-item>
