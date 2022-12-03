@@ -86,6 +86,8 @@
 
     <create-washed-mark-modal ref="createWashedMarkModal" @ok="modalFormOk"></create-washed-mark-modal>
 
+    <manual-in-of-storage ref="manualInOfStorage" @ok="modalFormOk"></manual-in-of-storage>
+
   </a-card>
 </template>
 
@@ -96,13 +98,15 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeInOfStorageModal from "./modules/ShoeInOfStorageModal";
   import CreateWashedMarkModal from "./modules/CreateWashedMarkModal";
+  import ManualInOfStorage from "./modules/ManualInOfStorage";
 
   export default {
     name: 'ShoeOrderList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeInOfStorageModal,
-      CreateWashedMarkModal
+      CreateWashedMarkModal,
+      ManualInOfStorage
     },
     data () {
       return {
@@ -163,7 +167,7 @@
         this.$refs.createWashedMarkModal.show();
       },
       manualInOfStorage(){
-
+        this.$refs.manualInOfStorage.show();
       }
     }
   }
