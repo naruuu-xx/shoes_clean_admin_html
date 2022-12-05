@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import {httpAction} from "../../../../../api/manage";
+import {downFile, httpAction} from "../../../../../api/manage";
 
 export default {
   name: "ManualInOfStorage",
@@ -99,6 +99,7 @@ export default {
       validatorRules: {
         no: [
           {required: true, message: '请输入订单编号!'},
+          { pattern: /^[0-9]*$/, message: '只能输入数字!'}
         ],
         source: [
           {required: true, message: '请选择订单类型!'},
@@ -141,16 +142,21 @@ export default {
     handleSubmit(){
       const that = this;
 
+      let no = this.model.no;
+
       this.$refs.form.validate(valid => {
         if (valid) {
           that.confirmLoading = true;
 
-          httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",this.model, "post").then((res)=> {
+          httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",that.model, "post").then((res)=> {
             if (res.success) {
               that.$message.success(res.message);
               this.visible = false;
               this.model = {};
               this.$emit('ok');
+
+              //打印水洗唛
+              this.createWashedMark(no);
             } else {
               that.$message.warning(res.message);
             }
@@ -159,6 +165,43 @@ export default {
           })
         }
       })
+    },
+    createWashedMark(no){
+      let data = {
+        "no": no
+      }
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+        if (!res) {
+          this.$message.warning(res.message)
+          return
+        }
+        const content = res;
+        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
+        // 要不然无法进行打印
+        const blob = new Blob([content], { type: 'application/pdf' });
+        //=========================================================
+        var date = (new Date()).getTime();
+        var ifr = document.createElement('iframe');
+        ifr.style.frameborder = 'no';
+        ifr.style.display = 'none';
+        ifr.style.pageBreakBefore = 'always';
+        ifr.setAttribute('download', 'printPdf' + date + '.pdf');
+        ifr.setAttribute('id', 'printPdf' + date + '.pdf');
+        ifr.src = window.URL.createObjectURL(blob);
+        document.body.appendChild(ifr);
+
+        this.doPrint('printPdf' + date + '.pdf')
+        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
+        //=========================================================
+      })
+    },
+    // 打印
+    doPrint(val) {
+      var ordonnance = document.getElementById(val).contentWindow;
+      setTimeout(() => {
+        // window.print()
+        ordonnance.print();
+      }, 0)
     },
   }
 }
