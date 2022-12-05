@@ -180,7 +180,7 @@ export default {
       setTimeout(() => {
         // window.print()
         ordonnance.print();
-      }, 100)
+      }, 0)
     },
   }
 }
