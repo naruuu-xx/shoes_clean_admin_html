@@ -74,7 +74,7 @@ export default {
       this.model = Object.assign({}, record);
       this.lockerId = record.lockerId;
       this.visible = true;
-      this.model.percentage= record.percentage * 100;
+      this.model.percentage= (record.percentage * 100).toFixed(0);
     },
     handleCancel() {
       this.visible = false;
