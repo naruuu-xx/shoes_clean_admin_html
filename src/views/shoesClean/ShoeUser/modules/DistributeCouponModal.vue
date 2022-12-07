@@ -1,7 +1,7 @@
 <template>
   <j-modal
     :title="title"
-    :width="600"
+    :width="500"
     :visible="visible"
     switchFullscreen
     @cancel="handleCancel"
@@ -9,26 +9,23 @@
     :footer="null"
     wrapClassName="full-modal">
     <div>
-      <a-row>
-        <a-col :span="12">
-          用户昵称：{{nickname}}
-        </a-col>
-        <a-col :span="12">
-          手机号：{{phone}}
+      <a-row type="flex" justify="space-around">
+        <a-col :span="24">
+          <div style="text-align: center;margin-bottom: 24px;color: #000000">用户昵称：{{nickname}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;手机号：{{phone}}</div>
         </a-col>
       </a-row>
-      <a-row>
-        <a-col :span="24">
+      <a-row type="flex" justify="space-around">
+        <a-col :span="20">
           <a-form-model-item label="派送类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
             <a-radio-group v-model:value="type" @change="radioChange">
-              <a-radio value="0">优惠券</a-radio>
+              <a-radio value="0" style="margin-right: 60px">优惠券</a-radio>
               <a-radio value="1">卡包</a-radio>
             </a-radio-group>
           </a-form-model-item>
         </a-col>
       </a-row>
-      <a-row>
-        <a-col :span="24">
+      <a-row type="flex" justify="space-around">
+        <a-col :span="20">
           <a-form-model-item v-if="type === '0'" label="选择优惠券" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
             <a-select
               v-model:value="selectOption"

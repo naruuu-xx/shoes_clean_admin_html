@@ -4,19 +4,19 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单编号">
-              <a-input placeholder="请输入订单编号" v-model="queryParam.no" style="width: 200px"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
-            <a-form-item label="手机号">
-              <a-input placeholder="请输入手机号" v-model="queryParam.phone" style="width: 200px"></a-input>
+              <a-input placeholder="请输入订单编号" v-model="queryParam.no"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="手机号">
+              <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单状态">
-              <a-select v-model="queryParam.status" style="width: 120px">
+              <a-select v-model="queryParam.status">
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>

@@ -4,7 +4,15 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <div class="diyDiv">
           <a-row>
-
+            <a-col :span="24">
+              <a-form-model-item label="发放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="way">
+                <a-radio-group v-model:value="model.way" @change="handleWayRadioChange">
+                  <a-radio value="0">自行领取</a-radio>
+                  <a-radio value="1">平台发放</a-radio>
+                  <a-radio value="2">卡包</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
             <a-col :span="24">
               <a-form-model-item label="优惠券名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
                 <a-input v-model="model.name" placeholder="请输入优惠券名称" style="width: 200px" ></a-input>
@@ -56,7 +64,7 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24">
+            <a-col :span="24" v-if="!isCardBag">
               <a-form-model-item label="用户类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="obj">
                 <a-radio-group v-model:value="model.obj">
                   <a-radio value="new">仅新用户</a-radio>
@@ -66,7 +74,7 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24">
+            <a-col :span="24" v-if="!isSystemCoupon">
               <a-form-model-item label="发放数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
                 <a-radio-group v-model:value="numRadio">
                   <a-radio value="1">不限量</a-radio>
@@ -75,17 +83,7 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24">
-              <a-form-model-item label="发放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="way">
-                <a-radio-group v-model:value="model.way">
-                  <a-radio value="0">自行领取</a-radio>
-                  <a-radio value="1">系统发放</a-radio>
-                  <a-radio value="2">卡包</a-radio>
-                </a-radio-group>
-              </a-form-model-item>
-            </a-col>
-
-            <a-col :span="24">
+            <a-col :span="24" v-if="!isSystemCoupon">
               <a-form-model-item label="用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
   <!--              <a-input-number :min="1" v-model="model.receiveCount" style="width: 70px"></a-input-number>-->
                 <a-radio-group v-model:value="selectedReceiveCount">
@@ -94,28 +92,17 @@
                 </a-radio-group>
               </a-form-model-item>
             </a-col>
-
-  <!--          <a-col :span="24">-->
-  <!--            <a-form-model-item label="状态:0=停止发放,1=正常发放" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">-->
-  <!--              <a-input-number v-model="model.status" placeholder="请输入状态:0=停止发放,1=正常发放" style="width: 100%" />-->
-  <!--            </a-form-model-item>-->
-  <!--          </a-col>-->
-            <a-col :span="24">
-              <a-form-model-item label="使用规则" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rules">
-                <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则" />
-              </a-form-model-item>
-            </a-col>
-  <!--          <a-col :span="24">-->
-  <!--            <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">-->
-  <!--              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%" />-->
-  <!--            </a-form-model-item>-->
-  <!--          </a-col>-->
             <a-col :span="24">
               <a-form-model-item label="发放状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
                 <a-radio-group v-model:value="model.status">
                   <a-radio value="0">停用</a-radio>
                   <a-radio value="1">启用</a-radio>
                 </a-radio-group>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
+                <a-textarea v-model="model.note" rows="4" placeholder="请输入备注" />
               </a-form-model-item>
             </a-col>
           </a-row>
@@ -219,6 +206,8 @@
         numRadio: "1",
         selectedGoods: [],
         selectedReceiveCount: "2",
+        isSystemCoupon: false,
+        isCardBag: false,
       }
     },
     computed: {
@@ -376,6 +365,42 @@
       },
       handleChange(){
         console.log("有改变")
+      },
+      handleWayRadioChange(){
+        if ("0" === this.model.way) {
+          this.isSystemCoupon = false;
+          this.isCardBag = false;
+
+          this.selectedReceiveCount = "2";
+
+        } else if ("1" === this.model.way) {
+          this.isSystemCoupon = true;
+          this.isCardBag = false;
+
+          //发放数量
+          this.numRadio = "1";
+          this.model = Object.assign(this.model, {"num": -1});
+
+          //用户可领取优惠券次数
+          this.selectedReceiveCount = "1";
+          this.model.receiveCount = "-1";
+
+        } else if ("2" === this.model.way) {
+          this.isSystemCoupon = true;
+          this.isCardBag = true;
+
+          //发放对象
+          this.model.obj = "all";
+
+          //发放数量
+          this.numRadio = "1";
+          this.model = Object.assign(this.model, {"num": -1});
+
+          //用户可领取优惠券次数
+          this.selectedReceiveCount = "1";
+          this.model.receiveCount = "-1";
+
+        }
       }
     }
   }

@@ -4,20 +4,27 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单编号">
-              <a-input placeholder="请输入订单编号" v-model="queryParam.no" style="width: 200px"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
-            <a-form-item label="手机号">
-              <a-input placeholder="请输入手机号" v-model="queryParam.phone" style="width: 200px"></a-input>
+              <a-input placeholder="请输入订单编号" v-model="queryParam.no"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="手机号">
+              <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单状态">
-              <a-select v-model="queryParam.factoryStatus" style="width: 120px">
+              <a-select v-model="queryParam.factoryStatus">
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="订单类型">
+              <a-select v-model="queryParam.source">
+                <a-select-option v-for="item in sourceOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -39,10 +46,10 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">-->
+<!--        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项-->
+<!--        <a style="margin-left: 24px" @click="onClearSelected">清空</a>-->
+<!--      </div>-->
 
       <a-table
         ref="table"
@@ -156,9 +163,17 @@
           {
             title:'订单状态',
             align:"center",
-            dataIndex: 'factoryStatus',
+            dataIndex: 'status',
             customRender: (text) => {
               return filterDictTextByCache('shoe_factory_order_status', text);
+            }
+          },
+          {
+            title:'类型',
+            align:"center",
+            dataIndex: 'source',
+            customRender: (text) => {
+              return filterDictTextByCache('shoe_factory_order_source', text);
             }
           },
           {
@@ -176,8 +191,8 @@
         },
         dictOptions:{},
         superFieldList:[],
-        statusOptionList: [
-          {"value":"", "name":"全部"}, {"value":"1", "name":"已入库"}, {"value":"2", "name":"已出库"}],
+        statusOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"已入库"}, {"value":"2", "name":"已出库"}],
+        sourceOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"鞋蜂小程序"}, {"value":"2", "name":"候鸟"}, {"value":"3", "name":"干洗店"}, {"value":"4", "name":"供应商"} ]
       }
     },
     created() {

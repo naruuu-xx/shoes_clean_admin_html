@@ -87,6 +87,11 @@ export default {
         "no": this.no
       }
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+        console.log(res);
+        if (!res.success && res.success !== undefined) {
+          this.$message.warning(res.message)
+          return
+        }
         const content = res;
         // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
         // 要不然无法进行打印
@@ -105,6 +110,7 @@ export default {
         this.doPrint('printPdf' + date + '.pdf')
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
+        this.$message.success("打印成功");
       })
     },
     // 打印
@@ -113,8 +119,7 @@ export default {
       setTimeout(() => {
         // window.print()
         ordonnance.print();
-        this.pdfLoading = false;
-      }, 100)
+      }, 0)
     },
   }
 }

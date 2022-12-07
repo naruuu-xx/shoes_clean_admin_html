@@ -4,14 +4,14 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单编号">
-              <a-input placeholder="请输入订单编号" v-model="queryParam.no" style="width: 200px"></a-input>
+              <a-input placeholder="请输入订单编号" v-model="queryParam.no"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="操作员">
-              <a-input placeholder="请输入操作员" v-model="queryParam.name" style="width: 200px"></a-input>
+              <a-input placeholder="请输入操作员" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -30,6 +30,7 @@
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>-->
       <a-button type="primary" size="large" @click="handleInOfStorage()" style="width: 200px;height: 50px">入&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</a-button>
       <a-button type="primary" size="large" @click="handleCreateWashedMark()" style="width: 200px;height: 50px">打印水洗唛</a-button>
+      <a-button type="primary" size="large" @click="manualInOfStorage()" style="width: 200px;height: 50px">手工录单</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -85,6 +86,8 @@
 
     <create-washed-mark-modal ref="createWashedMarkModal" @ok="modalFormOk"></create-washed-mark-modal>
 
+    <manual-in-of-storage ref="manualInOfStorage" @ok="modalFormOk"></manual-in-of-storage>
+
   </a-card>
 </template>
 
@@ -95,13 +98,15 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeInOfStorageModal from "./modules/ShoeInOfStorageModal";
   import CreateWashedMarkModal from "./modules/CreateWashedMarkModal";
+  import ManualInOfStorage from "./modules/ManualInOfStorage";
 
   export default {
     name: 'ShoeOrderList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeInOfStorageModal,
-      CreateWashedMarkModal
+      CreateWashedMarkModal,
+      ManualInOfStorage
     },
     data () {
       return {
@@ -160,6 +165,9 @@
       },
       handleCreateWashedMark() {
         this.$refs.createWashedMarkModal.show();
+      },
+      manualInOfStorage(){
+        this.$refs.manualInOfStorage.show();
       }
     }
   }

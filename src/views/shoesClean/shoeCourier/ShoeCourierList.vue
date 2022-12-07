@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 姓名">
               <a-input placeholder="请输入 姓名" v-model="queryParam.name" autocomplete="off"></a-input>
             </a-form-item>
@@ -197,10 +197,7 @@ export default {
         {
           title: '机柜数量',
           align: "center",
-          dataIndex: 'lockerCodeList',
-          customRender: (text) => {
-                 return text.length;
-               },
+          dataIndex: 'lockerNum',
         },
         {
           title: ' 电话',

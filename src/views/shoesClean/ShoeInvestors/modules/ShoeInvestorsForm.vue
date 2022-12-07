@@ -31,7 +31,7 @@
                 :filter-option="filterOption"
                 v-model="model.userId"
               >
-                <a-select-option  v-for="i in shoeUserList" :value="i.userId+''" :key="i.nickname">
+                <a-select-option  v-for="i in shoeUserList" :value="i.userId" :key="i.nickname">
                   {{i.nickname}}
                 </a-select-option>
               </a-select>
@@ -47,7 +47,7 @@
                 :filter-option="filterOption"
                 v-model="model.investorsPId"
               >
-                <a-select-option  v-for="i in agentList" :value="i.userId" :key="i.nickname">
+                <a-select-option  v-for="i in agentList" :value="i.investorsId" :key="i.nickname">
                   {{i.nickname}}
                 </a-select-option>
               </a-select>
@@ -96,6 +96,7 @@
     data () {
       return {
         model:{
+          investorsId:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -112,6 +113,7 @@
            ],
            phone: [
               { required: true, message: '请输入手机号!'},
+             { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
            level: [
               { required: true, message: '请选择身份!'},
@@ -141,7 +143,6 @@
     },
     created () {
        //备份model原始值
-      this.getLevelTextList();
       this.getShoeUserList();
       this.getLockerList();
       this.getAgentList();
@@ -157,9 +158,9 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
-
         this.model = Object.assign({}, record);
-
+        this.getLockerList();
+        this.getShoeUserList();
 
         this.visible = true;
       },
@@ -171,14 +172,14 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            console.log("ceshi.....");
-            console.log(this.model.investorsId);
             if(!this.model.investorsId){
               httpurl+=this.url.add;
               method = 'post';
             }else{
               httpurl+=this.url.edit;
                method = 'put';
+              this.model.income = parseInt(this.model.income)*100;
+              this.model.amount = parseInt(this.model.amount)*100;
             }
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
@@ -194,24 +195,17 @@
 
         })
       },
-      getLevelTextList(){
-        httpAction("/shoes/shoeInvestors/statusList", null, "get").then((res) => {
-          if (res){
-            this.levelTextList = res.result;
-            console.log(res.result);
-          }
-        })
-      },
       getShoeUserList(){
-        httpAction("/shoes/shoeUser/shoeUserList",null, "get").then((res)=>{
+        httpAction("/shoes/shoeUser/shoeUserList?investorsId="+this.model.investorsId,"", "get").then((res)=>{
           if(res){
+            console.log(res.result);
             this.shoeUserList = res.result;
 
           }
         })
       },
       getLockerList(){
-        httpAction("/shoes/shoeLocker/investorsShoeLockerList",null,"get").then((res)=>{
+        httpAction("/shoes/shoeLocker/investorsShoeLockerList?investorsId="+this.model.investorsId,"","get").then((res)=>{
           if(res){
             this.lockerList = res.result;
           }

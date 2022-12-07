@@ -13,7 +13,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="商品类型">
               <!--              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>-->
-              <a-select v-model="queryParam.type" allowClear="true">
+              <a-select v-model="queryParam.type" :allowClear="true">
                 <a-select-option v-for="i in typeList" :value="i.type" :key="i.type">{{i.type}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -21,7 +21,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="商品状态">
               <!--              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>-->
-              <a-select v-model="queryParam.statusText"  allowClear = "true">
+              <a-select v-model="queryParam.statusText"  :allowClear = "true">
                 <a-select-option v-for="i in statusList" :value="i.statusText" :key="i.status">{{i.statusText}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -49,7 +49,7 @@
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
       <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
 <!--          <template v-if="!matchState(record.goodsId,/[12]/)">-->

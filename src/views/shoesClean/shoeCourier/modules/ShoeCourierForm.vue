@@ -221,7 +221,7 @@
         const that = this;
         let lockerIdList = [];
         for(let i = 0; i < that.lockerList.length; i++){
-          if(that.model.lockerCodeList.indexOf(that.lockerList[i].lockerCode) != -1){
+          if(that.model.lockerCodeList.indexOf(that.lockerList[i].lockerCode) !== -1){
             lockerIdList.push(that.lockerList[i].lockerId);
           }
         }

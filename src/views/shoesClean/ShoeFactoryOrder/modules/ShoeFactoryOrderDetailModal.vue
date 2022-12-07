@@ -73,6 +73,8 @@
 
 <script>
 
+import {httpAction} from "../../../../api/manage";
+
 export default {
   name: "ShoeFactoryOrderDetailModal",
   components: {},
@@ -96,15 +98,23 @@ export default {
       this.visible = true;
       this.data = Object.assign({}, record);
 
-      this.imageList = JSON.parse(record.orderImages);
+      //请求接口，获取订单图片
+      httpAction("/ShoeOrder/shoeOrder/getOrderImages?orderId=" + record.orderId, null, "get").then((res) => {
+        let result = res.result;
+        if (result === null) {
+          this.imageList = [];
+        } else {
+          this.imageList = JSON.parse(res.result.orderImages);
+        }
 
-      let factoryStatus = this.data.factoryStatus;
-      if (factoryStatus === 1) {
-        this.factoryStatus = "已入库";
-      } else if (factoryStatus === 2) {
-        this.factoryStatus = "已出库";
-      }
 
+        let factoryStatus = this.data.status;
+        if (factoryStatus === 1) {
+          this.factoryStatus = "已入库";
+        } else if (factoryStatus === 2) {
+          this.factoryStatus = "已出库";
+        }
+      })
     },
     handleCancel() {
       this.visible = false;
