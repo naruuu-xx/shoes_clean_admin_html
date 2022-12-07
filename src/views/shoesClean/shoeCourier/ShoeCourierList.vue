@@ -123,6 +123,9 @@
                 <a href="javascript:;" @click="handleChangePassword(record.phone, record.courierId)">密码</a>
               </a-menu-item>
               <a-menu-item>
+                <a href="javascript:;" @click="showHistoryList(record.courierId)">订单</a>
+              </a-menu-item>
+              <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.courierId)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -308,6 +311,11 @@ export default {
     },
     handleChangePassword(phone, courierId) {
       this.$refs.passwordmodal.show(phone, courierId);
+    },
+    showHistoryList(courierId){
+      this.$refs.ShoeScheduleList.scheduleVisible = true;
+      this.$refs.ShoeScheduleList.initDataByDIY(record.courierId);
+      this.$refs.ShoeScheduleList.dataSource = [];
     },
     passwordModalOk() {
       //TODO 密码修改完成 不需要刷新页面，可以把datasource中的数据更新一下
