@@ -173,6 +173,11 @@
               <div class="content-font-below">配送员电话：{{courierPhoneByAfter}}</div>
             </a-col>
           </a-row>
+          <a-row v-if="statusInt >= 10">
+            <a-col :span="24">
+              <div class="content-font-below">取件码：{{data.code}}</div>
+            </a-col>
+          </a-row>
         </a-col>
         <!-- 用户信息 -->
         <a-col :span="1"></a-col>
