@@ -244,37 +244,48 @@ export default {
           align: "center",
           dataIndex: 'free'
         },
+        {
+          title: '配送员待存',
+          align: "center",
+          dataIndex: 'courierWaitIn'
+        },
+        {
+          title: '用户待存',
+          align: "center",
+          dataIndex: 'userWaitIn'
+        },
+        {
+          title: '物流待取',
+          align: "center",
+          dataIndex: 'logisticsWaitGet'
+        },
+        {
+          title: '配送员待取',
+          align: "center",
+          dataIndex: 'courierWaitGet'
+        },
+        {
+          title: '用户待取',
+          align: "center",
+          dataIndex: 'userWaitGet'
+        },
+        {
+          title: '订单数',
+          align: "center",
+          dataIndex: 'orderTotal'
+        },
+        {
+          title: '订单总额',
+          align: "center",
+          dataIndex: 'orderMoneyTotal',
+          customRender: (orderMoneyTotal) => {
+            if (orderMoneyTotal==null){
+              orderMoneyTotal=0
+            }
+            return orderMoneyTotal;
+          },
+        },
 
-        // {
-        //   title:'省',
-        //   align:"center",
-        //   dataIndex: 'province',
-        // },
-        // {
-        //   title:'市',
-        //   align:"center",
-        //   dataIndex: 'city',
-        // },
-        // {
-        //   title:'区/县',
-        //   align:"center",
-        //   dataIndex: 'area',
-        // },
-        // {
-        //   title: '详细地址',
-        //   align: "center",
-        //   dataIndex: 'address'
-        // },
-        // {
-        //   title: '经度',
-        //   align: "center",
-        //   dataIndex: 'longitude'
-        // },
-        // {
-        //   title: '纬度',
-        //   align: "center",
-        //   dataIndex: 'latitude'
-        // },
         {
           title: '收益比例',
           align: "center",
