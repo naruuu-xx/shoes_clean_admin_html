@@ -80,6 +80,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeGoodsCategoryModal from './modules/ShoeGoodsCategoryModal'
   import JTreeTable from '@/components/jeecg/JTreeTable'
+  import { deleteAction } from '@api/manage'
 
   export default {
     name: 'ShoeGoodsCategoryList',
@@ -156,7 +157,34 @@
         fieldList.push({type:'string',value:'name',text:'分类名称',dictCode:''})
         fieldList.push({type:'int',value:'weight',text:'权重',dictCode:''})
         this.superFieldList = fieldList
-      }
+      },
+      handleDelete: function (id) {
+        if(!this.url.delete){
+          this.$message.error("请设置url.delete属性!")
+          return
+        }
+        var that = this;
+        this.$confirm({
+          title:"确认删除",
+          content:"是否删除选中数据？",
+          onOk: function (){
+            that.loading = true;
+            deleteAction(that.url.delete, {id: id}).then((res) => {
+              if (res.success) {
+                //重新计算分页问题
+                that.reCalculatePage(1)
+                that.$message.success(res.message);
+                that.loadData();
+                that.$router.go(0);
+              } else {
+                that.$message.warning(res.message);
+              }
+            }).finally(()=>{
+              that.loading =false;
+            });
+          }
+        })
+      },
     }
   }
 </script>
