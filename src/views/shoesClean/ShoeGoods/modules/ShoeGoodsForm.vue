@@ -9,6 +9,18 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="商品分类" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="categoryId">
+              <a-select
+                placeholder="选择分类"
+                v-model="model.categoryId"
+              >
+                <a-select-option  v-for="i in categoryList" :value="i.categoryId" :key="i.name">
+                  {{i.name}}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="描述" prop="describe">
               <a-input v-model="model.describe" placeholder="请输入描述"></a-input>
             </a-form-model-item>
@@ -30,7 +42,7 @@
                   <editable-cell :text="text" @change="onCellChange(record,'originalPrice',$event)" />
                 </template>
                 <template slot = "skuImage" slot-scope="text,index, record" prop="skuImage">
-                  <j-image-upload v-model="model.skuTable.skuImage" :isMultiple="false" text="上传"></j-image-upload>
+                  <j-image-upload @change="onCellChange(record, 'skuImage',$event)" :isMultiple="false" text="上传"></j-image-upload>
                 </template>
 
 
@@ -230,6 +242,7 @@ export default {
         edit: '/shoes/shoeGoods/edit',
         queryById: '/shoes/shoeGoods/queryById'
       },
+      categoryList:[],
 
 
       count:0,
@@ -277,6 +290,7 @@ export default {
   created() {
     //备份model原始值
     //  this.loadData(this.model.goodsId);
+    this.getCategoryList();
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
 
   },
@@ -372,6 +386,13 @@ export default {
       })
 
     },
+    getCategoryList(){
+      httpAction("/shoes/shoeGoods/categoryList","","get").then((res)=>{
+        if(res){
+          this.categoryList = res.result;
+        }
+      })
+    }
 
   },
 }
