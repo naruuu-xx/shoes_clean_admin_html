@@ -240,26 +240,11 @@ export default {
           },
         },
         {
-          title: '空闲格子数',
+          title: '可用格子数',
           align: "center",
           dataIndex: 'free'
         },
-        {
-          title: '机柜状态',
-          align: "center",
-          dataIndex: 'status',
-          customRender: (text) => {
-            return filterDictTextByCache('shoe_locker_status', text);
-          },
-        },
-        {
-          title: '在线状态',
-          align: "center",
-          dataIndex: 'onlineStatus',
-          customRender: (text) => {
-            return filterDictTextByCache('shoe_locker_online_status', text);
-          },
-        },
+
         // {
         //   title:'省',
         //   align:"center",
@@ -275,21 +260,21 @@ export default {
         //   align:"center",
         //   dataIndex: 'area',
         // },
-        {
-          title: '详细地址',
-          align: "center",
-          dataIndex: 'address'
-        },
-        {
-          title: '经度',
-          align: "center",
-          dataIndex: 'longitude'
-        },
-        {
-          title: '纬度',
-          align: "center",
-          dataIndex: 'latitude'
-        },
+        // {
+        //   title: '详细地址',
+        //   align: "center",
+        //   dataIndex: 'address'
+        // },
+        // {
+        //   title: '经度',
+        //   align: "center",
+        //   dataIndex: 'longitude'
+        // },
+        // {
+        //   title: '纬度',
+        //   align: "center",
+        //   dataIndex: 'latitude'
+        // },
         {
           title: '收益比例',
           align: "center",
@@ -297,6 +282,22 @@ export default {
           customRender: (text) => {
             let percentage = (text * 100).toFixed(0) + "%";
             return percentage;
+          },
+        },
+        {
+          title: '机柜状态',
+          align: "center",
+          dataIndex: 'status',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_locker_status', text);
+          },
+        },
+        {
+          title: '在线状态',
+          align: "center",
+          dataIndex: 'onlineStatus',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_locker_online_status', text);
           },
         },
         // {
