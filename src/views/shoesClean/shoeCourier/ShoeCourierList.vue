@@ -123,8 +123,9 @@
                 <a href="javascript:;" @click="handleChangePassword(record.phone, record.courierId)">密码</a>
               </a-menu-item>
               <a-menu-item>
-                <a href="javascript:;" @click="showHistoryList(record.courierId)">订单</a>
+                <a href="javascript:;" @click="showHistoryList(record.courierId,record.name)">订单</a>
               </a-menu-item>
+
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.courierId)">
                   <a>删除</a>
@@ -140,9 +141,14 @@
     <shoe-courier-modal ref="modalForm" @ok="modalFormOk"></shoe-courier-modal>
     <password-modal ref="passwordmodal" @ok="passwordModalOk"></password-modal>
     <shoe-schedule-list ref="ShoeScheduleList"></shoe-schedule-list>
+    <shoe-courier-history-list ref="ShoeCourierHistoryList"></shoe-courier-history-list>
 
     <!-- 自定义的弹窗 -->
     <a-modal v-model:visible="scheduleVisible" title="配送员排班" :footer="null">
+      <a-table :dataSource="dataSource" :columns="columns" />
+    </a-modal>
+    <!-- 自定义的弹窗 -->
+    <a-modal v-model:visible="courierHistoryVisible" title="配送员历史订单" :footer="null">
       <a-table :dataSource="dataSource" :columns="columns" />
     </a-modal>
 
@@ -160,6 +166,7 @@ import ShoeScheduleList from "./shoeSchedule/ShoeScheduleList";
 import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil"
 import PasswordModal from './modules/PasswordModal'
 import {deleteAction} from "../../../api/manage";
+import ShoeCourierHistoryList from "@views/shoesClean/shoeCourier/modules/ShoeCourierHistoryList";
 
 export default {
   name: 'ShoeCourierList',
@@ -167,7 +174,8 @@ export default {
   components: {
     ShoeCourierModal,
     PasswordModal,
-    ShoeScheduleList
+    ShoeScheduleList,
+    ShoeCourierHistoryList
   },
   data() {
     return {
@@ -296,6 +304,7 @@ export default {
       dictOptions: {},
       superFieldList: [],
       scheduleVisible: false,
+      courierHistoryVisible: false,
 
     }
   },
@@ -312,10 +321,11 @@ export default {
     handleChangePassword(phone, courierId) {
       this.$refs.passwordmodal.show(phone, courierId);
     },
-    showHistoryList(courierId){
-      this.$refs.ShoeScheduleList.scheduleVisible = true;
-      this.$refs.ShoeScheduleList.initDataByDIY(record.courierId);
-      this.$refs.ShoeScheduleList.dataSource = [];
+    showHistoryList(courierId,name){
+
+      this.$refs.ShoeCourierHistoryList.courierHistoryVisible = true;
+      this.$refs.ShoeCourierHistoryList.initDataByDIY(courierId,name);
+      this.$refs.ShoeCourierHistoryList.dataSource = [];
     },
     passwordModalOk() {
       //TODO 密码修改完成 不需要刷新页面，可以把datasource中的数据更新一下
