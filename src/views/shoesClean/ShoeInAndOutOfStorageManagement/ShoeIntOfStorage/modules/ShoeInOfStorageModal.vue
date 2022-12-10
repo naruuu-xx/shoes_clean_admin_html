@@ -109,7 +109,9 @@ export default {
     queryOrderInfo(){
       //查询订单信息
       if (this.bagCode === "" || this.bagCode === null || this.bagCode === undefined) {
-        this.$message.warning("请扫码袋子编码或者手动输入袋子编码");
+        this.$message.warning("请扫描袋子编码或者手动输入袋子编码");
+      } else if (this.bagCode.length < 6) {
+        this.$message.warning("请扫描或输入正确的袋子编码");
       } else {
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryOrderInfoByBagCode?bagCode=" + this.bagCode, null, "get").then((res) => {
           if (res.code !== 200) {
