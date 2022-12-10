@@ -225,8 +225,6 @@ export const JeecgListMixin = {
       console.log('currentIndex',currentIndex)
     },
     handleEdit: function (record) {
-      // console.log(record);
-      // console.log(typeof record.bannerId)
 
       this.$refs.modalForm.edit(record);
       this.$refs.modalForm.title = "编辑";
@@ -373,6 +371,7 @@ export const JeecgListMixin = {
       let url = getFileAccessHttpUrl(text)
       window.open(url);
     },
+
   }
 
 }
