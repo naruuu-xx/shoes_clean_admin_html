@@ -395,10 +395,11 @@ export default {
         "devicenum": lockerCode
       };
       httpAction("/api/IoT/openAllDoor", data, 'post').then((res) => {
-        if (res.code === 0) {
+        let json = JSON.parse(res);
+        if (json.code === 0) {
           that.$message.success("开门成功")
         } else {
-          that.$message.warning(res.message);
+          that.$message.warning(json.message);
         }
       })
     },
