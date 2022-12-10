@@ -9,7 +9,9 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="商品分类" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="categoryId">
+            <a-form-model-item label="商品分类" :labelCol="labelCol"
+                               :wrapperCol="wrapperCol" prop="categoryId"
+                               v-if="model.goodsId !== 1 && model.goodsId !== 2 && model.goodsId !== 28">
               <a-select
                 placeholder="选择分类"
                 v-model="model.categoryId"
