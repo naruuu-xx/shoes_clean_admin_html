@@ -245,6 +245,11 @@ export default {
           dataIndex: 'free'
         },
         {
+          title: '待付款',
+          align: "center",
+          dataIndex: 'waitPay'
+        },
+        {
           title: '配送员待存',
           align: "center",
           dataIndex: 'courierWaitIn'
