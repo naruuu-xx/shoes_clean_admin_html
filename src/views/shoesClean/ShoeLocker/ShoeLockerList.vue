@@ -235,9 +235,7 @@ export default {
           title: '格子数',
           align: "center",
           dataIndex: 'num',
-          customRender: (text) => {
-            return text - 3;
-          },
+
         },
         {
           title: '可用格子数',
