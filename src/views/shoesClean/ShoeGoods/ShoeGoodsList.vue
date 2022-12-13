@@ -10,14 +10,14 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="商品类型">
-              <!--              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>-->
-              <a-select v-model="queryParam.type" :allowClear="true">
-                <a-select-option v-for="i in typeList" :value="i.type" :key="i.type">{{i.type}}</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
+<!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="商品类型">-->
+<!--              &lt;!&ndash;              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>&ndash;&gt;-->
+<!--              <a-select v-model="queryParam.type" :allowClear="true">-->
+<!--                <a-select-option v-for="i in typeList" :value="i.type" :key="i.type">{{i.type}}</a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="商品状态">
               <!--              <a-input placeholder="请输入操作类型" v-model="queryParam.operationType"></a-input>-->
@@ -175,6 +175,11 @@
             title:'商品名称',
             align:"center",
             dataIndex: 'title'
+          },
+          {
+            title:'商品分类',
+            align:"center",
+            dataIndex: 'name'
           },
           {
             title:'类型',
