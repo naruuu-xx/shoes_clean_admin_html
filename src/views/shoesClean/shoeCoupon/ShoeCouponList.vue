@@ -133,11 +133,11 @@
         description: 'shoe_coupon管理页面',
         // 表头
         columns: [
-          // {
-          //   title:'优惠券id',
-          //   align:"center",
-          //   dataIndex: 'couponId'
-          // },
+          {
+            title:'ID',
+            align:"center",
+            dataIndex: 'couponId'
+          },
           {
             title:'优惠券名称',
             align:"center",
@@ -208,6 +208,23 @@
             title:'使用人数',
             align:"center",
             dataIndex: 'useNum'
+          },
+          {
+            title:'状态',
+            align:"center",
+            dataIndex: 'status',
+            customRender: (text) => {
+              let value = '';
+
+              if (text == 0) {
+                value = "停用"
+              }else{
+                value = "启用"
+              }
+
+              return value;
+            }
+
           },
           // {
           //   title:'权重',

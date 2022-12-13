@@ -92,6 +92,11 @@ export default {
       // 表头
       columns: [
         {
+          title:'ID',
+          align:"center",
+          dataIndex: 'cardBagId'
+        },
+        {
           title:'卡包名称',
           align:"center",
           dataIndex: 'name'
