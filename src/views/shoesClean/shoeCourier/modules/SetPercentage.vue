@@ -16,7 +16,7 @@
         <!--        />-->
         <!--      </a-form-item>-->
         <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
-          <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off"></a-input>
+          <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off" suffix="%"></a-input>
         </a-form-model-item>
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
           <a-button type="primary" html-type="submit" @click="setPercentage()">
