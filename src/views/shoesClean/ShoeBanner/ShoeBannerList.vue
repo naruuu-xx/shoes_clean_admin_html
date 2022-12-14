@@ -123,6 +123,11 @@
           //   }
           // },
           {
+            title:'ID',
+            align:"center",
+            dataIndex: 'bannerId'
+          },
+          {
             title:'名称',
             align:"center",
             dataIndex: 'name'

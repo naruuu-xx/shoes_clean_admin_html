@@ -152,6 +152,11 @@
           //   }
           // },
           {
+            title:'ID',
+            align:"center",
+            dataIndex: 'investorsId'
+          },
+          {
             title:'姓名',
             align:"center",
             dataIndex: 'name'

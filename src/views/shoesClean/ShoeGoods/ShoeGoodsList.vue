@@ -172,6 +172,11 @@
         // 表头
         columns: [
           {
+            title:'ID',
+            align:"center",
+            dataIndex: 'goodsId'
+          },
+          {
             title:'商品名称',
             align:"center",
             dataIndex: 'title'
