@@ -150,6 +150,11 @@
           //   }
           // },
           {
+            title:' ID',
+            align:"center",
+            dataIndex: 'logisticsId'
+          },
+          {
             title:' 姓名',
             align:"center",
             dataIndex: 'name'

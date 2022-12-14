@@ -203,11 +203,11 @@ export default {
       description: 'shoe_locker管理页面',
       // 表头
       columns: [
-        // {
-        //   title:'ID',
-        //   align:"center",
-        //   dataIndex: 'lockerId'
-        // },
+        {
+          title:'ID',
+          align:"center",
+          dataIndex: 'lockerId'
+        },
         // {
         //   title:'机柜类型',
         //   align:"center",

@@ -128,6 +128,11 @@
         // 表头
         columns: [
           {
+            title:'ID',
+            align:"center",
+            dataIndex: 'userId'
+          },
+          {
             title:'用户昵称',
             align:"center",
             dataIndex: 'nickname'
