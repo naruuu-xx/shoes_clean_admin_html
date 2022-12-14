@@ -282,9 +282,11 @@ export default {
           align: "center",
           dataIndex: 'orderMoneyTotal',
           customRender: (orderMoneyTotal) => {
+
             if (orderMoneyTotal==null){
               orderMoneyTotal=0
             }
+            orderMoneyTotal =orderMoneyTotal / 100;
             return orderMoneyTotal;
           },
         },
