@@ -173,7 +173,7 @@ export default {
         this.doPrint('printPdf' + date + '.pdf')
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
-        this.$message.success("入库成功");
+        // this.$message.success("入库成功");
         this.confirmLoading = false;
       })
     },
