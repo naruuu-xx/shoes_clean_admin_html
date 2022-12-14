@@ -179,8 +179,8 @@ export default {
         ],
       },
       url: {
-        add: "/shoes/shoeLocker/add",
-        edit: "/shoes/shoeLocker/edit",
+        add: "/shoes/shoeLocker/addNew",
+        edit: "/shoes/shoeLocker/editNew",
         queryById: "/shoes/shoeLocker/queryById"
       },
       areaList: [],
