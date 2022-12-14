@@ -61,7 +61,7 @@
 
         <span slot="action" slot-scope="text, record">
 <!--          <a  @click="jumpToDetail(record)">详情</a>-->
-          <router-link :to="{name:'shoesClean/ShoePromotionStatistics/ShoePromotionStatisticsInfoList', params: {promotionId:record.promotionId}}">详情</router-link>
+          <router-link :to=" '/shoesClean/ShoePromotionStatistics/ShoePromotionStatisticsInfoList/'+record.promotionId">详情</router-link>
         </span>
 
       </a-table>

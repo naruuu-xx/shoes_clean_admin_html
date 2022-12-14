@@ -1,55 +1,67 @@
 <template>
   <a-card :bordered="false">
-    <!-- 查询区域 -->
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline" @keyup.enter.native="searchQuery">
-        <a-row :gutter="24">
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
-            <a-form-item label=" 推广渠道">
-              <a-input placeholder="请输入推广渠道" v-model="queryParam.channel" :allowClear="true"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-            </span>
-          </a-col>
-        </a-row>
-      </a-form>
+
+    <div style="background-color: #FFFFFF; padding: 20px;">
+      <a-row :gutter="16">
+        <a-col :span="6">
+          <a-card title="总数" :bordered="false" >
+            <p>{{this.infoList.count}}</p>
+          </a-card>
+        </a-col>
+        <a-col :span="6">
+          <a-card title="今日" :bordered="false">
+            <p>{{ this.infoList.todayCount }}</p>
+          </a-card>
+        </a-col>
+        <a-col :span="6">
+          <a-card title="本月" :bordered="false">
+            <p>{{ this.infoList.monthCount }}</p>
+          </a-card>
+        </a-col>
+        <a-col :span="6">
+          <a-card title="今年" :bordered="false">
+            <p>{{this.infoList.yearCount}}</p>
+          </a-card>
+        </a-col>
+      </a-row>
     </div>
-    <!-- 查询区域-END -->
 
-    <!--    &lt;!&ndash; 操作按钮区域 &ndash;&gt;-->
-    <!--    <div class="table-operator">-->
-    <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-    <!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_promotion_statistics')">导出</a-button>-->
-    <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
-    <!--        <a-button type="primary" icon="import">导入</a-button>-->
-    <!--      </a-upload>-->
-    <!--      &lt;!&ndash; 高级查询区域 &ndash;&gt;-->
-    <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
-    <!--      <a-dropdown v-if="selectedRowKeys.length > 0">-->
-    <!--        <a-menu slot="overlay">-->
-    <!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
-    <!--        </a-menu>-->
-    <!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
-    <!--      </a-dropdown>-->
-    <!--    </div>-->
-
-    <!-- table区域-begin -->
+    <br/>
+    <!-- 查询区域 -->
+<!--    <div class="table-page-search-wrapper">-->
+<!--      <a-form layout="inline" @keyup.enter.native="searchQuery">-->
+<!--        <a-row :gutter="24">-->
+<!--          <a-col>-->
+<!--            <a-form-item label="注册时间开始范围">-->
+<!--              <a-date-picker  v-model="queryParam.createTimeLeft" />-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
+<!--          <a-col>-->
+<!--            <a-form-item label="注册时间结束范围">-->
+<!--              <a-date-picker v-model="queryParam.createTimeRight"/>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
+<!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
+<!--            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">-->
+<!--              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>-->
+<!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
+<!--            </span>-->
+<!--          </a-col>-->
+<!--        </a-row>-->
+<!--      </a-form>-->
+<!--    </div>-->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">-->
+<!--        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项-->
+<!--        <a style="margin-left: 24px" @click="onClearSelected">清空</a>-->
+<!--      </div>-->
 
       <a-table
         ref="table"
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="id"
+        rowKey="promotionId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -57,27 +69,6 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
-
-        <template slot="htmlSlot" slot-scope="text">
-          <div v-html="text"></div>
-        </template>
-        <template slot="imgSlot" slot-scope="text,record">
-          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
-        </template>
-        <template slot="fileSlot" slot-scope="text">
-          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
-          <a-button
-            v-else
-            :ghost="true"
-            type="primary"
-            icon="download"
-            size="small"
-            @click="downloadFile(text)">
-            下载
-          </a-button>
-        </template>
-
 
       </a-table>
     </div>
@@ -92,7 +83,7 @@ import '@/assets/less/TableExpand.less'
 import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import ShoePromotionStatisticsModal from './modules/ShoePromotionStatisticsModal'
-
+import { getAction, httpAction } from '@api/manage'
 export default {
   name: 'ShoePromotionStatisticsList',
   mixins:[JeecgListMixin, mixinDevice],
@@ -101,45 +92,43 @@ export default {
   },
   data () {
     return {
-      description: 'shoe_promotion_statistics管理页面',
+      description: '推广统计详情页面',
       // 表头
       columns: [
         {
-          title:'推广渠道',
+          title:'昵称',
           align:"center",
-          dataIndex: 'channel'
+          dataIndex: 'nickname'
         },
         {
-          title:'总数',
+          title:'头像',
           align:"center",
-          dataIndex: 'count'
+          dataIndex: 'avatar',
+        scopedSlots: {customRender: 'imgSlot'}
         },
         {
-          title: '今日',
+          title: '注册时间',
           align:'center',
-          dataIndex:'todayCount'
+          dataIndex:'createTime'
         },
         {
-          title: '本月',
+          title: '下单状态',
           align:'center',
-          dataIndex:'monthCount'
+          dataIndex:'status'
         },
         {
-          title: '本月',
+          title: '下单时间',
           align:'center',
-          dataIndex:'yearCount'
+          dataIndex:'orderTime'
         },
         {
-          title: '操作',
-          dataIndex: 'action',
-          align:"center",
-          fixed:"right",
-          width:147,
-          scopedSlots: { customRender: 'action' }
-        }
+          title:'完成时间',
+          align: 'center',
+          dataIndex: 'finishTime'
+        },
       ],
       url: {
-        list: "/shoes/shoePromotionStatistics/list",
+        list: "/shoes/shoePromotionStatistics/infoList?promotionId="+ this.$route.params.promotionId,
         delete: "/shoes/shoePromotionStatistics/delete",
         deleteBatch: "/shoes/shoePromotionStatistics/deleteBatch",
         exportXlsUrl: "/shoes/shoePromotionStatistics/exportXls",
@@ -147,10 +136,14 @@ export default {
       },
       dictOptions:{},
       superFieldList:[],
+      infoList:[],
+
     }
   },
   created() {
     this.getSuperFieldList();
+    this.getInfoList(this.$route.params.promotionId);
+
   },
   computed: {
     importExcelUrl: function(){
@@ -167,10 +160,17 @@ export default {
       fieldList.push({type:'date',value:'date',text:'日期'})
       this.superFieldList = fieldList
     },
-    jumpToDetail(record){
+    getInfoList(promotionId) {
 
-    }
-  }
+      httpAction("/shoes/shoePromotionStatistics/queryById?id="+promotionId,"", "get").then((res)=>{
+        if(res){
+          console.log(res.result);
+          this.infoList = res.result;
+
+        }
+      })
+    },
+  },
 }
 </script>
 <style scoped>
