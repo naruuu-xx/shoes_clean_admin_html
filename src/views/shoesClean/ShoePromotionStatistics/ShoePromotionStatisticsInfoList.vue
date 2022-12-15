@@ -101,10 +101,15 @@ export default {
           dataIndex: 'nickname'
         },
         {
+          title: '手机号',
+          align: "center",
+          dataIndex: 'phone'
+        },
+        {
           title:'头像',
           align:"center",
           dataIndex: 'avatar',
-        scopedSlots: {customRender: 'imgSlot'}
+          scopedSlots: { customRender: 'avatar' }
         },
         {
           title: '注册时间',
@@ -114,7 +119,7 @@ export default {
         {
           title: '下单状态',
           align:'center',
-          dataIndex:'status'
+          dataIndex:'statusText'
         },
         {
           title: '下单时间',
