@@ -192,11 +192,11 @@ export default {
         //     return parseInt(index)+1;
         //   }
         // },
-        // {
-        //   title:' ID',
-        //   align:"center",
-        //   dataIndex: 'courierId'
-        // },
+        {
+          title:' ID',
+          align:"center",
+          dataIndex: 'courierId'
+        },
         {
           title: ' 姓名',
           align: "center",
