@@ -11,7 +11,7 @@
               </a-radio-group>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
+          <a-col :span="24" >
             <a-form-model-item label="推广渠道名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="channel">
               <a-input v-model="model.channel" placeholder="请输入推广渠道名称"  ></a-input>
             </a-form-model-item>
@@ -21,7 +21,7 @@
 <!--              <a-input-number v-model="model.userId" placeholder="请输入推广人绑定用户id" style="width: 100%" />-->
 <!--            </a-form-model-item>-->
 <!--          </a-col>-->
-          <a-col :span="24" v-if="model.type == 1">
+          <a-col :span="24" v-if="model.isEdit != 1 && model.type == 1">
             <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
               <a-select
                 show-search
