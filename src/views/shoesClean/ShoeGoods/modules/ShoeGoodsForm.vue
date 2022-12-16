@@ -33,25 +33,25 @@
                 添加规格
               </a-button>
               <a-table bordered :data-source="model.skuTable" :columns="columns"
-                        prop="skuTable">
+                        prop="skuTable" :rowKey="model.uuid">
                 <template slot="skuTitle" slot-scope="text,index, record" prop="skuTitle">
                   <editable-cell :text="text" @change="onCellChange(record, 'skuTitle', $event)" />
                 </template>
-                <template slot = "price" slot-scope="text,index, record" prop="price">
+                <template slot="price" slot-scope="text,index, record" prop="price">
                   <editable-cell :text="text" @change="onCellChange(record,'price',$event)" />
                 </template>
-                <template slot = "originalPrice" slot-scope="text,index, record" prop="originalPrice">
+                <template slot="originalPrice" slot-scope="text,index, record" prop="originalPrice">
                   <editable-cell :text="text" @change="onCellChange(record,'originalPrice',$event)" />
                 </template>
-                <template slot = "skuImage" slot-scope="text,index, record" prop="skuImage">
-                  <j-image-upload @change="onCellChange(record, 'skuImage',$event)" :isMultiple="false" text="上传"></j-image-upload>
+                <template slot="skuImage" slot-scope="skuImage,index, record" prop="skuImage">
+                  <j-image-upload v-model="skuImage" @change="onCellChange(record, 'skuImage',$event)" :isMultiple="false" text="上传"></j-image-upload>
                 </template>
 
 
-                <template slot="operation" slot-scope="text, record">
+                <template slot="operation" slot-scope="text, record,index">
                   <a-popconfirm
                     title="确定要删除该规格么？"
-                    @confirm="() => onDelete(record)"
+                    @confirm="() => onDelete(index,record)"
                   >
                     <a href="javascript:;">删除</a>
                   </a-popconfirm>
@@ -150,6 +150,11 @@ const EditableCell = {
       value: this.text,
       editable: false,
     };
+  },
+  watch:{
+    text(value) {
+      this.value = value;
+    }
   },
   methods: {
 
@@ -318,14 +323,14 @@ export default {
         this.model.skuTable = dataSource;
       }
     },
-    onDelete(record) {
+    onDelete(index,record) {
+      console.log(444,index,record);
       /**
        * 删除存在有bug，待修复。
        * @type {*[]}
        */
-      const dataSource = [...this.model.skuTable];
-      record.delFLag = 1;
-      this.model.skuTable = dataSource.filter(item => item.skuId !== record.skuId);
+      this.model.skuTable.splice(index,1)
+      console.log(888,this.model.skuTable);
 
     },
     handleAdd() {
@@ -335,11 +340,13 @@ export default {
 
       let skuids=  [];
       let count = 0;
+      let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
 
       const newData = {
-        skuId : count ,
+        skuId : count,
         skuTitle: '',
         price:'',
+        uuid
       };
       this.model.skuTable = [...dataSource, newData];
       this.count = count + 1;
@@ -355,6 +362,9 @@ export default {
      // this.loadData(record.goodsId);
      //
       this.model = Object.assign({}, record)
+      this.model.skuTable = this.model.skuTable.map(item => {
+        return Object.assign({}, item,{uuid: (Math.random() + new Date().getTime()).toString(32).slice(0,8)})
+      })
       this.visible = true
     },
     submitForm() {
