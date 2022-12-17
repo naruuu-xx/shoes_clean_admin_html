@@ -123,33 +123,17 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
-
           <a-divider type="vertical"/>
-
-          <!--          <a @click="handleDetail(record)">详情</a>-->
-
-          <!--           <a-divider type="vertical" />-->
-
-          <!--          <a @click="handleGrid(record)">柜子状态</a>-->
-          <!--          <a-divider type="vertical" />-->
-          <!--          <a-popconfirm title="确定一键开柜吗？" @confirm="() => openAllDoor(record.lockerCode)">-->
-          <!--            <a>一键开柜</a>-->
-          <!--          </a-popconfirm>-->
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
               <a-menu slot="overlay">
                 <a-menu-item>
-                 <a @click="setPercentage(record)" v-has="'percentage:set'">机柜收益</a>
-              </a-menu-item>
-              <a-menu-item>
-                 <a @click="handleGrid(record)">柜子状态</a>
-              </a-menu-item>
-              <a-menu-item>
-              <a-popconfirm title="确定一键开柜吗？" @confirm="() => openAllDoor(record.lockerCode)">
-                    <a>一键开柜</a>
-                   </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
+                   <a @click="setPercentage(record)" v-has="'percentage:set'">机柜收益</a>
+                </a-menu-item>
+                <a-menu-item>
+                   <a @click="handleGrid(record)">格子状态</a>
+                </a-menu-item>
+              </a-menu>
           </a-dropdown>
 
           <!--          <a-dropdown>-->
@@ -268,8 +252,8 @@ export default {
           align: "center",
           dataIndex: 'orderMoneyTotal',
           customRender: (orderMoneyTotal) => {
-            if (orderMoneyTotal==null){
-              orderMoneyTotal=0
+            if (orderMoneyTotal == null) {
+              orderMoneyTotal = 0
             }
             return orderMoneyTotal;
           },
@@ -374,7 +358,7 @@ export default {
     handleGrid(record) {
       this.$refs.gridModal.show(record);
     },
-    setPercentage(record){
+    setPercentage(record) {
       this.$refs.setPercentage.show(record);
 
     },
