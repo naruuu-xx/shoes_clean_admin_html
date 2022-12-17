@@ -107,6 +107,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeAdditionalModal from './modules/ShoeAdditionalModal'
+  import { httpAction } from '@api/manage'
 
   export default {
     name: 'ShoeAdditionalList',
@@ -173,7 +174,7 @@
         fieldList.push({type:'Text',value:'content',text:'说明',dictCode:''})
         fieldList.push({type:'string',value:'note',text:'备注',dictCode:''})
         this.superFieldList = fieldList
-      }
+      },
     }
   }
 </script>
