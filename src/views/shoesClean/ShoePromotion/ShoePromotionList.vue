@@ -116,7 +116,12 @@
             dataIndex: 'url'
           },
           {
-            title:'推广状态（0=禁用，1=启用）',
+            title: '创建时间',
+            align: 'center',
+            dataIndex: 'createTime'
+          },
+          {
+            title:'推广状态',
             align:"center",
             dataIndex: 'status',
             customRender: (text) => {

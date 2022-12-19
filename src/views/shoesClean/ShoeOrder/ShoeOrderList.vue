@@ -167,6 +167,14 @@
             dataIndex: 'skuTitle'
           },
           {
+          title:'附加服务',
+          align: "center",
+          dataIndex: "additionalName",
+           customRender: (text, record) => {
+            return text ? text : '无'
+          }
+          },
+          {
             title:'姓名',
             align:"center",
             dataIndex: 'name'
