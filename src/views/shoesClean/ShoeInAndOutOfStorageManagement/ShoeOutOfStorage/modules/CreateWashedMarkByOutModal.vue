@@ -30,16 +30,16 @@
 import {downFile, httpAction} from "../../../../../api/manage";
 
 export default {
-  name: "CreateWashedMarkModal",
+  name: "CreateWashedMarkByOutModal",
   components: {},
   data() {
     return {
       visible: false,
-      title: '打印入库水洗唛',
+      title: '打印出库水洗唛',
       no: "",
       data: {},
-      imageList: [],
       shoeOrderInfo: false,
+      clickedImage: "",
     }
   },
   created() {
@@ -54,7 +54,6 @@ export default {
     handleCancel() {
       this.visible = false;
       this.data = {};
-      this.imageList = [];
       this.shoeOrderInfo = false;
       this.no = "";
       //关闭弹窗并刷新列表
@@ -64,14 +63,13 @@ export default {
       //清空输入框内容
       this.no = "";
       this.data = {};
-      this.imageList = [];
       this.shoeOrderInfo = false;
     },
     handleInOfStorage(){
       let data = {
         "no": this.no
       }
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByOut", data, "post").then((res) => {
         console.log(res);
         if (!res.success && res.success !== undefined) {
           this.$message.warning(res.message)

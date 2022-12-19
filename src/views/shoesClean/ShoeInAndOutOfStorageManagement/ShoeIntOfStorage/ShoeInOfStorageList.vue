@@ -29,7 +29,7 @@
     <div class="table-operator">
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>-->
       <a-button type="primary" size="large" @click="handleInOfStorage()" style="width: 200px;height: 50px">入&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</a-button>
-      <a-button type="primary" size="large" @click="handleCreateWashedMark()" style="width: 200px;height: 50px">打印水洗唛</a-button>
+      <a-button type="primary" size="large" @click="handleCreateWashedMark()" style="width: 200px;height: 50px">打印入库水洗唛</a-button>
       <a-button type="primary" size="large" @click="manualInOfStorage()" style="width: 200px;height: 50px">手工录单</a-button>
     </div>
 

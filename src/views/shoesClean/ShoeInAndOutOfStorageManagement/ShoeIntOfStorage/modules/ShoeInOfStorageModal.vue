@@ -41,6 +41,16 @@
               <span class="content">商品规格：{{data.skuTitle}}</span>
             </a-col>
           </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="24">
+              <span class="content">附加项：{{data.name}}</span>
+            </a-col>
+          </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="24">
+              <span class="content">备注：{{data.note}}</span>
+            </a-col>
+          </a-row>
           <a-row>
             <a-col :span="24">
               <p class="content">照片：</p>
@@ -128,7 +138,8 @@ export default {
               "no": res.result.no,
               "note": res.result.note,
               "title": res.result.title,
-              "skuTitle": res.result.skuTitle
+              "skuTitle": res.result.skuTitle,
+              "name": res.result.name
             }
             this.imageList = JSON.parse(res.result.orderImages);
             this.shoeOrderInfo = true;

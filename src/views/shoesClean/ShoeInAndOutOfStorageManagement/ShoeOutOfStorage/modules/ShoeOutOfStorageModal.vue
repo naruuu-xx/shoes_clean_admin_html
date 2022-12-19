@@ -149,7 +149,7 @@ export default {
       let data = {
         "no": no
       }
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByOut", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
