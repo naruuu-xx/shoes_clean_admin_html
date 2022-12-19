@@ -106,7 +106,27 @@
               <j-switch v-model="model.status"></j-switch>
             </a-form-model-item>
           </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="附加服务项" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="additionalId" >
+              <a-select
+                mode="multiple"
+                show-search
+                placeholder="选择或搜索需要绑定的用户"
+                option-filter-prop="children"
+                style="width: 200px"
+                :filter-option="filterOption"
+                v-model="model.additionalIds"
+              >
+                <a-select-option  v-for="i in additionalList" :value="i.additionalId" :key="i.additionalId">
+                  {{i.name}}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+
         </a-row>
+
       </a-form-model>
     </j-form-container>
   </a-spin>
@@ -284,6 +304,7 @@ export default {
         },
       ],
 
+      additionalList:[]
 
 
     }
@@ -298,6 +319,7 @@ export default {
     //备份model原始值
     //  this.loadData(this.model.goodsId);
     this.getCategoryList();
+    this.getAdditonalList();
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
 
   },
@@ -404,7 +426,16 @@ export default {
           this.categoryList = res.result;
         }
       })
-    }
+    },
+    getAdditonalList(){
+      httpAction("/shoes/shoeAdditional/queryList","", "get").then((res)=>{
+        if(res){
+          console.log(res.result);
+          this.additionalList = res.result;
+
+        }
+      })
+    },
 
   },
 }
