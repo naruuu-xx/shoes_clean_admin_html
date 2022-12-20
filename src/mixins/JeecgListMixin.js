@@ -72,6 +72,7 @@ export const JeecgListMixin = {
   },
   methods:{
     loadData(arg) {
+      
       if(!this.url.list){
         this.$message.error("请设置url.list属性!")
         return
@@ -82,7 +83,12 @@ export const JeecgListMixin = {
       }
       var params = this.getQueryParams();//查询条件
       this.loading = true;
+      if(this.$route.params.id){
+        Object.assign(params,{id:this.$route.params.id})
+      }
+
       getAction(this.url.list, params).then((res) => {
+
         if (res.success) {
           //update-begin---author:zhangyafei    Date:20201118  for：适配不分页的数据列表------------
           this.dataSource = res.result.records||res.result;
