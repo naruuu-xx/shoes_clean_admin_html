@@ -229,6 +229,7 @@ export const JeecgListMixin = {
       this.$refs.modalForm.edit(record);
       this.$refs.modalForm.title = "编辑";
       this.$refs.modalForm.disableSubmit = false;
+
     },
     handleAdd: function () {
       this.$refs.modalForm.add();
@@ -264,6 +265,7 @@ export const JeecgListMixin = {
       this.$refs.modalForm.title="详情";
       this.$refs.modalForm.disableSubmit = true;
     },
+
     /* 导出 */
     handleExportXls2(){
       let paramsStr = encodeURI(JSON.stringify(this.getQueryParams()));

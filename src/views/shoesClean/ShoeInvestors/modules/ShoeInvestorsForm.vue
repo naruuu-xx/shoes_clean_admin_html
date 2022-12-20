@@ -80,6 +80,7 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import router from "@/router";
 
   export default {
     name: 'ShoeInvestorsForm',
@@ -185,6 +186,7 @@
               if(res.success){
                 that.$message.success(res.message);
                 that.$emit('ok');
+
               }else{
                 that.$message.warning(res.message);
               }
