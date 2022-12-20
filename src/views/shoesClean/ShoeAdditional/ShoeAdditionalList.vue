@@ -4,26 +4,28 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
-            <a-form-item label=" 推广渠道">
-              <a-input placeholder="请输入推广渠道" v-model="queryParam.channel" :allowClear="true"></a-input>
+            <a-form-item label="服务名称">
+              <a-input placeholder="请输入服务名称" v-model="queryParam.name" ></a-input>
+
             </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-            </span>
           </a-col>
         </a-row>
       </a-form>
+
     </div>
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_additional')">导出</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
       <!-- 高级查询区域 -->
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -44,7 +46,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="promotionId"
+        rowKey="additionalId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -53,10 +55,27 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
+<!--        <template slot="htmlSlot" slot-scope="text">-->
+<!--          <div v-html="text"></div>-->
+<!--        </template>-->
+<!--        <template slot="imgSlot" slot-scope="text,record">-->
+<!--          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>-->
+<!--          <img v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>-->
+<!--        </template>-->
+<!--        <template slot="fileSlot" slot-scope="text">-->
+<!--          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>-->
+<!--          <a-button-->
+<!--            v-else-->
+<!--            :ghost="true"-->
+<!--            type="primary"-->
+<!--            icon="download"-->
+<!--            size="small"-->
+<!--            @click="downloadFile(text)">-->
+<!--            下载-->
+<!--          </a-button>-->
+<!--        </template>-->
 
         <span slot="action" slot-scope="text, record">
-          <a @click="previewModel(record)">推广码</a>
-          <a-divider type="vertical" />
           <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
@@ -67,8 +86,8 @@
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
               <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.promotionId)">
-                  <a >删除</a>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.additionalId)">
+                  <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
@@ -76,13 +95,9 @@
         </span>
 
       </a-table>
-
-      <a-modal :visible="previewVisible" :footer="null" @cancel="handleModelCancel()">
-        <img alt="example" style="width: 100%" :src="previewImage"/>
-      </a-modal>
     </div>
 
-    <shoe-promotion-modal ref="modalForm" @ok="modalFormOk"></shoe-promotion-modal>
+    <shoe-additional-modal ref="modalForm" @ok="modalFormOk"></shoe-additional-modal>
   </a-card>
 </template>
 
@@ -91,42 +106,34 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import ShoePromotionModal from './modules/ShoePromotionModal'
-  import { filterDictTextByCache } from '@comp/dict/JDictSelectUtil'
+  import ShoeAdditionalModal from './modules/ShoeAdditionalModal'
+  import { httpAction } from '@api/manage'
 
   export default {
-    name: 'ShoePromotionList',
+    name: 'ShoeAdditionalList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoePromotionModal
+      ShoeAdditionalModal
     },
     data () {
       return {
-        description: 'shoe_promotion管理页面',
+        description: 'shoe_additional管理页面',
         // 表头
         columns: [
           {
-            title:'推广渠道名称',
+            title:'名称',
             align:"center",
-            dataIndex: 'channel'
+            dataIndex: 'name'
           },
           {
-            title:'推广链接',
+            title:'价格',
             align:"center",
-            dataIndex: 'url'
+            dataIndex: 'price'
           },
           {
-            title: '创建时间',
-            align: 'center',
-            dataIndex: 'createTime'
-          },
-          {
-            title:'推广状态',
+            title:'备注',
             align:"center",
-            dataIndex: 'status',
-            customRender: (text) => {
-              return filterDictTextByCache('promotion_status', text);
-            }
+            dataIndex: 'note'
           },
           {
             title: '操作',
@@ -138,17 +145,15 @@
           }
         ],
         url: {
-          list: "/shoes/shoePromotion/list",
-          delete: "/shoes/shoePromotion/delete",
-          deleteBatch: "/shoes/shoePromotion/deleteBatch",
-          exportXlsUrl: "/shoes/shoePromotion/exportXls",
-          importExcelUrl: "shoes/shoePromotion/importExcel",
+          list: "/shoes/shoeAdditional/list",
+          delete: "/shoes/shoeAdditional/delete",
+          deleteBatch: "/shoes/shoeAdditional/deleteBatch",
+          exportXlsUrl: "/shoes/shoeAdditional/exportXls",
+          importExcelUrl: "shoes/shoeAdditional/importExcel",
 
         },
         dictOptions:{},
         superFieldList:[],
-        previewVisible:false,
-        previewImage:"",
       }
     },
     created() {
@@ -164,23 +169,11 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'channel',text:'推广渠道名称',dictCode:''})
-        fieldList.push({type:'int',value:'type',text:'推广渠道类型（1=推广人，2=其他）',dictCode:''})
-        fieldList.push({type:'string',value:'url',text:'推广链接',dictCode:''})
-        fieldList.push({type:'string',value:'qrcode',text:'推广二维码',dictCode:''})
-        fieldList.push({type:'int',value:'userId',text:'推广人绑定用户id',dictCode:''})
-        fieldList.push({type:'int',value:'status',text:'推广状态（0=禁用，1=启用）',dictCode:''})
+        fieldList.push({type:'string',value:'name',text:'名称',dictCode:''})
+        fieldList.push({type:'int',value:'price',text:'价格',dictCode:''})
+        fieldList.push({type:'Text',value:'content',text:'说明',dictCode:''})
+        fieldList.push({type:'string',value:'note',text:'备注',dictCode:''})
         this.superFieldList = fieldList
-      },
-      handleModelCancel() {
-        let that = this;
-        that.previewVisible = false;
-        that.previewImage = "";
-      },
-      previewModel(record) {
-        let that = this;
-        that.previewVisible = true;
-        that.previewImage = record.qrcode;
       },
     }
   }

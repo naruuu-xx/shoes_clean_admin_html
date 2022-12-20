@@ -4,17 +4,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
-            <a-form-item label=" 推广渠道">
-              <a-input placeholder="请输入推广渠道" v-model="queryParam.channel" :allowClear="true"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -23,7 +12,12 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('商品')">导出</a-button>
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>
       <!-- 高级查询区域 -->
+      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -44,7 +38,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="promotionId"
+        rowKey="id"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -53,10 +47,27 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="imgSlot" slot-scope="text,record">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+          <img v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+        </template>
+        <template slot="fileSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
+          <a-button
+            v-else
+            :ghost="true"
+            type="primary"
+            icon="download"
+            size="small"
+            @click="downloadFile(text)">
+            下载
+          </a-button>
+        </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="previewModel(record)">推广码</a>
-          <a-divider type="vertical" />
           <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
@@ -67,8 +78,8 @@
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
               <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.promotionId)">
-                  <a >删除</a>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
@@ -76,13 +87,9 @@
         </span>
 
       </a-table>
-
-      <a-modal :visible="previewVisible" :footer="null" @cancel="handleModelCancel()">
-        <img alt="example" style="width: 100%" :src="previewImage"/>
-      </a-modal>
     </div>
 
-    <shoe-promotion-modal ref="modalForm" @ok="modalFormOk"></shoe-promotion-modal>
+    <ces-shop-goods-modal ref="modalForm" @ok="modalFormOk"></ces-shop-goods-modal>
   </a-card>
 </template>
 
@@ -91,42 +98,57 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import ShoePromotionModal from './modules/ShoePromotionModal'
-  import { filterDictTextByCache } from '@comp/dict/JDictSelectUtil'
+  import CesShopGoodsModal from './modules/CesShopGoodsModal'
 
   export default {
-    name: 'ShoePromotionList',
+    name: 'CesShopGoodsList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoePromotionModal
+      CesShopGoodsModal
     },
     data () {
       return {
-        description: 'shoe_promotion管理页面',
+        description: '商品管理页面',
         // 表头
         columns: [
           {
-            title:'推广渠道名称',
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
             align:"center",
-            dataIndex: 'channel'
-          },
-          {
-            title:'推广链接',
-            align:"center",
-            dataIndex: 'url'
-          },
-          {
-            title: '创建时间',
-            align: 'center',
-            dataIndex: 'createTime'
-          },
-          {
-            title:'推广状态',
-            align:"center",
-            dataIndex: 'status',
-            customRender: (text) => {
-              return filterDictTextByCache('promotion_status', text);
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
             }
+          },
+          {
+            title:'商品名字',
+            align:"center",
+            dataIndex: 'name'
+          },
+          {
+            title:'价格',
+            align:"center",
+            dataIndex: 'price'
+          },
+          {
+            title:'出厂时间',
+            align:"center",
+            dataIndex: 'chucDate',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'商品简介',
+            align:"center",
+            dataIndex: 'contents',
+            scopedSlots: {customRender: 'htmlSlot'}
+          },
+          {
+            title:'商品分类',
+            align:"center",
+            dataIndex: 'goodTypeId_dictText'
           },
           {
             title: '操作',
@@ -138,17 +160,15 @@
           }
         ],
         url: {
-          list: "/shoes/shoePromotion/list",
-          delete: "/shoes/shoePromotion/delete",
-          deleteBatch: "/shoes/shoePromotion/deleteBatch",
-          exportXlsUrl: "/shoes/shoePromotion/exportXls",
-          importExcelUrl: "shoes/shoePromotion/importExcel",
-
+          list: "/CesShopGoods/cesShopGoods/list",
+          delete: "/CesShopGoods/cesShopGoods/delete",
+          deleteBatch: "/CesShopGoods/cesShopGoods/deleteBatch",
+          exportXlsUrl: "/CesShopGoods/cesShopGoods/exportXls",
+          importExcelUrl: "CesShopGoods/cesShopGoods/importExcel",
+          
         },
         dictOptions:{},
         superFieldList:[],
-        previewVisible:false,
-        previewImage:"",
       }
     },
     created() {
@@ -164,24 +184,13 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'channel',text:'推广渠道名称',dictCode:''})
-        fieldList.push({type:'int',value:'type',text:'推广渠道类型（1=推广人，2=其他）',dictCode:''})
-        fieldList.push({type:'string',value:'url',text:'推广链接',dictCode:''})
-        fieldList.push({type:'string',value:'qrcode',text:'推广二维码',dictCode:''})
-        fieldList.push({type:'int',value:'userId',text:'推广人绑定用户id',dictCode:''})
-        fieldList.push({type:'int',value:'status',text:'推广状态（0=禁用，1=启用）',dictCode:''})
+        fieldList.push({type:'string',value:'name',text:'商品名字',dictCode:''})
+        fieldList.push({type:'BigDecimal',value:'price',text:'价格',dictCode:''})
+        fieldList.push({type:'date',value:'chucDate',text:'出厂时间'})
+        fieldList.push({type:'Text',value:'contents',text:'商品简介',dictCode:''})
+        fieldList.push({type:'string',value:'goodTypeId',text:'商品分类'})
         this.superFieldList = fieldList
-      },
-      handleModelCancel() {
-        let that = this;
-        that.previewVisible = false;
-        that.previewImage = "";
-      },
-      previewModel(record) {
-        let that = this;
-        that.previewVisible = true;
-        that.previewImage = record.qrcode;
-      },
+      }
     }
   }
 </script>

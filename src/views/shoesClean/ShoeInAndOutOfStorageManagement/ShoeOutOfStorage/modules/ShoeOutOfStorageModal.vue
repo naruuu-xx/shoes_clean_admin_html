@@ -7,7 +7,7 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    wrapClassName="full-modal">
+    :fullscreen = "true">
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
@@ -149,7 +149,7 @@ export default {
       let data = {
         "no": no
       }
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByOut", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
