@@ -72,7 +72,7 @@ export default {
       dataSource:[],
       statusOptionList: [{"value":"0", "name":"未入账"}, {"value":"1", "name":"已入账"}, {"value":"2", "name":"已退款"}],
       url: {
-        list: "/shoes/shoeInvestors/InvestorsList?id="+this.id1,
+        list: "/shoes/shoeInvestors/InvestorsList",
       },
       // 表头
       columns: [
@@ -118,20 +118,22 @@ export default {
       ],
     }
   },
-  created() {
-    this.getList(this.$route.params.investorsId);
+  create() {
+    //this.getList(this.$route.params.investorsId);
+    // console.log("=======",this.queryParam)
+    // this.queryParam.id=this.$route.params.investorsId;
   },
   methods: {
-    getList(investorsId) {
-      this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
-      httpAction("/shoes/shoeInvestors/InvestorsList?id="+investorsId, null, "get").then((res) => {
-        if (res) {
-          this.dataSource = res.result;
-          console.log(res.result);
-
-        }
-      })
-    },
+    // getList(investorsId) {
+    //   //this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
+    //   httpAction("/shoes/shoeInvestors/InvestorsList?investorsId="+investorsId, null, "get").then((res) => {
+    //     if (res) {
+    //       this.dataSource = res.result;
+    //       console.log(res.result);
+    //
+    //     }
+    //   })
+    // },
 
   }
 }
