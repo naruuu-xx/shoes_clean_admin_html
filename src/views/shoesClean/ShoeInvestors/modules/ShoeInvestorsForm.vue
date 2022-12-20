@@ -30,6 +30,7 @@
                 style="width: 200px"
                 :filter-option="filterOption"
                 v-model="model.userId"
+                :disabled="(!(model.investorsId === null || model.investorsId === ''))"
               >
                 <a-select-option  v-for="i in shoeUserList" :value="i.userId" :key="i.nickname">
                   {{i.nickname}}
