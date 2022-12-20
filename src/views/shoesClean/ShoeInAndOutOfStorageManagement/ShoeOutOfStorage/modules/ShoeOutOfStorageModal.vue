@@ -7,7 +7,7 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    wrapClassName="full-modal">
+    :fullscreen = "true">
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">

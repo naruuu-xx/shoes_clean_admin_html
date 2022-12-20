@@ -3,17 +3,17 @@
     <div>
       <a-spin :spinning="confirmLoading">
         <a-form :model="model" :label-col="labelCol" :wrapper-col="wrapperCol" :rules="rules">
-          <div style="margin-bottom: 20px">
+          <div>
             <a-row>
               <a-col :span="24">
-                <a-form-item label="1.APP版本号：" prop="versionApp">
+                <a-form-item label="APP版本号：" prop="versionApp">
                   <a-input v-model:value="model.versionApp" style="width: 200px"/>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="24">
-                <a-form-item label="2.APP下载地址：" prop="urlApp">
+                <a-form-item label="APP下载地址：" prop="urlApp">
                   <a-input v-model:value="model.urlApp"/>
                 </a-form-item>
               </a-col>
@@ -111,6 +111,6 @@ export default {
 
 <style lang="less" scoped>
 .card {
-  margin-bottom: 24px;
+  //margin-bottom: 24px;
 }
 </style>
