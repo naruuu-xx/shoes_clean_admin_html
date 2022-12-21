@@ -111,6 +111,11 @@
             dataIndex: 'channel'
           },
           {
+            title: '推广渠道类型',
+            align: 'center',
+            dataIndex: 'typeText',
+          },
+          {
             title:'推广链接',
             align:"center",
             dataIndex: 'url'
