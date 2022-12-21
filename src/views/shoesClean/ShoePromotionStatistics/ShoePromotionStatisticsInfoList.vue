@@ -28,39 +28,39 @@
 
     <br/>
     <!-- 查询区域 -->
-   <div class="table-page-search-wrapper">
-     <a-form layout="inline" @keyup.enter.native="searchQuery">
-       <a-row :gutter="24">
-         <a-col :xl="10" :lg="12" :md="24" :sm="24">
-           <a-form-item label="注册时间">
-             <a-range-picker v-model="queryParam.createTime" />
-           </a-form-item>
-         </a-col>
-         <a-col :xl="10" :lg="12" :md="24" :sm="24">
-           <a-form-item label="完成时间">
-            <a-range-picker v-model="queryParam.finishTime" />
-           </a-form-item>
-         </a-col>
-         <a-col :xl="4" :lg="6" :md="12" :sm="24">
-           <a-form-item label="下单状态">
-            <a-select v-model="queryParam.status" style="width: 120px">
-              <a-select-option :value="status.value" v-for="status in statusList" :key="status.value">
-                {{status.label}}
-              </a-select-option>
-            </a-select>
-           </a-form-item>
-         </a-col>
-       </a-row>
+<!--   <div class="table-page-search-wrapper">-->
+<!--     <a-form layout="inline" @keyup.enter.native="searchQuery">-->
+<!--       <a-row :gutter="24">-->
+<!--         <a-col :xl="10" :lg="12" :md="24" :sm="24">-->
+<!--           <a-form-item label="注册时间">-->
+<!--             <a-range-picker v-model="queryParam.createTime" />-->
+<!--           </a-form-item>-->
+<!--         </a-col>-->
+<!--         <a-col :xl="10" :lg="12" :md="24" :sm="24">-->
+<!--           <a-form-item label="完成时间">-->
+<!--            <a-range-picker v-model="queryParam.finishTime" />-->
+<!--           </a-form-item>-->
+<!--         </a-col>-->
+<!--         <a-col :xl="4" :lg="6" :md="12" :sm="24">-->
+<!--           <a-form-item label="下单状态">-->
+<!--            <a-select v-model="queryParam.status" style="width: 120px">-->
+<!--              <a-select-option :value="status.value" v-for="status in statusList" :key="status.value">-->
+<!--                {{status.label}}-->
+<!--              </a-select-option>-->
+<!--            </a-select>-->
+<!--           </a-form-item>-->
+<!--         </a-col>-->
+<!--       </a-row>-->
 
-       <a-row>
-        <a-col :xl="6" :lg="7" :md="8" :sm="24">
-           <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-             <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-           </span>
-         </a-col>
-       </a-row>
-     </a-form>
-   </div>
+<!--       <a-row>-->
+<!--        <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
+<!--           <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">-->
+<!--             <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>-->
+<!--           </span>-->
+<!--         </a-col>-->
+<!--       </a-row>-->
+<!--     </a-form>-->
+<!--   </div>-->
     <div>
 <!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">-->
 <!--        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项-->
