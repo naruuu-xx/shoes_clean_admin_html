@@ -112,8 +112,9 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleOrderDetail(record)">查看详情</a>
           <a-divider v-if="record.type==='self' && record.status==='10'" type="vertical"/>
-          <a-popover >
-              <template #content>
+
+          <a-popover trigger="click"  placement="top">
+              <template #content >
                 <p align="center">取件码</p>
                  <p align="center" class="textCode">{{ selfCode }}</p>
                </template>
@@ -122,12 +123,13 @@
 <!--          -->
           <a-divider v-if="record.type==='service' && record.status==='12'" type="vertical"/>
 
-          <a-popover >
+          <a-popover trigger="click"  placement="top">
+
               <template #content>
                 <p align="center">取件码</p>
                  <p align="center" class="textCode">{{ serviceCode }}</p>
                </template>
-          <a v-if="record.type==='service' && record.status==='12'" @click="getServiceCode(record)">取件码service</a>
+          <a v-if="record.type==='service' && record.status==='12'" @click="getServiceCode(record)">取件码</a>
           </a-popover>
 
 
@@ -295,9 +297,9 @@ export default {
     },
     getServiceCode(record){
       //this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
-      httpAction("ShoeOrder/shoeOrder/getServiceCode?no="+record.no, null, "get").then((res) => {
+      httpAction("ShoeOrder/shoeOrder/getServiceCode?orderId="+record.orderId, null, "get").then((res) => {
         if (res) {
-          this.dataSource = res.result;
+          this.serviceCode = res.result;
         }
       })
     },

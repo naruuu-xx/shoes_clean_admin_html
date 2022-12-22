@@ -70,6 +70,34 @@
               </a-select>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" v-if="model.level==2||model.level==null">
+            <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="cardNo">
+              <a-input v-model="model.cardNo" placeholder="请输入银行卡号"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24"  v-else-if="model.level==1" >
+            <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="cardNo2">
+              <a-input v-model="model.cardNo2" placeholder="请输入银行卡号"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="持卡人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardName">
+              <a-input v-model="model.cardName" placeholder="请输入持卡人"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="开户行" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="bank">
+              <a-input v-model="model.bank" placeholder="请输入开户行"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="开户行地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openBank">
+              <a-input v-model="model.openBank" placeholder="请输入开户行地址"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+
+
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -116,6 +144,23 @@
               { required: true, message: '请输入手机号!'},
              { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
+          cardNo: [
+            { required: true, message: '请输入银行卡号!'},
+            { pattern: /\d$/, message: '请输入正确的银行卡号!'},
+          ],
+          cardNo2: [
+            { pattern: /\d$/, message: '请输入正确的银行卡号!'},
+          ],
+
+          cardName: [
+            { required: true, message: '请输入持卡人!'},
+          ],
+          bank: [
+            { required: true, message: '请输入开户行!'},
+          ],
+          openBank: [
+            { required: true, message: '请输入开户行地址!'},
+          ],
            level: [
               { required: true, message: '请选择身份!'},
            ],
@@ -144,9 +189,11 @@
     },
     created () {
        //备份model原始值
+
       this.getShoeUserList();
       this.getLockerList();
       this.getAgentList();
+
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
@@ -159,7 +206,9 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
+
         this.model = Object.assign({}, record);
+        //this.getBank();
         this.getLockerList();
         this.getShoeUserList();
 
@@ -186,7 +235,6 @@
               if(res.success){
                 that.$message.success(res.message);
                 that.$emit('ok');
-
               }else{
                 that.$message.warning(res.message);
               }
@@ -203,6 +251,17 @@
             console.log(res.result);
             this.shoeUserList = res.result;
 
+          }
+        })
+      },
+      getBank(){
+        httpAction("/shoes/shoeInvestors/getBank?id="+this.model.investorsId,"","get").then((res)=>{
+          if(res){
+            this.model.cardNo = res.result.cardNo;
+            this.model.cardNo2 = res.result.cardNo;
+            this.model.bank = res.result.bank;
+            this.model.openBank = res.result.cardNo;
+            this.model.cardName = res.result.cardName;
           }
         })
       },
