@@ -50,9 +50,19 @@
                   <div class="content-font-above">商品规格：{{data.skuTitle}}</div>
                 </a-col>
               </a-row>
+<!--          附加服务    -->
+              <a-row>
+                <a-col :span="24" v-if="data.additionalName != ''  ">
+                  <div class="content-font-above">附加服务：{{data.additionalName}}</div>
+                </a-col>
+                <a-col :span="24" v-if="data.additionalName == ''  ">
+                  <div class="content-font-above">附加服务：无</div>
+                </a-col>
+
+              </a-row>
               <!-- 商品金额 -->
               <a-row>
-                <a-col :span="24">
+                <a-col :span="24" >
                   <div class="content-font-above">商品金额（元）：{{data.goodsPrice}}</div>
                 </a-col>
               </a-row>
@@ -88,6 +98,11 @@
             </a-col>
           </a-row>
 <!--          <a-row v-if="'待付款' === this.data.status || '已取消' === this.data.status || '已完成' === this.data.status">-->
+          <a-row>
+            <a-col :span="24">
+              <div class="content-font-below">附加金额（元）：{{data.additionalPrice}}</div>
+            </a-col>
+          </a-row>
           <a-row>
             <a-col :span="24">
               <div class="content-font-below">应付金额（元）：{{data.price}}</div>
@@ -171,6 +186,11 @@
           <a-row v-if="'上门取件' === data.type">
             <a-col :span="24">
               <div class="content-font-below">配送员电话：{{courierPhoneByAfter}}</div>
+            </a-col>
+          </a-row>
+          <a-row v-if="statusInt >= 10">
+            <a-col :span="24">
+              <div class="content-font-below">取件码：{{data.code}}</div>
             </a-col>
           </a-row>
         </a-col>
@@ -471,6 +491,7 @@ export default{
       orderInfo.price = (orderInfo.price / 100).toFixed(2);
       orderInfo.couponPrice = (orderInfo.couponPrice / 100).toFixed(2);
       orderInfo.actualPrice = (orderInfo.actualPrice / 100).toFixed(2);
+      orderInfo.additionalPrice = (orderInfo.additionalPrice / 100).toFixed(2);
       //提前拿出订单状态，并转换成数字
       this.statusInt = parseInt(orderInfo.status);
       orderInfo.status = orderStatus;

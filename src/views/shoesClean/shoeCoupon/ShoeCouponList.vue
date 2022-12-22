@@ -4,9 +4,9 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="优惠券名称">
-              <a-input placeholder="请输入名称" v-model="queryParam.name" style="width: 200px"></a-input>
+              <a-input placeholder="请输入名称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -133,11 +133,11 @@
         description: 'shoe_coupon管理页面',
         // 表头
         columns: [
-          // {
-          //   title:'优惠券id',
-          //   align:"center",
-          //   dataIndex: 'couponId'
-          // },
+          {
+            title:'ID',
+            align:"center",
+            dataIndex: 'couponId'
+          },
           {
             title:'优惠券名称',
             align:"center",
@@ -208,6 +208,23 @@
             title:'使用人数',
             align:"center",
             dataIndex: 'useNum'
+          },
+          {
+            title:'状态',
+            align:"center",
+            dataIndex: 'status',
+            customRender: (text) => {
+              let value = '';
+
+              if (text == 0) {
+                value = "停用"
+              }else{
+                value = "启用"
+              }
+
+              return value;
+            }
+
           },
           // {
           //   title:'权重',

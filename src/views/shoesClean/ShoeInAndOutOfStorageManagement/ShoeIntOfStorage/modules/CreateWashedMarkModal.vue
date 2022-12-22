@@ -11,7 +11,7 @@
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="handleInOfStorage"  ref="autoInput"/>
+          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleInOfStorage"  ref="autoInput"/>
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
@@ -22,11 +22,6 @@
       <a-divider />
     </div>
 
-    <a-modal :zIndex="2000" :width="1000" :visible="showImageModal" :footer="null"
-             @cancel="handleShoeImageModalCancel()">
-      <img alt="example" style="width: 100%" :src="clickedImage">
-    </a-modal>
-
   </j-modal>
 </template>
 
@@ -35,18 +30,16 @@
 import {downFile, httpAction} from "../../../../../api/manage";
 
 export default {
-  name: "ShoeInOfStorageModal",
+  name: "CreateWashedMarkModal",
   components: {},
   data() {
     return {
       visible: false,
-      title: '打印水洗唛',
+      title: '打印入库水洗唛',
       no: "",
       data: {},
       imageList: [],
-      showImageModal: false,
       shoeOrderInfo: false,
-      clickedImage: "",
     }
   },
   created() {
@@ -67,14 +60,6 @@ export default {
       //关闭弹窗并刷新列表
       this.$emit('ok');
     },
-    showImage(item) {
-      this.showImageModal = true;
-      this.clickedImage = item;
-    },
-    handleShoeImageModalCancel() {
-      this.showImageModal = false;
-      this.clickedImage = "";
-    },
     emptyBagCode(){
       //清空输入框内容
       this.no = "";
@@ -87,7 +72,8 @@ export default {
         "no": this.no
       }
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
-        if (!res) {
+        console.log(res);
+        if (!res.success && res.success !== undefined) {
           this.$message.warning(res.message)
           return
         }
@@ -109,7 +95,7 @@ export default {
         this.doPrint('printPdf' + date + '.pdf')
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
-        this.$message.success("打印成功");
+        // this.$message.success("打印成功");
       })
     },
     // 打印
@@ -118,7 +104,7 @@ export default {
       setTimeout(() => {
         // window.print()
         ordonnance.print();
-      }, 100)
+      }, 0)
     },
   }
 }

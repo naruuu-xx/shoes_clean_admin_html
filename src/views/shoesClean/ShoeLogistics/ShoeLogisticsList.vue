@@ -9,14 +9,14 @@
 <!--              <a-input placeholder="请输入 ID" v-model="queryParam.logisticsId"></a-input>-->
 <!--            </a-form-item>-->
 <!--          </a-col>-->
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 姓名">
               <a-input placeholder="请输入 姓名" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 手机号（账号）">
-              <a-input placeholder="请输入 手机号（账号）" v-model="queryParam.phone"></a-input>
+              <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -149,6 +149,11 @@
           //     return parseInt(index)+1;
           //   }
           // },
+          {
+            title:' ID',
+            align:"center",
+            dataIndex: 'logisticsId'
+          },
           {
             title:' 姓名',
             align:"center",

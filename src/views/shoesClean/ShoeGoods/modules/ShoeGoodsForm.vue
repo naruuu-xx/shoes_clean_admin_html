@@ -9,6 +9,20 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="商品分类" :labelCol="labelCol"
+                               :wrapperCol="wrapperCol" prop="categoryId"
+                               v-if="model.goodsId !== 1 && model.goodsId !== 2 && model.goodsId !== 28">
+              <a-select
+                placeholder="选择分类"
+                v-model="model.categoryId"
+              >
+                <a-select-option  v-for="i in categoryList" :value="i.categoryId" :key="i.name">
+                  {{i.name}}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="描述" prop="describe">
               <a-input v-model="model.describe" placeholder="请输入描述"></a-input>
             </a-form-model-item>
@@ -19,17 +33,25 @@
                 添加规格
               </a-button>
               <a-table bordered :data-source="model.skuTable" :columns="columns"
-                        prop="skuTable">
+                        prop="skuTable" :rowKey="model.uuid">
                 <template slot="skuTitle" slot-scope="text,index, record" prop="skuTitle">
                   <editable-cell :text="text" @change="onCellChange(record, 'skuTitle', $event)" />
                 </template>
-                <template slot = "price" slot-scope="text,index, record" prop="price">
+                <template slot="price" slot-scope="text,index, record" prop="price">
                   <editable-cell :text="text" @change="onCellChange(record,'price',$event)" />
                 </template>
-                <template slot="operation" slot-scope="text, record">
+                <template slot="originalPrice" slot-scope="text,index, record" prop="originalPrice">
+                  <editable-cell :text="text" @change="onCellChange(record,'originalPrice',$event)" />
+                </template>
+                <template slot="skuImage" slot-scope="skuImage,index, record" prop="skuImage">
+                  <j-image-upload v-model="skuImage" @change="onCellChange(record, 'skuImage',$event)" :isMultiple="false" text="上传"></j-image-upload>
+                </template>
+
+
+                <template slot="operation" slot-scope="text, record,index">
                   <a-popconfirm
                     title="确定要删除该规格么？"
-                    @confirm="() => onDelete(record)"
+                    @confirm="() => onDelete(index,record)"
                   >
                     <a href="javascript:;">删除</a>
                   </a-popconfirm>
@@ -84,7 +106,27 @@
               <j-switch v-model="model.status"></j-switch>
             </a-form-model-item>
           </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="附加服务项" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="additionalId" >
+              <a-select
+                mode="multiple"
+                show-search
+                placeholder="选择或搜索需要绑定的用户"
+                option-filter-prop="children"
+                style="width: 200px"
+                :filter-option="filterOption"
+                v-model="model.additionalIds"
+              >
+                <a-select-option  v-for="i in additionalList" :value="i.additionalId" :key="i.additionalId">
+                  {{i.name}}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+
         </a-row>
+
       </a-form-model>
     </j-form-container>
   </a-spin>
@@ -128,6 +170,11 @@ const EditableCell = {
       value: this.text,
       editable: false,
     };
+  },
+  watch:{
+    text(value) {
+      this.value = value;
+    }
   },
   methods: {
 
@@ -222,6 +269,7 @@ export default {
         edit: '/shoes/shoeGoods/edit',
         queryById: '/shoes/shoeGoods/queryById'
       },
+      categoryList:[],
 
 
       count:0,
@@ -233,7 +281,18 @@ export default {
           scopedSlots: { customRender: 'skuTitle' },
         },
         {
-          title: '价格',
+          title: '规格图片',
+          dataIndex:'skuImage',
+          scopedSlots: {customRender: 'skuImage'},
+        },
+        {
+          title: '原价格',
+          dataIndex: 'originalPrice',
+          scopedSlots: { customRender: 'originalPrice' },
+
+        },
+        {
+          title: '优惠价格',
           dataIndex: 'price',
           scopedSlots: { customRender: 'price' },
 
@@ -245,6 +304,7 @@ export default {
         },
       ],
 
+      additionalList:[]
 
 
     }
@@ -258,60 +318,14 @@ export default {
   created() {
     //备份model原始值
     //  this.loadData(this.model.goodsId);
+    this.getCategoryList();
+    this.getAdditonalList();
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
 
   },
   methods: {
 
-    // loadData(goodsId) {
-    //   if(!this.url.list){
-    //     this.$message.error("请设置url.list属性!")
-    //     return
-    //   }
-    //  // var params = this.getQueryParams();//查询条件
-    //   this.loading = true;
-    //   console.log(typeof goodsId);
-    //   const params = {goodsId: goodsId,};
-    //
-    //   getAction(this.url.list,params).then((res) => {
-    //     if (res.success) {
-    //       //update-begin---author:zhangyafei    Date:20201118  for：适配不分页的数据列表------------
-    //           // console.log(res);
-    //       this.dataSource = res.result.records||res.result;
-    //       console.log("datasorce :       "+this.dataSource);
-    //       if(res.result.total)
-    //       {
-    //         this.ipagination.total = res.result.total;
-    //       }else{
-    //         this.ipagination.total = 0;
-    //       }
-    //       //update-end---author:zhangyafei    Date:20201118  for：适配不分页的数据列表------------
-    //     }else{
-    //       this.$message.warning(res.message)
-    //     }
-    //   }).finally(() => {
-    //     this.loading = false
-    //   })
-    // },
 
-    // addItem(record){
-    //   console.log(record)
-    //   const len = record.skuTable.length;
-    //   record.skuTable.splice(len+1, 0,{
-    //     skuTitle:'',
-    //     price:'',
-    //   })
-    // },
-    //
-
-
-    // deleteItem(record){
-    //   if(record.skuTable.length == 1){
-    //     return
-    //   }
-    //   const len = record.skuTable.length;
-    //   record.skuTable.splice(len,1)
-    // },
 
     exceptSkuId(value){
       if(value.key !== null){
@@ -323,7 +337,7 @@ export default {
 
 
       const dataSource = [... this.model.skuTable];
-      console.log(dataSource[record])
+
 
       const target = dataSource[record];
       if (target) {
@@ -331,14 +345,14 @@ export default {
         this.model.skuTable = dataSource;
       }
     },
-    onDelete(record) {
+    onDelete(index,record) {
+      console.log(444,index,record);
       /**
        * 删除存在有bug，待修复。
        * @type {*[]}
        */
-      const dataSource = [...this.model.skuTable];
-      record.delFLag = 1;
-      this.model.skuTable = dataSource.filter(item => item.skuId !== record.skuId);
+      this.model.skuTable.splice(index,1)
+      console.log(888,this.model.skuTable);
 
     },
     handleAdd() {
@@ -348,11 +362,13 @@ export default {
 
       let skuids=  [];
       let count = 0;
+      let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
 
       const newData = {
-        skuId : count ,
+        skuId : count,
         skuTitle: '',
         price:'',
+        uuid
       };
       this.model.skuTable = [...dataSource, newData];
       this.count = count + 1;
@@ -368,6 +384,9 @@ export default {
      // this.loadData(record.goodsId);
      //
       this.model = Object.assign({}, record)
+      this.model.skuTable = this.model.skuTable.map(item => {
+        return Object.assign({}, item,{uuid: (Math.random() + new Date().getTime()).toString(32).slice(0,8)})
+      })
       this.visible = true
     },
     submitForm() {
@@ -400,6 +419,22 @@ export default {
 
       })
 
+    },
+    getCategoryList(){
+      httpAction("/shoes/shoeGoods/categoryList","","get").then((res)=>{
+        if(res){
+          this.categoryList = res.result;
+        }
+      })
+    },
+    getAdditonalList(){
+      httpAction("/shoes/shoeAdditional/queryList","", "get").then((res)=>{
+        if(res){
+          console.log(res.result);
+          this.additionalList = res.result;
+
+        }
+      })
     },
 
   },

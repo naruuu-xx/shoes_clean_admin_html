@@ -7,53 +7,102 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    wrapClassName="full-modal">
-    <div style="margin-left: 20px">
-      <a-row>
-        <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo"  ref="autoInput"/>
-        </a-col>
-        <a-col :span="2"></a-col>
-        <a-col :span="4">
-          <a-row><a-button @click="queryOrderInfo" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">确&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认</span></a-button></a-row>
-          <a-row><a-button @click="emptyBagCode" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
-        </a-col>
-      </a-row>
-      <a-divider />
-      <a-row v-show="shoeOrderInfo">
+    :fullscreen = "true">
+    <a-spin :spinning="confirmLoading">
+      <div style="margin-left: 20px">
         <a-row>
           <a-col :span="18">
-            <span class="content">订单编号：{{data.no}}</span>
+            <a-input style="height: 120px" v-model:value="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo"  ref="autoInput"/>
           </a-col>
           <a-col :span="2"></a-col>
           <a-col :span="4">
-            <a-button @click="handleInOfStorage" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
+            <a-row><a-button @click="queryOrderInfo" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">确&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认</span></a-button></a-row>
+            <a-row><a-button @click="emptyBagCode" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
           </a-col>
         </a-row>
-        <a-row style="margin-bottom: 30px">
-          <a-col :span="24">
-            <span class="content">商品名：{{data.title}}</span>
-          </a-col>
+        <a-divider />
+        <a-row v-show="shoeOrderInfo">
+          <a-row>
+            <a-col :span="18">
+              <span class="content">订单编号：{{data.no}}</span>
+            </a-col>
+            <a-col :span="2"></a-col>
+            <a-col :span="4">
+              <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
+            </a-col>
+          </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="6">
+              <span class="content">商品名：{{data.title}}</span>
+            </a-col>
+            <a-col :span="6">
+              <span class="content">商品规格：{{data.skuTitle}}</span>
+            </a-col>
+          </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="24">
+              <span class="content">附加项：{{data.name}}</span>
+            </a-col>
+          </a-row>
+<!--          <a-row style="margin-bottom: 30px">-->
+<!--            <a-col :span="24">-->
+<!--              <span class="content">用户备注：{{data.note}}</span>-->
+<!--            </a-col>-->
+<!--          </a-row>-->
+          <a-row>
+            <a-col :span="24">
+              <p class="content">照片：</p>
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
+                   :src="item" @click="showImage(item)">
+            </a-col>
+          </a-row>
         </a-row>
-        <a-row style="margin-bottom: 30px">
-          <a-col :span="24">
-            <span class="content">商品规格：{{data.skuTitle}}</span>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="24">
-            <p class="content">照片：</p>
-            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
-                 :src="item" @click="showImage(item)">
-          </a-col>
-        </a-row>
-      </a-row>
-    </div>
+      </div>
+    </a-spin>
 
     <a-modal :zIndex="2000" :width="1000" :visible="showImageModal" :footer="null"
              @cancel="handleShoeImageModalCancel()">
       <img alt="example" style="width: 100%" :src="clickedImage">
     </a-modal>
+
+<!--    <a-modal :zIndex="2000" :width="600" :visible="showInOfStoragePrintModal" :footer="null"-->
+<!--             @cancel="handleShowInOfStoragePrintModalCancel()">-->
+<!--      <a-row>-->
+<!--        <a-col :span="24" style="margin-bottom: 30px">-->
+<!--          <span class="content">订单编号：{{data.no}}</span>-->
+<!--        </a-col>-->
+<!--      </a-row>-->
+<!--      <a-row style="margin-bottom: 30px">-->
+<!--        <a-col :span="12">-->
+<!--          <span class="content">商品名：{{data.title}}</span>-->
+<!--        </a-col>-->
+<!--        <a-col :span="12">-->
+<!--          <span class="content">商品规格：{{data.skuTitle}}</span>-->
+<!--        </a-col>-->
+<!--      </a-row>-->
+<!--      <a-row style="margin-bottom: 30px">-->
+<!--        <a-col :span="24">-->
+<!--          <span class="content">附加项：{{data.name}}</span>-->
+<!--        </a-col>-->
+<!--      </a-row>-->
+<!--      <a-row>-->
+<!--        <a-col :span="24">-->
+<!--          <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">-->
+<!--            <a-select-->
+<!--              v-model:value="selectedNote"-->
+<!--              mode="multiple"-->
+<!--              style="width: 100%;"-->
+<!--              placeholder="请选择"-->
+<!--              :options="noteOptions"-->
+<!--              :z-index="2000"-->
+<!--            >-->
+<!--            </a-select>-->
+<!--          </a-form-model-item>-->
+<!--        </a-col>-->
+<!--      </a-row>-->
+<!--    </a-modal>-->
+
+    <confirm-print-modal ref="confirmPrintModal"></confirm-print-modal>
 
   </j-modal>
 </template>
@@ -61,10 +110,11 @@
 <script>
 
 import {downFile, httpAction} from "../../../../../api/manage";
+import ConfirmPrintModal from "./ConfirmPrintModal";
 
 export default {
   name: "ShoeInOfStorageModal",
-  components: {},
+  components: {ConfirmPrintModal},
   data() {
     return {
       visible: false,
@@ -75,6 +125,10 @@ export default {
       showImageModal: false,
       shoeOrderInfo: false,
       clickedImage: "",
+      confirmLoading: false,
+      showInOfStoragePrintModal: false,
+      selectedNote: [],
+      noteOptions: [],
     }
   },
   created() {
@@ -85,6 +139,15 @@ export default {
       this.$nextTick(()=> {
         this.$refs.autoInput.focus();
       })
+
+      //获取备注项列表
+      httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
+        this.noteOptions = res.result.records.map((item,index,arr)=>{
+          let c = {label:item.note, value:item.note}
+          return c;
+        })
+      })
+
     },
     handleCancel() {
       this.visible = false;
@@ -106,7 +169,9 @@ export default {
     queryOrderInfo(){
       //查询订单信息
       if (this.bagCode === "" || this.bagCode === null || this.bagCode === undefined) {
-        this.$message.warning("请扫码袋子编码或者手动输入袋子编码");
+        this.$message.warning("请扫描袋子编码或者手动输入袋子编码");
+      } else if (this.bagCode.length < 6) {
+        this.$message.warning("请扫描或输入正确的袋子编码");
       } else {
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryOrderInfoByBagCode?bagCode=" + this.bagCode, null, "get").then((res) => {
           if (res.code !== 200) {
@@ -123,12 +188,14 @@ export default {
               "no": res.result.no,
               "note": res.result.note,
               "title": res.result.title,
-              "skuTitle": res.result.skuTitle
+              "skuTitle": res.result.skuTitle,
+              "name": res.result.name
             }
             this.imageList = JSON.parse(res.result.orderImages);
             this.shoeOrderInfo = true;
             //清空输入框并重新聚焦
             this.bagCode = "";
+            this.selectedNote = [];
             this.$nextTick(()=> {
               this.$refs.autoInput.focus();
             })
@@ -142,11 +209,17 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+      this.selectedNote = [];
+    },
+    handleShowInOfStoragePrintModalCancel() {
+      this.showInOfStoragePrintModal = false;
+    },
+    shoeInOfStorageModal() {
+      // this.showInOfStoragePrintModal = true;
+      this.$refs.confirmPrintModal.show(this.data);
     },
     handleInOfStorage(){
-      // httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
-      //
-      // })
+      this.confirmLoading = true;
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
@@ -170,7 +243,8 @@ export default {
         this.doPrint('printPdf' + date + '.pdf')
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
-        this.$message.success("入库成功");
+        // this.$message.success("入库成功");
+        this.confirmLoading = false;
       })
     },
     // 打印
@@ -179,15 +253,31 @@ export default {
       setTimeout(() => {
         // window.print()
         ordonnance.print();
-      }, 100)
+      }, 0)
     },
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .content {
   font-size: 20px;
   color: #000000;
+}
+.full-modal {
+  .ant-modal {
+    max-width: 100%;
+    top: 0;
+    padding-bottom: 0;
+    margin: 0;
+  }
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh);
+  }
+  .ant-modal-body {
+    flex: 1;
+  }
 }
 </style>

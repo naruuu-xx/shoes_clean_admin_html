@@ -72,6 +72,7 @@ export const JeecgListMixin = {
   },
   methods:{
     loadData(arg) {
+      
       if(!this.url.list){
         this.$message.error("请设置url.list属性!")
         return
@@ -82,7 +83,12 @@ export const JeecgListMixin = {
       }
       var params = this.getQueryParams();//查询条件
       this.loading = true;
+      if(this.$route.params.id){
+        Object.assign(params,{id:this.$route.params.id})
+      }
+
       getAction(this.url.list, params).then((res) => {
+
         if (res.success) {
           //update-begin---author:zhangyafei    Date:20201118  for：适配不分页的数据列表------------
           this.dataSource = res.result.records||res.result;
@@ -225,12 +231,11 @@ export const JeecgListMixin = {
       console.log('currentIndex',currentIndex)
     },
     handleEdit: function (record) {
-      // console.log(record);
-      // console.log(typeof record.bannerId)
 
       this.$refs.modalForm.edit(record);
       this.$refs.modalForm.title = "编辑";
       this.$refs.modalForm.disableSubmit = false;
+
     },
     handleAdd: function () {
       this.$refs.modalForm.add();
@@ -266,6 +271,7 @@ export const JeecgListMixin = {
       this.$refs.modalForm.title="详情";
       this.$refs.modalForm.disableSubmit = true;
     },
+
     /* 导出 */
     handleExportXls2(){
       let paramsStr = encodeURI(JSON.stringify(this.getQueryParams()));
@@ -373,6 +379,7 @@ export const JeecgListMixin = {
       let url = getFileAccessHttpUrl(text)
       window.open(url);
     },
+
   }
 
 }

@@ -4,9 +4,9 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="优惠券卡包名称">
-              <a-input placeholder="请输入名称" v-model="queryParam.name" style="width: 200px"></a-input>
+              <a-input placeholder="请输入名称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -91,6 +91,11 @@ export default {
       description: 'shoe_card_bag卡包管理页面',
       // 表头
       columns: [
+        {
+          title:'ID',
+          align:"center",
+          dataIndex: 'cardBagId'
+        },
         {
           title:'卡包名称',
           align:"center",
