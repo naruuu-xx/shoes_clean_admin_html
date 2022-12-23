@@ -62,7 +62,7 @@
           <a-divider type="vertical" v-if="record.status==0" v-has="'Withdrawal:Audit'"/>
           <a @click="handleAudit(record)" v-if="record.status==0" v-has="'Withdrawal:Audit'">审核</a>
           <a-divider type="vertical" v-if="record.status==1" v-has="'Withdrawal:Transfer'"/>
-          <a @click="handleTransfer(record)" v-if="record.status==1" v-has="'percentage:Transfer'">确认</a>
+          <a @click="handleTransfer(record)" v-if="record.status==1" v-has="'Withdrawal:Transfer'">确认</a>
 
 
         </span>

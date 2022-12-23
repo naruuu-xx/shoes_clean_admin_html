@@ -56,7 +56,8 @@ export default {
       this.visible = false;
     },
     show(record){
-      httpAction("/shoes/shoeInvestors/withdrawalDetail?id="+record.investorsId, null, "get").then((res) => {
+
+      httpAction("/shoes/shoeInvestors/withdrawalDetail?id="+record.investorsWithdrawalId, null, "get").then((res) => {
         if (res) {
           this.visible = true;
           this.name=res.result.name;
