@@ -149,6 +149,7 @@ const EditableCell = {
     </div>
     <div v-else class="editable-cell-text-wrapper" @click="edit">
       {{ value || ' ' }}
+      <a-icon type="edit" class="editable-cell-icon"/>
     </div>
     </div>
   `,
