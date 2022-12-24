@@ -106,7 +106,12 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleOrderDetail(record)">查看详情</a>
 
-<!--          <a-divider type="vertical" />-->
+          <a-divider type="vertical" />
+          <a v-if="record.status !== '15' &&
+record.status !== '16' &&
+record.status !== '13' &&
+record.status !== '14'
+" @click="handleRefundDetail(record)" >退款</a>
 <!--          <a-dropdown>-->
 <!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
 <!--            <a-menu slot="overlay">-->
@@ -127,6 +132,7 @@
 
     <shoe-order-modal ref="modalForm" @ok="modalFormOk"></shoe-order-modal>
     <shoe-order-detail ref="shoeOrderDetail" @ok="modalFormOk"></shoe-order-detail>
+    <shoe-refund-detail ref="shoeRefundDetail" @ok="modalFormOk"></shoe-refund-detail>
   </a-card>
 </template>
 
@@ -138,13 +144,15 @@
   import ShoeOrderModal from './modules/ShoeOrderModal'
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import ShoeOrderDetail from "./modules/ShoeOrderDetail";
+  import ShoeRefundDetail from "./modules/ShoeRefundDetail";
 
   export default {
     name: 'ShoeOrderList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeOrderModal,
-      ShoeOrderDetail
+      ShoeOrderDetail,
+      ShoeRefundDetail
     },
     data () {
       return {
@@ -293,7 +301,11 @@
       handleOrderDetail(record){
         let orderStatus = filterDictTextByCache('shoe_order_status', record.status);
         this.$refs.shoeOrderDetail.show(record, orderStatus);
-      }
+      },
+      handleRefundDetail(record){
+        this.$refs.shoeRefundDetail.show(record);
+      },
+
     }
   }
 </script>
