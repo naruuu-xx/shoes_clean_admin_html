@@ -38,10 +38,10 @@
                   <editable-cell :text="text" @change="onCellChange(record, 'skuTitle', $event)" />
                 </template>
                 <template slot="price" slot-scope="text,index, record" prop="price">
-                  <editable-cell :text="text" @change="onCellChange(record,'price',$event)" />
+                  <editable-cell type="number" :text="text" @change="onCellChange(record,'price',$event)" />
                 </template>
                 <template slot="originalPrice" slot-scope="text,index, record" prop="originalPrice">
-                  <editable-cell :text="text" @change="onCellChange(record,'originalPrice',$event)" />
+                  <editable-cell type="number" :text="text" @change="onCellChange(record,'originalPrice',$event)" />
                 </template>
                 <template slot="skuImage" slot-scope="skuImage,index, record" prop="skuImage">
                   <j-image-upload v-model="skuImage" @change="onCellChange(record, 'skuImage',$event)" :isMultiple="false" text="上传"></j-image-upload>
@@ -144,22 +144,21 @@ const EditableCell = {
   template: `
     <div class="editable-cell">
     <div v-if="editable" class="editable-cell-input-wrapper">
-
-      <a-input :value="value" @change="handleChange" @pressEnter="check" @input="inputChange"/>
-      <a-icon
-        type="check"
-        class="editable-cell-icon-check"
-        @click="check"
-      />
+      <a-input :value="value" @change="handleChange" @pressEnter="check" @input="inputChange" v-if="type == 'text'" @blur="editable = false"/>
+      <a-input-number v-model="value" :min="0" @pressEnter="check" @change="handleChange" v-else @blur="editable = false" />
     </div>
-    <div v-else class="editable-cell-text-wrapper">
+    <div v-else class="editable-cell-text-wrapper" @click="edit">
       {{ value || ' ' }}
-      <a-icon type="edit" class="editable-cell-icon" @click="edit"/>
+      <a-icon type="edit" class="editable-cell-icon"/>
     </div>
     </div>
   `,
   props: {
     text: String | Number,
+    type:{
+      type: String,
+      default: 'text'
+    }
   },
   model: {
     prop: "value",
@@ -179,8 +178,11 @@ const EditableCell = {
   methods: {
 
     handleChange(e) {
-      const value = e.target.value;
+      const value = this.type == 'text' ? e.target.value : e
+      console.log(6666,value);
       this.value = value;
+      
+      this.$emit('change', this.value);
     },
     inputChange(e){
 
@@ -325,7 +327,19 @@ export default {
   },
   methods: {
 
-
+    // 是否可用提交规格
+    isSubmitSkuTable() {
+      let status = true
+      const dataSource = [... this.model.skuTable];
+      dataSource.forEach((item,idx) => {
+        if(!item.originalPrice || !item.price || !item.skuTitle || !item.skuImage ) {
+          this.$message.warning(`第${idx+1}个规格没有填写完整，无法保存`)
+          dataSource.length = 0
+          status = false
+        }
+      });
+      return status
+    },
 
     exceptSkuId(value){
       if(value.key !== null){
@@ -335,7 +349,7 @@ export default {
 
     onCellChange(record, dataIndex, value) {
 
-
+      console.log(999,value);
       const dataSource = [... this.model.skuTable];
 
 
@@ -390,6 +404,9 @@ export default {
       this.visible = true
     },
     submitForm() {
+      if(!this.isSubmitSkuTable()) {
+        return
+      }
       const that = this
       console.log(this.model)
       // 触发表单验证
@@ -442,6 +459,10 @@ export default {
 </script>
 
 <style lang="less">
+.ant-input-number-handler-wrap {
+    display: none
+}
+
 .editable-row-operations a {
   margin-right: 8px;
 }
@@ -457,6 +478,7 @@ export default {
 
 .editable-cell-text-wrapper {
   padding: 5px 24px 5px 5px;
+  cursor: pointer;
 }
 
 .editable-cell-icon,
