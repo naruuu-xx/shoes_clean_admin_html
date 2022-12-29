@@ -1,217 +1,135 @@
 <template>
   <j-modal
     :title="title"
-    :width="1200"
+    :width="600"
     :visible="visible"
     switchFullscreen
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    wrapClassName="full-modal">
+    wrapClassName="full-modal"
+  >
     <div class="diyDiv">
-      <!-- 上面一大块 -->
-      <a-row style="border-bottom: 1px solid #dedede">
-        <!-- 标题 -->
-        <div style="margin-bottom: 20px">
-          <a-row>
-            <a-col :span="24">
-              <p class="shoe-order-detail-title" style="margin-left: 44px">商品信息</p>
-            </a-col>
-          </a-row>
-
-          <!-- 商品信息部分 -->
-          <a-row>
-            <!-- 左边部分 -->
-            <a-col :span="1"></a-col>
-            <a-col :span="11">
-              <!-- 商品名 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">商品名：{{data.title}}</div>
-                </a-col>
-              </a-row>
-              <!-- 商品图片 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">商品图片：
-                    <img alt="example" style="width: 20%;height: 20%;margin: 10px" :src="data.image" @click="previewModel()"/>
-                  </div>
-                </a-col>
-              </a-row>
-            </a-col>
-
-            <!-- 右边部分 -->
-            <a-col :span="12">
-              <!-- 商品规格 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">商品规格：{{data.skuTitle}}</div>
-                </a-col>
-              </a-row>
-<!--          附加服务    -->
-              <a-row>
-                <a-col :span="24" v-if="data.additionalName != ''  ">
-                  <div class="content-font-above">附加服务：{{data.additionalName}}</div>
-                </a-col>
-                <a-col :span="24" v-if="data.additionalName == ''  ">
-                  <div class="content-font-above">附加服务：无</div>
-                </a-col>
-
-              </a-row>
-              <!-- 商品金额 -->
-              <a-row>
-                <a-col :span="24" >
-                  <div class="content-font-above">商品金额（元）：{{data.goodsPrice}}</div>
-                </a-col>
-              </a-row>
-              <!-- 购买数量 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">购买数量：1</div>
-                </a-col>
-              </a-row>
-            </a-col>
-          </a-row>
+      <div class="main">
+        <div class="content-font-below">订单编号：{{ data.no }}</div>
+        <div class="content-font-below">商品名称：{{ data.title }}</div>
+        <div class="content-font-below">商品规格：{{ data.skuTitle }}</div>
+        <div class="content-font-below">商品价格（元）：{{ data.goodsPrice }}</div>
+        <div class="content-font-below">附加金额（元）：{{ data.additionalPrice }}</div>
+        <div class="content-font-below">优惠金额（元）：{{ data.couponPrice }}</div>
+        <div class="content-font-below">配送费（元）：{{ data.courierPrice }}</div>
+        <div class="content-font-below">实付金额（元）：{{ data.actualPrice }}</div>
+        <div class="content-font-below">
+          退款金额：
+          <a-input-number v-model="refundPrice" :min="0" />
         </div>
-      </a-row >
-      <!-- 下面一大块 -->
-      <a-row>
-        <!-- 订单信息 -->
-        <a-col :span="1"></a-col>
-<!--        <a-col :span="7" style="border-right: 1px solid #dedede">-->
-        <a-col :span="7">
-          <a-row>
-            <a-col :span="24">
-              <p class="shoe-order-detail-title" style="margin-top: 20px">订单信息</p>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">订单编号：{{data.no}}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">订单金额（元）：{{data.totalPrice}}</div>
-            </a-col>
-          </a-row>
-<!--          <a-row v-if="'待付款' === this.data.status || '已取消' === this.data.status || '已完成' === this.data.status">-->
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">附加金额（元）：{{data.additionalPrice}}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">应付金额（元）：{{data.price}}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="logisticsInfo.exceptionTime !== null && logisticsInfo.exceptionTime !== '' && logisticsInfo.exceptionTime !== undefined">
-            <a-col :span="24">
-              <div class="content-font-below">追加金额（元）：{{orderExceptionInfo.price}}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">实付金额（元）：{{data.actualPrice}}</div>
-            </a-col>
-          </a-row>
-<!--          <a-row>-->
-<!--            <a-col :span="24">-->
-<!--              <div class="content-font-below">优惠抵扣金额：{{data.couponPrice}}</div>-->
-<!--            </a-col>-->
-<!--          </a-row>-->
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">优惠卷：{{data.coupon}}</div>
-            </a-col>
-          </a-row>
-        </a-col>
-
-
-      </a-row>
+      </div>
+      <div class="foot">
+        <a-button type="primary" @click="onRefund"> 退款 </a-button>
+        <a-button @click="handleCancel">取消</a-button>
+      </div>
     </div>
 
     <!-- 弹窗们 -->
 
     <a-modal :visible="previewVisible" :footer="null" @cancel="handleModelCancel()">
-      <img alt="example" style="width: 100%" :src="previewImage"/>
+      <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal>
 
-    <a-modal title="实物照片" :width="1000" :visible="showShoeImagesModel" :footer="null" @cancel="handleShowShoeImagesModelCancel()">
-      <img alt="example" style="width: 20%;margin: 20px" v-for="item in orderImagesList" :src="item" @click="showShoeImage(item)">
+    <a-modal
+      title="实物照片"
+      :width="1000"
+      :visible="showShoeImagesModel"
+      :footer="null"
+      @cancel="handleShowShoeImagesModelCancel()"
+    >
+      <img
+        alt="example"
+        style="width: 20%; margin: 20px"
+        v-for="item in orderImagesList"
+        :src="item"
+        @click="showShoeImage(item)"
+      />
     </a-modal>
 
-    <a-modal :zIndex="2000" :width="1000" :visible="showShoeImageModel" :footer="null" @cancel="handleShowShoeImageModelCancel()">
-      <img alt="example" style="width: 100%" :src="selectedShoeImage">
+    <a-modal
+      :zIndex="2000"
+      :width="1000"
+      :visible="showShoeImageModel"
+      :footer="null"
+      @cancel="handleShowShoeImageModelCancel()"
+    >
+      <img alt="example" style="width: 100%" :src="selectedShoeImage" />
     </a-modal>
-
-
   </j-modal>
 </template>
 
 <script>
-import JImageUploadByOneForShoeOrder from "/Users/xuetongtong/workspace/shoes_clean_admin_html/src/views/shoesClean/ShoeOrder/components/JImageUploadByOneForShoeOrder";
-import {getAction, httpAction} from "../../../../api/manage";
+import JImageUploadByOneForShoeOrder from '../components/JImageUploadByOneForShoeOrder'
+import { getAction, httpAction } from '../../../../api/manage'
 
-export default{
-  name: "ShoeRefundDetail",
+export default {
+  name: 'ShoeRefundDetail',
   components: {
-    JImageUploadByOneForShoeOrder
+    JImageUploadByOneForShoeOrder,
   },
-  data(){
+  data() {
     return {
       visible: false,
       title: '订单退款详情',
       data: {},
-      orderImagesList: "",
+      orderImagesList: '',
       previewVisible: false,
-      previewImage: "",
+      previewImage: '',
       logisticsInfo: {},
       showShoeImagesModel: false,
       showShoeImageModel: false,
-      selectedShoeImage: "",
-      refundComment: "",
-      refundCreateTime: "",
-      refundSuccessTime: "",
+      selectedShoeImage: '',
+      refundComment: '',
+      refundCreateTime: '',
+      refundSuccessTime: '',
       orderExceptionInfo: {},
       showShoeExceptionInfoModel: false,
       orderExceptionImagesList: [],
       afterDeliveryInfo: {},
       statusInt: 0,
-      userAddress: "",
-      door: "",
-      courierNameByBefore: "",
-      courierPhoneByBefore: "",
-      courierNameByAfter: "",
-      courierPhoneByAfter: "",
+      userAddress: '',
+      door: '',
+      courierNameByBefore: '',
+      courierPhoneByBefore: '',
+      courierNameByAfter: '',
+      courierPhoneByAfter: '',
+      refundPrice: 0, // 退款金额
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
-    show(record){
+    // 点击了退款
+    onRefund() {
+      console.log('jj',this.refundPrice);
+    },
+    show(record) {
       //处理数据
       // let orderInfo = record;
-      let orderInfo = Object.assign({}, record);
-      orderInfo.goodsPrice = (orderInfo.goodsPrice / 100).toFixed(2);
-      orderInfo.totalPrice = (orderInfo.totalPrice / 100).toFixed(2);
-      orderInfo.price = (orderInfo.price / 100).toFixed(2);
-      orderInfo.couponPrice = (orderInfo.couponPrice / 100).toFixed(2);
-      orderInfo.actualPrice = (orderInfo.actualPrice / 100).toFixed(2);
-      orderInfo.additionalPrice = (orderInfo.additionalPrice / 100).toFixed(2);
-      orderInfo.refundPrice = (orderInfo.refundPrice / 100).toFixed(2);
+      let orderInfo = Object.assign({}, record)
+      orderInfo.goodsPrice = (orderInfo.goodsPrice / 100).toFixed(2)
+      orderInfo.totalPrice = (orderInfo.totalPrice / 100).toFixed(2)
+      orderInfo.price = (orderInfo.price / 100).toFixed(2)
+      orderInfo.couponPrice = (orderInfo.couponPrice / 100).toFixed(2)
+      orderInfo.actualPrice = (orderInfo.actualPrice / 100).toFixed(2)
+      orderInfo.additionalPrice = (orderInfo.additionalPrice / 100).toFixed(2)
+      orderInfo.refundPrice = (orderInfo.refundPrice / 100).toFixed(2)
 
-      orderInfo.refundStatus = this.getRefundStatus(orderInfo.refundStatus);
+      orderInfo.refundStatus = this.getRefundStatus(orderInfo.refundStatus)
       //提前拿出订单状态，并转换成数字
       // this.statusInt = parseInt(orderInfo.status);
       // orderInfo.status = orderStatus;
 
-      let type = orderInfo.type;
-      if (type === "self") {
-        orderInfo.type = "站点自寄";
-      } else if (type === "service") {
-        orderInfo.type = "上门取件";
+      let type = orderInfo.type
+      if (type === 'self') {
+        orderInfo.type = '站点自寄'
+      } else if (type === 'service') {
+        orderInfo.type = '上门取件'
         //获取配送信息
         // let requestData = {
         //   "orderId": orderInfo.orderId
@@ -237,8 +155,8 @@ export default{
 
       // this.orderImagesList = orderImagesArray;
 
-      this.visible = true;
-      this.data = orderInfo;
+      this.visible = true
+      this.data = orderInfo
 
       //如果此订单是异常的状态，要查询此订单的异常情况，如果此订单要”增加服务费“，将再此查询补款记录
       // if (this.data.exceptionTime !== null && this.data.exceptionTime !== "" && this.data.exceptionTime !== undefined) {
@@ -303,68 +221,74 @@ export default{
       //   this.refundCreateTime = "";
       //   this.refundSuccessTime = "";
       // }
-
     },
     handleCancel() {
-      this.visible = false;
-      this.orderImagesList = [];
-      this.data = {};
-      this.afterDeliveryInfo = {};
-      this.logisticsInfo = {};
-      this.orderExceptionInfo = {};
-      this.refundComment = "";
-      this.refundCreateTime = "";
-      this.refundSuccessTime = "";
-      this.userAddress = "";
-      this.courierNameByBefore = "";
-      this.courierPhoneByBefore = "";
-      this.courierNameByAfter = "";
-      this.courierPhoneByAfter = "";
+      this.visible = false
+      this.orderImagesList = []
+      this.data = {}
+      this.afterDeliveryInfo = {}
+      this.logisticsInfo = {}
+      this.orderExceptionInfo = {}
+      this.refundComment = ''
+      this.refundCreateTime = ''
+      this.refundSuccessTime = ''
+      this.userAddress = ''
+      this.courierNameByBefore = ''
+      this.courierPhoneByBefore = ''
+      this.courierNameByAfter = ''
+      this.courierPhoneByAfter = ''
+      this.refundPrice = 0
     },
-    previewModel(){
-      this.previewVisible = true;
-      this.previewImage = this.data.image;
+    previewModel() {
+      this.previewVisible = true
+      this.previewImage = this.data.image
     },
-    handleModelCancel(){
-      this.previewVisible = false;
-      this.previewImage = "";
+    handleModelCancel() {
+      this.previewVisible = false
+      this.previewImage = ''
     },
-    showShoeImages(){
-      this.showShoeImagesModel = true;
+    showShoeImages() {
+      this.showShoeImagesModel = true
     },
-    handleShowShoeImagesModelCancel(){
-      this.showShoeImagesModel = false;
+    handleShowShoeImagesModelCancel() {
+      this.showShoeImagesModel = false
     },
-    showShoeImage(item){
-      this.showShoeImageModel = true;
-      this.selectedShoeImage = item;
+    showShoeImage(item) {
+      this.showShoeImageModel = true
+      this.selectedShoeImage = item
     },
-    handleShowShoeImageModelCancel(){
-      this.showShoeImageModel = false;
-      this.selectedShoeImage = "";
+    handleShowShoeImageModelCancel() {
+      this.showShoeImageModel = false
+      this.selectedShoeImage = ''
     },
-    showShoeExceptionInfo(){
-      this.showShoeExceptionInfoModel = true;
+    showShoeExceptionInfo() {
+      this.showShoeExceptionInfoModel = true
     },
-    handleShoeExceptionInfoCancel(){
-      this.showShoeExceptionInfoModel = false;
+    handleShoeExceptionInfoCancel() {
+      this.showShoeExceptionInfoModel = false
     },
     getRefundStatus(refundStatus) {
-      if(refundStatus === '0'){
-        return '退款中';
+      if (refundStatus === '0') {
+        return '退款中'
+      } else if (refundStatus === '1') {
+        return '退款成功'
+      } else if (refundStatus === '2') {
+        return '退款失败'
       }
-      else if(refundStatus === '1'){
-        return '退款成功';
-      }
-      else if(refundStatus === '2'){
-        return '退款失败';
-      }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped lang="less">
+.main {
+  flex: 1;
+}
+.foot {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
 .full-modal {
   .ant-modal {
     max-width: 100%;
@@ -390,21 +314,24 @@ export default{
   color: #f77810;
   font-size: 18px;
 }
-.content-font-above{
+.content-font-above {
   color: #000000;
   font-size: 18px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.content-font-below{
+.content-font-below {
   color: #000000;
   font-size: 18px;
   margin-top: 6px;
   margin-bottom: 6px;
+  display: flex;
 }
-.diyDiv{
+.diyDiv {
   width: 100%;
-  height: 680px;
+  height: 430px;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 }
 </style>

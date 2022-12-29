@@ -294,7 +294,7 @@
 </template>
 
 <script>
-import JImageUploadByOneForShoeOrder from "/Users/xuetongtong/workspace/shoes_clean_admin_html/src/views/shoesClean/ShoeOrder/components/JImageUploadByOneForShoeOrder";
+import JImageUploadByOneForShoeOrder from "../../ShoeOrder/components/JImageUploadByOneForShoeOrder";
 import {getAction, httpAction} from "../../../../api/manage";
 
 export default{

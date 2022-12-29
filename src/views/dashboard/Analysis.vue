@@ -114,22 +114,22 @@
       <div class="salesCard">
         <div class="tab">
           <div class="tab-left">
-            <div class="tab-left-item" :class="{active: type.value == barQuery.type}" v-for="(type,idx) in typeList" :key="idx" @click="onTab('type',type.value)">{{ type.name }}</div>
+            <div class="tab-left-item" :class="{active: type.value == barQuery.type.value}" v-for="(type,idx) in typeList" :key="idx" @click="onTab('type',type)">{{ type.name }}</div>
           </div>
           <div class="tab-right">
-            <div class="tab-right-item" :class="{active: type.value == barQuery.time}" v-for="(type,idx) in timeList" :key="idx" @click="onTab('time',type.value)">{{ type.name }}</div>
+            <div class="tab-right-item" :class="{active: type.value == barQuery.time.value}" v-for="(type,idx) in timeList" :key="idx" @click="onTab('time',type)">{{ type.name }}</div>
           </div>
         </div>
         <a-row>
           <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-            <bar title="销售额排行" :dataSource="barData" yaxisText="销售额"/>
+            <bar :title="`${barQuery.time.name}${barQuery.type.name}排行`" :dataSource="barData" :yaxisText="barQuery.type.name"/>
           </a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
             <div>
               <div class="rankings">
-              <div class="rankings-title">商品排行</div>
+              <div class="rankings-title">商品{{barQuery.type.name}}排行</div>
               <div class="rankings-main">
                 <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
                   <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
@@ -142,7 +142,7 @@
           <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
             <div>
               <div class="rankings">
-              <div class="rankings-title">机柜排行</div>
+              <div class="rankings-title">机柜{{barQuery.type.name}}排行</div>
               <div class="rankings-main">
                 <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
                   <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
@@ -155,7 +155,7 @@
           <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
             <div>
               <div class="rankings">
-              <div class="rankings-title">站点排行</div>
+              <div class="rankings-title">站点{{barQuery.type.name}}排行</div>
               <div class="rankings-main">
                 <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
                   <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
@@ -298,8 +298,14 @@ export default {
         },
       ],
       barQuery:{
-        type:'order',
-        time:'day'
+        type:{
+          name:'订单数',
+          value:'order'
+        },
+        time:{
+          name:'今日',
+          value:'day'
+        },
       },
       typeList:[
         {
