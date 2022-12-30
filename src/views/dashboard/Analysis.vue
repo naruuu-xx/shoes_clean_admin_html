@@ -3,58 +3,34 @@
     <a-row :gutter="24">
       <a-col :sm="24" :md="24" :xl="8" :style="{ marginBottom: '24px' }">
         <div class="box">
-          <div class="box-item">
-            <div class="box-item-title">总销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">月同比</div>
-          </div>
-          <div class="box-item">
-            <div class="box-item-title">月销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">周同比</div>
-          </div>
-          <div class="box-item">
-            <div class="box-item-title">日销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">日同比</div>
+          <div class="box-item" v-for="(item,idx) in dataObj.quantityOfSale" :key="idx">
+            <div class="box-item-title">{{ item.name }}</div>
+            <div class="box-item-value">¥{{ item.num }}</div>
+            <div class="box-item-foot">
+              月同比 {{ item.YoY }}% <a-icon :type="item.state == 'increase' ? 'caret-up' : 'caret-down'" :style="{ color: item.state == 'increase' ? '#0dbc79' : 'red' }" />
+            </div>
           </div>
         </div>
       </a-col>
       <a-col :sm="24" :md="24" :xl="8" :style="{ marginBottom: '24px' }">
         <div class="box">
-          <div class="box-item">
-            <div class="box-item-title">总销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">月同比</div>
-          </div>
-          <div class="box-item">
-            <div class="box-item-title">月销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">周同比</div>
-          </div>
-          <div class="box-item">
-            <div class="box-item-title">日销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">日同比</div>
+          <div class="box-item" v-for="(item,idx) in dataObj.orderForm" :key="idx">
+            <div class="box-item-title">{{ item.name }}</div>
+            <div class="box-item-value">¥{{ item.num }}</div>
+            <div class="box-item-foot">
+              月同比 {{ item.YoY }}% <a-icon :type="item.state == 'increase' ? 'caret-up' : 'caret-down'" :style="{ color: item.state == 'increase' ? '#0dbc79' : 'red' }" />
+            </div>
           </div>
         </div>
       </a-col>
       <a-col :sm="24" :md="24" :xl="8" :style="{ marginBottom: '24px' }">
         <div class="box">
-          <div class="box-item">
-            <div class="box-item-title">总销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">月同比</div>
-          </div>
-          <div class="box-item">
-            <div class="box-item-title">月销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">周同比</div>
-          </div>
-          <div class="box-item">
-            <div class="box-item-title">日销售量</div>
-            <div class="box-item-value">¥12345.6</div>
-            <div class="box-item-foot">日同比</div>
+          <div class="box-item" v-for="(item,idx) in dataObj.numberOfUsers" :key="idx">
+            <div class="box-item-title">{{ item.name }}</div>
+            <div class="box-item-value">¥{{ item.num }}</div>
+            <div class="box-item-foot">
+              月同比 {{ item.YoY }}% <a-icon :type="item.state == 'increase' ? 'caret-up' : 'caret-down'" :style="{ color: item.state == 'increase' ? '#0dbc79' : 'red' }" />
+            </div>
           </div>
         </div>
       </a-col>
@@ -62,7 +38,7 @@
 
     <a-row>
       <div class="status">
-        <div class="status-box" v-for="(status, idx) in satusList" :key="idx">
+        <div class="status-box" v-for="(status, idx) in dataObj.statuslist" :key="idx">
           <div class="status-box-name">{{ status.name }}</div>
           <div class="status-box-value">{{ status.value }}</div>
         </div>
@@ -74,17 +50,9 @@
         <div class="withdraw">
           <div class="withdraw-title">提现待审核</div>
           <div class="withdraw-main">
-            <div class="withdraw-main-item">
-              <div class="withdraw-main-item-name">投资人</div>
-              <div class="withdraw-main-item-value">2</div>
-            </div>
-            <div class="withdraw-main-item">
-              <div class="withdraw-main-item-name">投资人</div>
-              <div class="withdraw-main-item-value">2</div>
-            </div>
-            <div class="withdraw-main-item">
-              <div class="withdraw-main-item-name">投资人</div>
-              <div class="withdraw-main-item-value">2</div>
+            <div class="withdraw-main-item" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
+              <div class="withdraw-main-item-name">{{ item.name }}</div>
+              <div class="withdraw-main-item-value" :style="{color: +item.value > 0 ? '#3b98ff' : '#333'}">{{ item.value }}</div>
             </div>
           </div>
         </div>
@@ -93,17 +61,9 @@
         <div class="withdraw">
           <div class="withdraw-title">提现待审核</div>
           <div class="withdraw-main">
-            <div class="withdraw-main-item">
-              <div class="withdraw-main-item-name">投资人</div>
-              <div class="withdraw-main-item-value">2</div>
-            </div>
-            <div class="withdraw-main-item">
-              <div class="withdraw-main-item-name">投资人</div>
-              <div class="withdraw-main-item-value">2</div>
-            </div>
-            <div class="withdraw-main-item">
-              <div class="withdraw-main-item-name">投资人</div>
-              <div class="withdraw-main-item-value">2</div>
+            <div class="withdraw-main-item" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
+              <div class="withdraw-main-item-name">{{ item.name }}</div>
+              <div class="withdraw-main-item-value" :style="{color: +item.value > 0 ? '#3b98ff' : '#333'}">{{ item.value }}</div>
             </div>
           </div>
         </div>
@@ -114,55 +74,75 @@
       <div class="salesCard">
         <div class="tab">
           <div class="tab-left">
-            <div class="tab-left-item" :class="{active: type.value == barQuery.type.value}" v-for="(type,idx) in typeList" :key="idx" @click="onTab('type',type)">{{ type.name }}</div>
+            <div
+              class="tab-left-item"
+              :class="{ active: type.value == barQuery.type.value }"
+              v-for="(type, idx) in typeList"
+              :key="idx"
+              @click="onTab('type', type)"
+            >
+              {{ type.name }}
+            </div>
           </div>
           <div class="tab-right">
-            <div class="tab-right-item" :class="{active: type.value == barQuery.time.value}" v-for="(type,idx) in timeList" :key="idx" @click="onTab('time',type)">{{ type.name }}</div>
+            <div
+              class="tab-right-item"
+              :class="{ active: type.value == barQuery.time.value }"
+              v-for="(type, idx) in timeList"
+              :key="idx"
+              @click="onTab('time', type)"
+            >
+              {{ type.name }}
+            </div>
           </div>
         </div>
         <a-row>
           <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-            <bar :title="`${barQuery.time.name}${barQuery.type.name}排行`" :dataSource="barData" :yaxisText="barQuery.type.name"/>
+            <bar
+              :title="`${barQuery.time.name}${barQuery.type.name}排行`"
+              :dataSource="barData"
+              :yaxisText="barQuery.type.name"
+            />
           </a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
             <div>
               <div class="rankings">
-              <div class="rankings-title">商品{{barQuery.type.name}}排行</div>
-              <div class="rankings-main">
-                <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
-                  <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                  <div class="rankings-main-cell-value">{{ good.value }}</div>
+                <div class="rankings-title">商品{{ barQuery.type.name }}排行</div>
+                <div class="rankings-main">
+                  <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
+                    <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                    <div class="rankings-main-cell-value">{{ good.value }}</div>
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
           </a-col>
           <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
             <div>
               <div class="rankings">
-              <div class="rankings-title">机柜{{barQuery.type.name}}排行</div>
-              <div class="rankings-main">
-                <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
-                  <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                  <div class="rankings-main-cell-value">{{ good.value }}</div>
+                <div class="rankings-title">机柜{{ barQuery.type.name }}排行</div>
+                <div class="rankings-main">
+                  <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
+                    <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                    <div class="rankings-main-cell-value">{{ good.value }}</div>
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
           </a-col>
           <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
             <div>
               <div class="rankings">
-              <div class="rankings-title">站点{{barQuery.type.name}}排行</div>
-              <div class="rankings-main">
-                <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
-                  <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                  <div class="rankings-main-cell-value">{{ good.value }}</div>
+                <div class="rankings-title">站点{{ barQuery.type.name }}排行</div>
+                <div class="rankings-main">
+                  <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
+                    <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                    <div class="rankings-main-cell-value">{{ good.value }}</div>
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
           </a-col>
         </a-row>
@@ -197,7 +177,7 @@ const barData = []
 for (let i = 0; i < 12; i += 1) {
   barData.push({
     x: `${i + 1}月`,
-    y: Math.floor(Math.random() * 1000) + 200
+    y: Math.floor(Math.random() * 1000) + 200,
   })
 }
 export default {
@@ -225,52 +205,6 @@ export default {
       visitFields: ['ip', 'visit'],
       visitInfo: [],
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
-      satusList: [
-        {
-          name: 'daifuj',
-          value: 1,
-        },
-        {
-          name: 'daifuj',
-          value: 1,
-        },
-        {
-          name: 'cscscddcd',
-          value: 1,
-        },
-        {
-          name: 'daifuj',
-          value: 1,
-        },
-        {
-          name: 'csdcsdcdscds',
-          value: 1,
-        },
-        {
-          name: 'daifcdscuj',
-          value: 1,
-        },
-        {
-          name: 'dacsdcsdcifuj',
-          value: 1,
-        },
-        {
-          name: 'daicdfuj',
-          value: 1,
-        },
-        {
-          name: 'daifuj',
-          value: 1,
-        },
-        {
-          name: 'dacdscsdifuj',
-          value: 1,
-        },
-        {
-          name: 'daifuj',
-          value: 1,
-        },
-      ],
       goodRankingList: [
         {
           name: 'cdcds',
@@ -297,40 +231,121 @@ export default {
           value: 12,
         },
       ],
-      barQuery:{
-        type:{
-          name:'订单数',
-          value:'order'
+      barQuery: {
+        type: {
+          name: '订单数',
+          value: 'order',
         },
-        time:{
-          name:'今日',
-          value:'day'
+        time: {
+          name: '今日',
+          value: 'day',
         },
       },
-      typeList:[
+      typeList: [
         {
-          name:'订单数',
-          value:'order'
+          name: '订单数',
+          value: 'order',
         },
         {
-          name:'销售额',
-          value:'sale'
+          name: '销售额',
+          value: 'sale',
         },
       ],
-      timeList:[
+      timeList: [
         {
-          name:'今日',
-          value:'day'
+          name: '今日',
+          value: 'day',
         },
         {
-          name:'本月',
-          value:'month'
+          name: '本月',
+          value: 'month',
         },
         {
-          name:'本年',
-          value:'year'
+          name: '本年',
+          value: 'year',
         },
-      ]
+      ],
+      dataObj: {
+        // 销售量
+        quantityOfSale: [
+          {
+            name: '总销售量',
+            num: 1234, //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+          {
+            name: '月销售量',
+            num: 1234, //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+          {
+            name: '日销售量',
+            num: 1234, //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+        ], // 订单量
+        orderForm: [
+          {
+            name: '总订单量',
+            num: '1234', //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+          {
+            name: '月订单量',
+            num: '1234', //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+          {
+            name: '日订单量',
+            num: '1234', //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+        ], // 用户数
+        numberOfUsers: [
+          {
+            name: '总用户数',
+            num: '1234', //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+          {
+            name: '月用户数',
+            num: '1234', //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+          {
+            name: '日用户数',
+            num: '1234', //数量
+            YoY: 7, //同比
+            state: 'increase', //increase 增长 reduce 减少
+          },
+        ], // 状态列表
+        statuslist: [
+          {
+            name: '待付款', // 状态名
+            value: 1, // 订单数
+          },
+        ], // 提现待审核
+        withdrawCheckPending: [
+          {
+            name: '投资人', // 名称
+            value: 2, // 数量
+          },
+        ], // 提现待确认
+        withdrawToBeConfirmed: [
+          {
+            name: '投资人', // 名称
+            value: 2, // 数量
+          },
+        ],
+      },
     }
   },
   created() {
@@ -341,7 +356,7 @@ export default {
   },
   methods: {
     // 点击tab
-    onTab(type,value) {
+    onTab(type, value) {
       this.barQuery[type] = value
     },
     initLogInfo() {
