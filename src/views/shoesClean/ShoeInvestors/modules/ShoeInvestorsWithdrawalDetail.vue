@@ -12,7 +12,7 @@
     <h2>提现金额：{{amount}}</h2>
     <h2>申请时间：{{createTime}}</h2>
     <h2>银行卡号：{{cardNo}}</h2>
-    <h2>持卡人：{{cardNo}}</h2>
+    <h2>持卡人：{{cardName}}</h2>
     <h2>开户行：{{bank}}</h2>
     <h2>开户行地址：{{openBank}}</h2>
     <h2>申请状态：{{status}}</h2>
