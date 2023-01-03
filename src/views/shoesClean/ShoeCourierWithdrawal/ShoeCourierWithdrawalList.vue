@@ -129,7 +129,7 @@
           {
             title:'提现金额',
             align:"center",
-            dataIndex: 'amount'
+            dataIndex: 'amountTemp'
           },
           {
             title:'申请时间',

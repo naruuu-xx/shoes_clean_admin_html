@@ -16,7 +16,7 @@
         </a-row>
         <a-row>
           <a-col :span="24">
-            <div class="content-font">提现金额：{{data.amount}}</div>
+            <div class="content-font">提现金额：{{data.amountTemp}}</div>
           </a-col>
         </a-row>
         <a-row>
@@ -85,7 +85,7 @@ export default {
 
       if ("3" === this.transferOption) {
         this.data.status = this.transferOption;
-        this.data.amount = this.data.amount * 100;
+        // this.data.amount = this.data.amount * 100;
 
         //发送请求
         let httpUrl = "/ShoeCourierWithdrawal/shoeCourierWithdrawal/handleTransfer";
