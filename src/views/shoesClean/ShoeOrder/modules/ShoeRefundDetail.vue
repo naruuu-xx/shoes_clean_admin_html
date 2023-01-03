@@ -21,7 +21,7 @@
         <div class="content-font-below">实付金额（元）：{{ data.actualPrice }}</div>
         <div class="content-font-below">
           退款金额：
-          <a-input-number v-model="refundPrice" :min="0" />
+          <a-input-number v-model="refundPrice" :min="0.01" />
         </div>
       </div>
       <div class="foot">
@@ -123,22 +123,8 @@ export default {
         }
       })
     },
-    list(){
-      httpAction('/ShoeOrder/shoeOrder/queryList',
-        {
-         },'get')
-        .then(res => {
-          if (res.success) {
-
-
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-    },
     show(record) {
       //处理数据
-      // let orderInfo = record;
       let orderInfo = Object.assign({}, record)
       orderInfo.goodsPrice = (orderInfo.goodsPrice / 100).toFixed(2)
       orderInfo.totalPrice = (orderInfo.totalPrice / 100).toFixed(2)
