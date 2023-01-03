@@ -21,11 +21,11 @@
         <div class="content-font-below">实付金额（元）：{{ data.actualPrice }}</div>
         <div class="content-font-below">
           退款金额：
-          <a-input-number v-model="refundPrice" :min="0" />
+          <a-input-number v-model="refundPrice" :min="0.01" />
         </div>
       </div>
       <div class="foot">
-        <a-button type="primary" @click="onRefund"> 退款 </a-button>
+        <a-button type="primary"  @click="onRefund"> 退款 </a-button>
         <a-button @click="handleCancel">取消</a-button>
       </div>
     </div>
@@ -67,6 +67,7 @@
 <script>
 import JImageUploadByOneForShoeOrder from '../components/JImageUploadByOneForShoeOrder'
 import { getAction, httpAction } from '../../../../api/manage'
+import axios from 'axios'
 
 export default {
   name: 'ShoeRefundDetail',
@@ -106,11 +107,24 @@ export default {
   methods: {
     // 点击了退款
     onRefund() {
-      console.log('jj',this.refundPrice);
+      httpAction('/ShoeOrder/shoeOrder/orderRefund',
+        {
+          orderId:this.data.orderId,
+          orderPId:this.data.orderPId,
+          refundPrice:this.refundPrice*100,},'post')
+        .then(res => {
+        if (res.success) {
+          this.$message.success('退款成功')
+          this.handleCancel();
+          this.$emit('ok');
+
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     },
     show(record) {
       //处理数据
-      // let orderInfo = record;
       let orderInfo = Object.assign({}, record)
       orderInfo.goodsPrice = (orderInfo.goodsPrice / 100).toFixed(2)
       orderInfo.totalPrice = (orderInfo.totalPrice / 100).toFixed(2)
