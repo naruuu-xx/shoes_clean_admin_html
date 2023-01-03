@@ -15,6 +15,12 @@
             </a-form-item>
           </a-col>
 
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="退款原因">
+              <a-input placeholder="请输入手机号" v-model="queryParam.reason"></a-input>
+            </a-form-item>
+          </a-col>
+
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -126,12 +132,15 @@
           {
             title:'实付金额',
             align:"center",
-            dataIndex: 'actualPrice'
+            dataIndex: 'actualPrice',
+            customRender: (text, record) => {
+              return text/100 ;
+            }
           },
           {
             title:'用户姓名',
             align: "center",
-            dataIndex: 'name'
+            dataIndex: 'nickname'
           },
           {
             title: '手机号',
@@ -164,9 +173,6 @@
             title:'退款时间',
             align:"center",
             dataIndex: 'refundTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
           },
           {
             title:'操作人',
