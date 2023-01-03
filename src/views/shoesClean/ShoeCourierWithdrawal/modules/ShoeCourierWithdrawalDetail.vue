@@ -15,7 +15,7 @@
       </a-row>
       <a-row>
         <a-col :span="24">
-          <div class="content-font">提现金额：{{data.amount}}</div>
+          <div class="content-font">提现金额：{{data.amountTemp}}</div>
         </a-col>
       </a-row>
       <a-row>

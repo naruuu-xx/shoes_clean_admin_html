@@ -16,7 +16,7 @@
         </a-row>
         <a-row>
           <a-col :span="24">
-            <div class="content-font">提现金额：{{data.amount}}</div>
+            <div class="content-font">提现金额：{{data.amountTemp}}</div>
           </a-col>
         </a-row>
         <a-row>
@@ -73,25 +73,28 @@ export default {
 
       that.confirmLoading = true;
 
-      if ("2" === this.auditOption && this.data.note === "") {
+      if ("2" === this.auditOption && this.data.note.trim() === "") {
         that.$message.warning("请填写拒绝原因！");
-      }
-      this.data.status = this.auditOption;
-      this.data.amount = this.data.amount * 100;
-      //发送请求
-      let httpUrl = "/ShoeCourierWithdrawal/shoeCourierWithdrawal/handleAudit";
-      httpAction(httpUrl, this.data, "post").then((res) => {
-        if (res.success) {
-          that.$message.success(res.message);
-          this.handleCancel();
-          that.$emit('ok');
-        } else {
-          that.$message.warning(res.message);
-        }
-      }).finally(() => {
         that.confirmLoading = false;
-      })
-
+        return false;
+      } else {
+        this.data.status = this.auditOption;
+        // this.data.amount = this.data.amount * 100;
+        this.data.note = this.data.note.trim();
+        //发送请求
+        let httpUrl = "/ShoeCourierWithdrawal/shoeCourierWithdrawal/handleAudit";
+        httpAction(httpUrl, this.data, "post").then((res) => {
+          if (res.success) {
+            that.$message.success(res.message);
+            this.handleCancel();
+            that.$emit('ok');
+          } else {
+            that.$message.warning(res.message);
+          }
+        }).finally(() => {
+          that.confirmLoading = false;
+        })
+      }
     }
   }
 }
