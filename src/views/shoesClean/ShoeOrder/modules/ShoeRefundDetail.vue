@@ -21,7 +21,14 @@
         <div class="content-font-below">实付金额（元）：{{ data.actualPrice }}</div>
         <div class="content-font-below">
           退款金额：
-          <a-input-number v-model="refundPrice" :min="0.01" />
+          <a-input-number v-model="refundPrice" :min="0.01"
+                          v-decorator="[
+                'domain',
+                {
+                  rules: [
+                    { required: true, message: '请输入退款！' }
+                  ],
+                }]"/>
         </div>
       </div>
       <div class="foot">
@@ -100,7 +107,13 @@ export default {
       courierPhoneByBefore: '',
       courierNameByAfter: '',
       courierPhoneByAfter: '',
-      refundPrice: 0, // 退款金额
+      refundPrice: 0.01, // 退款金额
+
+      validatorRules: {
+        refundPrice: [
+          { required: true, message: '请输入退款金额' },
+        ],
+      },
     }
   },
   created() {},
@@ -135,106 +148,20 @@ export default {
       orderInfo.refundPrice = (orderInfo.refundPrice / 100).toFixed(2)
 
       orderInfo.refundStatus = this.getRefundStatus(orderInfo.refundStatus)
-      //提前拿出订单状态，并转换成数字
-      // this.statusInt = parseInt(orderInfo.status);
-      // orderInfo.status = orderStatus;
+
 
       let type = orderInfo.type
       if (type === 'self') {
         orderInfo.type = '站点自寄'
       } else if (type === 'service') {
         orderInfo.type = '上门取件'
-        //获取配送信息
-        // let requestData = {
-        //   "orderId": orderInfo.orderId
-        // };
-        // getAction("/ShoeOrder/shoeOrder/getCourierInfo", requestData).then((res) => {
-        //   this.userAddress = res.result.address;
-        //   this.door = res.result.door;
-        //   this.courierNameByBefore = res.result.courierNameByBefore;
-        //   this.courierPhoneByBefore = res.result.courierPhoneByBefore;
-        //   this.courierNameByAfter = res.result.courierNameByAfter === "无" ? "——" : res.result.courierNameByAfter;
-        //   this.courierPhoneByAfter = res.result.courierPhoneByAfter === "无" ? "——" : res.result.courierPhoneByAfter;
-        // })
       }
 
-      // let orderImagesString = "";
-      // let orderImagesArray = JSON.parse(orderInfo.orderImages);
-      // for (let i = 0 ; i < orderImagesArray.length ; i ++ ) {
-      //   orderImagesString += orderImagesArray[i];
-      //   if (i < orderImagesArray.length - 1) {
-      //     orderImagesString += ",";
-      //   }
-      // }
 
-      // this.orderImagesList = orderImagesArray;
 
       this.visible = true
       this.data = orderInfo
 
-      //如果此订单是异常的状态，要查询此订单的异常情况，如果此订单要”增加服务费“，将再此查询补款记录
-      // if (this.data.exceptionTime !== null && this.data.exceptionTime !== "" && this.data.exceptionTime !== undefined) {
-      //   let ShoeOrderExceptionData = {
-      //     "orderId": this.data.orderId
-      //   }
-      //   httpAction("/ShoeOrder/shoeOrder/getShoeOrderException", ShoeOrderExceptionData, "post").then((res) => {
-      //     this.orderExceptionInfo = res.result;
-      //     if (this.orderExceptionInfo.title === null || this.orderExceptionInfo.title === "" || this.orderExceptionInfo.title === undefined) {
-      //       this.orderExceptionInfo.title = "无";
-      //     }
-      //     if (this.orderExceptionInfo.price === null || this.orderExceptionInfo.price === "" || this.orderExceptionInfo.price === undefined) {
-      //       this.orderExceptionInfo.price = "0";
-      //     } else {
-      //       let price = this.orderExceptionInfo.price;
-      //       this.orderExceptionInfo.price = (price / 100).toFixed(2);
-      //     }
-      //     if (this.orderExceptionInfo.payStatus === null || this.orderExceptionInfo.payStatus === "" || this.orderExceptionInfo.payStatus === undefined) {
-      //       this.orderExceptionInfo.price = "无";
-      //     }
-      //
-      //     //处理图片数组
-      //     let imagesArray = JSON.parse(this.orderExceptionInfo.images);
-      //     this.orderExceptionImagesList = imagesArray;
-      //
-      //   })
-      // } else {
-      //   this.orderExceptionInfo = {
-      //     "createTime": "",
-      //     "dealNote": "",
-      //     "dealTime": "",
-      //     "dealType": "",
-      //     "dealUserId": "",
-      //     "dealUsername": "",
-      //     "images": "",
-      //     "note": "",
-      //     "orderExceptionId": "",
-      //     "orderId": "",
-      //     "payStatus": "",
-      //     "payTime": "",
-      //     "price": "",
-      //     "reportUserId": "",
-      //     "reportUsername": "",
-      //     "status": "",
-      //     "title": "",
-      //   }
-      // }
-
-      //如果此订单是退款中或已退款的状态，再查询其退款原因
-      // if ('退款中' === this.data.status || '已退款' === this.data.status) {
-      //   let data = {
-      //     "orderPId": this.data.orderPId,
-      //     "orderIds": this.data.orderId
-      //   }
-      //   httpAction("/ShoeOrder/shoeOrder/getShoePayRefundInfo", data, "post").then((res) => {
-      //     this.refundComment = res.result.note;
-      //     this.refundCreateTime = res.result.createTime;
-      //     this.refundSuccessTime = res.result.successTime;
-      //   })
-      // } else {
-      //   this.refundComment = "";
-      //   this.refundCreateTime = "";
-      //   this.refundSuccessTime = "";
-      // }
     },
     handleCancel() {
       this.visible = false
