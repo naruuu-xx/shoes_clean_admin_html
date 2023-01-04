@@ -30,41 +30,33 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label=" 总配送单数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">-->
-<!--              <a-input-number v-model="model.num" placeholder="请输入 总配送单数" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label=" 总收入" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="income">-->
-<!--              <a-input-number v-model="model.income" placeholder="请输入 总收入" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label=" 账户金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="amount">-->
-<!--              <a-input-number v-model="model.amount" placeholder="请输入 账户金额" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label=" 提现中金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="withdrawal">-->
-<!--              <a-input-number v-model="model.withdrawal" placeholder="请输入 提现中金额" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label=" 冻结金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="frozenAmount">-->
-<!--              <a-input-number v-model="model.frozenAmount" placeholder="请输入 冻结金额" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="登录状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
               <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_courier_status" placeholder="请选择登录状态" />
             </a-form-model-item>
           </a-col>
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="删除状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="delFlag">-->
-<!--              <j-dict-select-tag type="radio" v-model="model.delFlag" dictCode="" placeholder="请选择 删除状态:0=正常,1=删除" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
+          <a-col :span="24">
+            <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardNo">
+              <a-input v-model="model.cardNo" placeholder="请输入银行卡号" autocomplete="off"/>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="持卡人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardName">
+              <a-input v-model="model.cardName" placeholder="请输入持卡人" autocomplete="off"/>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="开户行" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openBank">
+              <a-input v-model="model.openBank" placeholder="请输入开户行" autocomplete="off"/>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="开户行地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="bankAddress">
+              <a-input v-model="model.bankAddress" placeholder="请输入开户行地址" autocomplete="off"/>
+            </a-form-model-item>
+          </a-col>
+
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -117,21 +109,6 @@
               { required: true, message: '请输入 密码!'},
               { pattern: /^.{6,16}$/, message: '请输入6到16位任意字符!'},
            ],
-           num: [
-              { required: true, message: '请输入 总配送单数!'},
-           ],
-           income: [
-              { required: true, message: '请输入 总收入!'},
-           ],
-           amount: [
-              { required: true, message: '请输入 账户金额!'},
-           ],
-           withdrawal: [
-              { required: true, message: '请输入 提现中金额!'},
-           ],
-           frozenAmount: [
-              { required: true, message: '请输入 冻结金额!'},
-           ],
            status: [
               { required: true, message: '请选择 状态'},
            ],
@@ -141,6 +118,20 @@
           lockerCodeList: [
               { required: true, message: '请选择快递柜!'},
            ],
+          cardNo: [
+            { required: true, message: '请输入银行卡号' },
+            { pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/
+            , message: '请输入正确的银行卡号!'},
+          ],
+          cardName: [
+            { required: true, message: '请输入持卡人' }
+          ],
+          openBank: [
+            { required: true, message: '请输入开户行' }
+          ],
+          bankAddress: [
+            { required: true, message: '请输入开户行地址' }
+          ]
         },
         url: {
           add: "/shoeCourier/shoeCourier/add",
