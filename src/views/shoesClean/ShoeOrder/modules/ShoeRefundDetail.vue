@@ -20,15 +20,12 @@
         <div class="content-font-below">配送费（元）：{{ data.courierPrice }}</div>
         <div class="content-font-below">实付金额（元）：{{ data.actualPrice }}</div>
         <div class="content-font-below">
-          退款金额：
-          <a-input-number v-model="refundPrice" :min="0.00" :max="parseFloat(data.actualPrice)"
-                          v-decorator="[
-                'domain',
-                {
-                  rules: [
-                    { required: true, message: '请输入退款！' }
-                  ],
-                }]"/>
+          <a-form-model :model="form" :rules="rules" ref="ruleForm" layout="horizontal" :labelCol="{ span: 10 }"
+      :wrapperCol="{ span: 14 }">
+            <a-form-model-item label="退款金额：" prop="refundPrice">
+              <a-input v-model="form.refundPrice" type="number"/>
+            </a-form-model-item>
+          </a-form-model>
         </div>
       </div>
       <div class="foot">
@@ -110,44 +107,65 @@ export default {
       courierPhoneByAfter: '',
       refundPrice: '', // 退款金额
       buttonLoading: false,
-
-      validatorRules: {
+      rules: {
         refundPrice: [
           { required: true, message: '请输入退款金额' },
+          { validator: this.validateRefundPrice}
         ],
       },
+      form:{
+        refundPrice: ''
+      }
     }
   },
   created() {},
   methods: {
+    // 验证规则
+    validateRefundPrice(rule, value, callback){
+      if(new RegExp(/[0-9]+([.]{1}[0-9]+){0,1}/).test(value)){
+            if(parseFloat(value) < 0) {
+              callback("退款金额必须大于0!");
+            } else {
+              if(parseFloat(value) <= parseFloat(this.data.actualPrice)) {
+                callback();
+              } else {
+                callback("退款金额大于实付金额!");
+              }
+            }
+          }else{
+            callback("请输入正确格式的金额!");
+          }
+      },
     // 点击了退款
     onRefund() {
-      // 如果为空或者null 给出提示
-      if(this.refundPrice === '' || this.refundPrice === null ) {
-        return this.$message.warning('必须输入退款金额')
-      }
-      this.buttonLoading = true
-      // 节流一秒触发一次
-      throttle(()=>{
-        httpAction('/ShoeOrder/shoeOrder/orderRefund',
-        {
-          orderId:this.data.orderId,
-          orderPId:this.data.orderPId,
-          refundPrice:this.refundPrice*100,},'post')
-        .then(res => {
-        if (res.success) {
-          this.buttonLoading = false
-          this.$message.success('退款成功')
-          this.handleCancel();
-          this.$emit('ok');
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          this.buttonLoading = true
+          // 节流一秒触发一次
+          throttle(()=>{
+            httpAction('/ShoeOrder/shoeOrder/orderRefund',
+            {
+              orderId:this.data.orderId,
+              orderPId:this.data.orderPId,
+              refundPrice:this.refundPrice*100,},'post')
+            .then(res => {
+            if (res.success) {
+              this.buttonLoading = false
+              this.$message.success('退款成功')
+              this.handleCancel();
+              this.$emit('ok');
 
+            } else {
+              this.buttonLoading = false
+              this.$message.error(res.message)
+            }
+          })
+          },1500)
         } else {
-          this.buttonLoading = false
-          this.$message.error(res.message)
+          console.log('error submit!!');
+          return false;
         }
-      })
-      },1500)
-      
+      });
     },
     show(record) {
       //处理数据
@@ -235,6 +253,9 @@ export default {
 </script>
 
 <style scoped lang="less">
+/deep/ .ant-form-item label {
+  font-size: 18px;
+}
 .main {
   flex: 1;
 }
