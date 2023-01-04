@@ -21,7 +21,7 @@
         <div class="content-font-below">实付金额（元）：{{ data.actualPrice }}</div>
         <div class="content-font-below">
           退款金额：
-          <a-input-number v-model="refundPrice" :min="0.01"
+          <a-input-number v-model="refundPrice" :min="0.00" :max="parseFloat(data.actualPrice)"
                           v-decorator="[
                 'domain',
                 {
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="foot">
-        <a-button type="primary"  @click="onRefund"> 退款 </a-button>
+        <a-button type="primary"  @click="onRefund" :loading="buttonLoading"> 退款 </a-button>
         <a-button @click="handleCancel">取消</a-button>
       </div>
     </div>
@@ -75,6 +75,7 @@
 import JImageUploadByOneForShoeOrder from '../components/JImageUploadByOneForShoeOrder'
 import { getAction, httpAction } from '../../../../api/manage'
 import axios from 'axios'
+import throttle from '@/utils/throttle'
 
 export default {
   name: 'ShoeRefundDetail',
@@ -107,7 +108,8 @@ export default {
       courierPhoneByBefore: '',
       courierNameByAfter: '',
       courierPhoneByAfter: '',
-      refundPrice: 0.01, // 退款金额
+      refundPrice: '', // 退款金额
+      buttonLoading: false,
 
       validatorRules: {
         refundPrice: [
@@ -120,21 +122,32 @@ export default {
   methods: {
     // 点击了退款
     onRefund() {
-      httpAction('/ShoeOrder/shoeOrder/orderRefund',
+      // 如果为空或者null 给出提示
+      if(this.refundPrice === '' || this.refundPrice === null ) {
+        return this.$message.warning('必须输入退款金额')
+      }
+      this.buttonLoading = true
+      // 节流一秒触发一次
+      throttle(()=>{
+        httpAction('/ShoeOrder/shoeOrder/orderRefund',
         {
           orderId:this.data.orderId,
           orderPId:this.data.orderPId,
           refundPrice:this.refundPrice*100,},'post')
         .then(res => {
         if (res.success) {
+          this.buttonLoading = false
           this.$message.success('退款成功')
           this.handleCancel();
           this.$emit('ok');
 
         } else {
+          this.buttonLoading = false
           this.$message.error(res.message)
         }
       })
+      },1500)
+      
     },
     show(record) {
       //处理数据
@@ -178,7 +191,7 @@ export default {
       this.courierPhoneByBefore = ''
       this.courierNameByAfter = ''
       this.courierPhoneByAfter = ''
-      this.refundPrice = 0
+      this.refundPrice = ''
     },
     previewModel() {
       this.previewVisible = true
