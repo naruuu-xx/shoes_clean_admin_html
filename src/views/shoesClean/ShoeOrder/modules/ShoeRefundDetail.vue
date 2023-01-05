@@ -140,9 +140,9 @@ export default {
     onRefund() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          this.buttonLoading = true
           // 节流一秒触发一次
           throttle(()=>{
+            this.buttonLoading = true
             httpAction('/ShoeOrder/shoeOrder/orderRefund',
             {
               orderId:this.data.orderId,
@@ -159,6 +159,8 @@ export default {
               this.buttonLoading = false
               this.$message.error(res.message)
             }
+          }).catch(err => {
+            this.buttonLoading = false
           })
           },1500)
         } else {
@@ -211,6 +213,7 @@ export default {
       this.courierPhoneByAfter = ''
       this.refundPrice = ''
       this.form.refundPrice = ''
+      this.buttonLoading = false
     },
     previewModel() {
       this.previewVisible = true
