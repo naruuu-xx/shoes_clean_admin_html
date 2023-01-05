@@ -3,7 +3,7 @@
         <div class="table-page-search-wrapper">
           <a-form layout="inline" @keyup.enter.native="searchQuery">
             <a-row :gutter="24">
-              <a-col :xl="3" :lg="7" :md="8" :sm="24">
+              <a-col :xl="4" :lg="7" :md="8" :sm="24">
                 <a-form-item label=" 姓名:">
                   {{ name }}
                 </a-form-item>
@@ -24,10 +24,20 @@
 <!--                  <a-input placeholder="请输入 结束时间" v-model="queryParam.endTime"></a-input>-->
 <!--                </a-form-item>-->
 <!--              </a-col>-->
+              <a-col :xl="5" :lg="7" :md="8" :sm="24">
+                <a-form-item label="接单时间">
+                  <j-date placeholder="请选择时间" v-model="queryParam.createStartTime"></j-date>
+                </a-form-item>
+              </a-col>
+              <a-col :xl="6" :lg="7" :md="8" :sm="24">
+                <a-form-item label="接单截止时间">
+                  <j-date placeholder="请选择时间" v-model="queryParam.createEndTime"></j-date>
+                </a-form-item>
+              </a-col>
               <a-col :xl="6" :lg="7" :md="8" :sm="24">
                 <a-form-item label="订单状态">
 
-                  <a-select v-model="queryParam.status" style="width: 180px">
+                  <a-select v-model="queryParam.status" style="width: 130px;">
                     <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
                       {{ item.name }}
                     </a-select-option>
@@ -44,22 +54,13 @@
 <!--                  <a-range-picker @change="onChange2" />-->
 <!--                </a-form-item>-->
 <!--              </a-col>-->
-              <a-col :xl="5" :lg="7" :md="8" :sm="24">
-                <a-form-item label="接单时间">
-                  <j-date placeholder="请选择时间" v-model="queryParam.createStartTime"></j-date>
-                </a-form-item>
-              </a-col>
-              <a-col :xl="5" :lg="7" :md="8" :sm="24">
-                <a-form-item label="接单截止时间">
-                  <j-date placeholder="请选择时间" v-model="queryParam.createEndTime"></j-date>
-                </a-form-item>
-              </a-col>
+
               <a-col :xl="5" :lg="7" :md="8" :sm="24">
                 <a-form-item label="完成时间">
                   <j-date placeholder="请选择时间" v-model="queryParam.startTime"></j-date>
                 </a-form-item>
               </a-col>
-              <a-col :xl="5" :lg="7" :md="8" :sm="24">
+              <a-col :xl="6" :lg="7" :md="8" :sm="24">
                 <a-form-item label="完成截止时间">
                   <j-date placeholder="请选择时间" v-model="queryParam.endTime"></j-date>
                 </a-form-item>
@@ -71,6 +72,7 @@
               <a-col :xl="5" :lg="7" :md="8" :sm="24">
                 <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
                   <a-button type="primary" @click="initDataByDIY2" icon="search">查询</a-button>
+                  <a-button type="primary" @click="searchReset2" icon="reload" style="margin-left: 8px">重置</a-button>
                 </span>
               </a-col>
             </a-row>
@@ -198,6 +200,10 @@ export default {
           this.ipagination.total = res.result.total;
         }
       })
+    },
+    searchReset2(){
+      this.queryParam = {}
+      this.initDataByDIY2();
     },
     initDataByDIY2() {
       let data = {
