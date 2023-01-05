@@ -112,7 +112,8 @@ record.status !== '16' &&
 record.status !== '13' &&
 record.status !== '14' && 
 record.status !== '2' && 
-record.status !== '1'
+record.status !== '1' &&
+record.status !== '0'
 " @click="handleRefundDetail(record)" >退款</a>
 <!--          <a-dropdown>-->
 <!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->

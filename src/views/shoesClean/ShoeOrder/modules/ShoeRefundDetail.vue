@@ -147,7 +147,7 @@ export default {
             {
               orderId:this.data.orderId,
               orderPId:this.data.orderPId,
-              refundPrice:this.refundPrice*100,},'post')
+              refundPrice:this.form.refundPrice*100,},'post')
             .then(res => {
             if (res.success) {
               this.buttonLoading = false
@@ -210,6 +210,7 @@ export default {
       this.courierNameByAfter = ''
       this.courierPhoneByAfter = ''
       this.refundPrice = ''
+      this.form.refundPrice = ''
     },
     previewModel() {
       this.previewVisible = true
