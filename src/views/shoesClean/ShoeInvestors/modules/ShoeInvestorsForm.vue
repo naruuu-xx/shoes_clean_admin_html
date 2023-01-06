@@ -290,12 +290,9 @@
       getBank(){
         httpAction("/shoes/shoeInvestors/getBank?id="+this.model.investorsId,"","get").then((res)=>{
           if(res){
-            console.log("......",this.model.investorsId)
-            console.log(",,,,,,,,,,",res.result)
             this.model.cardNo = res.result.cardNo;
-            console.log("--------++++-",this.model)
             this.model.bank = res.result.bank;
-            this.model.openBank = res.result.cardNo;
+            this.model.openBank = res.result.openBank;
             this.model.cardName = res.result.cardName;
 
           }
