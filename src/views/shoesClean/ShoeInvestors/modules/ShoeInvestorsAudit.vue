@@ -66,7 +66,7 @@ export default {
         "status": that.model.status,
         "note": that.model.note,
       };
-     if (that.model.note==null){
+     if (that.model.note==null&&that.model.status==1){
        that.$message.error('请填写拒绝原因')
      }else {
        putAction("/shoes/shoeInvestors/updateWithdrawalAuditStatus", data).then((res) => {
