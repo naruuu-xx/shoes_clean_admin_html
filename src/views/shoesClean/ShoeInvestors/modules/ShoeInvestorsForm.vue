@@ -124,6 +124,10 @@
       return {
         model:{
           investorsId:'',
+          cardNo:'',
+          cardName:'',
+          bank:'',
+          openBank:'',
          },
         labelCol: {
           xs: { span: 24 },
