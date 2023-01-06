@@ -272,6 +272,165 @@
           </a-row>
 
         </a-col>
+
+
+        <!-- 物流信息 -->
+        <a-col :span="1"></a-col>
+<!--        <a-col :span="7">-->
+<!--          <a-row>-->
+<!--            <a-col :span="24">-->
+<!--              <p class="shoe-order-detail-title" style="margin-top: 20px">物流信息</p>-->
+<!--            </a-col>-->
+<!--            <a-col :span="24" v-if="'待付款' !== this.data.status && '已取消' !== this.data.status">-->
+<!--              <a-timeline :reverse="true">-->
+<!--                &lt;!&ndash; 已下单 &ndash;&gt;-->
+<!--                <a-timeline-item>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已下单</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{logisticsInfo.payTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">商品已下单<a @click="showShoeImages" style="margin-left: 10px">查看鞋子照片</a></a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 已接单 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.receiveTime !== '' && data.receiveTime !== null && data.receiveTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已接单</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.receiveTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">配送员已接单</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 已收件 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.takeTime !== '' && data.takeTime !== null && data.takeTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已收件</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.takeTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">配送员已收件</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 正在退款 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="refundCreateTime !== '' && refundCreateTime !== null && refundCreateTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>正在退款</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{refundCreateTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">订单已发起退款</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 已退款 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="refundSuccessTime !== '' && refundSuccessTime !== null && refundSuccessTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已退款</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{refundSuccessTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">订单已退款</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 已入柜 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.inTime !== '' && data.inTime !== null && data.inTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已入柜</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{logisticsInfo.inTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">鞋子已放入快递柜中，等待物流人员取件</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 送工厂 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.logisticsOutTime !== '' && data.logisticsOutTime !== null && data.logisticsOutTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>送工厂</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.logisticsOutTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">物流人员已取出鞋子，送往工厂</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 洗护中 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.factoryInTime !== '' && data.factoryInTime !== null && data.factoryInTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>洗护中</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.factoryInTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">工厂已入库，鞋子洗护中</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 异常 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.exceptionTime !== '' && data.exceptionTime !== null && data.exceptionTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>异常</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.exceptionTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">鞋子需要其他服务，请查看<a @click="showShoeExceptionInfo" style="margin-left: 10px">查看原因</a></a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 异常单在追加服务费之后，再次进入正常的洗护流程 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.exceptionTime !== '' && data.exceptionTime !== null && data.exceptionTime !== undefined && orderExceptionInfo.dealType === 1 && orderExceptionInfo.payTime !== null">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>洗护中</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{orderExceptionInfo.payTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">工厂已入库，鞋子洗护中</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 异常单在选择退回之后，进入已退回流程 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.exceptionTime !== '' && data.exceptionTime !== null && data.exceptionTime !== undefined && orderExceptionInfo.dealType === 2 && orderExceptionInfo.dealTime !== null">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已退回</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{orderExceptionInfo.dealTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">鞋子已退回，等待出库</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 送站点 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.factoryOutTime !== '' && data.factoryOutTime !== null && data.factoryOutTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>送站点</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.factoryOutTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">鞋子已出库，物流人员送往站点中</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 待取件 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.logisticsInTime !== '' && data.logisticsInTime !== null && data.logisticsInTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>待取件</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.logisticsInTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">鞋子已暂存至快递柜，请及时领取</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 已接单，配送员送件上门，需要查询另外的表来判断是否有该步骤 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.backReceiveTime !== '' && data.backReceiveTime !== null && data.backReceiveTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已接单</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.backReceiveTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">配送员已接单</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 已取出 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.outTime !== '' && data.outTime !== null && data.outTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已取出</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.outTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">鞋子已从快递柜取出</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--                &lt;!&ndash; 已完成 &ndash;&gt;-->
+<!--                <a-timeline-item v-if="data.finishTime !== '' && data.finishTime !== null && data.finishTime !== undefined">-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24"><span><b>已完成</b></span><span style="font-size: 10px;color: #989898;margin-left: 10px">{{data.finishTime}}</span></a-col>-->
+<!--                  </a-row>-->
+<!--                  <a-row>-->
+<!--                    <a-col :span="24" style="font-size: 8px">订单已完成</a-col>-->
+<!--                  </a-row>-->
+<!--                </a-timeline-item>-->
+<!--              </a-timeline>-->
+<!--            </a-col>-->
+<!--          </a-row>-->
+<!--        </a-col>-->
       </a-row>
     </div>
 
