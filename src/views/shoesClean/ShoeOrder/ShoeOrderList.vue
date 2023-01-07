@@ -117,9 +117,9 @@
     <a-popover trigger="click" placement="top" v-has="'order:getCode'">
         <template #content>
           <p align="center">取件码</p>
-           <p align="center" class="textCode">{{ record.code }}</p>
+           <p align="center" class="textCode">{{ selfCode }}</p>
          </template>
-    <a v-if="record.type==='self' && record.status==='10'">取件码</a>
+    <a v-if="record.type==='self' && record.status==='10'" @click="getSelfCode(record)">取件码</a>
     </a-popover>
 
     <a-divider v-if="record.type==='service' && record.status==='12'" type="vertical" v-has="'order:getCode'"/>
@@ -128,9 +128,9 @@
 
         <template #content>
           <p align="center">取件码</p>
-           <p align="center" class="textCode">{{ record.code }}</p>
+           <p align="center" class="textCode">{{ serviceCode }}</p>
          </template>
-    <a v-if="record.type==='service' && record.status==='12'" >取件码</a>
+    <a v-if="record.type==='service' && record.status==='12'" @click="getServiceCode(record)">取件码</a>
     </a-popover>
 
           <!--          <a-divider type="vertical" />-->
@@ -175,6 +175,7 @@ import ShoeOrderModal from './modules/ShoeOrderModal'
 import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
 import ShoeOrderDetail from "./modules/ShoeOrderDetail";
 import ShoeRefundDetail from "./modules/ShoeRefundDetail";
+import {httpAction} from "@api/manage";
 
 export default {
   name: 'ShoeOrderList',
@@ -187,6 +188,8 @@ export default {
   data() {
     return {
       description: 'shoe_order管理页面',
+      serviceCode:'',
+      selfCode:'',
       // 表头
       columns: [
         {
@@ -297,6 +300,22 @@ export default {
   methods: {
     initDictConfig() {
     },
+    getSelfCode(record) {
+      //this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
+      httpAction("ShoeOrder/shoeOrder/getSelfCode?no=" + record.no, null, "get").then((res) => {
+        if (res) {
+          this.selfCode = res.result;
+        }
+      })
+    },
+    getServiceCode(record) {
+      //this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
+      httpAction("ShoeOrder/shoeOrder/getServiceCode?orderId=" + record.orderId, null, "get").then((res) => {
+        if (res) {
+          this.serviceCode = res.result;
+        }
+      })
+    },
     getSuperFieldList() {
       let fieldList = [];
       fieldList.push({type: 'int', value: 'orderId', text: '订单ID', dictCode: ''})
@@ -352,7 +371,8 @@ export default {
 </script>
 <style scoped>
 @import '~@assets/less/common.less';
-.textCode{
+
+.textCode {
   font-size: 20px;
-  }
+}
 </style>
