@@ -65,6 +65,7 @@ export default {
         "investorsWithdrawalId": that.id,
         "status": that.model.status,
         "note": that.model.note,
+        "amount": that.amount,
       };
      if (that.model.note==null&&that.model.status==1){
        that.$message.error('请填写拒绝原因')
