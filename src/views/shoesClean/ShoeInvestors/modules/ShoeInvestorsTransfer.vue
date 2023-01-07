@@ -65,7 +65,8 @@ export default {
       if (this.model.status==0){
         let data = {
           "investorsWithdrawalId": that.id,
-          "status": that.model.status
+          "status": that.model.status,
+          "amount": that.amount,
         };
         putAction("/shoes/shoeInvestors/updateWithdrawalTransferStatus", data).then((res) => {
           if (res.code === 200) {
