@@ -119,21 +119,22 @@ export default {
     }
   },
   create() {
-    //this.getList(this.$route.params.investorsId);
-    // console.log("=======",this.queryParam)
-    // this.queryParam.id=this.$route.params.investorsId;
+    // this.getList(this.$route.params.id);
+    // this.queryParam.id=this.$route.params.id;
   },
   methods: {
     // getList(investorsId) {
     //   //this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
-    //   httpAction("/shoes/shoeInvestors/InvestorsList?investorsId="+investorsId, null, "get").then((res) => {
+    //   httpAction("/shoes/shoeInvestors/InvestorsList?id="+investorsId, null, "get").then((res) => {
     //     if (res) {
     //       this.dataSource = res.result;
     //       console.log(res.result);
+    //       this.ipagination.total = res.result.total;
     //
     //     }
     //   })
     // },
+
 
   }
 }

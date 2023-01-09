@@ -15,7 +15,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="level">
-              <a-select v-model="model.level" >
+              <a-select v-model="model.level"  >
                   <a-select-option value = "1" >代理人</a-select-option>
                   <a-select-option value = "2" >投资人</a-select-option>
               </a-select>
@@ -71,6 +71,31 @@
               </a-select>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="cardNo">
+              <a-input v-model="model.cardNo" placeholder="请输入银行卡号"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="持卡人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardName">
+              <a-input v-model="model.cardName" placeholder="请输入持卡人"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="开户行" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="bank">
+              <a-input v-model="model.bank" placeholder="请输入开户行"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="开户行地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openBank">
+              <a-input v-model="model.openBank" placeholder="请输入开户行地址"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+
+
+
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -99,6 +124,10 @@
       return {
         model:{
           investorsId:'',
+          cardNo:'',
+          cardName:'',
+          bank:'',
+          openBank:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -117,6 +146,19 @@
               { required: true, message: '请输入手机号!'},
              { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
+          cardNo: [
+            { required: true, message: '请输入银行卡号!'},
+            { pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/, message: '请输入正确的银行卡号!'},
+          ],
+          cardName: [
+            { required: true, message: '请输入持卡人!'},
+          ],
+          bank: [
+            { required: true, message: '请输入开户行!'},
+          ],
+          openBank: [
+            { required: true, message: '请输入开户行地址!'},
+          ],
            level: [
               { required: true, message: '请选择身份!'},
            ],
@@ -138,6 +180,44 @@
         agentList:[]
       }
     },
+    watch:{
+      "model.level":{
+        handler(val){
+          this.validatorRules= {
+            name: [
+              { required: true, message: '请输入姓名!'},
+            ],
+            phone: [
+              { required: true, message: '请输入手机号!'},
+              { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
+            ],
+            cardNo: [
+              { required: val == 2, message: '请输入银行卡号!'},
+              { pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/, message: '请输入正确的银行卡号!'},
+            ],
+            cardName: [
+              { required:  val == 2, message: '请输入持卡人!'},
+            ],
+            bank: [
+              { required:  val == 2, message: '请输入开户行!'},
+            ],
+            openBank: [
+              { required:  val == 2, message: '请输入开户行地址!'},
+            ],
+            level: [
+              { required: true, message: '请选择身份!'},
+            ],
+            userId: [
+              { required: true, message: '请选择绑定小程序用户id!'},
+            ],
+            investorsPId:[
+              { required: false, message: '请选择绑定上级!'},
+            ]
+          }
+        },
+        immediate:true
+      }
+    },
     computed: {
       formDisabled(){
         return this.disabled
@@ -145,9 +225,11 @@
     },
     created () {
        //备份model原始值
+
       this.getShoeUserList();
       this.getLockerList();
       this.getAgentList();
+
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
@@ -160,7 +242,10 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
-        this.model = Object.assign({}, record);
+        console.log("===",record)
+        this.model = Object.assign({}, record,this.model);
+        this.model.investorsId=record.investorsId;
+        this.getBank();
         this.getLockerList();
         this.getShoeUserList();
 
@@ -187,7 +272,6 @@
               if(res.success){
                 that.$message.success(res.message);
                 that.$emit('ok');
-
               }else{
                 that.$message.warning(res.message);
               }
@@ -203,6 +287,17 @@
           if(res){
             console.log(res.result);
             this.shoeUserList = res.result;
+
+          }
+        })
+      },
+      getBank(){
+        httpAction("/shoes/shoeInvestors/getBank?id="+this.model.investorsId,"","get").then((res)=>{
+          if(res){
+            this.model.cardNo = res.result.cardNo;
+            this.model.bank = res.result.bank;
+            this.model.openBank = res.result.openBank;
+            this.model.cardName = res.result.cardName;
 
           }
         })

@@ -162,9 +162,7 @@
             title:'最近登录时间',
             align:"center",
             dataIndex: 'lastLoginTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+
           },
           {
             title: '操作',
