@@ -129,7 +129,7 @@ export default {
     return {
       description: 'shoe_schedule管理页面',
       queryParam:{},
-      statusOptionList: [{"value":"0", "name":"未完成"},{"value":"2", "name":"已完成"}],
+      statusOptionList: [{"value":"0", "name":"未完成"},{"value":"2", "name":"已完成"},{"value":"3", "name":"已取消"}],
       // 表头
       columns: [
         {
