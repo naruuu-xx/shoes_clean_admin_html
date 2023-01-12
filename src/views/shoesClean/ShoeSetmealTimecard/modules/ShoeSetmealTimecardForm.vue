@@ -4,50 +4,42 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="套餐次卡兑换关系ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="setmealTimecardId">
-              <a-input-number v-model="model.setmealTimecardId" placeholder="请输入套餐次卡兑换关系ID" style="width: 100%" />
+            <a-form-model-item label="平台" :labelCol="labelCol" :wrapperCol="wrapperCol" :prop="model.id ? '' : 'platform'">
+              <div v-if="model.id ">222</div>
+              <a-select style="width: 120px" v-model="model.platform" v-else>
+                <a-select-option :value="item.id" v-for="(item,index) in platformList" :key="index">
+                  {{item.name}}
+                </a-select-option>
+              </a-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="平台：1=福州小洁" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="platform">
-              <a-input-number v-model="model.platform" placeholder="请输入平台：1=福州小洁" style="width: 100%" />
+            <a-form-model-item label="套餐名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="setmeal">
+              <a-input v-model="model.setmeal" placeholder="请输入套餐名称" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="套餐内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="setmeal">
-              <a-input v-model="model.setmeal" placeholder="请输入套餐内容"  ></a-input>
+            <a-form-model-item label="鞋峰卡" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="timecardId">
+              <a-select style="width: 120px" v-model="model.timecardId">
+                  <a-select-option :value="item.id" v-for="(item,index) in timecardList" :key="index">
+                    {{item.name}}
+                  </a-select-option>
+                </a-select>
+            </a-form-model-item>
+          </a-col>
+          <template v-if="model.id">
+            <a-col :span="24">
+            <a-form-model-item label="添加人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              22
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="套餐标识" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="keyword">
-              <a-input v-model="model.keyword" placeholder="请输入套餐标识"  ></a-input>
+            <a-form-model-item label="最后操作人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              11
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="次卡id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="timecardId">
-              <a-input-number v-model="model.timecardId" placeholder="请输入次卡id" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="一份套餐兑换次卡数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="timecardNum">
-              <a-input-number v-model="model.timecardNum" placeholder="请输入一份套餐兑换次卡数量" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
-              <a-input v-model="model.note" placeholder="请输入备注"  ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="添加人ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="addUserId">
-              <a-input v-model="model.addUserId" placeholder="请输入添加人ID"  ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="最后修改人ID（首次添加为添加人id）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="editUserId">
-              <a-input v-model="model.editUserId" placeholder="请输入最后修改人ID（首次添加为添加人id）"  ></a-input>
-            </a-form-model-item>
-          </a-col>
+          </template>
+          
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -85,23 +77,14 @@
         },
         confirmLoading: false,
         validatorRules: {
-           setmealTimecardId: [
-              { required: true, message: '请输入套餐次卡兑换关系ID!'},
-           ],
            platform: [
               { required: true, message: '请输入平台：1=福州小洁!'},
            ],
            setmeal: [
               { required: true, message: '请输入套餐内容!'},
            ],
-           keyword: [
-              { required: true, message: '请输入套餐标识!'},
-           ],
            timecardId: [
               { required: true, message: '请输入次卡id!'},
-           ],
-           timecardNum: [
-              { required: true, message: '请输入一份套餐兑换次卡数量!'},
            ],
            addUserId: [
               { required: true, message: '请输入添加人ID!'},
@@ -114,7 +97,25 @@
           add: "/shoeSetmealTimecard/shoeSetmealTimecard/add",
           edit: "/shoeSetmealTimecard/shoeSetmealTimecard/edit",
           queryById: "/shoeSetmealTimecard/shoeSetmealTimecard/queryById"
-        }
+        },
+        platformList:[
+          {
+            name:'j姐小兔',
+            id:1
+          },{
+            name:'霸道总裁',
+            id: 2
+          }
+        ],
+        timecardList:[
+          {
+            name:'388',
+            id:2
+          },{
+            name: '699',
+            id:3
+          }
+        ]
       }
     },
     computed: {
@@ -132,6 +133,7 @@
       },
       edit (record) {
         this.model = Object.assign({}, record);
+        // this.model.id = 1
         this.visible = true;
       },
       submitForm () {

@@ -8,9 +8,7 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <div class="scroll">
-      <shoe-timecard-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-timecard-form>
-    </div>
+    <shoe-timecard-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-timecard-form>
   </j-modal>
 </template>
 
@@ -25,7 +23,7 @@
     data () {
       return {
         title:'',
-        width:900,
+        width:800,
         visible: false,
         disableSubmit: false
       }
@@ -60,11 +58,3 @@
     }
   }
 </script>
-
-<style>
-.scroll {
-  height: 600px;
-  overflow-y: scroll;
-  width: 100%;
-}
-</style>
