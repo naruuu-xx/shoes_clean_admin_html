@@ -59,7 +59,7 @@ export default {
     show(record) {
       this.devicenum = record.lockerCode
       // 后期接口拿柜子数量
-      let cabinetNum = record.num + 1 // 需要加屏幕一个格子
+      let cabinetNum = record.num + 2 // 需要加屏幕两个格子
       let arr = Array(cabinetNum)
         .fill(0)
         .map((item, idx) => {
