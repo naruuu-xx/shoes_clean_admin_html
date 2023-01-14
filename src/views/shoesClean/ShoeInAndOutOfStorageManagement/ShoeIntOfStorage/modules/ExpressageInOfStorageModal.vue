@@ -22,26 +22,27 @@
         </a-row>
         <a-divider />
         <a-row v-show="shoeOrderInfo">
+          <div v-for="(item,idx) in dataList" :key="idx">
           <a-row>
             <a-col :span="18">
-              <span class="content">订单编号：{{data.no}}</span>
+              <span class="content">订单编号：{{item.no}}</span>
             </a-col>
             <a-col :span="2"></a-col>
-            <a-col :span="4">
+            <a-col :span="4" v-if="idx == 0">
               <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="6">
-              <span class="content">商品名：{{data.title}}</span>
+              <span class="content">商品名：{{item.title}}</span>
             </a-col>
             <a-col :span="6">
-              <span class="content">商品规格：{{data.skuTitle}}</span>
+              <span class="content">商品规格：{{item.skuTitle}}</span>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="24">
-              <span class="content">附加项：{{data.name}}</span>
+              <span class="content">附加项：{{item.name}}</span>
             </a-col>
           </a-row>
           <!--          <a-row style="margin-bottom: 30px">-->
@@ -52,10 +53,11 @@
           <a-row>
             <a-col :span="24">
               <p class="content">照片：</p>
-              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
-                   :src="item" @click="showImage(item)">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="image in item.imageList"
+                   :src="image" @click="showImage(image)">
             </a-col>
           </a-row>
+          </div>
         </a-row>
       </div>
     </a-spin>
@@ -64,43 +66,6 @@
              @cancel="handleShoeImageModalCancel()">
       <img alt="example" style="width: 100%" :src="clickedImage">
     </a-modal>
-
-    <!--    <a-modal :zIndex="2000" :width="600" :visible="showInOfStoragePrintModal" :footer="null"-->
-    <!--             @cancel="handleShowInOfStoragePrintModalCancel()">-->
-    <!--      <a-row>-->
-    <!--        <a-col :span="24" style="margin-bottom: 30px">-->
-    <!--          <span class="content">订单编号：{{data.no}}</span>-->
-    <!--        </a-col>-->
-    <!--      </a-row>-->
-    <!--      <a-row style="margin-bottom: 30px">-->
-    <!--        <a-col :span="12">-->
-    <!--          <span class="content">商品名：{{data.title}}</span>-->
-    <!--        </a-col>-->
-    <!--        <a-col :span="12">-->
-    <!--          <span class="content">商品规格：{{data.skuTitle}}</span>-->
-    <!--        </a-col>-->
-    <!--      </a-row>-->
-    <!--      <a-row style="margin-bottom: 30px">-->
-    <!--        <a-col :span="24">-->
-    <!--          <span class="content">附加项：{{data.name}}</span>-->
-    <!--        </a-col>-->
-    <!--      </a-row>-->
-    <!--      <a-row>-->
-    <!--        <a-col :span="24">-->
-    <!--          <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">-->
-    <!--            <a-select-->
-    <!--              v-model:value="selectedNote"-->
-    <!--              mode="multiple"-->
-    <!--              style="width: 100%;"-->
-    <!--              placeholder="请选择"-->
-    <!--              :options="noteOptions"-->
-    <!--              :z-index="2000"-->
-    <!--            >-->
-    <!--            </a-select>-->
-    <!--          </a-form-model-item>-->
-    <!--        </a-col>-->
-    <!--      </a-row>-->
-    <!--    </a-modal>-->
 
     <confirm-expressage-print-modal ref="confirmExpressagePrintModal"></confirm-expressage-print-modal>
 
@@ -120,7 +85,7 @@ export default {
       visible: false,
       title: '入库',
       KuaidiNum: "",
-      data: {},
+      dataList:[],
       imageList: [],
       showImageModal: false,
       shoeOrderInfo: false,
@@ -183,15 +148,10 @@ export default {
             })
             return false;
           } else {
-            this.data = {
-              "orderId": res.result.orderId,
-              "no": res.result.no,
-              "note": res.result.note,
-              "title": res.result.title,
-              "skuTitle": res.result.skuTitle,
-              "name": res.result.name
-            }
-            this.imageList = JSON.parse(res.result.orderImages);
+            this.dataList = res.result.map(item => {
+              let imageList = JSON.parse(item.orderImages)
+              return Object.assign({},item,{imageList})
+            })
             this.shoeOrderInfo = true;
             //清空输入框并重新聚焦
             this.KuaidiNum = "";
@@ -216,7 +176,7 @@ export default {
     },
     shoeInOfStorageModal() {
       // this.showInOfStoragePrintModal = true;
-      this.$refs.confirmExpressagePrintModal.show(this.data);
+      this.$refs.confirmExpressagePrintModal.show(this.dataList);
     },
     handleInOfStorage(){
       this.confirmLoading = true;

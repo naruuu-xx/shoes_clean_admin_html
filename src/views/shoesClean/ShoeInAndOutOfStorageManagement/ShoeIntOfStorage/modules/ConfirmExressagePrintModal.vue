@@ -8,39 +8,46 @@
     cancelText="关闭"
     :fullscreen = "false">
     <a-spin :spinning="confirmLoading">
+      <div class="box" @scroll="scrollEvent">
+      <div v-for="(item,idx) in dataList" :key="idx">
       <a-row>
         <a-col :span="24" style="margin-bottom: 30px">
-          <span class="content">订单编号：{{data.no}}</span>
+          <span class="content">订单编号：{{item.no}}</span>
         </a-col>
       </a-row>
       <a-row style="margin-bottom: 30px">
         <a-col :span="12">
-          <span class="content">商品名：{{data.title}}</span>
+          <span class="content">商品名：{{item.title}}</span>
         </a-col>
         <a-col :span="12">
-          <span class="content">商品规格：{{data.skuTitle}}</span>
+          <span class="content">商品规格：{{item.skuTitle}}</span>
         </a-col>
       </a-row>
       <a-row style="margin-bottom: 30px">
         <a-col :span="24">
-          <span class="content">附加项：{{data.name}}</span>
+          <span class="content">附加项：{{item.name}}</span>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="24">
           <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
             <a-select
-              v-model:value="selectedNote"
+              v-model="item.selectedNote"
               mode="multiple"
               style="width: 100%;"
               placeholder="请选择"
               :options="noteOptions"
               :z-index="2000"
+              :ref="`selectedNote${idx}`"
+              @blur="selectedNoteBlur('blur',`selectedNote${idx}`)"
+              @focus="selectedNoteBlur('focus',`selectedNote${idx}`)"
             >
             </a-select>
           </a-form-model-item>
         </a-col>
       </a-row>
+      </div>
+    </div>
     </a-spin>
   </j-modal>
 </template>
@@ -74,15 +81,31 @@ export default {
       showInOfStoragePrintModal: false,
       selectedNote: [],
       noteOptions: [],
+      dataList:[],
+      selectedNoteKey: ''
     }
   },
   created() {
   },
   methods: {
+    selectedNoteBlur(type,e) {
+      // 后期在优化 
+      // if(type == 'focus') {
+      //   this.selectedNoteKey = e
+      // } else {
+      //   if(this.selectedNoteKey == e && this.selectedNoteKey) {
+      //     this.selectedNoteKey = ''
+      //   }
+      // }
+    },
+    scrollEvent(e) {
+      this.dataList.forEach((item,idx) => {
+        this.$refs[`selectedNote${idx}`][0].blur()
+      })
+    },
     show(record) {
       this.visible = true;
-
-      this.data = record;
+      this.dataList = record.map(item => Object.assign({},item,{selectedNote: []}))
 
       //获取备注项列表
       httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
@@ -96,23 +119,18 @@ export default {
       this.visible = false;
     },
     handleOk(){
-      let selectedNotes = this.selectedNote;
-      let selectedNoteString = "";
-      for (let i = 0 ; i < this.selectedNote.length ; i ++) {
-        selectedNoteString += selectedNotes[i] + "；";
-      }
-
-      selectedNoteString = selectedNoteString.substring(0, selectedNoteString.length - 1);
-
-      this.handleInOfStorage(selectedNoteString);
+      let dataList = this.dataList.map(item => {
+        return {
+          orderId: item.orderId,
+          selectedNote: item.selectedNote.join(';')
+        }
+      })
+      this.handleInOfStorage(dataList);
 
     },
-    handleInOfStorage(selectedNoteString){
+    handleInOfStorage(dataList){
       this.confirmLoading = true;
-
-      this.data.selectedNote = selectedNoteString;
-
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", this.data, "post").then((res) => {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
@@ -154,6 +172,11 @@ export default {
 </script>
 
 <style scoped>
+.box {
+  /* 设置这个组件会出现错位问题 */
+  height: 600px;
+  overflow-y: scroll;
+}
 .content {
   font-size: 20px;
   color: #000000;
