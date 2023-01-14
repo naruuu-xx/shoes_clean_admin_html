@@ -28,7 +28,8 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>-->
-      <a-button type="primary" size="large" @click="handleInOfStorage()" style="width: 200px;height: 50px">入&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</a-button>
+      <a-button type="primary" size="large" @click="handleInOfStorage()" style="width: 200px;height: 50px">袋子码入库</a-button>
+      <a-button type="primary" size="large" @click="handleExpressageInOfStorage()" style="width: 200px;height: 50px">快递单入库</a-button>
       <a-button type="primary" size="large" @click="handleCreateWashedMark()" style="width: 200px;height: 50px">打印入库水洗唛</a-button>
       <a-button type="primary" size="large" @click="manualInOfStorage()" style="width: 200px;height: 50px">手工录单</a-button>
     </div>
@@ -84,6 +85,8 @@
 <!--    <shoe-factory-order-detail-modal ref="shoeFactoryOrderDetailModal" @ok="modalFormOk"></shoe-factory-order-detail-modal>-->
     <shoe-in-of-storage-modal ref="shoeInOfStorageModal"  @ok="modalFormOk"></shoe-in-of-storage-modal>
 
+    <expressage-in-of-storage-modal ref="expressageInOfStorageModal" @ok="modalFormOk"></expressage-in-of-storage-modal>
+
     <create-washed-mark-modal ref="createWashedMarkModal" @ok="modalFormOk"></create-washed-mark-modal>
 
     <manual-in-of-storage ref="manualInOfStorage" @ok="modalFormOk"></manual-in-of-storage>
@@ -99,6 +102,7 @@
   import ShoeInOfStorageModal from "./modules/ShoeInOfStorageModal";
   import CreateWashedMarkModal from "./modules/CreateWashedMarkModal";
   import ManualInOfStorage from "./modules/ManualInOfStorage";
+  import ExpressageInOfStorageModal from "./modules/ExpressageInOfStorageModal";
 
   export default {
     name: 'ShoeOrderList',
@@ -106,7 +110,8 @@
     components: {
       ShoeInOfStorageModal,
       CreateWashedMarkModal,
-      ManualInOfStorage
+      ManualInOfStorage,
+      ExpressageInOfStorageModal
     },
     data () {
       return {
@@ -162,6 +167,9 @@
       },
       handleInOfStorage(){
         this.$refs.shoeInOfStorageModal.show();
+      },
+      handleExpressageInOfStorage(){
+        this.$refs.expressageInOfStorageModal.show();
       },
       handleCreateWashedMark() {
         this.$refs.createWashedMarkModal.show();
