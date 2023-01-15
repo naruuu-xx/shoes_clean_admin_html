@@ -92,7 +92,7 @@ export default {
         openType: 0,
       }
 
-      httpAction('/api/IoT/openDoorByDevicenum', data, 'post').then((res) => {
+      httpAction('/api/newIoT/openDoorByDevicenum', data, 'post').then((res) => {
         let json = JSON.parse(res)
         if (json.code === 0) {
           that.$message.success('开门成功')
