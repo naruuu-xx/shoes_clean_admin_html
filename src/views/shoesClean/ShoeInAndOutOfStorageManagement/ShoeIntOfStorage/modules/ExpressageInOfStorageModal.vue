@@ -7,7 +7,7 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    :fullscreen = "true">
+    :fullscreen = "false">
     <a-spin :spinning="confirmLoading">
       <div style="margin-left: 20px">
         <a-row>
@@ -134,9 +134,7 @@ export default {
     queryOrderInfo(){
       //查询订单信息
       if (this.KuaidiNum === "" || this.KuaidiNum === null || this.KuaidiNum === undefined) {
-        this.$message.warning("请扫描袋子编码或者手动输入袋子编码");
-      } else if (this.KuaidiNum.length < 6) {
-        this.$message.warning("请扫描或输入正确的袋子编码");
+        this.$message.warning("请扫描快递单号或者手动输入快递单号");
       } else {
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryExpressageOrderInfoByKuaidiNum?kuaidiNum=" + this.KuaidiNum, null, "get").then((res) => {
           if (res.code !== 200) {

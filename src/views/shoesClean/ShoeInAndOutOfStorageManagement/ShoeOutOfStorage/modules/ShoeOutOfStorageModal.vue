@@ -7,7 +7,7 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    :fullscreen="true">
+    :fullscreen="false">
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
@@ -141,10 +141,13 @@ export default {
             this.$nextTick(() => {
               this.$refs.autoInput.focus();
             })
-            if (res.code == 2000 || res.code == 2001) {
+            if (res.code === 2000 || res.code === 2001) {
               this.resData.message = res.message;
               this.resDataModal = true
             }
+
+            //打印水洗唛
+            this.createWashedMark(res.result.no);
 
             return false;
           } else {
