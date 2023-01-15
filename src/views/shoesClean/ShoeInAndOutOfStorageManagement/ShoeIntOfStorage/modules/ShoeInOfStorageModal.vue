@@ -7,7 +7,7 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    :fullscreen = "true">
+    :fullscreen = "false">
     <a-spin :spinning="confirmLoading">
       <div style="margin-left: 20px">
         <a-row>

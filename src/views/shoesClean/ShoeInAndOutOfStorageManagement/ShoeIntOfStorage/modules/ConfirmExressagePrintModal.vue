@@ -1,7 +1,7 @@
 <template>
   <j-modal
     :title="title"
-    :width="600"
+    :width="700"
     :visible="visible"
     @ok="handleOk"
     @cancel="handleCancel"
@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     selectedNoteBlur(type,e) {
-      // 后期在优化 
+      // 后期在优化
       // if(type == 'focus') {
       //   this.selectedNoteKey = e
       // } else {

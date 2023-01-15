@@ -11,11 +11,11 @@
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleInOfStorage"  ref="autoInput"/>
+          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleOutOfStorage"  ref="autoInput"/>
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
-          <a-row><a-button @click="handleInOfStorage" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button></a-row>
+          <a-row><a-button @click="handleOutOfStorage" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button></a-row>
           <a-row><a-button @click="emptyBagCode" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
         </a-col>
       </a-row>
@@ -67,12 +67,11 @@ export default {
       this.imageList = [];
       this.shoeOrderInfo = false;
     },
-    handleInOfStorage(){
+    handleOutOfStorage(){
       let data = {
         "no": this.no
       }
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
-        console.log(res);
         if (!res.success && res.success !== undefined) {
           this.$message.warning(res.message)
           return
