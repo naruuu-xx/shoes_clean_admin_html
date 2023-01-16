@@ -62,7 +62,7 @@
              @cancel="handleResDataModal">
       <h1 style="text-align: center">{{ resData.message }}</h1>
       <div style="display: flex;justify-content: center">
-      <a-button type="primary" if="resData.code==2001" @click="routeToDetail">查看详情</a-button>
+        <a-button type="primary" if="resData.code==2001" @click="routeToDetail">查看详情</a-button>
       </div>
     </a-modal>
 
@@ -87,9 +87,7 @@ export default {
       showImageModal: false,
       shoeOrderInfo: false,
       clickedImage: "",
-      resData: {
-
-      },
+      resData: {},
 
     }
   },
@@ -135,20 +133,28 @@ export default {
         }
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {
           if (res.code !== 200) {
-            this.$message.warning(res.message);
+            if (res.code !== 2000 && res.code !== 2001) {
+              this.$message.warning(res.message);
+            }
+
             //清空输入框并重新聚焦
             this.no = "";
             this.$nextTick(() => {
               this.$refs.autoInput.focus();
             })
-            if (res.code === 2000 || res.code === 2001) {
-              this.resData.message = res.message;
-              this.resDataModal = true
+
+            if (res.code === 2001) {
+              this.resData = res;
+              this.resDataModal = true;
+              //打印水洗唛
+              this.createWashedMark(res.result.no);
+            } else if (res.code === 2000) {
+              this.resData = res;
+              this.$message.success(res.message, 3);
+
+              //打印水洗唛
+              this.createWashedMark(res.result.no);
             }
-
-            //打印水洗唛
-            this.createWashedMark(res.result.no);
-
             return false;
           } else {
             this.data = {
