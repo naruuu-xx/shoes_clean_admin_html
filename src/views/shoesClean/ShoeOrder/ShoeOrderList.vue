@@ -252,6 +252,14 @@ export default {
           }
         },
         {
+          title: '订单类型',
+          align: "center",
+          dataIndex: 'type',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_order_type', text);
+          }
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           align: "center",

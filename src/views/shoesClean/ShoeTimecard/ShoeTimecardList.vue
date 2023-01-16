@@ -108,12 +108,7 @@
           }
         ],
         url: {
-          list: "/shoeTimecard/shoeTimecard/list",
-          delete: "/shoeTimecard/shoeTimecard/delete",
-          deleteBatch: "/shoeTimecard/shoeTimecard/deleteBatch",
-          exportXlsUrl: "/shoeTimecard/shoeTimecard/exportXls",
-          importExcelUrl: "shoeTimecard/shoeTimecard/importExcel",
-          
+          list: "/shoeTimecard/list",
         },
         dictOptions:{},
       }
