@@ -29,10 +29,12 @@
                 </a-select>
               </div>
               <div class="good-label">
-                鞋子总数：<a-input-number v-model="good.num" placeholder="请输入有效天数" :min="1" />
+                鞋子总数：
+                <a-input-number v-model="good.num" placeholder="请输入有效天数" :min="1"/>
               </div>
               <div class="good-label">
-                最低下单数：<a-input-number v-model="good.minimum" placeholder="请输入有效天数" :min="1" />
+                最低下单数：
+                <a-input-number v-model="good.minimum" placeholder="请输入有效天数" :min="1"/>
               </div>
               <div class="good-label">
                 <a-button type="danger" @click="onDeleteGood(idx)" v-if="goodList.length > 1">删除</a-button>
@@ -53,11 +55,11 @@
               }"
               prop="useType"
             >
-            <span class="required">最后一次下单是否需要满足最低下单鞋子数</span><span
-                style="color: #349fff; font-size: 10px"
-                @click="visibleTip = true"
-                >(查看说明)</span
-              >：
+              <span class="required">最后一次下单是否需要满足最低下单鞋子数</span><span
+              style="color: #349fff; font-size: 10px"
+              @click="visibleTip = true"
+            >(查看说明)</span
+            >：
               <a-radio-group v-model="model.useType">
                 <a-radio value="0">是</a-radio>
                 <a-radio value="1">否</a-radio>
@@ -66,7 +68,9 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="使用期限" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="expireDay">
-              领取<a-input-number v-model="model.expireDay" placeholder="输入天数" :min="1" />天后失效
+              领取
+              <a-input-number v-model="model.expireDay" placeholder="输入天数" :min="1"/>
+              天后失效
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -85,9 +89,12 @@
                 </a-select>
               </div>
               <div class="good-label">
-                折数:<a-input-number v-model="classify.discount" placeholder="请输入有效天数" :min="0.1" />
+                折数:
+                <a-input-number v-model="classify.discount" placeholder="请输入0~10" :min="0.1"/>
               </div>
-              <div class="good-label"><a-button type="danger" @click="onDeleteClassify(idx)">删除</a-button></div>
+              <div class="good-label">
+                <a-button type="danger" @click="onDeleteClassify(idx)">删除</a-button>
+              </div>
             </div>
           </div>
           <a-col :span="24">
@@ -107,33 +114,36 @@
                   <a-radio value="1">是</a-radio>
                 </a-radio-group>
               </a-col>
-              <a-col :span="6"> 原价 <a-input-number v-model="model.originalPrice" placeholder="输入原价" :min="0" /> </a-col>
+              <a-col :span="6"> 原价
+                <a-input-number v-model="model.originalPrice" placeholder="输入原价" :min="0"/>
+              </a-col>
               <a-col :span="8">
-                优惠价 <a-input-number v-model="model.preferentialPrice" placeholder="输入优惠价" :min="0" />
+                优惠价
+                <a-input-number v-model="model.preferentialPrice" placeholder="输入优惠价" :min="0"/>
               </a-col>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="使用规则" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rules">
-              <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则" />
+              <a-textarea v-model="model.rules" rows="4" placeholder="请输入使用规则"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
-              <a-input-number v-model="model.weight" placeholder="输入0-99 越大越靠前" :min="0" />
+              <a-input-number v-model="model.weight" placeholder="输入0-99 越大越靠前" :min="0"/>
             </a-form-model-item>
           </a-col>
           <template v-if="model.id">
             <a-col :span="24">
-            <a-form-model-item label="添加人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              添加人
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="最后操作人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              最后操作人
-            </a-form-model-item>
-          </a-col>
+              <a-form-model-item label="添加人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+                添加人
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="最后操作人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+                最后操作人
+              </a-form-model-item>
+            </a-col>
           </template>
         </a-row>
       </a-form-model>
@@ -145,10 +155,10 @@
 </template>
 
 <script>
-import { httpAction, getAction } from '@api/manage'
-import { validateDuplicateValue } from '@/utils/util'
-import { filter } from 'vuedraggable'
-import { every } from 'lodash'
+import {httpAction, getAction} from '@api/manage'
+import {validateDuplicateValue} from '@/utils/util'
+import {filter} from 'vuedraggable'
+import {every} from 'lodash'
 import Vue from 'vue'
 // 验证商品选择
 let validateGood = (rule, value, callback) => {
@@ -168,13 +178,13 @@ let validateGood = (rule, value, callback) => {
 // 验证分类折扣选择
 let validateClassifyDiscount = (rule, value, callback) => {
   let n = value.every((item) => {
-      return item.goodClassify && item.discount
-    })
-    if (!n) {
-      // this.$refs.ruleForm.validateField('checkPass');
-      callback('请补充分类折扣信息！')
-    }
-    callback()
+    return item.goodClassify && item.discount
+  })
+  if (!n) {
+    // this.$refs.ruleForm.validateField('checkPass');
+    callback('请补充分类折扣信息！')
+  }
+  callback()
 }
 
 export default {
@@ -195,39 +205,38 @@ export default {
         classifyDiscountList: ''
       },
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 },
+        xs: {span: 24},
+        sm: {span: 5},
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
+        xs: {span: 24},
+        sm: {span: 16},
       },
       confirmLoading: false,
       validatorRules: {
-        timecardId: [{ required: true, message: '请输入次卡ID!' }],
-        name: [{ required: true, message: '请输入次卡名称!' }],
-        image: [{ required: true, message: '请输入图片!' }],
-        num: [{ required: true, message: '请输入可洗鞋数!' }],
-        expireDay: [{ required: true, message: '请输入有效天数!' }],
+        timecardId: [{required: true, message: '请输入次卡ID!'}],
+        name: [{required: true, message: '请输入次卡名称!'}],
+        image: [{required: true, message: '请输入图片!'}],
+        num: [{required: true, message: '请输入可洗鞋数!'}],
+        expireDay: [{required: true, message: '请输入有效天数!'}],
         rangeConfig: [
           {
             required: true,
             message: '请输入适用商品配置：{{"goods_id": 1, "num":13,"minimum":},{"goods_id": 2, "num":10,"minimum":3}!',
           },
         ],
-        useType: [{ required: true, message: '请输入最后一次下单是否需要满足最低下单鞋子数!' }],
-        type: [{ required: true, message: '请输入运费减免类型' }],
-        sale: [{ required: true, message: '请输入销量!' }],
-        rules: [{ required: true, message: '请输入使用规则!' }],
-        weight: [{ required: true, message: '请输入权重!' }],
-        isShow: [{ required: true, message: '是否售卖!' }],
-        goodList: [{ validator: validateGood, trigger: 'change' }],
-        classifyDiscountList: [{ validator: validateClassifyDiscount, trigger: 'change' }],
+        useType: [{required: true, message: '请输入最后一次下单是否需要满足最低下单鞋子数!'}],
+        type: [{required: true, message: '请输入运费减免类型'}],
+        sale: [{required: true, message: '请输入销量!'}],
+        rules: [{required: true, message: '请输入使用规则!'}],
+        weight: [{required: true, message: '请输入权重!'}],
+        isShow: [{required: true, message: '是否售卖!'}],
+        goodList: [{validator: validateGood, trigger: 'change'}],
+        classifyDiscountList: [{validator: validateClassifyDiscount, trigger: 'change'}],
       },
       url: {
-        add: '/shoeTimecard/shoeTimecard/add',
-        edit: '/shoeTimecard/shoeTimecard/edit',
-        queryById: '/shoeTimecard/shoeTimecard/queryById',
+        add: '/shoeTimecard/add',
+        edit: '/shoeTimecard/edit',
       },
       goodList: [
         {
@@ -290,25 +299,27 @@ export default {
   created() {
     //备份model原始值
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
+    this.getGoodList();
+    this.getGoodsCategoryList();
   },
   mounted() {
-    this.validatorRules.isShow.push({ validator: this.validateSell, trigger: 'change' })
+    this.validatorRules.isShow.push({validator: this.validateSell, trigger: 'change'})
   },
   methods: {
     // 验证是否售卖
-validateSell(rule, value, callback){
-  if(value == 1) {
-    if (!this.model.originalPrice) {
-      callback('原价不能为空！')
-    }
-    if (!this.model.preferentialPrice) {
-      callback('优惠价不能为空！')
-    }
-  } else {
-    callback()
-  }
-  
-},
+    validateSell(rule, value, callback) {
+      if (value == 1) {
+        if (!this.model.originalPrice) {
+          callback('原价不能为空！')
+        }
+        if (!this.model.preferentialPrice) {
+          callback('优惠价不能为空！')
+        }
+      } else {
+        callback()
+      }
+
+    },
     // 点击新增产品
     onAddGood() {
       this.goodList.push({
@@ -341,36 +352,58 @@ validateSell(rule, value, callback){
       this.visible = true
     },
     submitForm() {
-      const that = this
+      const that = this;
       // 触发表单验证
-      console.log('goodList', this.goodList)
+      //=============================================================
+      //没有进入表单验证的函数
+      //=============================================================
       this.$refs.form.validate((valid) => {
         if (valid) {
           that.confirmLoading = true
           let httpurl = ''
           let method = ''
-          if (!this.model.id) {
+          if (!this.model.timecardId) {
             httpurl += this.url.add
             method = 'post'
           } else {
             httpurl += this.url.edit
             method = 'put'
           }
-          httpAction(httpurl, this.model, method)
-            .then((res) => {
+          httpAction(httpurl, this.model, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message)
                 that.$emit('ok')
               } else {
                 that.$message.warning(res.message)
               }
-            })
-            .finally(() => {
+            }).finally(() => {
               that.confirmLoading = false
             })
         }
       })
     },
+    getGoodList() {
+      const that = this;
+      //获取商品列表
+      httpAction("/shoes/shoeGoods/getGoodsList", null, "get").then((res) => {
+        if (res.success) {
+          this.goods = res.result.map(item => ({id: item.goodsId, name: item.title}));
+        } else {
+          that.$message.warning(res.message);
+        }
+      })
+    },
+    getGoodsCategoryList(){
+      //获取商品分类列表
+      httpAction("/shoes/shoeGoodsCategory/getGoodsCategoryList", null, "get").then((res) => {
+        if (res.success) {
+          this.ClassifyList = res.result.map(item => ({id: item.categoryId, name: item.name}));
+        } else {
+          this.$message.warning(res.message);
+        }
+      })
+    }
+
   },
 }
 </script>
@@ -380,10 +413,12 @@ validateSell(rule, value, callback){
   width: calc(100% - 48px);
   margin-left: 48px;
   margin-bottom: 24px;
+
   &-label {
     margin-left: 32px;
   }
 }
+
 .required::before {
   display: inline-block;
   margin-right: 4px;
