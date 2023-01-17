@@ -36,7 +36,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="鞋蜂卡" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="timecardId">
-              <a-select style="width: 120px" v-model="model.timecardId">
+              <a-select style="width: 160px" v-model="model.timecardId">
                 <a-select-option :value="item.timecardId" v-for="(item,index) in timecardList" :key="index">
                   {{ item.name }}
                 </a-select-option>
