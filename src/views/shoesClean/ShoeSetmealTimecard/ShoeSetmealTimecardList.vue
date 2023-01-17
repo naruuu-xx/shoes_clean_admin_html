@@ -42,85 +42,90 @@
 
 <script>
 
-  import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import ShoeSetmealTimecardModal from './modules/ShoeSetmealTimecardModal'
+import '@/assets/less/TableExpand.less'
+import {mixinDevice} from '@/utils/mixin'
+import {JeecgListMixin} from '@/mixins/JeecgListMixin'
+import ShoeSetmealTimecardModal from './modules/ShoeSetmealTimecardModal'
+import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
 
-  export default {
-    name: 'ShoeSetmealTimecardList',
-    mixins:[JeecgListMixin, mixinDevice],
-    components: {
-      ShoeSetmealTimecardModal
-    },
-    data () {
-      return {
-        description: 'shoe_setmeal_timecard管理页面',
-        // 表头
-        columns: [
+export default {
+  name: 'ShoeSetmealTimecardList',
+  mixins: [JeecgListMixin, mixinDevice],
+  components: {
+    ShoeSetmealTimecardModal
+  },
+  data() {
+    return {
+      description: 'shoe_setmeal_timecard管理页面',
+      // 表头
+      columns: [
         {
-            title:'平台名称',
-            align:"center",
-            dataIndex: 'platform'
-          },
-          {
-            title:'套餐名称',
-            align:"center",
-            dataIndex: 'setmealTimecardId'
-          },
-          {
-            title:'次卡名称',
-            align:"center",
-            dataIndex: 'timecardId'
-          },
-          {
-            title: '操作',
-            dataIndex: 'action',
-            align:"center",
-            fixed:"right",
-            width:147,
-            scopedSlots: { customRender: 'action' }
+          title: '平台名称',
+          align: "center",
+          dataIndex: 'platform',
+          customRender: (text) => {
+            return filterDictTextByCache('setmealTimecard:platform', text);
           }
-        ],
-        url: {
-          list: "/shoeSetmealTimecard/shoeSetmealTimecard/list",
-          delete: "/shoeSetmealTimecard/shoeSetmealTimecard/delete",
-          deleteBatch: "/shoeSetmealTimecard/shoeSetmealTimecard/deleteBatch",
-          exportXlsUrl: "/shoeSetmealTimecard/shoeSetmealTimecard/exportXls",
-          importExcelUrl: "shoeSetmealTimecard/shoeSetmealTimecard/importExcel",
-          
         },
-        dictOptions:{},
-        superFieldList:[],
-      }
-    },
-    created() {
+        {
+          title: '套餐名称',
+          align: "center",
+          dataIndex: 'setmeal'
+        }, {
+          title: '匹配关键词',
+          align: "center",
+          dataIndex: 'keyword'
+        },
+        {
+          title: '次卡名称',
+          align: "center",
+          dataIndex: 'name'
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          align: "center",
+          fixed: "right",
+          width: 147,
+          scopedSlots: {customRender: 'action'}
+        }
+      ],
+      url: {
+        list: "/shoeSetmealTimecard/list",
+
+
+      },
+      dictOptions: {},
+      superFieldList: [],
+    }
+  },
+  created() {
     this.getSuperFieldList();
+  },
+  computed: {
+    importExcelUrl: function () {
+      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
     },
-    computed: {
-      importExcelUrl: function(){
-        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
+  },
+  methods: {
+    initDictConfig() {
     },
-    methods: {
-      initDictConfig(){
-      },
-      getSuperFieldList(){
-        let fieldList=[];
-        fieldList.push({type:'int',value:'setmealTimecardId',text:'套餐次卡兑换关系ID'})
-        fieldList.push({type:'int',value:'platform',text:'平台：1=福州小洁'})
-        fieldList.push({type:'string',value:'setmeal',text:'套餐内容'})
-        fieldList.push({type:'string',value:'keyword',text:'套餐标识'})
-        fieldList.push({type:'int',value:'timecardId',text:'次卡id'})
-        fieldList.push({type:'int',value:'timecardNum',text:'一份套餐兑换次卡数量'})
-        fieldList.push({type:'string',value:'note',text:'备注'})
-        fieldList.push({type:'string',value:'addUserId',text:'添加人ID'})
-        fieldList.push({type:'string',value:'editUserId',text:'最后修改人ID（首次添加为添加人id）'})
-        this.superFieldList = fieldList
-      }
+    getSuperFieldList() {
+      let fieldList = [];
+      fieldList.push({type: 'int', value: 'setmealTimecardId', text: '套餐次卡兑换关系ID'})
+      fieldList.push({type: 'int', value: 'platform', text: '平台：1=福州小洁'})
+      fieldList.push({type: 'string', value: 'setmeal', text: '套餐内容'})
+      fieldList.push({type: 'string', value: 'keyword', text: '套餐标识'})
+      fieldList.push({type: 'int', value: 'timecardId', text: '次卡id'})
+      fieldList.push({type: 'int', value: 'timecardNum', text: '一份套餐兑换次卡数量'})
+      fieldList.push({type: 'string', value: 'note', text: '备注'})
+      fieldList.push({type: 'string', value: 'addUserId', text: '添加人ID'})
+      fieldList.push({type: 'string', value: 'editUserId', text: '最后修改人ID（首次添加为添加人id）'})
+      this.superFieldList = fieldList
     }
   }
+}
 </script>
 <style scoped>
-  @import '~@assets/less/common.less';
+@import '~@assets/less/common.less';
 </style>
