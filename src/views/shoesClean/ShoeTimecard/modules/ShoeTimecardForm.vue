@@ -23,7 +23,7 @@
               <div class="good-label">
                 商品{{ idx + 1 }}：
                 <a-select style="width: 120px" v-model="good.goods_id">
-                  <a-select-option :value="item.id" v-for="(item, index) in goods" :key="index">
+                  <a-select-option :value="item.id" v-for="(item, index) in goods" :key="index" :disabled="disabledGood(item.id)">
                     {{ item.name }}
                   </a-select-option>
                 </a-select>
@@ -83,14 +83,14 @@
               <div class="good-label">
                 商品分类{{ idx + 1 }}：
                 <a-select style="width: 120px" v-model="classify.goodClassify">
-                  <a-select-option :value="item.id" v-for="(item, index) in ClassifyList" :key="index">
+                  <a-select-option :value="item.id" v-for="(item, index) in ClassifyList" :key="index" :disabled="disabledGoodClassify(item.id)">
                     {{ item.name }}
                   </a-select-option>
                 </a-select>
               </div>
               <div class="good-label">
                 折数:
-                <a-input-number v-model="classify.discount" placeholder="请输入0~10" :min="0.1"/>
+                <a-input-number v-model="classify.discount" placeholder="请输入0~10" :min="0" :max="10" :precision="1"/>
               </div>
               <div class="good-label">
                 <a-button type="danger" @click="onDeleteClassify(idx)">删除</a-button>
@@ -171,6 +171,15 @@ let validateGood = (rule, value, callback) => {
     if (!n) {
       // this.$refs.ruleForm.validateField('checkPass');
       callback('请补充商品信息！')
+    } else {
+      let err = -1
+      for (let index = 0; index < value.length; index++) {
+        let element = value[index];
+        if(element.minimum > element.num) {
+          return callback(`商品${index+1} 鞋子最低下单数不能小于鞋子总数！`)
+        }
+      }
+      callback()
     }
     callback()
   }
@@ -306,14 +315,23 @@ export default {
     this.validatorRules.isShow.push({validator: this.validateSell, trigger: 'change'})
   },
   methods: {
+    // 商品不可多个一样
+    disabledGood(id) {
+      return this.goodList.map(item => +item.goods_id).includes(+id)
+    },
+    // 分类不可多个一样
+    disabledGoodClassify(id) {
+      return this.classifyDiscountList.map(item => +item.goodClassify).includes(+id)
+    },
     // 验证是否售卖
     validateSell(rule, value, callback) {
       if (value == 1) {
         if (!this.model.originalPrice) {
           callback('原价不能为空！')
-        }
-        if (!this.model.preferentialPrice) {
+        } else if(!this.model.preferentialPrice) {
           callback('优惠价不能为空！')
+        } else {
+          callback()
         }
       } else {
         callback()
@@ -369,6 +387,7 @@ export default {
             httpurl += this.url.edit
             method = 'put'
           }
+
           httpAction(httpurl, this.model, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message)
