@@ -11,16 +11,35 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="用户名称">
-              <a-input placeholder="请输入用户名称" v-model="queryParam.userName"></a-input>
+              <a-input placeholder="请输入用户名称" v-model="queryParam.nickname"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="购买时间">
+            <a-form-item label="鞋蜂卡名称">
+              <a-input placeholder="请输入鞋蜂卡名称" v-model="queryParam.name"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="来源">
+              <a-input placeholder="请输入来源" v-model="queryParam.source"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="状态">
+              <a-select v-model="queryParam.status">
+                <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="开始时间">
               <a-range-picker v-model="queryParam.createTime" />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="兑换时间">
+            <a-form-item label="过期时间">
               <a-range-picker v-model="queryParam.finishTime" />
             </a-form-item>
           </a-col>
@@ -50,7 +69,6 @@
       </a-table>
     </div>
 
-    <shoe-timecard-modal ref="modalForm" @ok="modalFormOk"></shoe-timecard-modal>
   </a-card>
 </template>
 
@@ -59,14 +77,12 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import ShoeTimecardModal from './modules/ShoeTimecardModal'
   import moment from 'moment';
 
   export default {
     name: 'ShoeSetmealTimecardExchangeList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeTimecardModal
     },
     data () {
       return {
@@ -111,12 +127,7 @@
           // }
         ],
         url: {
-          list: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/list",
-          delete: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/delete",
-          deleteBatch: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/deleteBatch",
-          exportXlsUrl: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/exportXls",
-          importExcelUrl: "shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/importExcel",
-          
+          list: "/shoeTimecardDetail/list",
         },
         dictOptions:{},
         queryParam:{
@@ -124,9 +135,12 @@
           createTimeLeft:'',
           createTimeRight:'',
           finishTimeLeft:'',
-          createTimeRight:'',
           finishTime:[],
         },
+        statusOptionList: [
+        {"value": "", "name": "全部"}, {"value": "0", "name": "未使用"}, {"value": "1", "name": "使用中"},
+        {"value": "2", "name": "已使用"}
+      ],
       }
     },
     created() {
@@ -137,14 +151,14 @@
           this.queryParam.createTimeLeft = moment(newV[0]).format('YYYY-MM-DD')
           this.queryParam.createTimeright = moment(newV[1]).format('YYYY-MM-DD')
       },
-      immediate: true
+      // immediate: true
     },
     'queryParam.finishTime': {
         handler(newV) {
           this.queryParam.finishTimeLeft = moment(newV[0]).format('YYYY-MM-DD')
           this.queryParam.finishTimeright = moment(newV[1]).format('YYYY-MM-DD')
       },
-      immediate: true
+      // immediate: true
     }
   },
     computed: {

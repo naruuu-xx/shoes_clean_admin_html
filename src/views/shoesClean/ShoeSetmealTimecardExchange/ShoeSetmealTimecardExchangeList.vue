@@ -65,11 +65,6 @@ import '@/assets/less/TableExpand.less'
 import {mixinDevice} from '@/utils/mixin'
 import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 import ShoeSetmealTimecardExchangeModal from './modules/ShoeSetmealTimecardExchangeModal'
-
-import '@/assets/less/TableExpand.less'
-import {mixinDevice} from '@/utils/mixin'
-import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-import ShoeSetmealTimecardExchangeModal from './modules/ShoeSetmealTimecardExchangeModal'
 import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil"
 
 export default {
@@ -83,34 +78,6 @@ export default {
       description: 'shoe_setmeal_timecard_exchange管理页面',
       // 表头
       columns: [
-        {
-          title: '用户手机号码',
-          align: "center",
-          dataIndex: 'phone'
-        },
-        {
-          title: '平台名称',
-          align: "center",
-          dataIndex: 'platform'
-        },
-        {
-          title: '套餐名称',
-          align: "center",
-          dataIndex: 'setmeal'
-        },
-        {
-          title: '是否兑换',
-          align: "center",
-          dataIndex: 'status'
-        },
-        {
-          title: '购买时间',
-          align: "center",
-          dataIndex: 'exchangeTime',
-          customRender: function (text) {
-            return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
-          }
-        },
         {
           title: '手机号',
           align: "center",
@@ -154,13 +121,8 @@ export default {
           dataIndex: 'exchangeTime'
         }
       ],
-    url: {
-      list: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/list",
-        delete: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/delete",
-        deleteBatch: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/deleteBatch",
-        exportXlsUrl: "/shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/exportXls",
-        importExcelUrl: "shoeSetmealTimecardExchange/shoeSetmealTimecardExchange/importExcel",
-
+      url: {
+        list: "/shoeSetmealTimecardExchange/list",
       },
       platformList: [
         {
