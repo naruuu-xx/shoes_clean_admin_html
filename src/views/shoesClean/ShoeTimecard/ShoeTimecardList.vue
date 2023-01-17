@@ -61,6 +61,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeTimecardModal from './modules/ShoeTimecardModal'
+  import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
 
   export default {
     name: 'ShoeTimecardList',
@@ -84,9 +85,12 @@
             dataIndex: 'sale'
           },
           {
-            title:'状态',
+            title:'是否售卖',
             align:"center",
-            dataIndex: 'status'
+            dataIndex: 'isShow',
+            customRender: (text) => {
+              return filterDictTextByCache('shoe_timecard_isShow', text);
+            },
           },
           {
             title: '操作',

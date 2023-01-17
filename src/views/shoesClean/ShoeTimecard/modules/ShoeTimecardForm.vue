@@ -23,7 +23,8 @@
               <div class="good-label">
                 商品{{ idx + 1 }}：
                 <a-select style="width: 120px" v-model="good.goods_id">
-                  <a-select-option :value="item.id" v-for="(item, index) in goods" :key="index" :disabled="disabledGood(item.id)">
+                  <a-select-option :value="item.id" v-for="(item, index) in goods" :key="index"
+                                   :disabled="disabledGood(item.id)">
                     {{ item.name }}
                   </a-select-option>
                 </a-select>
@@ -61,8 +62,8 @@
             >(查看说明)</span
             >：
               <a-radio-group v-model="model.useType">
-                <a-radio value="0">是</a-radio>
-                <a-radio value="1">否</a-radio>
+                <a-radio :value="0">是</a-radio>
+                <a-radio :value="1">否</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
@@ -83,7 +84,8 @@
               <div class="good-label">
                 商品分类{{ idx + 1 }}：
                 <a-select style="width: 120px" v-model="classify.goodClassify">
-                  <a-select-option :value="item.id" v-for="(item, index) in ClassifyList" :key="index" :disabled="disabledGoodClassify(item.id)">
+                  <a-select-option :value="item.id" v-for="(item, index) in ClassifyList" :key="index"
+                                   :disabled="disabledGoodClassify(item.id)">
                     {{ item.name }}
                   </a-select-option>
                 </a-select>
@@ -100,9 +102,9 @@
           <a-col :span="24">
             <a-form-model-item label="是否免运费/配送费" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
               <a-radio-group v-model="model.type">
-                <a-radio value="0">不减免</a-radio>
-                <a-radio value="1">免配送费</a-radio>
-                <a-radio value="2">免配送费或运费</a-radio>
+                <a-radio :value="0">不减免</a-radio>
+                <a-radio :value="1">免配送费</a-radio>
+                <a-radio :value="2">免配送费或运费</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
@@ -110,8 +112,8 @@
             <a-form-model-item label="是否售卖" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="isShow">
               <a-col :span="6">
                 <a-radio-group v-model="model.isShow">
-                  <a-radio value="0">否</a-radio>
-                  <a-radio value="1">是</a-radio>
+                  <a-radio :value="0">否</a-radio>
+                  <a-radio :value="1">是</a-radio>
                 </a-radio-group>
               </a-col>
               <a-col :span="6"> 原价
@@ -175,8 +177,8 @@ let validateGood = (rule, value, callback) => {
       let err = -1
       for (let index = 0; index < value.length; index++) {
         let element = value[index];
-        if(element.minimum > element.num) {
-          return callback(`商品${index+1} 鞋子最低下单数不能小于鞋子总数！`)
+        if (element.minimum > element.num) {
+          return callback(`商品${index + 1} 鞋子最低下单数不能小于鞋子总数！`)
         }
       }
       callback()
@@ -211,7 +213,8 @@ export default {
     return {
       model: {
         goodList: '',
-        classifyDiscountList: ''
+        classifyDiscountList: '',
+        image: "https://shoes-clean.oss-cn-shenzhen.aliyuncs.com/icon/2.0/card-bg.png"
       },
       labelCol: {
         xs: {span: 24},
@@ -247,37 +250,9 @@ export default {
         add: '/shoeTimecard/add',
         edit: '/shoeTimecard/edit',
       },
-      goodList: [
-        {
-          goods_id: 1,
-          num: 1,
-          minimum: 1,
-        },
-      ],
-      goods: [
-        {
-          name: '商品1',
-          id: 1,
-        },
-        {
-          name: '商品2',
-          id: 2,
-        },
-        {
-          name: '商品3',
-          id: 3,
-        },
-      ],
-      ClassifyList: [
-        {
-          name: '分类1',
-          id: 1,
-        },
-        {
-          name: '分类2',
-          id: 2,
-        },
-      ],
+      goodList: [],
+      goods: [],
+      ClassifyList: [],
       visibleTip: false,
       tipsContent: "假设总鞋子数为10双，最低下单鞋子数为3双，当用户已经用掉了5双鞋子下单后，<br/>1、选择是的话，最后一次下单用户必须下5双鞋子，只能下单一次；<br/>2、选择否的话，用户可以先下3双的单，再下2双的单，可以下单两次；",
       // 分类折扣
@@ -328,7 +303,7 @@ export default {
       if (value == 1) {
         if (!this.model.originalPrice) {
           callback('原价不能为空！')
-        } else if(!this.model.preferentialPrice) {
+        } else if (!this.model.preferentialPrice) {
           callback('优惠价不能为空！')
         } else {
           callback()
@@ -350,7 +325,7 @@ export default {
     onAddClassify() {
       this.classifyDiscountList.push({
         goodClassify: '',
-        discount: 0.1,
+        discount: 0,
       })
     },
     // 删除产品
@@ -366,15 +341,15 @@ export default {
       this.edit(this.modelDefault)
     },
     edit(record) {
-      this.model = Object.assign({}, record)
+      this.model = Object.assign({}, record);
+      console.log(this.model);
+      this.goodList = this.model.goodList;
+      this.classifyDiscountList = this.model.classifyDiscountList;
       this.visible = true
     },
     submitForm() {
       const that = this;
       // 触发表单验证
-      //=============================================================
-      //没有进入表单验证的函数
-      //=============================================================
       this.$refs.form.validate((valid) => {
         if (valid) {
           that.confirmLoading = true
@@ -388,16 +363,25 @@ export default {
             method = 'put'
           }
 
-          httpAction(httpurl, this.model, method).then((res) => {
-              if (res.success) {
-                that.$message.success(res.message)
-                that.$emit('ok')
-              } else {
-                that.$message.warning(res.message)
-              }
-            }).finally(() => {
-              that.confirmLoading = false
-            })
+          let num = this.goodList.reduce((pre, item) => {
+            return pre + item.num;
+          }, 0);
+
+          let form = {
+            num
+          };
+
+          httpAction(httpurl, Object.assign({}, this.model, form), method).then((res) => {
+            if (res.success) {
+              that.$message.success(res.message)
+              that.$emit('ok')
+            } else {
+              that.$message.warning(res.message)
+            }
+          }).finally(() => {
+            that.confirmLoading = false
+          })
+          that.confirmLoading = false
         }
       })
     },
@@ -412,7 +396,7 @@ export default {
         }
       })
     },
-    getGoodsCategoryList(){
+    getGoodsCategoryList() {
       //获取商品分类列表
       httpAction("/shoes/shoeGoodsCategory/getGoodsCategoryList", null, "get").then((res) => {
         if (res.success) {
