@@ -135,15 +135,15 @@
               <a-input-number v-model="model.weight" placeholder="输入0-99 越大越靠前" :min="0"/>
             </a-form-model-item>
           </a-col>
-          <template v-if="model.id">
+          <template v-if="model.timecardId">
             <a-col :span="24">
               <a-form-model-item label="添加人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                添加人
+                {{ model.addUserName }}
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
               <a-form-model-item label="最后操作人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                最后操作人
+                {{ model.editUserName }}
               </a-form-model-item>
             </a-col>
           </template>
