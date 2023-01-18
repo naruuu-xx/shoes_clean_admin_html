@@ -9,7 +9,7 @@
               <a-input placeholder="请输入订单编号" v-model="queryParam.no"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="手机号">
               <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
             </a-form-item>
@@ -19,7 +19,7 @@
               <a-input placeholder="请输入机柜名称" v-model="queryParam.lockerName"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单状态">
               <a-select v-model="queryParam.status">
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
