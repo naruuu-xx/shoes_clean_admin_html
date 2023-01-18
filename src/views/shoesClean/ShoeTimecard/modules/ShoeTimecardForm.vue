@@ -31,11 +31,11 @@
               </div>
               <div class="good-label">
                 鞋子总数：
-                <a-input-number v-model="good.num" placeholder="请输入有效天数" :min="1"/>
+                <a-input-number v-model="good.num" placeholder="鞋子总数" :min="1"/>
               </div>
               <div class="good-label">
-                最低下单数：
-                <a-input-number v-model="good.minimum" placeholder="请输入有效天数" :min="1"/>
+                最低下单鞋子数：
+                <a-input-number v-model="good.minimum" placeholder="最低下单鞋子数" :min="1"/>
               </div>
               <div class="good-label">
                 <a-button type="danger" @click="onDeleteGood(idx)" v-if="goodList.length > 1">删除</a-button>
@@ -75,7 +75,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="分类折扣" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="classifyDiscountList">
+            <a-form-model-item label="分类折扣(仅能输入0.1~10)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="classifyDiscountList">
               <a-button type="primary" @click="onAddClassify">新增</a-button>
             </a-form-model-item>
           </a-col>
@@ -92,7 +92,7 @@
               </div>
               <div class="good-label">
                 折数:
-                <a-input-number v-model="classify.discount" placeholder="请输入0~10" :min="0" :max="10" :precision="1"/>
+                <a-input-number v-model="classify.discount" placeholder="0.1~10" :min="0.1" :max="10" :precision="1"/>
               </div>
               <div class="good-label">
                 <a-button type="danger" @click="onDeleteClassify(idx)">删除</a-button>
@@ -325,7 +325,7 @@ export default {
     onAddClassify() {
       this.classifyDiscountList.push({
         goodClassify: '',
-        discount: 0,
+        discount: "",
       })
     },
     // 删除产品
