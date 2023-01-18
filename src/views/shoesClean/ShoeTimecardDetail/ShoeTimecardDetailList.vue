@@ -35,12 +35,12 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="开始时间">
-              <a-range-picker v-model="queryParam.createTime" />
+              <a-range-picker v-model="queryParam.createTime"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="过期时间">
-              <a-range-picker v-model="queryParam.finishTime" />
+              <a-range-picker v-model="queryParam.finishTime"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -74,104 +74,131 @@
 
 <script>
 
-  import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import moment from 'moment';
+import '@/assets/less/TableExpand.less'
+import {mixinDevice} from '@/utils/mixin'
+import {JeecgListMixin} from '@/mixins/JeecgListMixin'
+import moment from 'moment';
+import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
 
-  export default {
-    name: 'ShoeSetmealTimecardExchangeList',
-    mixins:[JeecgListMixin, mixinDevice],
-    components: {
-    },
-    data () {
-      return {
-        description: 'shoe_setmeal_timecard_exchange管理页面',
-        // 表头
-        columns: [
+export default {
+  name: 'ShoeSetmealTimecardExchangeList',
+  mixins: [JeecgListMixin, mixinDevice],
+  components: {},
+  data() {
+    return {
+      description: 'shoe_setmeal_timecard_exchange管理页面',
+      // 表头
+      columns: [
         {
-            title:'用户手机号码',
-            align:"center",
-            dataIndex: 'phone'
-          },
-          {
-            title:'平台名称',
-            align:"center",
-            dataIndex: 'platform'
-          },
-          {
-            title:'套餐名称',
-            align:"center",
-            dataIndex: 'setmeal'
-          },
-          {
-            title:'是否兑换',
-            align:"center",
-            dataIndex: 'status'
-          },
-          {
-            title:'购买时间',
-            align:"center",
-            dataIndex: 'exchangeTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          // {
-          //   title:'兑换时间',
-          //   align:"center",
-          //   dataIndex: 'exchangeTime',
-          //   customRender:function (text) {
-          //     return !text?"":(text.length>10?text.substr(0,10):text)
-          //   }
-          // }
-        ],
-        url: {
-          list: "/shoeTimecardDetail/list",
+          title: '手机号',
+          align: "center",
+          dataIndex: 'phone'
         },
-        dictOptions:{},
-        queryParam:{
-          createTime:[],
-          createTimeLeft:'',
-          createTimeRight:'',
-          finishTimeLeft:'',
-          finishTime:[],
+        {
+          title: '用户名称',
+          align: "center",
+          dataIndex: 'nickname'
         },
-        statusOptionList: [
+        {
+          title: '来源',
+          align: "center",
+          dataIndex: 'source',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_user_timecard_source', text);
+          },
+        },
+        {
+          title: '鞋蜂卡名称',
+          align: "center",
+          dataIndex: 'name'
+        },
+        {
+          title: '使用双数',
+          align: "center",
+          dataIndex: 'usedNum'
+        },
+        {
+          title: '剩余双数',
+          align: "center",
+          customRender:function (text, record){
+            return record.num - record.usedNum;
+          }
+        },
+        {
+          title: '状态',
+          align: "center",
+          dataIndex: "status",
+          customRender:function (text){
+            return filterDictTextByCache('shoe_user_timecard_status', text);
+          }
+        },
+        {
+          title: '开始时间',
+          align: "center",
+          dataIndex: 'startTime',
+        },
+        {
+          title: '过期时间',
+          align: "center",
+          dataIndex: 'endTime',
+        },
+      ],
+      url: {
+        list: "/shoeTimecardDetail/list",
+      },
+      dictOptions: {},
+      queryParam: {
+        createTime: [],
+        createTimeLeft: '',
+        createTimeRight: '',
+        finishTimeLeft: '',
+        finishTime: [],
+      },
+      statusOptionList: [
         {"value": "", "name": "全部"}, {"value": "0", "name": "未使用"}, {"value": "1", "name": "使用中"},
         {"value": "2", "name": "已使用"}
       ],
-      }
-    },
-    created() {
-    },
-    watch:{
+    }
+  },
+  created() {
+  },
+  watch: {
     'queryParam.createTime': {
-        handler(newV) {
+      handler(newV) {
+        if (newV.length) {
           this.queryParam.createTimeLeft = moment(newV[0]).format('YYYY-MM-DD')
           this.queryParam.createTimeright = moment(newV[1]).format('YYYY-MM-DD')
+        } else {
+          this.queryParam.createTimeLeft = ""
+          this.queryParam.createTimeright = ""
+        }
       },
       // immediate: true
     },
     'queryParam.finishTime': {
-        handler(newV) {
+      handler(newV) {
+        if (newV.length) {
           this.queryParam.finishTimeLeft = moment(newV[0]).format('YYYY-MM-DD')
           this.queryParam.finishTimeright = moment(newV[1]).format('YYYY-MM-DD')
+        } else {
+          this.queryParam.finishTimeLeft = ""
+          this.queryParam.finishTimeright = ""
+        }
       },
       // immediate: true
     }
   },
-    computed: {
-      importExcelUrl: function(){
-        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
+  computed: {
+    importExcelUrl: function () {
+      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
     },
-    methods: {
-      initDictConfig(){
-      },
-    }
+  },
+  methods: {
+    initDictConfig() {
+    },
   }
+}
 </script>
 <style scoped>
-  @import '~@assets/less/common.less';
+@import '~@assets/less/common.less';
 </style>
