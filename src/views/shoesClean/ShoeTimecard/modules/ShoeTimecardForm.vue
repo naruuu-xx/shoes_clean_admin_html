@@ -83,7 +83,7 @@
             <div class="good">
               <div class="good-label">
                 商品分类{{ idx + 1 }}：
-                <a-select style="width: 120px" v-model="classify.goodClassify">
+                <a-select style="width: 120px" v-model="classify.category_id">
                   <a-select-option :value="item.id" v-for="(item, index) in ClassifyList" :key="index"
                                    :disabled="disabledGoodClassify(item.id)">
                     {{ item.name }}
@@ -189,7 +189,7 @@ let validateGood = (rule, value, callback) => {
 // 验证分类折扣选择
 let validateClassifyDiscount = (rule, value, callback) => {
   let n = value.every((item) => {
-    return item.goodClassify && item.discount
+    return item.category_id && item.discount
   })
   if (!n) {
     // this.$refs.ruleForm.validateField('checkPass');
@@ -296,7 +296,7 @@ export default {
     },
     // 分类不可多个一样
     disabledGoodClassify(id) {
-      return this.classifyDiscountList.map(item => +item.goodClassify).includes(+id)
+      return this.classifyDiscountList.map(item => +item.category_id).includes(+id)
     },
     // 验证是否售卖
     validateSell(rule, value, callback) {
@@ -324,7 +324,7 @@ export default {
     // 点击新增分类折扣
     onAddClassify() {
       this.classifyDiscountList.push({
-        goodClassify: '',
+        category_id: '',
         discount: "",
       })
     },
@@ -342,7 +342,6 @@ export default {
     },
     edit(record) {
       this.model = Object.assign({}, record);
-      console.log(this.model);
       this.goodList = this.model.goodList;
       this.classifyDiscountList = this.model.classifyDiscountList;
       this.visible = true
