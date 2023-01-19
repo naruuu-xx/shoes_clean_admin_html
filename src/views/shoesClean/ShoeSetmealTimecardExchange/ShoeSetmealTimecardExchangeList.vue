@@ -51,7 +51,8 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        class="j-table-force-nowrap">
+        class="j-table-force-nowrap"
+        @change="handleTableChange">
 
       </a-table>
     </div>
