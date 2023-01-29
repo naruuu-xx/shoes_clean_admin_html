@@ -12,50 +12,52 @@
       <div style="margin-left: 20px">
         <a-row>
           <a-col :span="18">
-            <a-input style="height: 120px" v-model:value="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo"  ref="autoInput"/>
+            <a-input style="height: 120px" v-model:value="KuaidiNum" placeholder="请输入快递单号" @pressEnter="queryOrderInfo"  ref="autoInput"/>
           </a-col>
           <a-col :span="2"></a-col>
           <a-col :span="4">
             <a-row><a-button @click="queryOrderInfo" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">确&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认</span></a-button></a-row>
-            <a-row><a-button @click="emptyBagCode" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
+            <a-row><a-button @click="emptyKuaidiNum" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
           </a-col>
         </a-row>
         <a-divider />
         <a-row v-show="shoeOrderInfo">
+          <div v-for="(item,idx) in dataList" :key="idx">
           <a-row>
             <a-col :span="18">
-              <span class="content">订单编号：{{data.no}}</span>
+              <span class="content">订单编号：{{item.no}}</span>
             </a-col>
             <a-col :span="2"></a-col>
-            <a-col :span="4">
+            <a-col :span="4" v-if="idx == 0">
               <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="6">
-              <span class="content">商品名：{{data.title}}</span>
+              <span class="content">商品名：{{item.title}}</span>
             </a-col>
             <a-col :span="6">
-              <span class="content">商品规格：{{data.skuTitle}}</span>
+              <span class="content">商品规格：{{item.skuTitle}}</span>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="24">
-              <span class="content">附加项：{{data.name}}</span>
+              <span class="content">附加项：{{item.name}}</span>
             </a-col>
           </a-row>
-<!--          <a-row style="margin-bottom: 30px">-->
-<!--            <a-col :span="24">-->
-<!--              <span class="content">用户备注：{{data.note}}</span>-->
-<!--            </a-col>-->
-<!--          </a-row>-->
+          <!--          <a-row style="margin-bottom: 30px">-->
+          <!--            <a-col :span="24">-->
+          <!--              <span class="content">用户备注：{{data.note}}</span>-->
+          <!--            </a-col>-->
+          <!--          </a-row>-->
           <a-row>
             <a-col :span="24">
               <p class="content">照片：</p>
-              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
-                   :src="item" @click="showImage(item)">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="image in item.imageList"
+                   :src="image" @click="showImage(image)">
             </a-col>
           </a-row>
+          </div>
         </a-row>
       </div>
     </a-spin>
@@ -65,44 +67,7 @@
       <img alt="example" style="width: 100%" :src="clickedImage">
     </a-modal>
 
-<!--    <a-modal :zIndex="2000" :width="600" :visible="showInOfStoragePrintModal" :footer="null"-->
-<!--             @cancel="handleShowInOfStoragePrintModalCancel()">-->
-<!--      <a-row>-->
-<!--        <a-col :span="24" style="margin-bottom: 30px">-->
-<!--          <span class="content">订单编号：{{data.no}}</span>-->
-<!--        </a-col>-->
-<!--      </a-row>-->
-<!--      <a-row style="margin-bottom: 30px">-->
-<!--        <a-col :span="12">-->
-<!--          <span class="content">商品名：{{data.title}}</span>-->
-<!--        </a-col>-->
-<!--        <a-col :span="12">-->
-<!--          <span class="content">商品规格：{{data.skuTitle}}</span>-->
-<!--        </a-col>-->
-<!--      </a-row>-->
-<!--      <a-row style="margin-bottom: 30px">-->
-<!--        <a-col :span="24">-->
-<!--          <span class="content">附加项：{{data.name}}</span>-->
-<!--        </a-col>-->
-<!--      </a-row>-->
-<!--      <a-row>-->
-<!--        <a-col :span="24">-->
-<!--          <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">-->
-<!--            <a-select-->
-<!--              v-model:value="selectedNote"-->
-<!--              mode="multiple"-->
-<!--              style="width: 100%;"-->
-<!--              placeholder="请选择"-->
-<!--              :options="noteOptions"-->
-<!--              :z-index="2000"-->
-<!--            >-->
-<!--            </a-select>-->
-<!--          </a-form-model-item>-->
-<!--        </a-col>-->
-<!--      </a-row>-->
-<!--    </a-modal>-->
-
-    <confirm-print-modal ref="confirmPrintModal"></confirm-print-modal>
+    <confirm-expressage-print-modal ref="confirmExpressagePrintModal"></confirm-expressage-print-modal>
 
   </j-modal>
 </template>
@@ -110,17 +75,17 @@
 <script>
 
 import {downFile, httpAction} from "../../../../../api/manage";
-import ConfirmPrintModal from "./ConfirmPrintModal";
+import ConfirmExpressagePrintModal from "./ConfirmExressagePrintModal";
 
 export default {
   name: "ShoeInOfStorageModal",
-  components: {ConfirmPrintModal},
+  components: {ConfirmExpressagePrintModal},
   data() {
     return {
       visible: false,
       title: '入库',
-      bagCode: "",
-      data: {},
+      KuaidiNum: "",
+      dataList:[],
       imageList: [],
       showImageModal: false,
       shoeOrderInfo: false,
@@ -154,7 +119,7 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
-      this.bagCode = "";
+      this.KuaidiNum = "";
       //关闭弹窗并刷新列表
       this.$emit('ok');
     },
@@ -168,33 +133,26 @@ export default {
     },
     queryOrderInfo(){
       //查询订单信息
-      if (this.bagCode === "" || this.bagCode === null || this.bagCode === undefined) {
-        this.$message.warning("请扫描袋子编码或者手动输入袋子编码");
-      } else if (this.bagCode.length < 6) {
-        this.$message.warning("请扫描或输入正确的袋子编码");
+      if (this.KuaidiNum === "" || this.KuaidiNum === null || this.KuaidiNum === undefined) {
+        this.$message.warning("请扫描快递单号或者手动输入快递单号");
       } else {
-        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryOrderInfoByBagCode?bagCode=" + this.bagCode, null, "get").then((res) => {
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryExpressageOrderInfoByKuaidiNum?kuaidiNum=" + this.KuaidiNum, null, "get").then((res) => {
           if (res.code !== 200) {
             this.$message.warning(res.message);
             //清空输入框并重新聚焦
-            this.bagCode = "";
+            this.KuaidiNum = "";
             this.$nextTick(()=> {
               this.$refs.autoInput.focus();
             })
             return false;
           } else {
-            this.data = {
-              "orderId": res.result.orderId,
-              "no": res.result.no,
-              "note": res.result.note,
-              "title": res.result.title,
-              "skuTitle": res.result.skuTitle,
-              "name": res.result.name
-            }
-            this.imageList = JSON.parse(res.result.orderImages);
+            this.dataList = res.result.map(item => {
+              let imageList = JSON.parse(item.orderImages)
+              return Object.assign({},item,{imageList})
+            })
             this.shoeOrderInfo = true;
             //清空输入框并重新聚焦
-            this.bagCode = "";
+            this.KuaidiNum = "";
             this.selectedNote = [];
             this.$nextTick(()=> {
               this.$refs.autoInput.focus();
@@ -203,9 +161,9 @@ export default {
         })
       }
     },
-    emptyBagCode(){
+    emptyKuaidiNum(){
       //清空输入框内容
-      this.bagCode = "";
+      this.KuaidiNum = "";
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
@@ -216,11 +174,11 @@ export default {
     },
     shoeInOfStorageModal() {
       // this.showInOfStoragePrintModal = true;
-      this.$refs.confirmPrintModal.show(this.data);
+      this.$refs.confirmExpressagePrintModal.show(this.dataList);
     },
     handleInOfStorage(){
       this.confirmLoading = true;
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", this.data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return

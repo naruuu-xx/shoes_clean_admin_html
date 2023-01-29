@@ -9,7 +9,7 @@
               <a-input placeholder="请输入订单编号" v-model="queryParam.no"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="手机号">
               <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
             </a-form-item>
@@ -23,6 +23,15 @@
             <a-form-item label="订单状态">
               <a-select v-model="queryParam.status">
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="订单类型">
+              <a-select v-model="queryParam.type">
+                <a-select-option v-for="item in typeOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
                 </a-select-option>
               </a-select>
@@ -252,6 +261,14 @@ export default {
           }
         },
         {
+          title: '订单类型',
+          align: "center",
+          dataIndex: 'type',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_order_type', text);
+          }
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           align: "center",
@@ -284,6 +301,10 @@ export default {
           "name": "已完成"
         },
         {"value": "14", "name": "退款中"}, {"value": "15", "name": "已退款"}, {"value": "16", "name": "已取消"},
+        {"value": "17", "name": "用户已寄出"},{"value": "18", "name": "已出库未寄出"},{"value": "19", "name": "工厂已寄出"},
+      ],
+      typeOptionList: [
+        {"value": "", "name": "全部"}, {"value": "self", "name": "自提"}, {"value": "service", "name": "配送"},{"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点"}
       ],
       lockerList: [],
     }

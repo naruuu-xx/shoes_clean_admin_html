@@ -7,33 +7,41 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    :fullscreen = "true">
+    :fullscreen="false">
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleOutOfStorage" ref="autoInput" />
+          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码"
+                   @pressEnter="handleOutOfStorage" ref="autoInput"/>
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
-          <a-row><a-button @click="handleOutOfStorage" style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span style="font-size: 22px;">出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</span></a-button></a-row>
-          <a-row><a-button @click="emptyNo" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
+          <a-row>
+            <a-button @click="handleOutOfStorage"
+                      style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span
+              style="font-size: 22px;">出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</span></a-button>
+          </a-row>
+          <a-row>
+            <a-button @click="emptyNo" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span
+              style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button>
+          </a-row>
         </a-col>
       </a-row>
-      <a-divider />
+      <a-divider/>
       <a-row v-show="shoeOrderInfo">
         <a-row style="margin-bottom: 30px">
           <a-col :span="24">
-            <span class="content">订单编号：{{data.no}}</span>
+            <span class="content">订单编号：{{ data.no }}</span>
           </a-col>
         </a-row>
         <a-row style="margin-bottom: 30px">
           <a-col :span="24">
-            <span class="content">商品名：{{data.title}}</span>
+            <span class="content">商品名：{{ data.title }}</span>
           </a-col>
         </a-row>
         <a-row style="margin-bottom: 30px">
           <a-col :span="24">
-            <span class="content">商品规格：{{data.skuTitle}}</span>
+            <span class="content">商品规格：{{ data.skuTitle }}</span>
           </a-col>
         </a-row>
         <a-row>
@@ -50,6 +58,13 @@
              @cancel="handleShoeImageModalCancel()">
       <img alt="example" style="width: 100%" :src="clickedImage">
     </a-modal>
+    <a-modal :zIndex="2000" :width="600" :visible="resDataModal" :footer="null"
+             @cancel="handleResDataModal">
+      <h1 style="text-align: center">{{ resData.message }}</h1>
+      <div style="display: flex;justify-content: center">
+        <a-button type="primary" if="resData.code==2001" @click="routeToDetail">查看详情</a-button>
+      </div>
+    </a-modal>
 
   </j-modal>
 </template>
@@ -64,6 +79,7 @@ export default {
   data() {
     return {
       visible: false,
+      resDataModal: false,
       title: '出库',
       no: "",
       data: {},
@@ -71,6 +87,8 @@ export default {
       showImageModal: false,
       shoeOrderInfo: false,
       clickedImage: "",
+      resData: {},
+
     }
   },
   created() {
@@ -78,9 +96,16 @@ export default {
   methods: {
     show(record) {
       this.visible = true;
-      this.$nextTick(()=> {
+      this.$nextTick(() => {
         this.$refs.autoInput.focus();
       })
+    },
+    routeToDetail() {
+      this.$router.push("/shoesClean/ShoeExpressageOrder/ShoeExpressageOrderListByFactory");
+    },
+    handleResDataModal() {
+      this.resDataModal = false
+
     },
     handleCancel() {
       this.visible = false;
@@ -98,7 +123,7 @@ export default {
       this.showImageModal = false;
       this.clickedImage = "";
     },
-    handleOutOfStorage(){
+    handleOutOfStorage() {
       //处理出库
       if (this.no === "" || this.no === null || this.no === undefined) {
         this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
@@ -108,12 +133,28 @@ export default {
         }
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {
           if (res.code !== 200) {
-            this.$message.warning(res.message);
+            if (res.code !== 2000 && res.code !== 2001) {
+              this.$message.warning(res.message);
+            }
+
             //清空输入框并重新聚焦
             this.no = "";
-            this.$nextTick(()=> {
+            this.$nextTick(() => {
               this.$refs.autoInput.focus();
             })
+
+            if (res.code === 2001) {
+              this.resData = res;
+              this.resDataModal = true;
+              //打印水洗唛
+              this.createWashedMark(res.result.no);
+            } else if (res.code === 2000) {
+              this.resData = res;
+              this.$message.success(res.message, 3);
+
+              //打印水洗唛
+              this.createWashedMark(res.result.no);
+            }
             return false;
           } else {
             this.data = {
@@ -127,7 +168,7 @@ export default {
             this.$message.success(res.message);
             //清空输入框并重新聚焦
             this.no = "";
-            this.$nextTick(()=> {
+            this.$nextTick(() => {
               this.$refs.autoInput.focus();
             })
 
@@ -138,14 +179,14 @@ export default {
         })
       }
     },
-    emptyNo(){
+    emptyNo() {
       //清空输入框内容
       this.no = "";
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
     },
-    createWashedMark(no){
+    createWashedMark(no) {
       let data = {
         "no": no
       }
@@ -157,7 +198,7 @@ export default {
         const content = res;
         // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
         // 要不然无法进行打印
-        const blob = new Blob([content], { type: 'application/pdf' });
+        const blob = new Blob([content], {type: 'application/pdf'});
         //=========================================================
         var date = (new Date()).getTime();
         var ifr = document.createElement('iframe');
