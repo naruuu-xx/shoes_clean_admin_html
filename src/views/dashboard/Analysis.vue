@@ -16,7 +16,7 @@
         <div class="box">
           <div class="box-item" v-for="(item,idx) in dataObj.orderForm" :key="idx">
             <div class="box-item-title">{{ item.name }}</div>
-            <div class="box-item-value">¥{{ item.num }}</div>
+            <div class="box-item-value">{{ item.num }}</div>
           </div>
         </div>
       </a-col>
@@ -24,7 +24,7 @@
         <div class="box">
           <div class="box-item" v-for="(item,idx) in dataObj.numberOfUsers" :key="idx">
             <div class="box-item-title">{{ item.name }}</div>
-            <div class="box-item-value">¥{{ item.num }}</div>
+            <div class="box-item-value">{{ item.num }}</div>
           </div>
         </div>
       </a-col>
@@ -32,7 +32,7 @@
 
     <a-row>
       <div class="status">
-        <div class="status-box" v-for="(status, idx) in dataObj.statuslist" :key="idx">
+        <div class="status-box" v-for="(status, idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(status)">
           <div class="status-box-name">{{ status.name }}</div>
           <div class="status-box-value">{{ status.num }}</div>
         </div>
@@ -44,7 +44,7 @@
         <div class="withdraw">
           <div class="withdraw-title">提现待审核</div>
           <div class="withdraw-main">
-            <div class="withdraw-main-item" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
+            <div class="withdraw-main-item" @click="onClickw('0',item)" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
               <div class="withdraw-main-item-name">{{ item.name }}</div>
               <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
             </div>
@@ -55,7 +55,7 @@
         <div class="withdraw">
           <div class="withdraw-title">提现待确认</div>
           <div class="withdraw-main">
-            <div class="withdraw-main-item" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
+            <div class="withdraw-main-item" @click="onClickw('1',item)" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
               <div class="withdraw-main-item-name">{{ item.name }}</div>
               <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
             </div>
@@ -111,7 +111,7 @@
                 <div class="rankings-main">
                   <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
                     <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                    <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}{{barQuery.type.name == '订单数' ? '个' : ''}}</div>
+                    <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
                   </div>
                   <a-empty v-if="!goodRankingList.length"/>
                 </div>
@@ -127,7 +127,7 @@
                 <div class="rankings-main">
                   <div class="rankings-main-cell" v-for="(good, idx) in lockerRankingList" :key="idx">
                     <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                    <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}{{barQuery.type.name == '订单数' ? '个' : ''}}</div>
+                    <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
                   </div>
                   <a-empty v-if="!lockerRankingList.length"/>
                 </div>
@@ -135,22 +135,22 @@
               </div>
             </div>
           </a-col>
-          <!-- <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+          <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
             <div>
               <div class="rankings">
                 <div class="rankings-title">站点{{ barQuery.type.name }}排行</div>
                 <a-spin :spinning="spinning">
                 <div class="rankings-main">
-                  <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
+                  <div class="rankings-main-cell" v-for="(good, idx) in siteRankingList" :key="idx">
                     <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                    <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}{{barQuery.type.name == '订单数' ? '个' : ''}}</div>
+                    <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
                   </div>
-                  <a-empty v-if="!goodRankingList.length"/>
+                  <a-empty v-if="!siteRankingList.length"/>
                 </div>
                 </a-spin>
               </div>
             </div>
-          </a-col> -->
+          </a-col>
         </a-row>
       </div>
     </a-card>
@@ -198,6 +198,7 @@ export default {
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
       goodRankingList: [],
       lockerRankingList:[],
+      siteRankingList:[],
       barQuery: {
         type: {
           name: '订单数',
@@ -245,14 +246,33 @@ export default {
     }
   },
   created() {
-    setTimeout(() => {
-      this.loading = !this.loading
-    }, 1000)
-    this.initLogInfo()
+    
+    // this.initLogInfo()
     this.getIndexUp()
     this.getIndexDown()
   },
   methods: {
+    // 点击订单状态
+    onClickOrder(val) {
+      this.$router.push(`/order/list?status=${val.status}`)
+    },
+    // 点击 
+    onClickw(status,val) {
+      if(+val.num == 0) return
+      let url = ''
+      switch (val.name) {
+        case '投资人':
+          url = '/shoesClean/ShoeInvestors/ShoeInvestorsWithdrawalList'
+          break;
+        case '配送员':
+          url = '/courierWithdrawal/list'
+          break;
+      
+        default:
+          break;
+      }
+      this.$router.push(`${url}?status=${status}`)
+    },
     // 点击tab
     onTab(type, value) {
       this.barQuery[type] = value
@@ -289,11 +309,16 @@ export default {
       this.spinning = true
       getAction('/indexDown',form).then((res) => {
         console.log(777,res);
-        this.barData = res.barData
+        if(res.success) {
+          this.barData = res.barData
         this.goodRankingList = res.goodRankingList
         this.lockerRankingList = res.lockerRankingList
+        // this.siteRankingList = res.siteRankingList
+        }
+        
       }).finally(s => {
         this.spinning = false
+        this.loading = false
       })
     }
     
