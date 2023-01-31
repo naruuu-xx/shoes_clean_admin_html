@@ -111,7 +111,7 @@ export default {
           }
         },
         {
-          title: '购买时间',
+          title: '推送时间',
           align: "center",
           dataIndex: 'createTime'
 
