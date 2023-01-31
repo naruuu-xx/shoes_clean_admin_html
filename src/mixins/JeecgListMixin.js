@@ -52,6 +52,7 @@ export const JeecgListMixin = {
     }
   },
   created() {
+    Object.assign(this.queryParam,this.$route.query)
       if(!this.disableMixinCreated){
         console.log(' -- mixin created -- ')
         this.loadData();

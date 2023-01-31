@@ -186,6 +186,9 @@ export default {
       description: 'shoe_order管理页面',
       serviceCode: '',
       selfCode: '',
+      queryParam:{
+        status:''
+      },
       // 表头
       columns: [
         {
