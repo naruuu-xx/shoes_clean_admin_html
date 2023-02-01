@@ -34,7 +34,7 @@
         </a-descriptions-item>
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
         <a-descriptions-item label="实付金额(元)"> {{ data.actualPrice }} </a-descriptions-item>
-        <a-descriptions-item label="优惠金额(元)"> {{ data.couponPrice }} </a-descriptions-item>
+        <a-descriptions-item label="优惠金额(元)"> {{ OrderDetail.discount }} </a-descriptions-item>
         <a-descriptions-item label="优惠券名称">{{ OrderDetail.couponName }} </a-descriptions-item>
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
