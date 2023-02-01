@@ -12,7 +12,7 @@
       <div style="margin-left: 20px">
         <a-row>
           <a-col :span="18">
-            <a-input style="height: 120px" v-model:value="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo"  ref="autoInput"/>
+            <a-input style="height: 120px" v-model.trim="bagCode" placeholder="请扫码袋子编码或者手动输入袋子编码" @pressEnter="queryOrderInfo"  ref="autoInput"/>
           </a-col>
           <a-col :span="2"></a-col>
           <a-col :span="4">

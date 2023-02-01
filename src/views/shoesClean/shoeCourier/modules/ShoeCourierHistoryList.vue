@@ -220,6 +220,7 @@ export default {
         if (res.success) {
           //把数据传入dataSource
           this.dataSource = res.result.records;
+          this.ipagination.current = 1;
           this.ipagination.total = res.result.total;
         }
       })

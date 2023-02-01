@@ -80,18 +80,6 @@
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
           <img v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
-        <template slot="fileSlot" slot-scope="text">
-          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
-          <a-button
-            v-else
-            :ghost="true"
-            type="primary"
-            icon="download"
-            size="small"
-            @click="downloadFile(text)">
-            下载
-          </a-button>
-        </template>
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEditByDIY(record)">编辑</a>
@@ -101,20 +89,6 @@
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDeleteByDIY(record.scheduleId)">
             <a>删除</a>
           </a-popconfirm>
-
-<!--          <a-dropdown>-->
-<!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
-<!--            <a-menu slot="overlay">-->
-<!--              <a-menu-item>-->
-<!--                <a @click="handleDetail(record)">详情</a>-->
-<!--              </a-menu-item>-->
-<!--              <a-menu-item>-->
-<!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">-->
-<!--                  <a>删除</a>-->
-<!--                </a-popconfirm>-->
-<!--              </a-menu-item>-->
-<!--            </a-menu>-->
-<!--          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -144,31 +118,6 @@
         description: 'shoe_schedule管理页面',
         // 表头
         columns: [
-          // {
-          //   title: '#',
-          //   dataIndex: '',
-          //   key:'rowIndex',
-          //   width:60,
-          //   align:"center",
-          //   customRender:function (t,r,index) {
-          //     return parseInt(index)+1;
-          //   }
-          // },
-          // {
-          //   title:' ID',
-          //   align:"center",
-          //   dataIndex: 'scheduleId'
-          // },
-          // {
-          //   title:' 配送员ID',
-          //   align:"center",
-          //   dataIndex: 'courierId'
-          // },
-          // {
-          //   title:' 配送员名字',
-          //   align:"center",
-          //   dataIndex: 'name'
-          // },
           {
             title:' 星期',
             align:"center",
@@ -187,24 +136,6 @@
             align:"center",
             dataIndex: 'endTime'
           },
-          // {
-          //   title:' 状态',
-          //   align:"center",
-          //   dataIndex: 'status',
-          //   customRender: (text) => {
-          //     return filterDictTextByCache('shoe_schedule_status', text);
-          //   }
-          // },
-          // {
-          //   title:' 创建时间',
-          //   align:"center",
-          //   dataIndex: 'createTime'
-          // },
-          // {
-          //   title:' 更新时间',
-          //   align:"center",
-          //   dataIndex: 'updateTime'
-          // },
           {
             title: '操作',
             dataIndex: 'action',
@@ -218,15 +149,13 @@
           list: "/shoeSchedule/shoeSchedule/queryList",
           delete: "/shoeSchedule/shoeSchedule/delete",
           deleteBatch: "/shoeSchedule/shoeSchedule/deleteBatch",
-          exportXlsUrl: "/shoeSchedule/shoeSchedule/exportXls",
-          importExcelUrl: "shoeSchedule/shoeSchedule/importExcel",
-
         },
         dictOptions:{},
         superFieldList:[],
         scheduleVisible: false,
         courierId: null,
         dataSource: [],
+        ipagination: { total: 0},
         loading:false,
       }
     },
@@ -240,17 +169,20 @@
     },
     methods: {
       initDataByDIY(courierId){
+        this.queryParam.courierId = courierId;
         this.courierId = courierId;
         // console.log(courierId);
 
         let data = {
-          "courierId": courierId
+          "courierId": this.courierId
         }
 
         getAction(this.url.list, data).then((res) => {
           if (res.success){
             //把数据传入dataSource
             this.dataSource = res.result.records;
+            this.ipagination.current = 1;
+            this.ipagination.total = res.result.total;
           }
         })
 

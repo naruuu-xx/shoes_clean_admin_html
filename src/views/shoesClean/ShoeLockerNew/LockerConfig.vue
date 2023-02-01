@@ -14,15 +14,15 @@
           </a-row>
         </div>
 
-<!--        <div style="margin-bottom: 20px">-->
-<!--          <p style="margin-left: 56px;font-size: 20px;"><b>链接设置</b></p>-->
-<!--          <a-row>-->
-<!--            <a-col :span="24">-->
-<!--              <a-form-item label="1.首页二维码：" prop="homePageQR">-->
-<!--                <j-image-upload-by-one v-model="model.homePageQR"></j-image-upload-by-one>-->
-<!--              </a-form-item>-->
-<!--            </a-col>-->
-<!--          </a-row>-->
+        <div style="margin-bottom: 20px">
+          <p style="margin-left: 56px;font-size: 20px;"><b>链接设置</b></p>
+          <a-row>
+            <a-col :span="24">
+              <a-form-item label="1.首页二维码：" prop="homePageQR">
+                <j-image-upload v-model="model.homePageQR"></j-image-upload>
+              </a-form-item>
+            </a-col>
+          </a-row>
 <!--          <a-row>-->
 <!--            <a-col :span="24">-->
 <!--              <a-form-item label="2.存鞋二维码链接：" prop="homePageQR">-->
@@ -37,7 +37,7 @@
 <!--              </a-form-item>-->
 <!--            </a-col>-->
 <!--          </a-row>-->
-<!--        </div>-->
+        </div>
 
       </a-form>
       <!-- 底部提交按钮 -->
