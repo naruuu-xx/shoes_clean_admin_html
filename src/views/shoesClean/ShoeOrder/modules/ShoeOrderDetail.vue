@@ -26,11 +26,11 @@
       <a-descriptions title="订单信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="订单编号"> {{ data.no }}</a-descriptions-item>
         <a-descriptions-item label="订单金额(元)">
-          {{ data.goodsPrice + data.additionalPrice + data.courierPrice }}
+          {{ data.goodsPrice + data.additionalPrice + data.originalCourierPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
         <a-descriptions-item :label="'上门取件' === data.type ? '配送费(元)' : '运费(元)'">
-          {{ data.courierPrice }}
+          {{ data.originalCourierPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
         <a-descriptions-item label="实付金额(元)"> {{ data.actualPrice }} </a-descriptions-item>
@@ -64,7 +64,7 @@
       <a-descriptions v-if="orderRefund" title="退款信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="退款原因"> {{ orderRefund.reason }}</a-descriptions-item>
         <a-descriptions-item label="退款说明"> {{ orderRefund.description || '空' }} </a-descriptions-item>
-        <a-descriptions-item label="退款金额(元)"> {{ orderRefund.refundPrice }} </a-descriptions-item>
+        <a-descriptions-item label="退款金额(元)"> {{ (orderRefund.refundPrice/100).toFixed(2) }} </a-descriptions-item>
         <a-descriptions-item label="退款时间"> {{ orderRefund.updateTime }} </a-descriptions-item>
       </a-descriptions>
 
@@ -255,7 +255,7 @@ export default {
       // let orderInfo = record;
       let orderInfo = Object.assign({}, record)
       orderInfo.goodsPrice = +(orderInfo.goodsPrice / 100).toFixed(2)
-      orderInfo.courierPrice = +(orderInfo.courierPrice / 100).toFixed(2)
+      orderInfo.originalCourierPrice = +(orderInfo.originalCourierPrice / 100).toFixed(2)
       orderInfo.totalPrice = +(orderInfo.totalPrice / 100).toFixed(2)
       orderInfo.price = +(orderInfo.price / 100).toFixed(2)
       orderInfo.couponPrice = +(orderInfo.couponPrice / 100).toFixed(2)
