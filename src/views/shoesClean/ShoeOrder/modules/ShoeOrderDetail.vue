@@ -39,10 +39,10 @@
         <a-descriptions-item label="次卡名称">{{ data.timecardName }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
         <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
-        <a-descriptions-item label="机柜名称-格子数" v-if="statusInt > 0 && statusInt < 5">
+        <a-descriptions-item label="机柜名称-格子数" v-if="statusInt > 0 && statusInt < 5 && '快递上门' !== data.type">
           {{ data.lockerName }}-{{ data.beforeGridNo }}
         </a-descriptions-item>
-        <a-descriptions-item label="机柜名称-格子数" v-if="statusInt >= 9 && statusInt <= 13 &&  ('上门取件' === data.type || '站点自寄' === data.type)">
+        <a-descriptions-item label="机柜名称-格子数" v-if=" '快递上门' !== data.type && statusInt >= 9 && statusInt <= 13 &&  ('上门取件' === data.type || '站点自寄' === data.type)">
           {{ data.lockerName }}-{{ data.afterGridNo }}
         </a-descriptions-item>
         <template v-if="'上门取件' === data.type">
@@ -89,6 +89,21 @@
           <a-descriptions-item label="寄回地址"> {{ recManPrintAddr }} </a-descriptions-item>
         </template>
       </a-descriptions>
+      
+      <a-descriptions v-if="'快递上门' === data.type" title="快递信息" layout="vertical" bordered :column="5" size="small" style="margin-bottom: 20px">
+        <a-descriptions-item label="快递单号(取鞋)">
+          
+        </a-descriptions-item>
+        <a-descriptions-item label="快递员(取鞋)">
+          
+        </a-descriptions-item>
+        <a-descriptions-item label="快递单号(寄回)">
+        </a-descriptions-item>
+        <a-descriptions-item label="快递员(寄回)">
+          
+        </a-descriptions-item>
+      </a-descriptions>
+
       <div class="table">
         <div class="table-title">物流信息</div>
         <div class="table-main">
