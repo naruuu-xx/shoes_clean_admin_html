@@ -38,7 +38,7 @@
         <a-descriptions-item label="优惠券名称">{{ data.couponName }} </a-descriptions-item>
         <a-descriptions-item label="次卡名称">{{ data.timecardName }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
-        <a-descriptions-item label="下单时间"> {{ data.payTime }} </a-descriptions-item>
+        <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
         <a-descriptions-item label="机柜名称-格子数" v-if="statusInt > 0 && statusInt < 5">
           {{ data.lockerName }}-{{ data.beforeGridNo }}
         </a-descriptions-item>
