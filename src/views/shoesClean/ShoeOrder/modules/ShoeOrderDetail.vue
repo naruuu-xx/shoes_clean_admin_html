@@ -7,523 +7,160 @@
     @cancel="handleCancel"
     cancelText="关闭"
     :footer="null"
-    wrapClassName="full-modal">
+    wrapClassName="full-modal"
+  >
     <div class="diyDiv">
-      <!-- 上面一大块 -->
-      <a-row style="border-bottom: 1px solid #dedede">
-        <!-- 标题 -->
-        <div style="margin-bottom: 20px">
-          <a-row>
-            <a-col :span="24">
-              <p class="shoe-order-detail-title" style="margin-left: 44px">商品信息</p>
-            </a-col>
-          </a-row>
+      <a-descriptions title="商品信息" layout="vertical" bordered :column="5" size="small" style="margin-bottom: 20px">
+        <a-descriptions-item label="商品">
+          <img alt="example" style="width: 120px" :src="data.image" @click="previewModel" />
+          {{ data.title }}
+        </a-descriptions-item>
+        <a-descriptions-item label="规格">
+          {{ data.skuTitle }}
+        </a-descriptions-item>
+        <a-descriptions-item label="附加服务">{{ data.additionalName || '无' }}</a-descriptions-item>
+        <a-descriptions-item label="数量"> 1 </a-descriptions-item>
+        <a-descriptions-item label="商品金额(元)">{{ data.goodsPrice }}</a-descriptions-item>
+      </a-descriptions>
 
-          <!-- 商品信息部分 -->
-          <a-row>
-            <!-- 左边部分 -->
-            <a-col :span="1"></a-col>
-            <a-col :span="11">
-              <!-- 商品名 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">商品名：{{ data.title }}</div>
-                </a-col>
-              </a-row>
-              <!-- 商品图片 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">商品图片：
-                    <!--                    <j-image-upload-by-one-for-shoe-order v-model="orderImagesList"></j-image-upload-by-one-for-shoe-order>-->
-                    <!--                    <img v-for="item in orderImagesList" alt="example" style="width: 20%;height: 20%;margin: 10px" :src="item" @click="previewModel(item)"/>-->
-                    <img alt="example" style="width: 20%;height: 20%;margin: 10px" :src="data.image"
-                         @click="previewModel()"/>
-                  </div>
-                </a-col>
-              </a-row>
-            </a-col>
+      <a-descriptions title="订单信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
+        <a-descriptions-item label="订单编号"> {{ data.no }}</a-descriptions-item>
+        <a-descriptions-item label="订单金额(元)">
+          {{ data.goodsPrice + data.additionalPrice + data.courierPrice }}
+        </a-descriptions-item>
+        <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
+        <a-descriptions-item :label="'上门取件' === data.type ? '配送费(元)' : '运费(元)'">
+          {{ data.courierPrice }}
+        </a-descriptions-item>
+        <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
+        <a-descriptions-item label="实付金额(元)"> {{ data.actualPrice }} </a-descriptions-item>
+        <a-descriptions-item label="优惠金额(元)"> {{ data.couponPrice }} </a-descriptions-item>
+        <a-descriptions-item label="优惠券名称">{{ data.couponName }} </a-descriptions-item>
+        <a-descriptions-item label="次卡名称">{{ data.timecardName }} </a-descriptions-item>
+        <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
+        <a-descriptions-item label="下单时间"> {{ data.payTime }} </a-descriptions-item>
+        <a-descriptions-item label="机柜名称-格子数" v-if="statusInt > 0 && statusInt < 5">
+          {{ data.lockerName }}-{{ data.beforeGridNo }}
+        </a-descriptions-item>
+        <a-descriptions-item label="机柜名称-格子数" v-if="statusInt >= 9 && statusInt <= 13 &&  ('上门取件' === data.type || '站点自寄' === data.type)">
+          {{ data.lockerName }}-{{ data.afterGridNo }}
+        </a-descriptions-item>
+        <template v-if="'上门取件' === data.type">
+          <a-descriptions-item label="配送员(取鞋)">
+            <template v-if="courierNameByBefore !== '无'">
+              {{ courierNameByBefore }}({{ courierPhoneByBefore }})
+            </template>
+            <template v-else>——</template>
+          </a-descriptions-item>
+          <a-descriptions-item label="配送员(送鞋)">
+            <template v-if="courierNameByAfter !== '无'">
+              {{ courierNameByAfter }}({{ courierPhoneByAfter }})
+            </template>
+            <template v-else>——</template>
+          </a-descriptions-item>
+        </template>
+      </a-descriptions>
 
-            <!-- 右边部分 -->
-            <a-col :span="12">
-              <!-- 商品规格 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">商品规格：{{ data.skuTitle }}</div>
-                </a-col>
-              </a-row>
-              <!--          附加服务    -->
-              <a-row>
-                <a-col :span="24" v-if="data.additionalName != ''  ">
-                  <div class="content-font-above">附加服务：{{ data.additionalName }}</div>
-                </a-col>
-                <a-col :span="24" v-if="data.additionalName == ''  ">
-                  <div class="content-font-above">附加服务：无</div>
-                </a-col>
+      <a-descriptions v-if="orderRefund" title="退款信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
+        <a-descriptions-item label="退款原因"> {{ orderRefund.reason }}</a-descriptions-item>
+        <a-descriptions-item label="退款说明"> {{ orderRefund.description || '空' }} </a-descriptions-item>
+        <a-descriptions-item label="退款金额(元)"> {{ orderRefund.refundPrice }} </a-descriptions-item>
+        <a-descriptions-item label="退款时间"> {{ orderRefund.updateTime }} </a-descriptions-item>
+      </a-descriptions>
 
-              </a-row>
-              <!-- 商品金额 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">商品金额（元）：{{ data.goodsPrice }}</div>
-                </a-col>
-              </a-row>
-              <!-- 购买数量 -->
-              <a-row>
-                <a-col :span="24">
-                  <div class="content-font-above">购买数量：1</div>
-                </a-col>
-              </a-row>
-            </a-col>
-          </a-row>
+      <a-descriptions title="用户信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
+        <a-descriptions-item label="昵称"> {{ data.nickname }} </a-descriptions-item>
+        <a-descriptions-item label="绑定手机"> {{ data.wxPhone }} </a-descriptions-item>
+        <a-descriptions-item label="订单类型"> {{ data.type }} </a-descriptions-item>
+        <template v-if="'站点自寄' === data.type">
+          <a-descriptions-item label="用户姓名"> {{ data.name }} </a-descriptions-item>
+          <a-descriptions-item label="手机号码"> {{ data.phone }} </a-descriptions-item>
+        </template>
+        <template v-if="'上门取件' === data.type">
+          <a-descriptions-item label="预定时间"> {{ data.expect }} </a-descriptions-item>
+          <a-descriptions-item label="用户地址"> {{ userAddress }} </a-descriptions-item>
+          <a-descriptions-item label="门牌号"> {{ door }} </a-descriptions-item>
+        </template>
+        <template v-if="'快递上门' === data.type">
+          <a-descriptions-item label="预定时间"> {{ data.expect }} </a-descriptions-item>
+          <a-descriptions-item label="用户姓名(取鞋)"> {{ sendManName }}({{ sendManMobile }}) </a-descriptions-item>
+          <a-descriptions-item label="取鞋地址"> {{ sendManPrintAddr }} </a-descriptions-item>
+          <a-descriptions-item label="用户姓名(寄回)"> {{ recManName }}({{ recManMobile }}) </a-descriptions-item>
+          <a-descriptions-item label="寄回地址"> {{ recManPrintAddr }} </a-descriptions-item>
+        </template>
+      </a-descriptions>
+      <div class="table">
+        <div class="table-title">物流信息</div>
+        <div class="table-main">
+          <div class="table-main-cell" v-for="(item, index) in logisticsDetails" :key="index">
+            <div class="table-main-cell-dot"></div>
+            <div class="table-main-cell-time">{{ item.time }}</div>
+            <div class="table-main-cell-status">{{ item.title }}</div>
+            <div class="table-main-cell-des">
+              {{ item.msg
+              }}<a v-if="item.status == 1" @click="showShoeImages" style="margin-left: 10px; text-decoration: underline"
+                >查看鞋子照片</a
+              >
+            </div>
+          </div>
         </div>
-      </a-row>
-      <!-- 下面一大块 -->
-      <a-row>
-        <!-- 订单信息 -->
-        <a-col :span="1"></a-col>
-        <!--        <a-col :span="7" style="border-right: 1px solid #dedede">-->
-        <a-col :span="7">
-          <a-row>
-            <a-col :span="24">
-              <p class="shoe-order-detail-title" style="margin-top: 20px">订单信息</p>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">订单编号：{{ data.no }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">订单金额（元）：{{ data.totalPrice }}</div>
-            </a-col>
-          </a-row>
-          <!--          <a-row v-if="'待付款' === this.data.status || '已取消' === this.data.status || '已完成' === this.data.status">-->
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">附加金额（元）：{{ data.additionalPrice }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">应付金额（元）：{{ data.price }}</div>
-            </a-col>
-          </a-row>
-          <a-row
-            v-if="logisticsInfo.exceptionTime !== null && logisticsInfo.exceptionTime !== '' && logisticsInfo.exceptionTime !== undefined">
-            <a-col :span="24">
-              <div class="content-font-below">追加金额（元）：{{ orderExceptionInfo.price }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">实付金额（元）：{{ data.actualPrice }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">优惠抵扣金额：{{ data.couponPrice }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">备注：{{ data.note }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below">订单状态：{{ data.status }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="statusInt > 0">
-            <a-col :span="24">
-              <div class="content-font-below">下单时间：{{ data.payTime }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="statusInt > 0 && statusInt < 5">
-            <a-col :span="24">
-              <div class="content-font-below">机柜名称-格子数：{{ data.lockerName }}-{{ data.beforeGridNo }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="statusInt >= 9 && statusInt <= 13 &&  '上门取件' === data.type">
-            <a-col :span="24">
-              <div class="content-font-below">机柜名称-格子数：{{ data.lockerName }}-{{ data.afterGridNo }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="statusInt >= 9 && statusInt <= 13 &&  '站点自寄' === data.type">
-            <a-col :span="24">
-              <div class="content-font-below">机柜名称-格子数：{{ data.lockerName }}-{{ data.afterGridNo }}</div>
-            </a-col>
-          </a-row>
-          <!--          <a-row v-if="'已取消' === this.data.status">-->
-          <!--            <a-col :span="24">-->
-          <!--              <div class="content-font-below">取消原因：</div>-->
-          <!--            </a-col>-->
-          <!--          </a-row>-->
-          <a-row v-if="'已取消' === this.data.status">
-            <a-col :span="24">
-              <div class="content-font-below">取消时间：{{ data.cancelTime }}</div>
-            </a-col>
-          </a-row>
-          <!--          <a-row v-if="'退款中' === this.data.status || '已退款' === this.data.status">-->
-          <!--            <a-col :span="24">-->
-          <!--              <div class="content-font-below">退款原因：{{refundComment}}</div>-->
-          <!--            </a-col>-->
-          <!--          </a-row>-->
-          <a-row v-if="'上门取件' === data.type">
-            <a-col :span="24">
-              <div class="content-font-below">配送员（取鞋）：{{ courierNameByBefore }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="'上门取件' === data.type">
-            <a-col :span="24">
-              <div class="content-font-below">配送员电话：{{ courierPhoneByBefore }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="'上门取件' === data.type">
-            <a-col :span="24">
-              <div class="content-font-below">配送员（送鞋）：{{ courierNameByAfter }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="'上门取件' === data.type">
-            <a-col :span="24">
-              <div class="content-font-below">配送员电话：{{ courierPhoneByAfter }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="statusInt >= 10">
-            <a-col :span="24">
-              <div class="content-font-below">取件码：{{ data.code }}</div>
-            </a-col>
-          </a-row>
-        </a-col>
-        <!-- 用户信息 -->
-        <a-col :span="1"></a-col>
-        <!--        <a-col :span="7" style="border-right: 1px solid #dedede">-->
-        <a-col :span="7">
-          <a-row>
-            <a-col :span="24">
-              <p class="shoe-order-detail-title" style="margin-top: 20px">用户信息</p>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type!='快递上门'">用户姓名：{{ data.name }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="this.data.type === '上门取件'">
-            <a-col :span="24">
-              <div class="content-font-below">用户地址：{{ userAddress }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="this.data.type === '上门取件'">
-            <a-col :span="24">
-              <div class="content-font-below">门牌号：{{ door }}</div>
-            </a-col>
-          </a-row>
-          <a-row v-if="this.data.type === '上门取件'">
-            <a-col :span="24">
-              <div class="content-font-below">预定时间：{{ data.expect }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type=='快递上门'">用户姓名：{{ recManName }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type=='快递上门'">手机号：{{ recManMobile }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type=='快递上门'">取鞋地址：{{ recManPrintAddr }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type=='快递上门'">用户姓名：{{ sendManName }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type=='快递上门'">手机号：{{ sendManMobile }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type=='快递上门'">送鞋地址：{{ sendManPrintAddr }}</div>
-            </a-col>
-          </a-row>
-
-          <a-row>
-            <a-col :span="24">
-              <div class="content-font-below" v-if="data.type!='快递上门'">存柜方式：{{ data.type }}</div>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24">
-              <!--              <div class="content-font-below">取鞋方式：{{data.type === "站点自寄" ? "站点自提" : "送件上门"}}</div>-->
-              <div class="content-font-below" v-if="data.type!='快递上门'">
-                取鞋方式：{{ data.type === "站点自寄" ? "站点自提" : "送件上门" }}
-              </div>
-            </a-col>
-          </a-row>
-        </a-col>
-        <!-- 物流信息 -->
-        <a-col :span="1"></a-col>
-        <a-col :span="7" v-if="data.type!='快递上门'">
-          <a-row>
-            <a-col :span="24">
-              <p class="shoe-order-detail-title" style="margin-top: 20px">物流信息</p>
-            </a-col>
-            <a-col :span="24" v-if="'待付款' !== this.data.status && '已取消' !== this.data.status">
-              <a-timeline :reverse="true">
-                <!-- 已下单 -->
-                <a-timeline-item>
-                  <a-row>
-                    <a-col :span="24"><span><b>已下单</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ logisticsInfo.payTime }}</span>
-                    </a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">商品已下单<a @click="showShoeImages"
-                                                                          style="margin-left: 10px">查看鞋子照片</a>
-                    </a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 已接单 -->
-                <a-timeline-item
-                  v-if="data.receiveTime !== '' && data.receiveTime !== null && data.receiveTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>已接单</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.receiveTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">配送员已接单</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 已收件 -->
-                <a-timeline-item v-if="data.takeTime !== '' && data.takeTime !== null && data.takeTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>已收件</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.takeTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">配送员已收件</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 正在退款 -->
-                <a-timeline-item
-                  v-if="refundCreateTime !== '' && refundCreateTime !== null && refundCreateTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>正在退款</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ refundCreateTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">订单已发起退款</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 已退款 -->
-                <a-timeline-item
-                  v-if="refundSuccessTime !== '' && refundSuccessTime !== null && refundSuccessTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>已退款</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ refundSuccessTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">订单已退款</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 已入柜 -->
-                <a-timeline-item v-if="data.inTime !== '' && data.inTime !== null && data.inTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>已入柜</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ logisticsInfo.inTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">鞋子已放入快递柜中，等待物流人员取件</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 送工厂 -->
-                <a-timeline-item
-                  v-if="data.logisticsOutTime !== '' && data.logisticsOutTime !== null && data.logisticsOutTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>送工厂</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.logisticsOutTime }}</span>
-                    </a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">物流人员已取出鞋子，送往工厂</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 洗护中 -->
-                <a-timeline-item
-                  v-if="data.factoryInTime !== '' && data.factoryInTime !== null && data.factoryInTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>洗护中</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.factoryInTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">工厂已入库，鞋子洗护中</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 异常 -->
-                <a-timeline-item
-                  v-if="data.exceptionTime !== '' && data.exceptionTime !== null && data.exceptionTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>异常</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.exceptionTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">鞋子需要其他服务，请查看<a @click="showShoeExceptionInfo"
-                                                                                       style="margin-left: 10px">查看原因</a>
-                    </a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 异常单在追加服务费之后，再次进入正常的洗护流程 -->
-                <a-timeline-item
-                  v-if="data.exceptionTime !== '' && data.exceptionTime !== null && data.exceptionTime !== undefined && orderExceptionInfo.dealType === 1 && orderExceptionInfo.payTime !== null">
-                  <a-row>
-                    <a-col :span="24"><span><b>洗护中</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ orderExceptionInfo.payTime }}</span>
-                    </a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">工厂已入库，鞋子洗护中</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 异常单在选择退回之后，进入已退回流程 -->
-                <a-timeline-item
-                  v-if="data.exceptionTime !== '' && data.exceptionTime !== null && data.exceptionTime !== undefined && orderExceptionInfo.dealType === 2 && orderExceptionInfo.dealTime !== null">
-                  <a-row>
-                    <a-col :span="24"><span><b>已退回</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ orderExceptionInfo.dealTime }}</span>
-                    </a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">鞋子已退回，等待出库</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 送站点 -->
-                <a-timeline-item
-                  v-if="data.factoryOutTime !== '' && data.factoryOutTime !== null && data.factoryOutTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>送站点</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.factoryOutTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">鞋子已出库，物流人员送往站点中</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 待取件 -->
-                <a-timeline-item
-                  v-if="data.logisticsInTime !== '' && data.logisticsInTime !== null && data.logisticsInTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>待取件</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.logisticsInTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">鞋子已暂存至快递柜，请及时领取</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 已接单，配送员送件上门，需要查询另外的表来判断是否有该步骤 -->
-                <a-timeline-item
-                  v-if="data.backReceiveTime !== '' && data.backReceiveTime !== null && data.backReceiveTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>已接单</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.backReceiveTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">配送员已接单</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 已取出 -->
-                <a-timeline-item v-if="data.outTime !== '' && data.outTime !== null && data.outTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>已取出</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.outTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">鞋子已从快递柜取出</a-col>
-                  </a-row>
-                </a-timeline-item>
-                <!-- 已完成 -->
-                <a-timeline-item
-                  v-if="data.finishTime !== '' && data.finishTime !== null && data.finishTime !== undefined">
-                  <a-row>
-                    <a-col :span="24"><span><b>已完成</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ data.finishTime }}</span></a-col>
-                  </a-row>
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">订单已完成</a-col>
-                  </a-row>
-                </a-timeline-item>
-              </a-timeline>
-            </a-col>
-          </a-row>
-        </a-col>
-        <a-col :span="7" v-if="data.type=='快递上门'">
-          <a-row>
-            <a-col :span="24">
-              <p class="shoe-order-detail-title" style="margin-top: 20px">物流信息</p>
-            </a-col>
-            <a-col :span="24">
-              <a-timeline :reverse="true">
-
-
-                <a-timeline-item v-for="(item,index) in logisticsDetails" :key="index">
-                  <a-row>
-                    <a-col :span="24"><span><b>{{ item.title }}</b></span><span
-                      style="font-size: 10px;color: #989898;margin-left: 10px">{{ item.time }}</span></a-col>
-                  </a-row>
-
-                  <a-row>
-                    <a-col :span="24" style="font-size: 8px">{{ item.msg }}<a v-if="item.status==1"
-                                                                              @click="showShoeImages"
-                                                                              style="margin-left: 10px">查看鞋子照片</a>
-                    </a-col>
-                  </a-row>
-                </a-timeline-item>
-
-
-              </a-timeline>
-            </a-col>
-
-          </a-row>
-        </a-col>
-      </a-row>
+      </div>
     </div>
 
     <!-- 弹窗们 -->
 
     <a-modal :visible="previewVisible" :footer="null" @cancel="handleModelCancel()">
-      <img alt="example" style="width: 100%" :src="previewImage"/>
+      <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal>
 
-    <a-modal title="实物照片" :width="1000" :visible="showShoeImagesModel" :footer="null"
-             @cancel="handleShowShoeImagesModelCancel()">
-      <img alt="example" style="width: 20%;margin: 20px" v-for="item in orderImagesList" :src="item"
-           @click="showShoeImage(item)">
+    <a-modal
+      title="实物照片"
+      :width="1000"
+      :visible="showShoeImagesModel"
+      :footer="null"
+      @cancel="handleShowShoeImagesModelCancel()"
+    >
+      <img
+        alt="example"
+        style="width: 20%; margin: 20px"
+        v-for="item in orderImagesList"
+        :src="item"
+        @click="showShoeImage(item)"
+      />
     </a-modal>
 
-    <a-modal :zIndex="2000" :width="1000" :visible="showShoeImageModel" :footer="null"
-             @cancel="handleShowShoeImageModelCancel()">
-      <img alt="example" style="width: 100%" :src="selectedShoeImage">
+    <a-modal
+      :zIndex="2000"
+      :width="1000"
+      :visible="showShoeImageModel"
+      :footer="null"
+      @cancel="handleShowShoeImageModelCancel()"
+    >
+      <img alt="example" style="width: 100%" :src="selectedShoeImage" />
     </a-modal>
 
-    <a-modal title="异常信息" :width="800" :visible="showShoeExceptionInfoModel" :footer="null"
-             @cancel="handleShoeExceptionInfoCancel">
+    <a-modal
+      title="异常信息"
+      :width="800"
+      :visible="showShoeExceptionInfoModel"
+      :footer="null"
+      @cancel="handleShoeExceptionInfoCancel"
+    >
       <!-- 异常照片展示 -->
-      <div style="width: 100%;height: 400px;overflow-y: scroll">
+      <div style="width: 100%; height: 400px; overflow-y: scroll">
         <!-- 异常图片展示区 -->
         <a-row>
           <a-col :span="24">
             <p class="shoe-order-exception-detail-title">异常照片</p>
           </a-col>
           <a-col :span="24">
-            <img alt="example" style="width: 20%;margin: 20px" v-for="item in orderExceptionImagesList" :src="item"
-                 @click="showShoeImage(item)">
+            <img
+              alt="example"
+              style="width: 20%; margin: 20px"
+              v-for="item in orderExceptionImagesList"
+              :src="item"
+              @click="showShoeImage(item)"
+            />
           </a-col>
         </a-row>
 
@@ -533,241 +170,307 @@
             <p class="shoe-order-exception-detail-title">异常备注</p>
           </a-col>
           <a-col :span="24">
-            <p style="font-size: 16px;color: #000000"><b>{{ orderExceptionInfo.note }}</b></p>
+            <p style="font-size: 16px; color: #000000">
+              <b>{{ orderExceptionInfo.note }}</b>
+            </p>
           </a-col>
         </a-row>
       </div>
     </a-modal>
-
   </j-modal>
 </template>
-
-<script>
-
-import JImageUploadByOneForShoeOrder from "../components/JImageUploadByOneForShoeOrder";
-import {getAction, httpAction} from "../../../../api/manage";
+  
+  <script>
+import JImageUploadByOneForShoeOrder from '../components/JImageUploadByOneForShoeOrder'
+import { getAction, httpAction } from '../../../../api/manage'
 
 export default {
-  name: "ShoeOrderDetail",
+  name: 'ShoeOrderDetail',
   components: {
-    JImageUploadByOneForShoeOrder
+    JImageUploadByOneForShoeOrder,
   },
   data() {
     return {
       visible: false,
       title: '订单详情',
       data: {},
-      orderImagesList: "",
+      orderImagesList: '',
       previewVisible: false,
-      previewImage: "",
+      previewImage: '',
       logisticsInfo: {},
       showShoeImagesModel: false,
       showShoeImageModel: false,
-      selectedShoeImage: "",
-      refundComment: "",
-      refundCreateTime: "",
-      refundSuccessTime: "",
+      selectedShoeImage: '',
+      refundComment: '',
+      refundCreateTime: '',
+      refundSuccessTime: '',
       orderExceptionInfo: {},
       showShoeExceptionInfoModel: false,
       orderExceptionImagesList: [],
       afterDeliveryInfo: {},
       statusInt: 0,
-      userAddress: "",
-      door: "",
-      courierNameByBefore: "",
-      courierPhoneByBefore: "",
-      courierNameByAfter: "",
-      courierPhoneByAfter: "",
-      recManName: "",
-      recManMobile: "",
-      recManPrintAddr: "",
-      sendManName: "",
-      sendManMobile: "",
-      sendManPrintAddr: "",
-      logisticsDetails: "",
+      userAddress: '',
+      door: '',
+      courierNameByBefore: '',
+      courierPhoneByBefore: '',
+      courierNameByAfter: '',
+      courierPhoneByAfter: '',
+      recManName: '',
+      recManMobile: '',
+      recManPrintAddr: '',
+      sendManName: '',
+      sendManMobile: '',
+      sendManPrintAddr: '',
+      logisticsDetails: '',
+      orderRefund: null,
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
     show(record, orderStatus) {
       //处理数据
       // let orderInfo = record;
-      let orderInfo = Object.assign({}, record);
-      orderInfo.goodsPrice = (orderInfo.goodsPrice / 100).toFixed(2);
-      orderInfo.totalPrice = (orderInfo.totalPrice / 100).toFixed(2);
-      orderInfo.price = (orderInfo.price / 100).toFixed(2);
-      orderInfo.couponPrice = (orderInfo.couponPrice / 100).toFixed(2);
-      orderInfo.actualPrice = (orderInfo.actualPrice / 100).toFixed(2);
-      orderInfo.additionalPrice = (orderInfo.additionalPrice / 100).toFixed(2);
+      let orderInfo = Object.assign({}, record)
+      orderInfo.goodsPrice = +(orderInfo.goodsPrice / 100).toFixed(2)
+      orderInfo.courierPrice = +(orderInfo.courierPrice / 100).toFixed(2)
+      orderInfo.totalPrice = +(orderInfo.totalPrice / 100).toFixed(2)
+      orderInfo.price = +(orderInfo.price / 100).toFixed(2)
+      orderInfo.couponPrice = +(orderInfo.couponPrice / 100).toFixed(2)
+      orderInfo.actualPrice = +(orderInfo.actualPrice / 100).toFixed(2)
+      orderInfo.additionalPrice = +(orderInfo.additionalPrice / 100).toFixed(2)
       //提前拿出订单状态，并转换成数字
-      this.statusInt = parseInt(orderInfo.status);
-      orderInfo.status = orderStatus;
+      this.statusInt = parseInt(orderInfo.status)
+      orderInfo.status = orderStatus
 
-      let type = orderInfo.type;
-      if (type === "self") {
-        orderInfo.type = "站点自寄";
-      } else if (type === "service") {
-        orderInfo.type = "上门取件";
+      let type = orderInfo.type
+      let requestData = {
+        orderId: orderInfo.orderId,
+      }
+      getAction('/ShoeOrder/shoeOrder/getShoeOrderDetail', requestData).then(({result:res}) => {
+        console.log(8787878, res)
+        orderInfo.couponName = res.couponName
+        orderInfo.timecardName = res.timecardName
+        this.logisticsDetails = res.logisticsDetailList
+        this.orderRefund = res.orderRefund
+      })
+      if (type === 'self') {
+        orderInfo.type = '站点自寄'
+      } else if (type === 'service') {
+        orderInfo.type = '上门取件'
         //获取配送信息
-        let requestData = {
-          "orderId": orderInfo.orderId
-        };
-        getAction("/ShoeOrder/shoeOrder/getCourierInfo", requestData).then((res) => {
-          this.userAddress = res.result.address;
-          this.door = res.result.door;
-          this.courierNameByBefore = res.result.courierNameByBefore;
-          this.courierPhoneByBefore = res.result.courierPhoneByBefore;
-          this.courierNameByAfter = res.result.courierNameByAfter === "无" ? "——" : res.result.courierNameByAfter;
-          this.courierPhoneByAfter = res.result.courierPhoneByAfter === "无" ? "——" : res.result.courierPhoneByAfter;
+        getAction('/ShoeOrder/shoeOrder/getCourierInfo', requestData).then((res) => {
+          this.userAddress = res.result.address
+          this.door = res.result.door
+          this.courierNameByBefore = res.result.courierNameByBefore
+          this.courierPhoneByBefore = res.result.courierPhoneByBefore
+          this.courierNameByAfter = res.result.courierNameByAfter
+          this.courierPhoneByAfter = res.result.courierPhoneByAfter
         })
-      } else if (type === "expressage") {
-        orderInfo.type = "快递上门";
+      } else if (type === 'expressage') {
+        orderInfo.type = '快递上门'
         //获取配送信息
-        let requestData = {
-          "orderId": orderInfo.orderId
-        };
-        getAction("/ShoeOrder/shoeOrder/getCourierInfoByExpressage", requestData).then((res) => {
-          this.logisticsDetails = res.logisticsDetails;
-          this.recManName = res.recManName;
-          this.recManMobile = res.recManMobile;
-          this.recManPrintAddr = res.recManPrintAddr;
-          this.sendManName = res.sendManName;
-          this.sendManMobile = res.sendManMobile;
-          this.sendManPrintAddr = res.sendManPrintAddr;
 
-
+        getAction('/ShoeOrder/shoeOrder/getCourierInfoByExpressage', requestData).then((res) => {
+          this.recManName = res.recManName
+          this.recManMobile = res.recManMobile
+          this.recManPrintAddr = res.recManPrintAddr
+          this.sendManName = res.sendManName
+          this.sendManMobile = res.sendManMobile
+          this.sendManPrintAddr = res.sendManPrintAddr
         })
       }
 
-      let orderImagesString = "";
-      let orderImagesArray = JSON.parse(orderInfo.orderImages);
+      let orderImagesString = ''
+      let orderImagesArray = JSON.parse(orderInfo.orderImages)
       for (let i = 0; i < orderImagesArray.length; i++) {
-        orderImagesString += orderImagesArray[i];
+        orderImagesString += orderImagesArray[i]
         if (i < orderImagesArray.length - 1) {
-          orderImagesString += ",";
+          orderImagesString += ','
         }
       }
 
-      this.orderImagesList = orderImagesArray;
+      this.orderImagesList = orderImagesArray
 
-      this.visible = true;
-      this.data = orderInfo;
+      this.visible = true
+      this.data = orderInfo
 
       //如果此订单是异常的状态，要查询此订单的异常情况，如果此订单要”增加服务费“，将再此查询补款记录
-      if (this.data.exceptionTime !== null && this.data.exceptionTime !== "" && this.data.exceptionTime !== undefined) {
+      if (this.data.exceptionTime !== null && this.data.exceptionTime !== '' && this.data.exceptionTime !== undefined) {
         let ShoeOrderExceptionData = {
-          "orderId": this.data.orderId
+          orderId: this.data.orderId,
         }
-        httpAction("/ShoeOrder/shoeOrder/getShoeOrderException", ShoeOrderExceptionData, "post").then((res) => {
-          this.orderExceptionInfo = res.result;
-          if (this.orderExceptionInfo.title === null || this.orderExceptionInfo.title === "" || this.orderExceptionInfo.title === undefined) {
-            this.orderExceptionInfo.title = "无";
+        httpAction('/ShoeOrder/shoeOrder/getShoeOrderException', ShoeOrderExceptionData, 'post').then((res) => {
+          this.orderExceptionInfo = res.result
+          if (
+            this.orderExceptionInfo.title === null ||
+            this.orderExceptionInfo.title === '' ||
+            this.orderExceptionInfo.title === undefined
+          ) {
+            this.orderExceptionInfo.title = '无'
           }
-          if (this.orderExceptionInfo.price === null || this.orderExceptionInfo.price === "" || this.orderExceptionInfo.price === undefined) {
-            this.orderExceptionInfo.price = "0";
+          if (
+            this.orderExceptionInfo.price === null ||
+            this.orderExceptionInfo.price === '' ||
+            this.orderExceptionInfo.price === undefined
+          ) {
+            this.orderExceptionInfo.price = '0'
           } else {
-            let price = this.orderExceptionInfo.price;
-            this.orderExceptionInfo.price = (price / 100).toFixed(2);
+            let price = this.orderExceptionInfo.price
+            this.orderExceptionInfo.price = (price / 100).toFixed(2)
           }
-          if (this.orderExceptionInfo.payStatus === null || this.orderExceptionInfo.payStatus === "" || this.orderExceptionInfo.payStatus === undefined) {
-            this.orderExceptionInfo.price = "无";
+          if (
+            this.orderExceptionInfo.payStatus === null ||
+            this.orderExceptionInfo.payStatus === '' ||
+            this.orderExceptionInfo.payStatus === undefined
+          ) {
+            this.orderExceptionInfo.price = '无'
           }
 
           //处理图片数组
-          let imagesArray = JSON.parse(this.orderExceptionInfo.images);
-          this.orderExceptionImagesList = imagesArray;
-
+          let imagesArray = JSON.parse(this.orderExceptionInfo.images)
+          this.orderExceptionImagesList = imagesArray
         })
       } else {
         this.orderExceptionInfo = {
-          "createTime": "",
-          "dealNote": "",
-          "dealTime": "",
-          "dealType": "",
-          "dealUserId": "",
-          "dealUsername": "",
-          "images": "",
-          "note": "",
-          "orderExceptionId": "",
-          "orderId": "",
-          "payStatus": "",
-          "payTime": "",
-          "price": "",
-          "reportUserId": "",
-          "reportUsername": "",
-          "status": "",
-          "title": "",
+          createTime: '',
+          dealNote: '',
+          dealTime: '',
+          dealType: '',
+          dealUserId: '',
+          dealUsername: '',
+          images: '',
+          note: '',
+          orderExceptionId: '',
+          orderId: '',
+          payStatus: '',
+          payTime: '',
+          price: '',
+          reportUserId: '',
+          reportUsername: '',
+          status: '',
+          title: '',
         }
       }
-
-      //如果此订单是退款中或已退款的状态，再查询其退款原因
-      if ('退款中' === this.data.status || '已退款' === this.data.status) {
-        let data = {
-          "orderPId": this.data.orderPId,
-          "orderIds": this.data.orderId
-        }
-        httpAction("/ShoeOrder/shoeOrder/getShoePayRefundInfo", data, "post").then((res) => {
-          this.refundComment = res.result.note;
-          this.refundCreateTime = res.result.createTime;
-          this.refundSuccessTime = res.result.successTime;
-        })
-      } else {
-        this.refundComment = "";
-        this.refundCreateTime = "";
-        this.refundSuccessTime = "";
-      }
-
     },
     handleCancel() {
-      this.visible = false;
-      this.orderImagesList = [];
-      this.data = {};
-      this.afterDeliveryInfo = {};
-      this.logisticsInfo = {};
-      this.orderExceptionInfo = {};
-      this.refundComment = "";
-      this.refundCreateTime = "";
-      this.refundSuccessTime = "";
-      this.userAddress = "";
-      this.courierNameByBefore = "";
-      this.courierPhoneByBefore = "";
-      this.courierNameByAfter = "";
-      this.courierPhoneByAfter = "";
+      this.visible = false
+      this.orderImagesList = []
+      this.data = {}
+      this.afterDeliveryInfo = {}
+      this.logisticsInfo = {}
+      this.orderExceptionInfo = {}
+      this.refundComment = ''
+      this.refundCreateTime = ''
+      this.refundSuccessTime = ''
+      this.userAddress = ''
+      this.courierNameByBefore = ''
+      this.courierPhoneByBefore = ''
+      this.courierNameByAfter = ''
+      this.courierPhoneByAfter = ''
+      this.recManName = ''
+      this.recManMobile = ''
+      this.recManPrintAddr = ''
+      this.sendManName = ''
+      this.sendManMobile = ''
+      this.sendManPrintAddr = ''
+      this.logisticsDetails = ''
     },
     previewModel() {
-      this.previewVisible = true;
-      this.previewImage = this.data.image;
+      this.previewVisible = true
+      this.previewImage = this.data.image
     },
     handleModelCancel() {
-      this.previewVisible = false;
-      this.previewImage = "";
+      this.previewVisible = false
+      this.previewImage = ''
     },
     showShoeImages() {
-      this.showShoeImagesModel = true;
+      this.showShoeImagesModel = true
     },
     handleShowShoeImagesModelCancel() {
-      this.showShoeImagesModel = false;
+      this.showShoeImagesModel = false
     },
     showShoeImage(item) {
-      this.showShoeImageModel = true;
-      this.selectedShoeImage = item;
+      this.showShoeImageModel = true
+      this.selectedShoeImage = item
     },
     handleShowShoeImageModelCancel() {
-      this.showShoeImageModel = false;
-      this.selectedShoeImage = "";
+      this.showShoeImageModel = false
+      this.selectedShoeImage = ''
     },
     showShoeExceptionInfo() {
-      this.showShoeExceptionInfoModel = true;
+      this.showShoeExceptionInfoModel = true
     },
     handleShoeExceptionInfoCancel() {
-      this.showShoeExceptionInfoModel = false;
+      this.showShoeExceptionInfoModel = false
+    },
+  },
+}
+</script>
+  
+  <style scoped lang="less">
+.table {
+  &-title {
+    margin-bottom: 20px;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  &-main {
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-size: 16px;
+    &-cell {
+      &:first-child {
+        .table-main-cell-dot {
+          background-color: #0090ff;
+        }
+      }
+      &:last-child {
+        .table-main-cell-dot::after {
+          height: 0;
+        }
+      }
+      display: flex;
+      align-items: center;
+
+      margin-bottom: 16px;
+      &-dot {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        background-color: #ddd;
+        border-radius: 50%;
+        position: relative;
+        &::after {
+          content: '';
+          display: block;
+          position: absolute;
+          height: 26px;
+          width: 2px;
+          background-color: #dddddd;
+          left: 50%;
+          top: 120%;
+          transform: translate(-50%, 0);
+        }
+      }
+      &-time {
+        margin-left: 14px;
+        margin-right: 60px;
+        color: #999999;
+      }
+      &-status {
+        font-weight: 500;
+        color: #333333;
+        margin-right: 32px;
+      }
+      &-des {
+      }
     }
   }
 }
-</script>
-
-<style scoped lang="less">
+/deep/ .ant-descriptions-bordered .ant-descriptions-item-label {
+  background-color: #f5f5f5;
+}
 .full-modal {
   .ant-modal {
     max-width: 100%;

@@ -154,7 +154,6 @@
     <shoe-order-detail ref="shoeOrderDetail" @ok="modalFormOk"></shoe-order-detail>
     <shoe-refund-detail ref="shoeRefundDetail" @ok="modalFormOk"></shoe-refund-detail>
     <handle-order-finish-modal ref="handleOrderFinishModal" @ok="modalFormOk"></handle-order-finish-modal>
-    <shoe-order-detail11 ref="ShoeOrderDetails" @ok="modalFormOk"></shoe-order-detail11>
   </a-card>
 </template>
 
@@ -166,7 +165,6 @@ import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 import ShoeOrderModal from './modules/ShoeOrderModal'
 import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
 import ShoeOrderDetail from "./modules/ShoeOrderDetail";
-import ShoeOrderDetail11 from "./modules/ShoeOrderDetail11";
 import ShoeRefundDetail from "./modules/ShoeRefundDetail";
 import {httpAction} from "@api/manage";
 import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
@@ -179,7 +177,6 @@ export default {
     ShoeOrderModal,
     ShoeOrderDetail,
     ShoeRefundDetail,
-    ShoeOrderDetail11
   },
   data() {
     return {
@@ -215,14 +212,14 @@ export default {
           }
         },
         {
-          title: '姓名',
+          title: '昵称',
           align: "center",
-          dataIndex: 'name'
+          dataIndex: 'nickname'
         },
         {
-          title: '号码',
+          title: '绑定手机号',
           align: "center",
-          dataIndex: 'phone'
+          dataIndex: 'wxPhone'
         },
         {
           title: "机柜名称",
@@ -375,7 +372,6 @@ export default {
     handleOrderDetail(record) {
       let orderStatus = filterDictTextByCache('shoe_order_status', record.status);
       this.$refs.shoeOrderDetail.show(record, orderStatus);
-      // this.$refs.ShoeOrderDetails.show(record, orderStatus);
     },
     handleRefundDetail(record) {
       this.$refs.shoeRefundDetail.show(record);
