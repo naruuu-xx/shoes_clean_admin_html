@@ -309,12 +309,11 @@ export default {
       this.spinning = true
       getAction('/indexDown',form).then((res) => {
         console.log(777,res);
-        if(res.success) {
-          this.barData = res.barData
+        if(res.success == false) return
+        this.barData = res.barData
         this.goodRankingList = res.goodRankingList
         this.lockerRankingList = res.lockerRankingList
         // this.siteRankingList = res.siteRankingList
-        }
         
       }).finally(s => {
         this.spinning = false
