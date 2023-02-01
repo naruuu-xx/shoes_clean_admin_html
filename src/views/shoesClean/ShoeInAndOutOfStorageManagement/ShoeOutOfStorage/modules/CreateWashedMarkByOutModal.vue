@@ -11,7 +11,7 @@
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
-          <a-input style="height: 120px" v-model:value="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleInOfStorage"  ref="autoInput"/>
+          <a-input style="height: 120px" v-model.trim="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码" @pressEnter="handleInOfStorage"  ref="autoInput"/>
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
