@@ -12,7 +12,7 @@
           <a-row>
             <a-col :span="24">
               <a-form-model-item label="订单编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="no">
-                <a-input v-model="model.no" placeholder="请输入订单编号" style="width: 200px"></a-input>
+                <a-input v-model.trim="model.no" placeholder="请输入订单编号" style="width: 200px"></a-input>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
