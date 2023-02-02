@@ -43,7 +43,8 @@
                       style="width: 400px;"
                       placeholder="请选择"
                       :options="goodsOptions"
-                      @change="handleChange"
+                      option-filter-prop="children"
+                      :filter-option="filterOption"
                     >
                     </a-select>
                   </a-radio>
@@ -220,6 +221,11 @@
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
+      filterOption(input, option) {
+        return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        );
+      },
       add () {
         this.edit(this.modelDefault);
         this.threshold = "1";
@@ -362,9 +368,6 @@
           }
 
         })
-      },
-      handleChange(){
-        console.log("有改变")
       },
       handleWayRadioChange(){
         if ("0" === this.model.way) {
