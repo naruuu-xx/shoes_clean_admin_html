@@ -207,7 +207,7 @@
         dictOptions:{},
         superFieldList:[],
         statusOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"已入库"}, {"value":"2", "name":"已出库"}],
-        sourceOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"鞋蜂小程序"}, {"value":"2", "name":"候鸟洗衣"}, {"value":"3", "name":"干洗店"}, {"value":"4", "name":"供应商"} ],
+        sourceOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"鞋蜂小程序"}, {"value":"2", "name":"候鸟洗衣"}, {"value":"3", "name":"干洗店"}, {"value":"4", "name":"供应商"}, {"value":"5", "name":"叼到家"} ],
         TypeOptionList: [{"value":"", "name":"全部"}, {"value":"locker", "name":"机柜订单"}, {"value":"expressage", "name":"快递订单"}, {"value":"site", "name":"站点订单"}, {"value":"other", "name":"其他订单"} ]
       }
     },

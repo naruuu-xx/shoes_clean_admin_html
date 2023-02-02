@@ -10,9 +10,9 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="发放方式">
-              <a-select v-model="queryParam.way" style="width: 180px">
+              <a-select v-model="queryParam.way" >
                 <a-select-option v-for="item in wayOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
                 </a-select-option>
@@ -20,9 +20,9 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="用户类型">
-              <a-select v-model="queryParam.obj" style="width: 180px">
+              <a-select v-model="queryParam.obj">
                 <a-select-option v-for="item in objOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
                 </a-select-option>
@@ -30,18 +30,15 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="发放状态">
-              <a-select v-model="queryParam.status" style="width: 180px">
+              <a-select v-model="queryParam.status">
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
                 </a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-
-
-
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
