@@ -44,68 +44,71 @@
 <!--        <a style="margin-left: 24px" @click="onClearSelected">清空</a>-->
 <!--      </div>-->
 
-<!--      <a-table-->
-<!--        ref="table"-->
-<!--        size="middle"-->
-<!--        :scroll="{x:true}"-->
-<!--        bordered-->
-<!--        rowKey="couponId"-->
-<!--        :columns="columns"-->
-<!--        :dataSource="dataSource"-->
-<!--        :pagination="ipagination"-->
-<!--        :loading="loading"-->
-<!--        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"-->
-<!--        class="j-table-force-nowrap"-->
-<!--        @change="handleTableChange">-->
+      <a-table
+        ref="table"
+        size="middle"
+        :scroll="{x:true}"
+        bordered
+        rowKey="couponId"
+        :columns="columns"
+        :dataSource="dataSource"
+        :pagination="ipagination"
+        :loading="loading"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
+        @change="handleTableChange">
 
-<!--        <template slot="htmlSlot" slot-scope="text">-->
-<!--          <div v-html="text"></div>-->
-<!--        </template>-->
-<!--        <template slot="imgSlot" slot-scope="text,record">-->
-<!--          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>-->
-<!--          <img v-else :src="getImgView(text)" :preview="record.couponId" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>-->
-<!--        </template>-->
-<!--        <template slot="fileSlot" slot-scope="text">-->
-<!--          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>-->
-<!--          <a-button-->
-<!--            v-else-->
-<!--            :ghost="true"-->
-<!--            type="primary"-->
-<!--            icon="download"-->
-<!--            size="small"-->
-<!--            @click="downloadFile(text)">-->
-<!--            下载-->
-<!--          </a-button>-->
-<!--        </template>-->
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="imgSlot" slot-scope="text,record">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+          <img v-else :src="getImgView(text)" :preview="record.couponId" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+        </template>
+        <template slot="fileSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
+          <a-button
+            v-else
+            :ghost="true"
+            type="primary"
+            icon="download"
+            size="small"
+            @click="downloadFile(text)">
+            下载
+          </a-button>
+        </template>
 
-<!--        <span slot="action" slot-scope="text, record">-->
-<!--          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.couponId)">-->
-<!--            <a>删除</a>-->
-<!--          </a-popconfirm>-->
-<!--        </span>-->
+        <span slot="action" slot-scope="text, record">
+          <a @click="couponSelect(record.id, record.couponId)">优惠券设置</a>
+          <a-divider type="vertical" />
+          <a @click="queryEventDetail">查看详情</a>
+        </span>
 
-<!--      </a-table>-->
+        <span slot="statusAction" slot-scope="text, record">
+          <a-switch v-model:checked="record.eventStatus" @click="switchChange(record.eventStatusGroup, record.eventStatusName, record.eventStatus)" />
+        </span>
+      </a-table>
 
-      <a-row type="flex" justify="space-around" align="middle" style="border-top: 1px solid #000000;border-bottom: 1px solid #000000">
-        <a-col :span="6"><div class="tableHeader">活动名称</div></a-col>
-        <a-col :span="6"><div class="tableHeader">参加人数</div></a-col>
-        <a-col :span="6"><div class="tableHeader">状态</div></a-col>
-        <a-col :span="6"><div class="tableHeader">操作</div></a-col>
-      </a-row>
-      <a-row type="flex" justify="space-around" align="middle" :key="index" v-for="(item,index) in eventList" style="border-bottom: 1px solid #000000">
-        <a-col :span="6"><div class="tableCell">{{item.eventName}}</div></a-col>
-        <a-col :span="6"><div class="tableCell">{{item.participationNum}}</div></a-col>
-        <a-col :span="6"><div class="tableCell"><a-switch v-model:checked="item.eventStatus" @click="switchChange(item.eventStatusGroup, item.eventStatusName, item.eventStatus)" /></div></a-col>
-        <a-col :span="6">
-          <div class="tableCell" v-if="item.id === 1">
-            <a @click="couponSelect(item.id, item.couponId)">优惠券设置</a>
-            <a-divider type="vertical" />
-            <a @click="queryEventDetail">查看详情</a>
-          </div>
-          <div class="tableCell" v-else>
-          </div>
-        </a-col>
-      </a-row>
+<!--      <a-row type="flex" justify="space-around" align="middle" style="border-top: 1px solid #000000;border-bottom: 1px solid #000000">-->
+<!--        <a-col :span="6"><div class="tableHeader">活动名称</div></a-col>-->
+<!--        <a-col :span="6"><div class="tableHeader">参加人数</div></a-col>-->
+<!--        <a-col :span="6"><div class="tableHeader">状态</div></a-col>-->
+<!--        <a-col :span="6"><div class="tableHeader">操作</div></a-col>-->
+<!--      </a-row>-->
+<!--      <a-row type="flex" justify="space-around" align="middle" :key="index" v-for="(item,index) in eventList" style="border-bottom: 1px solid #000000">-->
+<!--        <a-col :span="6"><div class="tableCell">{{item.eventName}}</div></a-col>-->
+<!--        <a-col :span="6"><div class="tableCell">{{item.participationNum}}</div></a-col>-->
+<!--        <a-col :span="6"><div class="tableCell"><a-switch v-model:checked="item.eventStatus" @click="switchChange(item.eventStatusGroup, item.eventStatusName, item.eventStatus)" /></div></a-col>-->
+<!--        <a-col :span="6">-->
+<!--          <div class="tableCell" v-if="item.id === 1">-->
+<!--            <a @click="couponSelect(item.id, item.couponId)">优惠券设置</a>-->
+<!--            <a-divider type="vertical" />-->
+<!--            <a @click="queryEventDetail">查看详情</a>-->
+<!--          </div>-->
+<!--          <div class="tableCell" v-else>-->
+<!--          </div>-->
+<!--        </a-col>-->
+<!--      </a-row>-->
     </div>
 
 <!--    <shoe-coupon-modal ref="modalForm" @ok="modalFormOk"></shoe-coupon-modal>-->
@@ -148,6 +151,12 @@
             title:'参与人数',
             align:"center",
             dataIndex: 'participationNum'
+          },
+          {
+            title:'状态',
+            align:"center",
+            // dataIndex: 'statusAction',
+            scopedSlots: { customRender: 'statusAction' }
           },
           {
             title: '操作',

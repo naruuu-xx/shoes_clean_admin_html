@@ -380,7 +380,7 @@ export default {
           }).finally(() => {
             that.confirmLoading = false
           })
-          that.confirmLoading = false
+          // that.confirmLoading = false
         }
       })
     },

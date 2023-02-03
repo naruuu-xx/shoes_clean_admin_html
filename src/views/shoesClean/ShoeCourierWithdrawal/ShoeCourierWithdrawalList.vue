@@ -119,6 +119,9 @@
     data () {
       return {
         description: 'shoe_courier_withdrawal管理页面',
+        queryParam:{
+          status:''
+        },
         // 表头
         columns: [
           {

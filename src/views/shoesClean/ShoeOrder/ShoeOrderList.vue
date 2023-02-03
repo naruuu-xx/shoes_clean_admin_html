@@ -121,49 +121,30 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleOrderDetail(record)">查看详情</a>
 
-           <a-divider v-if="record.type==='self' && record.status==='10'" type="vertical" v-has="'order:getCode'"/>
+<!--           <a-divider v-if="record.type==='self' && record.status==='10'" type="vertical" v-has="'order:getCode'"/>-->
 
-    <a-popover trigger="click" placement="top" v-has="'order:getCode'">
-        <template #content>
-          <p align="center">取件码</p>
-           <p align="center" class="textCode">{{ selfCode }}</p>
-         </template>
-    <a v-if="record.type==='self' && record.status==='10'" @click="getSelfCode(record)">取件码</a>
-    </a-popover>
+<!--          <a-popover trigger="click" placement="top" v-has="'order:getCode'">-->
+<!--              <template #content>-->
+<!--                <p align="center">取件码</p>-->
+<!--                 <p align="center" class="textCode">{{ selfCode }}</p>-->
+<!--               </template>-->
+<!--          <a v-if="record.type==='self' && record.status==='10'" @click="getSelfCode(record)">取件码</a>-->
+<!--          </a-popover>-->
 
-    <a-divider v-if="record.type==='service' && record.status==='12'" type="vertical" v-has="'order:getCode'"/>
+          <a-divider v-if="record.type==='service' && record.status==='12'" type="vertical" v-has="'order:getCode'"/>
 
-    <a-popover trigger="click" placement="top" v-has="'order:getCode'">
+          <a-popover trigger="click" placement="top" v-has="'order:getCode'">
 
-        <template #content>
-          <p align="center">取件码</p>
-           <p align="center" class="textCode">{{ serviceCode }}</p>
-         </template>
-    <a v-if="record.type==='service' && record.status==='12'" @click="getServiceCode(record)">取件码</a>
-    </a-popover>
+              <template #content>
+                <p align="center">取件码</p>
+                 <p align="center" class="textCode">{{ serviceCode }}</p>
+               </template>
+          <a v-if="record.type==='service' && record.status==='12'" @click="getServiceCode(record)">取件码</a>
+          </a-popover>
 
-          <!--          <a-divider type="vertical" />-->
-          <!--          <a v-if="record.status !== '15' &&-->
-          <!--record.status !== '16' &&-->
-          <!--record.status !== '13' &&-->
-          <!--record.status !== '14' && -->
-          <!--record.status !== '2' && -->
-          <!--record.status !== '1' &&-->
-          <!--record.status !== '0'-->
-          <!--" @click="handleRefundDetail(record)" >退款</a>-->
-          <!--          <a-dropdown>-->
-          <!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
-          <!--            <a-menu slot="overlay">-->
-          <!--              <a-menu-item>-->
-          <!--                <a @click="handleDetail(record)">详情</a>-->
-          <!--              </a-menu-item>-->
-          <!--              <a-menu-item>-->
-          <!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.orderId)">-->
-          <!--                  <a>删除</a>-->
-          <!--                </a-popconfirm>-->
-          <!--              </a-menu-item>-->
-          <!--            </a-menu>-->
-          <!--          </a-dropdown>-->
+          <a-divider v-if="'9' === record.status" type="vertical"/>
+          <a v-if="'9' === record.status" @click="handleOrderFinish(record)">完单</a>
+
         </span>
 
       </a-table>
@@ -172,6 +153,7 @@
     <shoe-order-modal ref="modalForm" @ok="modalFormOk"></shoe-order-modal>
     <shoe-order-detail ref="shoeOrderDetail" @ok="modalFormOk"></shoe-order-detail>
     <shoe-refund-detail ref="shoeRefundDetail" @ok="modalFormOk"></shoe-refund-detail>
+    <handle-order-finish-modal ref="handleOrderFinishModal" @ok="modalFormOk"></handle-order-finish-modal>
   </a-card>
 </template>
 
@@ -185,20 +167,25 @@ import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
 import ShoeOrderDetail from "./modules/ShoeOrderDetail";
 import ShoeRefundDetail from "./modules/ShoeRefundDetail";
 import {httpAction} from "@api/manage";
+import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
 
 export default {
   name: 'ShoeOrderList',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
+    HandleOrderFinishModal,
     ShoeOrderModal,
     ShoeOrderDetail,
-    ShoeRefundDetail
+    ShoeRefundDetail,
   },
   data() {
     return {
       description: 'shoe_order管理页面',
-      serviceCode:'',
-      selfCode:'',
+      serviceCode: '',
+      selfCode: '',
+      queryParam:{
+        status:''
+      },
       // 表头
       columns: [
         {
@@ -225,14 +212,14 @@ export default {
           }
         },
         {
-          title: '姓名',
+          title: '昵称',
           align: "center",
-          dataIndex: 'name'
+          dataIndex: 'nickname'
         },
         {
-          title: '号码',
+          title: '绑定手机号',
           align: "center",
-          dataIndex: 'phone'
+          dataIndex: 'wxPhone'
         },
         {
           title: "机柜名称",
@@ -301,10 +288,13 @@ export default {
           "name": "已完成"
         },
         {"value": "14", "name": "退款中"}, {"value": "15", "name": "已退款"}, {"value": "16", "name": "已取消"},
-        {"value": "17", "name": "用户已寄出"},{"value": "18", "name": "已出库未寄出"},{"value": "19", "name": "工厂已寄出"},
+        {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {"value": "19", "name": "工厂已寄出"},
       ],
       typeOptionList: [
-        {"value": "", "name": "全部"}, {"value": "self", "name": "自提"}, {"value": "service", "name": "配送"},{"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点"}
+        {"value": "", "name": "全部"}, {"value": "self", "name": "自提"}, {
+          "value": "service",
+          "name": "配送"
+        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点"}
       ],
       lockerList: [],
     }
@@ -386,7 +376,9 @@ export default {
     handleRefundDetail(record) {
       this.$refs.shoeRefundDetail.show(record);
     },
-
+    handleOrderFinish(record){
+      this.$refs.handleOrderFinishModal.show(record);
+    }
   }
 }
 </script>

@@ -98,6 +98,9 @@ name: "ShoeInvestorsWithdrawalList",
       dataSource:[],
       statusOptionList: [{"value":"0", "name":"审核中"}, {"value":"1", "name":"提现中"}, {"value":"2", "name":"审核失败"}, {"value":"3", "name":"已提现"}],
       description: 'shoe_investors_withdrawal管理页面',
+      queryParam:{
+        status:''
+      },
       // 表头
       columns: [
         {

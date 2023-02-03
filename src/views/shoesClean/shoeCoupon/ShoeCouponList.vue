@@ -9,6 +9,36 @@
               <a-input placeholder="请输入名称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="发放方式">
+              <a-select v-model="queryParam.way" >
+                <a-select-option v-for="item in wayOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="用户类型">
+              <a-select v-model="queryParam.obj">
+                <a-select-option v-for="item in objOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="发放状态">
+              <a-select v-model="queryParam.status">
+                <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -131,6 +161,9 @@
     data () {
       return {
         description: 'shoe_coupon管理页面',
+        wayOptionList: [{"value":"", "name":"全部"}, {"value":"0", "name":"自行领取"}, {"value":"1", "name":"系统发放"}, {"value":"2", "name":"卡包"}],
+        objOptionList: [{"value":"all", "name":"全部"}, {"value":"new", "name":"新用户"}, {"value":"old", "name":"老用户"}],
+        statusOptionList: [{"value":"", "name":"全部"}, {"value":"0", "name":"停止发放"}, {"value":"1", "name":"正常发放"}],
         // 表头
         columns: [
           {

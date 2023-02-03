@@ -12,7 +12,7 @@
           <a-row>
             <a-col :span="24">
               <a-form-model-item label="订单编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="no">
-                <a-input v-model="model.no" placeholder="请输入订单编号" style="width: 200px"></a-input>
+                <a-input v-model.trim="model.no" placeholder="请输入订单编号" style="width: 200px"></a-input>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
@@ -87,7 +87,7 @@ export default {
       visible: false,
       confirmLoading: false,
       model: {},
-      orderType: [{"value": "2", "name": "候鸟"}, {"value": "3", "name": "干洗店"}, {"value": "4", "name": "供应商"}],
+      orderType: [{"value": "2", "name": "候鸟洗衣"}, {"value": "3", "name": "干洗店"}, {"value": "4", "name": "供应商"}, {"value": "5", "name": "叼到家"}],
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},

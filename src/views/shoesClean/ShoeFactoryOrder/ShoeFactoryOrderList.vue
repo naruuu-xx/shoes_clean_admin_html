@@ -22,9 +22,16 @@
             </a-form-item>
           </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
-            <a-form-item label="订单类型">
+            <a-form-item label="订单来源">
               <a-select v-model="queryParam.source">
                 <a-select-option v-for="item in sourceOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="订单类型">
+              <a-select v-model="queryParam.type">
+                <a-select-option v-for="item in TypeOptionList" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -169,11 +176,19 @@
             }
           },
           {
-            title:'类型',
+            title:'订单来源',
             align:"center",
             dataIndex: 'source',
             customRender: (text) => {
               return filterDictTextByCache('shoe_factory_order_source', text);
+            }
+          },
+          {
+            title:'订单类型',
+            align:"center",
+            dataIndex: 'type',
+            customRender: (text) => {
+              return filterDictTextByCache('shoe_factory_order_type', text);
             }
           },
           {
@@ -192,7 +207,8 @@
         dictOptions:{},
         superFieldList:[],
         statusOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"已入库"}, {"value":"2", "name":"已出库"}],
-        sourceOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"鞋蜂小程序"}, {"value":"2", "name":"候鸟"}, {"value":"3", "name":"干洗店"}, {"value":"4", "name":"供应商"} ]
+        sourceOptionList: [{"value":"", "name":"全部"}, {"value":"1", "name":"鞋蜂小程序"}, {"value":"2", "name":"候鸟洗衣"}, {"value":"3", "name":"干洗店"}, {"value":"4", "name":"供应商"}, {"value":"5", "name":"叼到家"} ],
+        TypeOptionList: [{"value":"", "name":"全部"}, {"value":"locker", "name":"机柜订单"}, {"value":"expressage", "name":"快递订单"}, {"value":"site", "name":"站点订单"}, {"value":"other", "name":"其他订单"} ]
       }
     },
     created() {
