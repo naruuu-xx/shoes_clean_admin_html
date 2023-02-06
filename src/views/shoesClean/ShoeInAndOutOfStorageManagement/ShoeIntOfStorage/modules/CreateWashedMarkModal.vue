@@ -8,6 +8,7 @@
     cancelText="关闭"
     :footer="null"
     wrapClassName="full-modal">
+    <a-spin :spinning="confirmLoading">
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
@@ -21,7 +22,7 @@
       </a-row>
       <a-divider />
     </div>
-
+    </a-spin>
   </j-modal>
 </template>
 
@@ -40,6 +41,7 @@ export default {
       data: {},
       imageList: [],
       shoeOrderInfo: false,
+      confirmLoading: false,
     }
   },
   created() {
@@ -68,6 +70,7 @@ export default {
       this.shoeOrderInfo = false;
     },
     handleOutOfStorage(){
+      this.confirmLoading = true;
       let data = {
         "no": this.no
       }
@@ -95,6 +98,7 @@ export default {
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
         // this.$message.success("打印成功");
+        this.confirmLoading = false;
       })
     },
     // 打印
