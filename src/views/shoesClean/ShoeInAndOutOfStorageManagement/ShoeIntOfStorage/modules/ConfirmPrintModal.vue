@@ -29,15 +29,16 @@
       <a-row>
         <a-col :span="24">
           <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
-            <a-select
-              v-model:value="selectedNote"
-              mode="multiple"
-              style="width: 100%;"
-              placeholder="请选择"
-              :options="noteOptions"
-              :z-index="2000"
-            >
-            </a-select>
+<!--            <a-select-->
+<!--              v-model:value="selectedNote"-->
+<!--              mode="multiple"-->
+<!--              style="width: 100%;"-->
+<!--              placeholder="请选择"-->
+<!--              :options="noteOptions"-->
+<!--              :z-index="2000"-->
+<!--            >-->
+<!--            </a-select>-->
+            <a-input v-model.trim="data.note" placeholder="请输入备注"/>
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -85,32 +86,31 @@ export default {
       this.data = record;
 
       //获取备注项列表
-      httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
-        this.noteOptions = res.result.records.map((item,index,arr)=>{
-          let c = {label:item.note, value:item.note}
-          return c;
-        })
-      })
+      // httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
+      //   this.noteOptions = res.result.records.map((item,index,arr)=>{
+      //     let c = {label:item.note, value:item.note}
+      //     return c;
+      //   })
+      // })
     },
     handleCancel(){
       this.visible = false;
     },
     handleOk(){
-      let selectedNotes = this.selectedNote;
-      let selectedNoteString = "";
-      for (let i = 0 ; i < this.selectedNote.length ; i ++) {
-        selectedNoteString += selectedNotes[i] + "；";
-      }
+      // let selectedNotes = this.selectedNote;
+      // let selectedNoteString = "";
+      // for (let i = 0 ; i < this.selectedNote.length ; i ++) {
+      //   selectedNoteString += selectedNotes[i] + "；";
+      // }
+      //
+      // selectedNoteString = selectedNoteString.substring(0, selectedNoteString.length - 1);
+      //
 
-      selectedNoteString = selectedNoteString.substring(0, selectedNoteString.length - 1);
-
-      this.handleInOfStorage(selectedNoteString);
+      this.handleInOfStorage();
 
     },
-    handleInOfStorage(selectedNoteString){
+    handleInOfStorage(){
       this.confirmLoading = true;
-
-      this.data.selectedNote = selectedNoteString;
 
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
         if (!res) {
@@ -138,6 +138,7 @@ export default {
         // this.$message.success("入库成功");
         this.confirmLoading = false;
         this.selectedNote = [];
+        this.data.note = "";
         this.visible = false  ;
       })
     },
