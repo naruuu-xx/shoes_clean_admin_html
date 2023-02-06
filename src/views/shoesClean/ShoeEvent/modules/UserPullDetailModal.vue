@@ -5,36 +5,84 @@
     :visible="visible"
     @cancel="handleCancel"
     :footer="null">
-    <a-row type="flex" justify="space-around" align="middle" style="height: 50px;">
-      <a-col :span="4" class="oneTableHeardCell">邀请人昵称</a-col>
-      <a-col :span="4" class="oneOtherTableHeardCell">头像</a-col>
-      <a-col :span="4" class="oneOtherTableHeardCell">已邀请人数</a-col>
-      <a-col :span="4" class="oneOtherTableHeardCell">未下单人数</a-col>
-      <a-col :span="4" class="oneOtherTableHeardCell">已下单人数</a-col>
-      <a-col :span="4" class="oneOtherTableHeardCell">完成订单人数</a-col>
-    </a-row>
-    <a-row type="flex" justify="space-around" align="middle" v-for="item in userPullCountList" style="height: 70px;">
-      <a-col :span="4" class="oneTableCell">{{item.nickname}}</a-col>
-      <a-col :span="4" class="oneOtherTableCell"><img alt="example" :src="item.avatar" style="width:20%;height: 50%"> </a-col>
-      <a-col :span="4" class="oneOtherTableCell">{{item.pullCount}}</a-col>
-      <a-col :span="4" class="oneOtherTableCell">{{item.noPlaceAnOrder}}</a-col>
-      <a-col :span="4" class="oneOtherTableCell">{{item.placedAnOrder}}</a-col>
-      <a-col :span="4" class="oneOtherTableCell">{{item.finishAnOrder}}</a-col>
-    </a-row>
+    <a-table
+      ref="table"
+      size="middle"
+      :scroll="{x:true}"
+      bordered
+      rowKey="userId"
+      :columns="columns"
+      :dataSource="dataSource"
+      :pagination="ipagination"
+      :loading="loading"
+      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+      class="j-table-force-nowrap"
+      @change="handleTableChange">
+
+      <template slot="imgSlot" slot-scope="text,record">
+        <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+        <img v-else :src="getImgView(text)" :preview="record.avatar" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+      </template>
+
+    </a-table>
+
   </j-modal>
 </template>
 
 <script>
+import '@/assets/less/TableExpand.less';
 import {httpAction} from "../../../../api/manage";
+import { mixinDevice } from '@/utils/mixin';
+import { JeecgListMixin } from '@/mixins/JeecgListMixin';
 
 export default {
   name: "UserPullDetailModal",
+  mixins:[JeecgListMixin, mixinDevice],
   data() {
     return {
       title: "拉新活动详情",
       width: 1200,
       visible: false,
-      userPullCountList: []
+      userPullCountList: [],
+      columns: [
+        {
+          title: "邀请人昵称",
+          align: "center",
+          dataIndex: "nickname"
+        },
+        {
+          title: "头像",
+          align: "center",
+          dataIndex: "avatar",
+          scopedSlots: {customRender: 'imgSlot'}
+        },
+        {
+          title: "已邀请人数",
+          align: "center",
+          dataIndex: "pullCount"
+        },
+        {
+          title: "未下单人数",
+          align: "center",
+          dataIndex: "noPlaceAnOrder"
+        },
+        {
+          title: "已下单人数",
+          align: "center",
+          dataIndex: "placedAnOrder"
+        },
+        {
+          title: "完成订单人数",
+          align: "center",
+          dataIndex: "finishAnOrder"
+        },
+      ],
+      dataSource: [],
+      ipagination: { total: 0},
+      loading:false,
+      url: {
+        list: "/ShoeEvent/ShoeEvent/queryUserPullCount",
+      },
     }
   },
   created() {
@@ -47,9 +95,12 @@ export default {
       this.visible = true;
 
       //获取详情列表
-      httpAction("/ShoeEvent/ShoeEvent/queryUserPullCount", null, "get").then((res) => {
+      httpAction(this.url.list, null, "get").then((res) => {
         if (res.success) {
-          this.userPullCountList = res.result;
+          //把数据传入dataSource
+          this.dataSource = res.result.records;
+          this.ipagination.current = 1;
+          this.ipagination.total = res.result.total;
         }
       })
     }

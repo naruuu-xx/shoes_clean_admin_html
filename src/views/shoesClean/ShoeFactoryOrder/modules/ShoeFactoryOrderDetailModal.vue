@@ -14,40 +14,60 @@
         <!-- 左半部分 -->
         <a-col :span="11">
           <a-row>
-            <a-col :span="24"><p class="label-title">商品信息</p></a-col>
+            <a-row>
+              <a-col :span="24"><p class="label-title">商品信息</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">商品名：{{ data.title }}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">商品规格：{{ data.skuTitle }}</p></a-col>
+            </a-row>
           </a-row>
           <a-row>
-            <a-col :span="24"><p class="label-content">商品名：{{ data.title }}</p></a-col>
+            <a-row>
+              <a-col :span="24"><p class="label-title">用户信息</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">用户姓名：{{ data.name }}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">手机号：{{ data.phone }}</p></a-col>
+            </a-row>
           </a-row>
           <a-row>
-            <a-col :span="24"><p class="label-content">商品规格：{{ data.skuTitle }}</p></a-col>
+            <a-row>
+              <a-col :span="24"><p class="label-title">订单信息</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">订单编号：{{ data.no }}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">备注：{{ data.note }}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">订单状态：{{ factoryStatus }}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">入库时间：{{data.factoryInTime}}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">出库时间：{{data.factoryOutTime}}</p></a-col>
+            </a-row>
           </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-title">用户信息</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-content">用户姓名：{{ data.name }}</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-content">手机号：{{ data.phone }}</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-title">订单信息</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-content">订单编号：{{ data.no }}</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-content">备注：{{ data.note }}</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-content">订单状态：{{ factoryStatus }}</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-content">入库时间：{{data.factoryInTime}}</p></a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="24"><p class="label-content">出库时间：{{data.factoryOutTime}}</p></a-col>
+          <a-row v-if="'expressage' === data.type && 2 === data.status">
+            <a-row>
+              <a-col :span="24"><p class="label-title">快递信息</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">快递单号：{{expressagesInfo.kuaidinum}}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">快递员：{{expressagesInfo.courierName}}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">手机号：{{expressagesInfo.courierMobile}}</p></a-col>
+            </a-row>
           </a-row>
         </a-col>
         <!-- 右半部分 -->
@@ -89,6 +109,7 @@ export default {
       factoryStatus: "",
       factoryInTime: "",
       factoryOutTime: "",
+      expressagesInfo: {}
     }
   },
   created() {
@@ -115,6 +136,12 @@ export default {
           this.factoryStatus = "已出库";
         }
       })
+
+      //请求接口，获取快递信息
+      if ('expressage' === this.data.type && 2 === this.data.status) {
+        this.getExpressagesInfo(this.data.orderId);
+      }
+
     },
     handleCancel() {
       this.visible = false;
@@ -129,6 +156,13 @@ export default {
     handleShoeImageModalCancel() {
       this.showImageModal = false;
       this.clickedImage = "";
+    },
+    getExpressagesInfo(orderId){
+      httpAction("/ShoeOrder/shoeOrder/getExpressageInfo?orderId=" + orderId, null, "get").then((res) => {
+        if (res.success) {
+          this.expressagesInfo = res.result;
+        }
+      })
     }
   }
 }
