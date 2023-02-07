@@ -19,18 +19,14 @@
           <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off" suffix="%"></a-input>
         </a-form-model-item>
         <a-form-model-item label=" 配送费设置" :labelCol="labelCol" :wrapperCol="wrapperCol" >
-          (1) 取鞋：同一订单第一双鞋配送费
+          同一订单第一双鞋配送费
           <a-input-number placeholder="输入配送费" style="width: 80px" v-model="model.firstNum" :min="0"
                           size="small"/>
           元，每增加一双鞋增加
           <a-input-number placeholder="输入配送费" style="width: 80px" v-model="model.secondNum" :min="0"
                           size="small"/>
           元。
-          <br/>
-          (2) 送鞋：一双鞋配送费
-          <a-input-number placeholder="输入配送费" style="width: 80px" v-model="model.sendNum" :min="0"
-                          size="small"/>
-          元。
+
         </a-form-model-item>
 
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
@@ -64,7 +60,7 @@ export default {
         percentage:"",
 
       },
-      title: '机柜收益设置',
+      title: '站点收益设置',
       width: 600,
       visible: false,
       lockerId: "",
@@ -97,9 +93,8 @@ export default {
     show(record) {
       Object.assign(this.model, record);
       this.lockerId = record.lockerId;
-      this.model.firstNum = record.courierCost/100;
-      this.model.secondNum = record.courierCostIncrease/100;
-      this.model.sendNum = record.courierSendCost/100;
+      this.model.firstNum = record.freight/100;
+      this.model.secondNum = record.freightIncrease/100;
       this.visible = true;
       this.model.percentage= (record.percentage * 100).toFixed(0);
     },
@@ -113,9 +108,8 @@ export default {
           let data = {
             "lockerId": that.lockerId,
             "percentage": that.model.percentage,
-            "courierCost": that.model.firstNum*100,
-            "courierCostIncrease": that.model.secondNum*100,
-            "courierSendCost": that.model.sendNum*100,
+            "freight": that.model.firstNum*100,
+            "freightIncrease": that.model.secondNum*100,
           }
 
           httpAction("/shoes/shoeLocker/setPercentageBySitemanager", data, 'post').then((res) => {
