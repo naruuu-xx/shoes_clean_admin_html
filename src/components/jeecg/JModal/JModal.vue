@@ -5,8 +5,8 @@
     :style="getStyle(modalStyle)"
     :visible="visible"
     v-bind="_attrs"
-    v-on="$listeners"
-    @ok="handleOk"
+    
+    @ok="debounce(handleOk,wait)"
     @cancel="handleCancel"
     :destroyOnClose="destroyOnClose"
   >
@@ -50,10 +50,11 @@
 import { getClass, getStyle } from '@/utils/props-util'
 import { triggerWindowResizeEvent } from '@/utils/util'
 import ModalDragMixins from './ModalDragMixins'
+import FnMixin from "@/mixins/FnMixin";
 
 export default {
     name: 'JModal',
-    mixins: [ModalDragMixins],
+    mixins: [ModalDragMixins,FnMixin],
     props: {
       title: String,
       // 可使用 .sync 修饰符
@@ -80,6 +81,11 @@ export default {
         type: Boolean,
         default: true
       },
+      // 防抖时间
+      wait:{
+        type: Number,
+        default: 2000
+      }
     },
     data() {
       return {
@@ -159,11 +165,13 @@ export default {
       },
 
       handleOk() {
+        this.$emit('ok')
         if (this.okClose) {
           this.close()
         }
       },
       handleCancel() {
+        this.$emit('cancel')
         this.close()
       },
 

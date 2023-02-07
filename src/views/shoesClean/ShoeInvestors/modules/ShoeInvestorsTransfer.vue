@@ -56,7 +56,6 @@ export default {
       model: {
         status: 0
       },
-
     }
   },
   methods: {

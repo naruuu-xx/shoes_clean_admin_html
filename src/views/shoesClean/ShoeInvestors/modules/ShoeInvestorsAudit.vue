@@ -60,6 +60,7 @@ export default {
   },
   methods: {
     handleOk() {
+      return console.log(8888);
       const that = this;
       let data = {
         "investorsWithdrawalId": that.id,
