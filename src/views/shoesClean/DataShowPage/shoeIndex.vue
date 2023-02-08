@@ -1,55 +1,158 @@
 <template>
   <div class="page-header-index-wide">
-    <a-card style="height: 100vh">
-      <a-row>
-        <a-col :span="24" style="font-size: 30px;font-weight: bold;margin-bottom: 30px;">
-          &nbsp;鞋蜂欢迎您！
-        </a-col>
-      </a-row>
-      <a-row style="margin-bottom: 10px">
-        <a-col :span="24">
-          &nbsp;&nbsp;鞋蜂总部设立于美丽的鹫岛之城-厦门，厦门是国务院批复确定的中国经济特区和东南沿海重要的中心城市、港口及风景旅游城市。
-          <br/>
-          &nbsp;&nbsp;鞋蜂，是以城市新基建5G智慧洗护工厂为依托，通过互联网洗护类生产服务平台结合运用“C2B2F+鞋蜂蜂箱”模式，进行都市年轻群体鞋子洗护的自主创新品牌。以洗护链接为入口，打造高校、公寓综合服务中心，延伸上下产业链，打通鞋靴全生命周期管理，实现智慧洗鞋服务。
-        <br/>
-          &nbsp;&nbsp;未来，鞋蜂不断优化运营模式和工艺流程，以人为本，开放包容，优选国内外顶级洗护产品，注重洗护品质，降低环境污染，并致力于绿色环保、循环经济，为我国早日实现碳中和，为行业的进步和经济的发展贡献自身的力量!
-        </a-col>
-      </a-row>
-      <a-row style="margin-bottom: 10px">
-        <a-col :span="24">
-          1.团队
-          <br/>
-          &nbsp;&nbsp;蜂鞋创始团队来自阿里、字节、快手等头部互联网公司的连续创业者，人才密度高，已获得多个投资人、机构青睐。
-        </a-col>
-      </a-row>
-      <a-row style="margin-bottom: 10px">
-        <a-col :span="24">
-          2工厂
-          <br/>
-          &nbsp;&nbsp;本地自营千平5G智慧洗鞋工厂，国内首条标准化洗鞋产业流水线，日吞吐量最高可达五千双，实现行业最快24H内出库。
-        </a-col>
-      </a-row>
-      <a-row style="margin-bottom: 10px">
-        <a-col :span="24">
-          3.运营
-          <br/>
-          &nbsp;&nbsp;自主品牌、商标，运营团队年轻、富有激情，懂私域，擅长各种新媒体平台运营。
-        </a-col>
-      </a-row>
-      <a-row style="margin-bottom: 10px">
-        <a-col :span="24">
-          4.技术
-          <br/>
-          &nbsp;&nbsp;与国内知名高校--华侨大学建立产学研合作，共同研发“互联网+洗鞋”标准化智能管理系统，实现“C2B2F+鞋蜂蜂箱”模式落地及不断创新。
-        </a-col>
-      </a-row>
-      <a-row style="margin-bottom: 10px">
-        <a-col :span="24">
-          5.服务
-          <br/>
-          &nbsp;&nbsp;专业物流团队结合自主开发配送APP，实现24H全天配送响应;十余位匠人多年洗护行业经验，不断更新洗护技术，用心洗好每一双鞋。
-        </a-col>
-      </a-row>
+    <a-row :gutter="24">
+      <a-col :sm="24" :md="24" :xl="8" :style="{ marginBottom: '24px' }">
+        <div class="box">
+          <div class="box-item" v-for="(item,idx) in dataObj.quantityOfSale" :key="idx">
+            <div class="box-item-title">{{ item.name }}</div>
+            <div class="box-item-value">¥{{ item.num }}</div>
+            <!-- <div class="box-item-foot">
+              月同比 {{ item.YoY }}% <a-icon :type="item.state == 'increase' ? 'caret-up' : 'caret-down'" :style="{ color: item.state == 'increase' ? '#0dbc79' : 'red' }" />
+            </div> -->
+          </div>
+        </div>
+      </a-col>
+      <a-col :sm="24" :md="24" :xl="8" :style="{ marginBottom: '24px' }">
+        <div class="box">
+          <div class="box-item" v-for="(item,idx) in dataObj.orderForm" :key="idx">
+            <div class="box-item-title">{{ item.name }}</div>
+            <div class="box-item-value">{{ item.num }}</div>
+          </div>
+        </div>
+      </a-col>
+      <a-col :sm="24" :md="24" :xl="8" :style="{ marginBottom: '24px' }">
+        <div class="box">
+          <div class="box-item" v-for="(item,idx) in dataObj.numberOfUsers" :key="idx">
+            <div class="box-item-title">{{ item.name }}</div>
+            <div class="box-item-value">{{ item.num }}</div>
+          </div>
+        </div>
+      </a-col>
+    </a-row>
+
+    <a-row>
+      <div class="status">
+        <div class="status-box" v-for="(status, idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(status)">
+          <div class="status-box-name">{{ status.name }}</div>
+          <div class="status-box-value">{{ status.num }}</div>
+        </div>
+      </div>
+    </a-row>
+
+    <a-row>
+      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+        <div class="withdraw">
+          <div class="withdraw-title">提现待审核</div>
+          <div class="withdraw-main">
+            <div class="withdraw-main-item" @click="onClickw('0',item)" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
+              <div class="withdraw-main-item-name">{{ item.name }}</div>
+              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
+            </div>
+          </div>
+        </div>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+        <div class="withdraw">
+          <div class="withdraw-title">提现待确认</div>
+          <div class="withdraw-main">
+            <div class="withdraw-main-item" @click="onClickw('1',item)" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
+              <div class="withdraw-main-item-name">{{ item.name }}</div>
+              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
+            </div>
+          </div>
+        </div>
+      </a-col>
+    </a-row>
+
+    <a-card :loading="loading" :bordered="false" :body-style="{ padding: '0' }">
+      <div class="salesCard">
+        <div class="tab">
+          <div class="tab-left">
+            <div
+              class="tab-left-item"
+              :class="{ active: type.value == barQuery.type.value }"
+              v-for="(type, idx) in typeList"
+              :key="idx"
+              @click="onTab('type', type)"
+            >
+              {{ type.name }}
+            </div>
+          </div>
+          <div class="tab-right">
+            <div
+              class="tab-right-item"
+              :class="{ active: type.value == barQuery.time.value }"
+              v-for="(type, idx) in timeList"
+              :key="idx"
+              @click="onTab('time', type)"
+            >
+              {{ type.name }}
+            </div>
+          </div>
+        </div>
+        <a-row>
+          <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+            <a-spin :spinning="spinning">
+              <bar
+                :title="`${barQuery.time.name}${barQuery.type.name}排行`"
+                :dataSource="barData"
+                :yaxisText="barQuery.type.name"
+              />
+            </a-spin>
+
+          </a-col>
+        </a-row>
+        <a-row :gutter="24">
+          <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+            <div>
+              <div class="rankings">
+                <div class="rankings-title">商品{{ barQuery.type.name }}排行</div>
+                <a-spin :spinning="spinning">
+                  <div class="rankings-main">
+                    <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
+                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                      <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
+                    </div>
+                    <a-empty v-if="!goodRankingList.length"/>
+                  </div>
+                </a-spin>
+              </div>
+            </div>
+          </a-col>
+          <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+            <div>
+              <div class="rankings">
+                <div class="rankings-title">机柜{{ barQuery.type.name }}排行</div>
+                <a-spin :spinning="spinning">
+                  <div class="rankings-main">
+                    <div class="rankings-main-cell" v-for="(good, idx) in lockerRankingList" :key="idx">
+                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                      <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
+                    </div>
+                    <a-empty v-if="!lockerRankingList.length"/>
+                  </div>
+                </a-spin>
+              </div>
+            </div>
+          </a-col>
+          <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+            <div>
+              <div class="rankings">
+                <div class="rankings-title">站点{{ barQuery.type.name }}排行</div>
+                <a-spin :spinning="spinning">
+                  <div class="rankings-main">
+                    <div class="rankings-main-cell" v-for="(good, idx) in siteRankingList" :key="idx">
+                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                      <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
+                    </div>
+                    <a-empty v-if="!siteRankingList.length"/>
+                  </div>
+                </a-spin>
+              </div>
+            </div>
+          </a-col>
+        </a-row>
+      </div>
     </a-card>
   </div>
 </template>
@@ -70,7 +173,7 @@ import Trend from '@/components/Trend'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
 export default {
-  name: 'IndexChart',
+  name: 'ShoeAnalysis',
   components: {
     ATooltip,
     ACol,
@@ -145,8 +248,8 @@ export default {
   created() {
 
     // this.initLogInfo()
-    // this.getIndexUp()
-    // this.getIndexDown()
+    this.getIndexUp()
+    this.getIndexDown()
   },
   methods: {
     // 点击订单状态
