@@ -33,7 +33,7 @@
                   placeholder="选择或搜索需要绑定的用户"
                   option-filter-prop="children"
                   style="width: 200px"
-                  v-model="model.userId"
+                  v-model="model.sitemanagerId"
                   :disabled="disabledStatus"
                 >
                   <a-select-option v-for="i in shoeUserList" :value="i.userId.toString()" :key="i.nickname">
@@ -546,7 +546,7 @@ export default {
       this.$refs.form.validateField(['address','longitude','latitude'])
     },
     getShoeUserList() {
-      httpAction("/shoes/shoeUser/shoeUserListByPromotionId?promotionId=" + this.model.promotionId, "", "get").then((res) => {
+      httpAction("/shoes/shoeUser/shoeUserListBySitemanagerId?sitemanagerId=" + this.model.sitemanagerId, "", "get").then((res) => {
         if (res) {
           console.log(res.result);
           this.shoeUserList = res.result;
