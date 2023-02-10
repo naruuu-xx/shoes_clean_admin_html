@@ -172,7 +172,12 @@ export default {
         {
           title:' 完成时间',
           align:"center",
-          dataIndex: 'putTime'
+          dataIndex: 'putTime',
+          customRender: (text, record) => {
+            let cancelTime = record.cancelTime;
+
+            return text || cancelTime || "————————";
+          }
         },
       ],
       dictOptions:{},
