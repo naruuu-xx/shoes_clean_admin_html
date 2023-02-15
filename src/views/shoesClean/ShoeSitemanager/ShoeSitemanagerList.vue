@@ -103,7 +103,7 @@
                     :to=" '/shoesClean/ShoeSitemanager/ShoeSitemanagerCourierList/'+record.sitemanagerId" v-has="'sitemanager:courier'">配送员</router-link>
                 </a-menu-item>
                 <a-menu-item>
-                 <a @click="setPercentage(record)" v-has="'sitemanager:courier:money:set'">配送费设置</a>
+                 <a @click="showSiteCourierCost(record)" v-has="'sitemanager:courier:money:set'">配送费查看</a>
                 </a-menu-item>
               </a-menu>
 
@@ -115,6 +115,8 @@
 
     <shoe-sitemanager-modal ref="modalForm" @ok="modalFormOk"></shoe-sitemanager-modal>
     <set-percentage ref="setPercentage" @ok="modalFormOk"></set-percentage>
+    <site-courier-cost ref="siteCourierCost" @ok="modalFormOk"></site-courier-cost>
+
   </a-card>
 </template>
 
@@ -130,13 +132,15 @@ import {httpAction} from "../../../api/manage";
 import {mapGetters} from 'vuex';
 import store from '@/store/'
 import SetPercentage from "@views/shoesClean/ShoeSitemanager/modules/SetPercentage"
+import SiteCourierCost from "@views/shoesClean/ShoeSitemanager/modules/SiteCourierCost";
 
 export default {
   name: 'ShoeSitemanagerList',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
     ShoeSitemanagerModal,
-    SetPercentage
+    SetPercentage,
+    SiteCourierCost
   },
   data() {
     return {
@@ -305,6 +309,9 @@ export default {
       this.$refs.setPercentage.show(record);
 
     },
+    showSiteCourierCost(record) {
+      this.$refs.siteCourierCost.show(record);
+    }
   }
 }
 </script>
