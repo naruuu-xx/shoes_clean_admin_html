@@ -546,7 +546,7 @@ export default {
       this.$refs.form.validateField(['address','longitude','latitude'])
     },
     getShoeUserList() {
-      httpAction("/shoes/shoeUser/shoeUserListByPromotionId?promotionId=" + this.model.promotionId, "", "get").then((res) => {
+      httpAction("/shoes/shoeUser/shoeUserListBySitemanagerId?sitemanagerId=" + this.model.sitemanagerId, "", "get").then((res) => {
         if (res) {
           console.log(res.result);
           this.shoeUserList = res.result;
