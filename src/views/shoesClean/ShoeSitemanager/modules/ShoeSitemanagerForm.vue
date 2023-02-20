@@ -272,7 +272,6 @@ export default {
     },
   },
   created() {
-    this.getShoeUserList();
     this.getDepartName();
     //备份model原始值address
     this.modelDefault = JSON.parse(JSON.stringify(this.model));
@@ -336,7 +335,7 @@ export default {
 
       })
 
-
+      this.getShoeUserList();
 
     },
     submitForm() {
@@ -548,9 +547,7 @@ export default {
     getShoeUserList() {
       httpAction("/shoes/shoeUser/shoeUserListBySitemanagerId?sitemanagerId=" + this.model.sitemanagerId, "", "get").then((res) => {
         if (res) {
-          console.log(res.result);
           this.shoeUserList = res.result;
-
         }
       })
     },
