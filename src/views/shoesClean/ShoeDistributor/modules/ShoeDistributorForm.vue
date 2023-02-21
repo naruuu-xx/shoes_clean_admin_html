@@ -153,50 +153,52 @@
         this.visible = true;
       },
       fetchUser (value) {
-        console.log('fetching user', 1111111111111111111111111111);
-        // debounce(() => {
-          console.log('fetching user', value);
-
+        debounce(() => {
           this.lastFetchId += 1;
 
           this.userList = [];
 
           this.fetching = true;
 
-          httpAction("/shoes/shoeUser/queryWXUserList", "", "get").then((res) => {
+          httpAction("/shoes/shoeUser/queryWXUserList?searchWord="+value, null, "get").then((res) => {
             this.userList = res.result;
             this.fetching = false;
           })
-        // }, 800);
+        }, 1000);
       },
       handleChange (value) {
-        console.log(value, '11111111111111')
+        Object.assign(this, {
+          value,
+          userList: [],
+          fetching: false,
+        });
       },
       submitForm () {
         const that = this;
         // 触发表单验证
         this.$refs.form.validate(valid => {
           if (valid) {
-            that.confirmLoading = true;
-            let httpurl = '';
-            let method = '';
-            if(!this.model.id){
-              httpurl+=this.url.add;
-              method = 'post';
-            }else{
-              httpurl+=this.url.edit;
-               method = 'put';
-            }
-            httpAction(httpurl,this.model,method).then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
-              }else{
-                that.$message.warning(res.message);
-              }
-            }).finally(() => {
-              that.confirmLoading = false;
-            })
+            console.log(this.value, 76767676766677);
+            // that.confirmLoading = true;
+            // let httpurl = '';
+            // let method = '';
+            // if(!this.model.id){
+            //   httpurl+=this.url.add;
+            //   method = 'post';
+            // }else{
+            //   httpurl+=this.url.edit;
+            //    method = 'put';
+            // }
+            // httpAction(httpurl,this.model,method).then((res)=>{
+            //   if(res.success){
+            //     that.$message.success(res.message);
+            //     that.$emit('ok');
+            //   }else{
+            //     that.$message.warning(res.message);
+            //   }
+            // }).finally(() => {
+            //   that.confirmLoading = false;
+            // })
           }
 
         })
