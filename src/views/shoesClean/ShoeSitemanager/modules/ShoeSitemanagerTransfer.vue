@@ -32,7 +32,7 @@
 import {httpAction, putAction} from "@api/manage";
 
 export default {
-  name: "ShoeInvestorsAudit",
+  name: "ShoeSitemanagerAudit",
   props: {
     //表单禁用
     disabled: {
@@ -56,6 +56,7 @@ export default {
       model: {
         status: 0
       },
+
     }
   },
   methods: {
@@ -63,11 +64,11 @@ export default {
       const that = this;
       if (this.model.status==0){
         let data = {
-          "investorsWithdrawalId": that.id,
+          "sitemanagerWithdrawalId": that.id,
           "status": that.model.status,
           "amount": that.amount * 100,
         };
-        putAction("/shoes/shoeInvestors/updateWithdrawalTransferStatus", data).then((res) => {
+        putAction("/shoes/shoeLocker/updateWithdrawalTransferStatus", data).then((res) => {
           if (res.code === 200) {
             this.visible = false;
             that.$message.success('提交成功')
@@ -82,10 +83,10 @@ export default {
       this.visible = false;
     },
     show(record){
-      httpAction("/shoes/shoeInvestors/withdrawalDetail?id="+record.investorsWithdrawalId, null, "get").then((res) => {
+      httpAction("/shoes/shoeLocker/withdrawalDetail?id="+record.sitemanagerWithdrawalId, null, "get").then((res) => {
         if (res) {
           this.visible = true;
-          this.id = res.result.investorsWithdrawalId;
+          this.id = res.result.sitemanagerWithdrawalId;
           this.name=res.result.name;
           this.amount=res.result.amount;
           this.cardNo=res.result.cardNo;

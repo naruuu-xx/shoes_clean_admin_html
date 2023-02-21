@@ -17,7 +17,7 @@
         <a-col :span="2"></a-col>
         <a-col :span="4">
           <a-row>
-            <a-button @click="handleOutOfStorage"
+            <a-button @click="handleOutOfStorage" :loading="loadingBtn"
                       style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span
               style="font-size: 22px;">出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</span></a-button>
           </a-row>
@@ -88,6 +88,7 @@ export default {
       shoeOrderInfo: false,
       clickedImage: "",
       resData: {},
+      loadingBtn: false
 
     }
   },
@@ -108,6 +109,7 @@ export default {
 
     },
     handleCancel() {
+      this.loadingBtn = false
       this.visible = false;
       this.data = {};
       this.imageList = [];
@@ -131,6 +133,7 @@ export default {
         let data = {
           "no": this.no
         }
+        this.loadingBtn = true
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {
           if (res.code !== 200) {
             if (res.code !== 2000 && res.code !== 2001) {
@@ -176,6 +179,8 @@ export default {
             this.createWashedMark(res.result.no);
 
           }
+        }).finally(res => {
+          this.loadingBtn = false
         })
       }
     },
