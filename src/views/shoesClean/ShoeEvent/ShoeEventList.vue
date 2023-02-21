@@ -119,7 +119,7 @@
 
     <coupon-select-modal ref="couponSelectModal" @ok="queryEventList"></coupon-select-modal>
     <user-pull-detail-modal ref="userPullDetailModal"></user-pull-detail-modal>
-    <AutoSendCardBagSelectModal ref="autoSendCardBagSelectModal"></AutoSendCardBagSelectModal>
+    <AutoSendCardBagSelectModal ref="autoSendCardBagSelectModal" @ok="queryEventList"></AutoSendCardBagSelectModal>
   </a-card>
 </template>
 
@@ -145,6 +145,7 @@
     data () {
       return {
         description: '活动管理页面',
+        dataSource: '',
         // 表头
         columns: [
           {
@@ -206,6 +207,8 @@
         httpAction("/ShoeEvent/ShoeEvent/queryEventList", null, "get").then((res) => {
           if (res.success) {
             this.eventList = res.result;
+            this.dataSource = res.result.records;
+            this.ipagination.total = res.result.total;
           }
         })
       },
@@ -225,15 +228,16 @@
       },
       couponSelect(id,couponId){
         this.$refs.couponSelectModal.show(id,couponId);
-        this.queryEventList();
+
       },
       cardBagSelect(id,couponId){
         this.$refs.autoSendCardBagSelectModal.show(id,couponId);
-        this.queryEventList();
+        console.log("//////",couponId)
+
       },
       queryEventDetail(){
         this.$refs.userPullDetailModal.show();
-        this.queryEventList();
+
       }
     }
   }

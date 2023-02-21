@@ -52,6 +52,8 @@ export default {
       this.visible = true;
       this.selectOption = +couponId;
       this.id = id;
+      console.log("99999999999",couponId)
+      console.log("7777777777777",this.selectOption)
       //获取优惠券列表
       getAction("/shoes/ShoeCardBag/queryAllCardBagList", null).then((res) => {
         if (res.success) {
