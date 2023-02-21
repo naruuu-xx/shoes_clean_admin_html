@@ -10,7 +10,25 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-              <a-input-number v-model="model.userId" placeholder="请输入推广人绑定用户id" style="width: 100%" />
+<!--              <a-input-number v-model="model.userId" placeholder="请输入推广人绑定用户id" style="width: 100%" />-->
+
+              <a-select
+                show-search
+                label-in-value
+                :value="value"
+                placeholder="请输入"
+                style="width: 100%"
+                :filter-option="false"
+                :not-found-content="fetching ? undefined : null"
+                @search="fetchUser"
+                @change="handleChange"
+              >
+                <a-spin v-if="fetching" slot="notFoundContent" size="small" />
+                <a-select-option v-for="item in userList" :key="item.userId">
+                  {{ item.wxInfo }}
+                </a-select-option>
+              </a-select>
+
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -55,6 +73,7 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import debounce from '@/utils/debounce'
 
   export default {
     name: 'ShoeDistributorForm',
@@ -69,6 +88,9 @@
       }
     },
     data () {
+      //下拉搜索框需要的变量
+      // this.lastFetchId = 0;
+      // this.fetchUser = debounce(this.fetchUser, 800);
       return {
         model:{
          },
@@ -82,63 +104,35 @@
         },
         confirmLoading: false,
         validatorRules: {
-           distributorId: [
-              { required: true, message: '请输入推广人id!'},
-           ],
-           pDistributorId: [
-              { required: true, message: '请输入上级推广人id!'},
-           ],
-           leave: [
-              { required: true, message: '请输入层级（推广人专属），1=一级，2=二级!'},
-           ],
-           name: [
-              { required: true, message: '请输入名称!'},
-           ],
-           source: [
-              { required: true, message: '请输入来源：1=后台添加，2=一级推广人邀请，3=二级升一级!'},
-           ],
-           qrcode: [
-              { required: true, message: '请输入推广码!'},
-           ],
-           isDistribute: [
-              { required: true, message: '请输入是否参与分佣，0=否，1=是!'},
-           ],
-           teamNum: [
-              { required: true, message: '请输入团队人数!'},
-           ],
-           num: [
-              { required: true, message: '请输入推广总人数!'},
-           ],
-           note: [
-              { required: true, message: '请输入推广人备注!'},
-           ],
-           income: [
-              { required: true, message: '请输入总收入!'},
-           ],
-           amount: [
-              { required: true, message: '请输入账户余额!'},
-           ],
-           withdrawalingAmount: [
-              { required: true, message: '请输入提现中金额!'},
-           ],
-           status: [
-              { required: true, message: '请输入状态（0=禁用，1=启用）!'},
-           ],
-           addUserId: [
-              { required: true, message: '请输入添加人!'},
-           ],
-           editUserId: [
-              { required: true, message: '请输入最后修改人!'},
-           ],
-           delFlag: [
-              { required: true, message: '请输入是否删除（0=正常，1=删除）!'},
-           ],
+          name: [
+            { required: true, message: '请输入名称!'},
+          ],
+          status: [
+            { required: true, message: '请选择状态!'},
+          ],
+          cardNo: [
+            { required: true, message: '请输入银行卡号!'},
+          ],
+          cardName: [
+            { required: true, message: '请输入持卡人!'},
+          ],
+          openBank: [
+            { required: true, message: '请输入开户行!'},
+          ],
+          bank: [
+            { required: true, message: '请输入开户行地址!'},
+          ],
         },
         url: {
           add: "/shoeDistributor/shoeDistributor/add",
           edit: "/shoeDistributor/shoeDistributor/edit",
           queryById: "/shoeDistributor/shoeDistributor/queryById"
-        }
+        },
+        //下拉搜索框需要的变量
+        userList: [],
+        fetching: false,
+        lastFetchId: 0,
+        value: '',
       }
     },
     computed: {
@@ -157,6 +151,26 @@
       edit (record) {
         this.model = Object.assign({}, record);
         this.visible = true;
+      },
+      fetchUser (value) {
+        console.log('fetching user', 1111111111111111111111111111);
+        // debounce(() => {
+          console.log('fetching user', value);
+
+          this.lastFetchId += 1;
+
+          this.userList = [];
+
+          this.fetching = true;
+
+          httpAction("/shoes/shoeUser/queryWXUserList", "", "get").then((res) => {
+            this.userList = res.result;
+            this.fetching = false;
+          })
+        // }, 800);
+      },
+      handleChange (value) {
+        console.log(value, '11111111111111')
       },
       submitForm () {
         const that = this;
