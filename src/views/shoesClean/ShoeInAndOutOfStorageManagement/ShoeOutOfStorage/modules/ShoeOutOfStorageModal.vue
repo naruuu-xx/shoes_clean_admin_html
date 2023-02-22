@@ -126,6 +126,7 @@ export default {
       this.clickedImage = "";
     },
     handleOutOfStorage() {
+
       //处理出库
       if (this.no === "" || this.no === null || this.no === undefined) {
         this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
@@ -151,12 +152,23 @@ export default {
               this.resDataModal = true;
               //打印水洗唛
               this.createWashedMark(res.result.no);
+
+
             } else if (res.code === 2000) {
               this.resData = res;
               this.$message.success(res.message, 3);
-
               //打印水洗唛
-              this.createWashedMark(res.result.no);
+
+              setTimeout(()=>{
+                this.createWashedMark(res.result.no)
+              },2000)
+
+              //打印快递单
+              this.createKuaidi(res.result.deliveryId);
+
+
+
+
             }
             return false;
           } else {
@@ -178,6 +190,7 @@ export default {
             //打印水洗唛
             this.createWashedMark(res.result.no);
 
+
           }
         }).finally(res => {
           this.loadingBtn = false
@@ -190,6 +203,35 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+    },
+    createKuaidi(deliveryId) {
+      let data = {
+        "deliveryId": deliveryId
+      }
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createKuaidiByOut", data, "post").then((res) => {
+        if (!res) {
+          this.$message.warning(res.message)
+          return
+        }
+        const content = res;
+        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
+        // 要不然无法进行打印
+        const blob = new Blob([content], {type: 'image/jpeg'});
+        //=========================================================
+        var date = (new Date()).getTime();
+        var ifr = document.createElement('iframe');
+        ifr.style.frameborder = 'no';
+        ifr.style.display = 'none';
+        ifr.style.pageBreakBefore = 'always';
+        ifr.setAttribute('download', 'printPdf' + date + '.jpeg');
+        ifr.setAttribute('id', 'printPdf' + date + '.jpeg');
+        ifr.src = window.URL.createObjectURL(blob);
+        document.body.appendChild(ifr);
+
+        this.doPrint('printPdf' + date + '.jpeg')
+        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
+        //=========================================================
+      })
     },
     createWashedMark(no) {
       let data = {
@@ -219,15 +261,17 @@ export default {
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
       })
-    },
-    // 打印
+    }
+    ,
+// 打印
     doPrint(val) {
       var ordonnance = document.getElementById(val).contentWindow;
       setTimeout(() => {
         // window.print()
         ordonnance.print();
       }, 0)
-    },
+    }
+    ,
   }
 }
 </script>
