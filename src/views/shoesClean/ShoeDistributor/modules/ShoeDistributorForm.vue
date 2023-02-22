@@ -16,7 +16,7 @@
                 show-search
                 label-in-value
                 :value="value"
-                placeholder="请输入"
+                placeholder="请输入昵称或手机号"
                 style="width: 100%"
                 :filter-option="false"
                 :not-found-content="fetching ? undefined : null"
@@ -33,7 +33,10 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-              <a-input-number v-model="model.status" placeholder="请输入状态（0=禁用，1=启用）" style="width: 100%" />
+              <a-radio-group v-model:value="model.status">
+                <a-radio value="1">启用</a-radio>
+                <a-radio value="0">禁用</a-radio>
+              </a-radio-group>
             </a-form-model-item>
           </a-col>
 
@@ -107,6 +110,9 @@
           name: [
             { required: true, message: '请输入名称!'},
           ],
+          userId: [
+            { required: true, message: '请输入昵称或手机号!' }
+          ],
           status: [
             { required: true, message: '请选择状态!'},
           ],
@@ -132,7 +138,7 @@
         userList: [],
         fetching: false,
         lastFetchId: 0,
-        value: '',
+        value: "",
       }
     },
     computed: {
@@ -167,6 +173,7 @@
         }, 1000);
       },
       handleChange (value) {
+        Object.assign(this.model, {userId: value.key});
         Object.assign(this, {
           value,
           userList: [],
@@ -178,27 +185,26 @@
         // 触发表单验证
         this.$refs.form.validate(valid => {
           if (valid) {
-            console.log(this.value, 76767676766677);
-            // that.confirmLoading = true;
-            // let httpurl = '';
-            // let method = '';
-            // if(!this.model.id){
-            //   httpurl+=this.url.add;
-            //   method = 'post';
-            // }else{
-            //   httpurl+=this.url.edit;
-            //    method = 'put';
-            // }
-            // httpAction(httpurl,this.model,method).then((res)=>{
-            //   if(res.success){
-            //     that.$message.success(res.message);
-            //     that.$emit('ok');
-            //   }else{
-            //     that.$message.warning(res.message);
-            //   }
-            // }).finally(() => {
-            //   that.confirmLoading = false;
-            // })
+            that.confirmLoading = true;
+            let httpurl = '';
+            let method = '';
+            if(!this.model.id){
+              httpurl+=this.url.add;
+              method = 'post';
+            }else{
+              httpurl+=this.url.edit;
+               method = 'put';
+            }
+            httpAction(httpurl,this.model,method).then((res)=>{
+              if(res.success){
+                that.$message.success(res.message);
+                that.$emit('ok');
+              }else{
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+            })
           }
 
         })
