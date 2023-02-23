@@ -4,6 +4,17 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label=" 推广人">
+              <a-input placeholder="请输入推广人" v-model="queryParam.name" :allowClear="true"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -35,7 +46,7 @@
         </template>
         <template slot="imgSlot" slot-scope="text,record">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+          <img v-else :src="getImgView(text)" :preview="record.distributorId" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
@@ -54,25 +65,30 @@
           <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
+
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
+                <a @click="setPercentage(record)">收益比例</a>
               </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.distributorId)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
+
             </a-menu>
           </a-dropdown>
+        </span>
+
+        <!-- 开关按钮 -->
+        <span slot="statusAction" slot-scope="text, record">
+          <a-switch v-model:checked="record.status" @click="switchChange(record.distributorId, record.status)" />
         </span>
 
       </a-table>
     </div>
 
     <shoe-distributor-modal ref="modalForm" @ok="modalFormOk"></shoe-distributor-modal>
+
+    <set-percentage ref="setPercentage" @ok="modalFormOk"></set-percentage>
+
   </a-card>
 </template>
 
@@ -82,12 +98,16 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeDistributorModal from './modules/ShoeDistributorModal'
+  import {httpAction} from "../../../api/manage";
+  import debounce from '@/utils/debounce'
+  import SetPercentage from "../ShoeDistributor/modules/SetPercentage";
 
   export default {
     name: 'ShoeDistributorList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeDistributorModal
+      ShoeDistributorModal,
+      SetPercentage
     },
     data () {
       return {
@@ -102,12 +122,14 @@
           {
             title:'推广码',
             align:"center",
-            dataIndex: 'qrcode'
+            dataIndex: 'qrcode',
+            scopedSlots: { customRender: 'imgSlot' }
           },
           {
             title:'团队码',
             align:"center",
-            dataIndex: 'teamQrcode'
+            dataIndex: 'teamQrcode',
+            scopedSlots: { customRender: 'imgSlot' }
           },
           {
             title:'创建时间',
@@ -117,12 +139,16 @@
           {
             title:'状态',
             align:"center",
-            dataIndex: 'status'
+            dataIndex: 'status',
+            scopedSlots: { customRender: 'statusAction' }
           },
           {
             title:'收益比例',
             align:"center",
-            dataIndex: 'percentage'
+            dataIndex: 'percentage',
+            customRender: (text) => {
+              return (text*100).toFixed(0) + '%';
+            },
           },
           {
             title: '操作',
@@ -186,7 +212,25 @@
         fieldList.push({type:'int',value:'delFlag',text:'是否删除（0=正常，1=删除）'})
         fieldList.push({type:'date',value:'deleteTime',text:'删除时间'})
         this.superFieldList = fieldList
-      }
+      },
+      switchChange(distributorId, status) {
+        debounce(() => {
+          //请求接口，更改活动开关
+          let data = {
+            "distributorId": distributorId,
+            "status": status
+          }
+          httpAction("/shoeDistributor/shoeDistributor/updateDistributorStatus", data, "post").then((res) => {
+            if (res.success){
+              this.$message.success(res.message);
+              this.searchReset();
+            }
+          });
+        }, 1000);
+      },
+      setPercentage(record) {
+        this.$refs.setPercentage.show(record);
+      },
     }
   }
 </script>

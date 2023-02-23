@@ -8,7 +8,7 @@
               <a-input v-model="model.name" placeholder="请输入姓名"  ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
+          <a-col :span="24" v-if="!model.distributorId">
             <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
 <!--              <a-input-number v-model="model.userId" placeholder="请输入推广人绑定用户id" style="width: 100%" />-->
 
@@ -20,6 +20,7 @@
                 style="width: 100%"
                 :filter-option="false"
                 :not-found-content="fetching ? undefined : null"
+                :showArrow="false"
                 @search="fetchUser"
                 @change="handleChange"
               >
@@ -31,7 +32,12 @@
 
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
+          <a-col :span="24" v-if="model.distributorId">
+            <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+              <a-input v-model="model.wxInfo" :disabled="true"></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" v-if="!model.distributorId">
             <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
               <a-radio-group v-model:value="model.status">
                 <a-radio value="1">启用</a-radio>
@@ -118,6 +124,7 @@
           ],
           cardNo: [
             { required: true, message: '请输入银行卡号!'},
+            { pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/, message: '请输入正确的银行卡号!'},
           ],
           cardName: [
             { required: true, message: '请输入持卡人!'},
@@ -138,7 +145,7 @@
         userList: [],
         fetching: false,
         lastFetchId: 0,
-        value: "",
+        value: [],
       }
     },
     computed: {
@@ -188,7 +195,7 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            if(!this.model.id){
+            if(!this.model.distributorId){
               httpurl+=this.url.add;
               method = 'post';
             }else{
