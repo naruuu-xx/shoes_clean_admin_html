@@ -78,11 +78,15 @@
           </a-button>
         </template>
 
-        <span slot="action" slot-scope="text, record">
-          <a @click="couponSelect(record.id, record.couponId)">优惠券设置</a>
-          <a-divider type="vertical" />
-          <a @click="queryEventDetail">查看详情</a>
+        <span  slot="action" slot-scope="text, record">
+          <a v-if="record.eventName=='每周五自动发放卡包'" @click="cardBagSelect(record.id, record.couponId)">设置</a>
+
+          <a v-if="record.eventName=='拉新活动'" @click="couponSelect(record.id, record.couponId)">优惠券设置</a>
+          <a-divider v-if="record.eventName=='拉新活动'" type="vertical" />
+          <a v-if="record.eventName=='拉新活动'" @click="queryEventDetail">查看详情</a>
+
         </span>
+
 
         <span slot="statusAction" slot-scope="text, record">
           <a-switch v-model:checked="record.eventStatus" @click="switchChange(record.eventStatusGroup, record.eventStatusName, record.eventStatus)" />
@@ -115,8 +119,7 @@
 
     <coupon-select-modal ref="couponSelectModal" @ok="queryEventList"></coupon-select-modal>
     <user-pull-detail-modal ref="userPullDetailModal"></user-pull-detail-modal>
-
-
+    <AutoSendCardBagSelectModal ref="autoSendCardBagSelectModal" @ok="queryEventList"></AutoSendCardBagSelectModal>
   </a-card>
 </template>
 
@@ -129,17 +132,20 @@
   import {httpAction} from "../../../api/manage";
   import CouponSelectModal from "./modules/CouponSelectModal";
   import UserPullDetailModal from "./modules/UserPullDetailModal";
+  import AutoSendCardBagSelectModal from "@views/shoesClean/ShoeEvent/modules/AutoSendCardBagSelectModal";
 
   export default {
     name: 'ShoeCouponList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       CouponSelectModal,
-      UserPullDetailModal
+      UserPullDetailModal,
+      AutoSendCardBagSelectModal
     },
     data () {
       return {
         description: '活动管理页面',
+        dataSource: '',
         // 表头
         columns: [
           {
@@ -201,6 +207,8 @@
         httpAction("/ShoeEvent/ShoeEvent/queryEventList", null, "get").then((res) => {
           if (res.success) {
             this.eventList = res.result;
+            this.dataSource = res.result.records;
+            this.ipagination.total = res.result.total;
           }
         })
       },
@@ -220,9 +228,16 @@
       },
       couponSelect(id,couponId){
         this.$refs.couponSelectModal.show(id,couponId);
+
+      },
+      cardBagSelect(id,couponId){
+        this.$refs.autoSendCardBagSelectModal.show(id,couponId);
+        console.log("//////",couponId)
+
       },
       queryEventDetail(){
         this.$refs.userPullDetailModal.show();
+
       }
     }
   }
