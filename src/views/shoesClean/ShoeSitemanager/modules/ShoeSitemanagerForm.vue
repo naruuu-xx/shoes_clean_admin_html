@@ -196,7 +196,6 @@ export default {
         ],
         cardNo: [
           {required: true, message: '请输入银行卡号!'},
-          {pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/, message: '请输入正确的银行卡号!'},
         ],
         cardName: [
           {required: true, message: '请输入持卡人!'},

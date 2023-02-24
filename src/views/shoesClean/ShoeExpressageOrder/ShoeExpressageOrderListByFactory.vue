@@ -49,11 +49,10 @@
         @change="handleTableChange">
 
        <span slot="action" slot-scope="text, record">
-          <a @click="reorder(record)" v-if="record.status=='2'">重新下单</a>
-
-
+         <a-popconfirm title="确定重新下单吗?" @confirm="() => reorder(record)">
+          <a v-if="record.status=='2'">重新下单</a>
+         </a-popconfirm>
         </span>
-
 
       </a-table>
     </div>
@@ -160,7 +159,7 @@ export default {
 
       //重新下单
       httpAction("/shoeExpressageOrder/reorder?shoeExpressageOrderId=" + record.expressageOrderId, null, "get").then((res) => {
-        if (res.result){
+        if (100 === res.resultCode){
           this.loadData();
           this.$message.success('重新下单成功');
         }else {
