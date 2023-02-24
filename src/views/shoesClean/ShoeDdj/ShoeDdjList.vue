@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="姓名">
-              <a-input placeholder="请输入姓名" v-model="queryParam.nickname" :allowClear="true"></a-input>
+              <a-input placeholder="请输入姓名" v-model="queryParam.name" :allowClear="true"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
@@ -16,18 +16,18 @@
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="区">
-              <a-input placeholder="请输入区" v-model="queryParam.region" :allowClear="true"></a-input>
+              <a-input placeholder="请输入区" v-model="queryParam.area" :allowClear="true"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="状态">
-              <a-select v-model="queryParam.state" style="width: 120px" :options="stateOption">
+              <a-select v-model="queryParam.status" style="width: 120px" :options="stateOption">
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="类型">
-              <a-select v-model="queryParam.type" style="width: 120px" :options="typeOption">
+              <a-select v-model="queryParam.delay" style="width: 120px" :options="typeOption">
               </a-select>
             </a-form-item>
           </a-col>
@@ -186,18 +186,27 @@
           }
         ],
         stateOption:[{
-          label:'已下单',
-          value:0
+          label:'全部',
+          value:''
         },{
           label:'未下单',
-          value:1
-        }],
-        typeOption:[{
-          label:'延时下单',
           value:0
         },{
-          label:'立即下单',
+          label:'已下单',
           value:1
+        },{
+          label:'下单失败',
+          value:2
+        }],
+        typeOption:[{
+          label:'全部',
+          value:''
+        },{
+          label:'延时下单',
+          value:'1'
+        },{
+          label:'立即下单',
+          value:'0'
         }],
         url: {
           list: "/shoeDdj/list"
@@ -205,7 +214,10 @@
         dictOptions:{},
         superFieldList:[],
         type: -1,
-        LL: -1
+        queryParam:{
+          delay: '',
+          status:''
+        }
       }
     },
     filters:{

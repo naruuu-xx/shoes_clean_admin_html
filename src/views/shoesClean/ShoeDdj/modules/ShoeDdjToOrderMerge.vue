@@ -33,11 +33,11 @@
       </a-row>
       <a-row type="flex" justify="space-around">
         <a-col :span="20">
-          <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="region">
+          <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="area">
             <a-space>
               <a-input value="福建省" disabled></a-input>
               <a-input value="厦门市" disabled></a-input>
-              <a-select :options="regionOptions" v-model="form.region" @change="changeRegion" style="width: 100px" placeholder="请选择区">
+              <a-select :options="areaOptions" v-model="form.area" @change="changeArea" style="width: 100px" placeholder="请选择区">
               </a-select>
             </a-space>
           </a-form-model-item>
@@ -103,7 +103,7 @@ export default {
       rules: {
         name: [{required: true, message: '请输入名字'}],
         phone: [{required: true, message: '请输入手机号'}],
-        region: [{required: true, message: '请输入区'}],
+        area: [{required: true, message: '请输入区'}],
         address: [{required: true, message: '请输入详细地址'}],
         dayTime: [{required: true, message: '请选择时间'}],
       },
@@ -113,7 +113,7 @@ export default {
         address: '',
         day:[],
         time:[],
-        region: [],
+        area: [],
         arr:[],
         dayTime:'',
         orderType: '3', // 3有核销码 4无核销码
@@ -138,7 +138,7 @@ export default {
           value:'9:00-10:00'
         }
       ],
-      regionOptions:[
+      areaOptions:[
         {
           label:'思明区',
           value:'思明区'
@@ -180,14 +180,14 @@ export default {
     }
   },
   methods: {
-    changeRegion(e) {
-      this.$refs.ruleForm.validateField('region')
+    changeArea(e) {
+      this.$refs.ruleForm.validateField('area')
     },
     reset() {
       this.rules = {
         name: [{required: true, message: '请输入名字'}],
         phone: [{required: true, message: '请输入手机号'}],
-        region: [{required: true, message: '请输入区'}],
+        area: [{required: true, message: '请输入区'}],
         address: [{required: true, message: '请输入详细地址'}],
         dayTime: [{required: true, message: '请选择时间'}],
       }
@@ -197,7 +197,7 @@ export default {
         address: '',
         day:[],
         time:[],
-        region: [],
+        area: [],
         arr:[],
         dayTime:'',
         orderType: '3'
