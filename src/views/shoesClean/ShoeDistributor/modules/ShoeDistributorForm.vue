@@ -45,13 +45,11 @@
               </a-radio-group>
             </a-form-model-item>
           </a-col>
-
-<!--          <a-col :span="24">-->
-<!--            <a-form-model-item label="佣金比例" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">-->
-<!--              <a-input-number v-model="model.percentage" placeholder="请输入佣金比例" style="width: 100%" />-->
-<!--            </a-form-model-item>-->
-<!--          </a-col>-->
-
+          <a-col :span="24">
+            <a-form-model-item label=" 收益比例" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
+              <a-input v-model="model.percentage" :min="0" :max="100" :step="1" placeholder="请输入0-100的整数" autocomplete="off" suffix="%"></a-input>
+            </a-form-model-item>
+          </a-col>
           <a-col :span="24">
             <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardNo">
               <a-input v-model="model.cardNo" placeholder="请输入银行卡号"  ></a-input>
@@ -122,9 +120,12 @@
           status: [
             { required: true, message: '请选择状态!'},
           ],
+          percentage: [
+            { required: true, message: '请输入0-100之间的整数!'},
+            { pattern: /^([0-9]{0,2}|100)$/, message: '请输入0-100之间的整数!'},
+          ],
           cardNo: [
             { required: true, message: '请输入银行卡号!'},
-            { pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/, message: '请输入正确的银行卡号!'},
           ],
           cardName: [
             { required: true, message: '请输入持卡人!'},
@@ -159,10 +160,18 @@
     },
     methods: {
       add () {
+        this.modelDefault.status = '1';
         this.edit(this.modelDefault);
       },
       edit (record) {
         this.model = Object.assign({}, record);
+
+        if (this.model.distributorId) {
+          let percentage = record.percentage;
+
+          this.model.percentage = (percentage * 100).toFixed(0);
+        }
+
         this.visible = true;
       },
       fetchUser (value) {
