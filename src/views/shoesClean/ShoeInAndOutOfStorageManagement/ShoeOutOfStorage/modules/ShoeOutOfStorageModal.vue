@@ -156,15 +156,17 @@ export default {
 
             } else if (res.code === 2000) {
               this.resData = res;
-              this.$message.success(res.message, 3);
+              this.$message.success(res.message, 5);
               //打印水洗唛
+              this.createWashedMark(res.result.no)
 
-              setTimeout(()=>{
-                this.createWashedMark(res.result.no)
-              },2000)
+
+              // setTimeout(()=>{
+              //   this.createWashedMark(res.result.no)
+              // },2000)
 
               //打印快递单
-              this.createKuaidi(res.result.deliveryId);
+              // this.createKuaidi(res.result.deliveryId);
 
 
 

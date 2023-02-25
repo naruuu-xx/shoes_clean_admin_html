@@ -1,28 +1,6 @@
 <template>
   <a-modal v-model:visible="visible" title="二级推广人" :footer="null" width="1200px">
     <!-- 查询区域-begin -->
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline" @keyup.enter.native="searchQuery">
-        <a-row :gutter="24">
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
-            <a-form-item label=" 昵称">
-              <a-input placeholder="请输入昵称" v-model="queryParam.nickname"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
-            <a-form-item label=" 手机号">
-              <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
-                <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-                  <a-button type="primary" @click="initDataByDIY2" icon="search">查询</a-button>
-                  <a-button type="primary" @click="searchReset2" icon="reload" style="margin-left: 8px">重置</a-button>
-                </span>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div>
 
     <!-- table区域-begin -->
     <div>
@@ -31,7 +9,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="distributorId"
+        rowKey="no"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -71,7 +49,7 @@ export default {
       },
       columns: [
         {
-          title:'昵称',
+          title:'订单编号',
           align:"center",
           dataIndex: 'nickname'
         },
