@@ -170,7 +170,7 @@ export default {
         if (valid) {
           console.log(999,this.form );
           debounce(() => {
-            httpAction("/shoeDdj/order", this.form, "put").then((res) => {
+            httpAction("/shoeDdj/order", Object.assign({},this.form,{orderType: this.form.orderType == 2 ? 2 : 1}), "put").then((res) => {
               console.log('下单',res);
               if (res.success) {
                 this.$message.success(res.message);
