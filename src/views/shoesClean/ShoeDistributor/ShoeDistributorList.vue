@@ -72,9 +72,9 @@
 <!--              <a-menu-item>-->
 <!--                <a @click="setPercentage(record)">收益比例</a>-->
 <!--              </a-menu-item>-->
-<!--              <a-menu-item>-->
-<!--                <a @click="shoeSecondDistributorList(record)">二级推广人</a>-->
-<!--              </a-menu-item>-->
+              <a-menu-item>
+                <a @click="shoeSecondDistributorList(record)">二级推广人</a>
+              </a-menu-item>
             </a-menu>
           </a-dropdown>
         </span>
@@ -239,7 +239,7 @@
       },
       shoeSecondDistributorList(record) {
         this.$refs.secondDistributorList.visible = true;
-        this.$refs.secondDistributorList.initDataByDiy(record.distributorId);
+        this.$refs.secondDistributorList.initDataByDIY(record.distributorId);
         this.$refs.secondDistributorList.dataSource = [];
       }
     }
