@@ -71,7 +71,7 @@
             <a-button @click="handleCancel">取消</a-button>
           </a-col>
           <a-col :span="6">
-            <a-button @click="handleSubmit">确认</a-button>
+            <a-button @click="handleSubmit" :loading="loading">确认</a-button>
           </a-col>
           <a-col :span="6"></a-col>
         </a-col>
@@ -163,7 +163,8 @@ export default {
           label:'翔安区',
           value:'翔安区'
         },
-      ]
+      ],
+      loading:false
     }
   },
   created() {
@@ -202,6 +203,7 @@ export default {
         dayTime:'',
         orderType: '3'
       }
+      this.loading = false
     },
     getTime(start=9,end=20) {
       let leng = end - start
@@ -242,11 +244,13 @@ export default {
       this.$refs.ruleForm.validate((valid,object) => {
         if (valid) {
           debounce(() => {
+            this.loading = true
             if(this.form.orderType == 3) {
               this.form.arr.forEach((element,idx) => {
                 element.checkOffCode = this.form[`checkOffCode${idx+1}`]
               });
             }
+            this.loading = false
             console.log('submit',this.form);
           })
         } else {

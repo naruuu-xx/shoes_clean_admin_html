@@ -46,7 +46,7 @@
               <a-button @click="handleCancel">取消</a-button>
             </a-col>
             <a-col :span="6">
-              <a-button @click="handleSubmit">确认</a-button>
+              <a-button @click="handleSubmit" :loading="loading">确认</a-button>
             </a-col>
             <a-col :span="6"></a-col>
           </a-col>
@@ -100,6 +100,7 @@ export default {
         },
       ],
       timeOptions:[],
+      loading:false
     }
   },
   created() {
@@ -159,6 +160,7 @@ export default {
         time:[],
         dayTime:''
       }
+      this.loading = false
       this.rules = {}
     },
     handleCancel() {
@@ -168,10 +170,12 @@ export default {
     handleSubmit() {
       this.$refs.ruleForm.validate((valid,object) => {
         if (valid) {
-          console.log(999,this.form );
+          this.loading = true
           debounce(() => {
-            httpAction("/shoeDdj/order", Object.assign({},this.form,{orderType: this.form.orderType == 2 ? 2 : 1}), "put").then((res) => {
-              console.log('下单',res);
+            this.loading = true
+            let obj = this.form.orderType == 2 ? {day:'',time:'',orderType: 2} : {orderType:1}
+            let form = Object.assign({},this.form,obj)
+            httpAction("/shoeDdj/order", form, "put").then((res) => {
               if (res.success) {
                 this.$message.success(res.message);
                 this.handleCancel()
@@ -179,6 +183,8 @@ export default {
               } else {
                 this.$message.warning(res.message);
               }
+            }).finally(() => {
+              this.loading = false
             })
           })
           
