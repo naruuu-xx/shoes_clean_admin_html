@@ -274,7 +274,7 @@
       getCheckboxProps(record) {
         return {
           props: {
-            disabled: record.status == '1' || record.delay !== 1 , // Column configuration not to be checked
+            disabled: record.status == '1', // Column configuration not to be checked
             name: record.name,
           },
         }
