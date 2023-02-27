@@ -72,6 +72,8 @@
 <script>
 
 import {downFile, httpAction} from "../../../../../api/manage";
+import { getLodop } from '@/utils/LodopFuncs';
+let Lodop;
 
 export default {
   name: "ShoeOutOfStorageModal",
@@ -164,11 +166,12 @@ export default {
               // setTimeout(()=>{
               //   this.createWashedMark(res.result.no)
               // },2000)
-
-              //打印快递单
+              //
+              // 打印快递单
               // this.createKuaidi(res.result.deliveryId);
 
-
+              //lodop打印快递
+              this.printKuaidi(res.result.deliveryId);
 
 
             }
@@ -205,6 +208,65 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+    },
+    printKuaidi(){
+      let data = {
+        "deliveryId": deliveryId
+      }
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createKuaidiByOut", data, "post").then((res) => {
+        if (!res) {
+          this.$message.warning(res.message)
+          return
+        }
+        let content = res;
+        // content = 'data:image/jpeg;base64,'+res;
+        // content = '<img src="'+content+'" />';
+
+        this.printPic(res,'')
+
+      })
+
+    },
+    /**
+     *
+     * @param image 图片
+     * @param printerName 打印机名称
+     */
+    printPic(image,printerName){
+      LODOP = getLodop() // 获取LODOP对象的主过程
+      if (LODOP != false) {
+        let timestamp = parseInt(new Date().getTime() / 1000 + '');
+        LODOP.PRINT_INIT("面单打印" + timestamp);
+        LODOP.SET_PRINT_PAGESIZE(1, "100mm", "113m", "");
+        LODOP.ADD_PRINT_IMAGE(0, 0, "100mm", "113mm", image)
+        // LODOP.SET_PRINT_STYLEA(0,"Stretch",1);//(可变形)扩展缩放模式
+        LODOP.SET_PRINT_STYLEA(0, "Stretch", 2); //按原图比例(不变形)缩放模式
+
+        //设定名称为XXX的打印机为本次打印的打印机
+        let index = this.getPrinterIndex(LODOP, printerName);
+        LODOP.SET_PRINTER_INDEX(index);
+        LODOP.SET_SHOW_MODE('PREVIEW_IN_BROWSE', 1)
+
+        // LODOP.PRINT()// 直接打印
+        LODOP.PREVIEW() // 打印预览
+      }
+    },
+    /**
+     * 根据打印机名称获取该打印机在系统中的序号
+     * @param {Object} LODOP
+     * @param printName
+     */
+    getPrinterIndex(LODOP, printName) {
+      let num = LODOP.GET_PRINTER_COUNT();
+      let index = 0;
+      for (let i = 0; i < num; i++) {
+        let name = LODOP.GET_PRINTER_NAME(i);
+        if (printName === name) {
+          index = i;
+          break;
+        }
+      }
+      return index;
     },
     createKuaidi(deliveryId) {
       let data = {
