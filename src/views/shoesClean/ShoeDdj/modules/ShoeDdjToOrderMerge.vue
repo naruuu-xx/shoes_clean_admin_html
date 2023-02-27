@@ -205,7 +205,7 @@ export default {
       }
       this.loading = false
     },
-    getTime(start=9,end=20) {
+    getTime(start=9,end=22) {
       let leng = end - start
       this.timeOptions = new Array(leng).fill('').map((item,idx) => item = {
         label: `${start+idx}:00-${start+idx+1}:00`,

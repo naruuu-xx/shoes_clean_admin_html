@@ -104,7 +104,7 @@
 
     <distribute-coupon-modal ref="distributeCouponModal" @ok="modalFormOk"></distribute-coupon-modal>
 
-    <manual-distribute-coupon-modal ref="manualDistributeCouponModal" @ok="modalFormOk"></manual-distribute-coupon-modal>
+    <manual-distribute-coupon-modal ref="manualDistributeCouponModal" @submit="manualSubmit"></manual-distribute-coupon-modal>
 
   </a-card>
 </template>
@@ -198,6 +198,11 @@
       },
     },
     methods: {
+      // 手动派券提交
+      manualSubmit(data) {
+        console.log('data',data);
+        this.$refs.distributeCouponModal.show({});
+      },
       initDictConfig(){
       },
       getSuperFieldList(){

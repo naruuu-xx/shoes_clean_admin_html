@@ -83,12 +83,10 @@ export default {
     },
 
     // 默认值
-
-    value: {
-
-      type: String
-
-    }
+    // value: {
+    //   type: String,
+    //   default: ''
+    // }
   },
 
   components: {
