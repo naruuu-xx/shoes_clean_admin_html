@@ -168,7 +168,7 @@ export default {
               // },2000)
               //
               // 打印快递单
-              // this.createKuaidi(res.result.deliveryId);
+              //this.createKuaidi(res.result.deliveryId);
 
               //lodop打印快递
               this.printKuaidi(res.result.deliveryId);
@@ -209,7 +209,7 @@ export default {
       this.imageList = [];
       this.shoeOrderInfo = false;
     },
-    printKuaidi(){
+    printKuaidi(deliveryId){
       let data = {
         "deliveryId": deliveryId
       }
@@ -218,11 +218,27 @@ export default {
           this.$message.warning(res.message)
           return
         }
-        let content = res;
-        // content = 'data:image/jpeg;base64,'+res;
-        // content = '<img src="'+content+'" />';
+        let content = 'data:image/jpeg;base64,';
 
-        this.printPic(res,'')
+        let cont
+        let contt
+        // data：指待读取blob数据
+        let reader = new FileReader();
+        reader.onload = event => {
+          //读取之后进行操作的代码区域，event.currentTarget.result 指读取到的内容
+          cont=content+event.currentTarget.result
+
+
+          this.printPic(cont,'快递100')
+
+          //  content = '<img src="'+content+'" />';
+
+        }
+//调用方法读取
+        reader.readAsText(res);
+
+
+
 
       })
 
@@ -237,8 +253,8 @@ export default {
       if (LODOP != false) {
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("面单打印" + timestamp);
-        LODOP.SET_PRINT_PAGESIZE(1, "100mm", "113m", "");
-        LODOP.ADD_PRINT_IMAGE(0, 0, "100mm", "113mm", image)
+        LODOP.SET_PRINT_PAGESIZE(1, "95mm", "113m", "");
+        LODOP.ADD_PRINT_IMAGE(0, 0, "95mm", "113mm", image)
         // LODOP.SET_PRINT_STYLEA(0,"Stretch",1);//(可变形)扩展缩放模式
         LODOP.SET_PRINT_STYLEA(0, "Stretch", 2); //按原图比例(不变形)缩放模式
 
