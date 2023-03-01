@@ -148,7 +148,6 @@
            ],
           cardNo: [
             { required: true, message: '请输入银行卡号!'},
-            { pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/, message: '请输入正确的银行卡号!'},
           ],
           cardName: [
             { required: true, message: '请输入持卡人!'},
@@ -192,17 +191,16 @@
               { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
             ],
             cardNo: [
-              { required: val == 2, message: '请输入银行卡号!'},
-              { pattern: /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/, message: '请输入正确的银行卡号!'},
+              { required: true, message: '请输入银行卡号!'},
             ],
             cardName: [
-              { required:  val == 2, message: '请输入持卡人!'},
+              { required:  true, message: '请输入持卡人!'},
             ],
             bank: [
-              { required:  val == 2, message: '请输入开户行!'},
+              { required:  true, message: '请输入开户行!'},
             ],
             openBank: [
-              { required:  val == 2, message: '请输入开户行地址!'},
+              { required:  true, message: '请输入开户行地址!'},
             ],
             level: [
               { required: true, message: '请选择身份!'},

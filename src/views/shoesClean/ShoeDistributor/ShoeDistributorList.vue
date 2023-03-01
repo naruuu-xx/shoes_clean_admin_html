@@ -69,17 +69,19 @@
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
+<!--              <a-menu-item>-->
+<!--                <a @click="setPercentage(record)">收益比例</a>-->
+<!--              </a-menu-item>-->
               <a-menu-item>
-                <a @click="setPercentage(record)">收益比例</a>
+                <a @click="shoeSecondDistributorList(record)">二级推广人</a>
               </a-menu-item>
-
             </a-menu>
           </a-dropdown>
         </span>
 
         <!-- 开关按钮 -->
         <span slot="statusAction" slot-scope="text, record">
-          <a-switch v-model:checked="record.status" @click="switchChange(record.distributorId, record.status)" />
+          <a-switch :checked="!!record.status" @change="switchChange($event, record.distributorId)" />
         </span>
 
       </a-table>
@@ -88,6 +90,8 @@
     <shoe-distributor-modal ref="modalForm" @ok="modalFormOk"></shoe-distributor-modal>
 
     <set-percentage ref="setPercentage" @ok="modalFormOk"></set-percentage>
+
+    <second-distributor-list ref="secondDistributorList"></second-distributor-list>
 
   </a-card>
 </template>
@@ -101,13 +105,15 @@
   import {httpAction} from "../../../api/manage";
   import debounce from '@/utils/debounce'
   import SetPercentage from "../ShoeDistributor/modules/SetPercentage";
+  import SecondDistributorList from "./modules/SecondDistributorList";
 
   export default {
     name: 'ShoeDistributorList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeDistributorModal,
-      SetPercentage
+      SetPercentage,
+      SecondDistributorList,
     },
     data () {
       return {
@@ -213,7 +219,7 @@
         fieldList.push({type:'date',value:'deleteTime',text:'删除时间'})
         this.superFieldList = fieldList
       },
-      switchChange(distributorId, status) {
+      switchChange(status, distributorId ) {
         debounce(() => {
           //请求接口，更改活动开关
           let data = {
@@ -231,6 +237,11 @@
       setPercentage(record) {
         this.$refs.setPercentage.show(record);
       },
+      shoeSecondDistributorList(record) {
+        this.$refs.secondDistributorList.visible = true;
+        this.$refs.secondDistributorList.initDataByDIY(record.distributorId);
+        this.$refs.secondDistributorList.dataSource = [];
+      }
     }
   }
 </script>

@@ -14,6 +14,8 @@ export const JeecgListMixin = {
     return {
       /* 查询条件-请不要在queryParam中声明非字符串值的属性 */
       queryParam: {},
+      // 初始查询值
+      initialQueryParam: {},
       /* 数据源 */
       dataSource:[],
       /* 分页参数 */
@@ -52,6 +54,7 @@ export const JeecgListMixin = {
     }
   },
   created() {
+    this.initialQueryParam = {...this.queryParam}
     Object.assign(this.queryParam,this.$route.query)
       if(!this.disableMixinCreated){
         console.log(' -- mixin created -- ')
@@ -163,7 +166,7 @@ export const JeecgListMixin = {
       this.$refs.superQueryModal.show();
     },
     searchReset() {
-      this.queryParam = {}
+      this.queryParam = {...this.initialQueryParam}
       this.loadData(1);
     },
     batchDel: function () {

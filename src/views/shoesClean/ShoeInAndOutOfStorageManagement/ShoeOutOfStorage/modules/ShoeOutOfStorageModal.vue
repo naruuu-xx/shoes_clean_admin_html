@@ -72,6 +72,8 @@
 <script>
 
 import {downFile, httpAction} from "../../../../../api/manage";
+import { getLodop } from '@/utils/LodopFuncs';
+let Lodop;
 
 export default {
   name: "ShoeOutOfStorageModal",
@@ -126,6 +128,7 @@ export default {
       this.clickedImage = "";
     },
     handleOutOfStorage() {
+
       //处理出库
       if (this.no === "" || this.no === null || this.no === undefined) {
         this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
@@ -151,12 +154,26 @@ export default {
               this.resDataModal = true;
               //打印水洗唛
               this.createWashedMark(res.result.no);
+
+
             } else if (res.code === 2000) {
               this.resData = res;
-              this.$message.success(res.message, 3);
-
+              this.$message.success(res.message, 5);
               //打印水洗唛
-              this.createWashedMark(res.result.no);
+              this.createWashedMark(res.result.no)
+
+
+              // setTimeout(()=>{
+              //   this.createWashedMark(res.result.no)
+              // },2000)
+              //
+              // 打印快递单
+              // this.createKuaidi(res.result.deliveryId);
+
+              //lodop打印快递
+              this.printKuaidi(res.result.deliveryId);
+
+
             }
             return false;
           } else {
@@ -178,6 +195,7 @@ export default {
             //打印水洗唛
             this.createWashedMark(res.result.no);
 
+
           }
         }).finally(res => {
           this.loadingBtn = false
@@ -190,6 +208,94 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+    },
+    printKuaidi(){
+      let data = {
+        "deliveryId": deliveryId
+      }
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createKuaidiByOut", data, "post").then((res) => {
+        if (!res) {
+          this.$message.warning(res.message)
+          return
+        }
+        let content = res;
+        // content = 'data:image/jpeg;base64,'+res;
+        // content = '<img src="'+content+'" />';
+
+        this.printPic(res,'')
+
+      })
+
+    },
+    /**
+     *
+     * @param image 图片
+     * @param printerName 打印机名称
+     */
+    printPic(image,printerName){
+      LODOP = getLodop() // 获取LODOP对象的主过程
+      if (LODOP != false) {
+        let timestamp = parseInt(new Date().getTime() / 1000 + '');
+        LODOP.PRINT_INIT("面单打印" + timestamp);
+        LODOP.SET_PRINT_PAGESIZE(1, "100mm", "113m", "");
+        LODOP.ADD_PRINT_IMAGE(0, 0, "100mm", "113mm", image)
+        // LODOP.SET_PRINT_STYLEA(0,"Stretch",1);//(可变形)扩展缩放模式
+        LODOP.SET_PRINT_STYLEA(0, "Stretch", 2); //按原图比例(不变形)缩放模式
+
+        //设定名称为XXX的打印机为本次打印的打印机
+        let index = this.getPrinterIndex(LODOP, printerName);
+        LODOP.SET_PRINTER_INDEX(index);
+        LODOP.SET_SHOW_MODE('PREVIEW_IN_BROWSE', 1)
+
+        // LODOP.PRINT()// 直接打印
+        LODOP.PREVIEW() // 打印预览
+      }
+    },
+    /**
+     * 根据打印机名称获取该打印机在系统中的序号
+     * @param {Object} LODOP
+     * @param printName
+     */
+    getPrinterIndex(LODOP, printName) {
+      let num = LODOP.GET_PRINTER_COUNT();
+      let index = 0;
+      for (let i = 0; i < num; i++) {
+        let name = LODOP.GET_PRINTER_NAME(i);
+        if (printName === name) {
+          index = i;
+          break;
+        }
+      }
+      return index;
+    },
+    createKuaidi(deliveryId) {
+      let data = {
+        "deliveryId": deliveryId
+      }
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createKuaidiByOut", data, "post").then((res) => {
+        if (!res) {
+          this.$message.warning(res.message)
+          return
+        }
+        const content = res;
+        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
+        // 要不然无法进行打印
+        const blob = new Blob([content], {type: 'image/jpeg'});
+        //=========================================================
+        var date = (new Date()).getTime();
+        var ifr = document.createElement('iframe');
+        ifr.style.frameborder = 'no';
+        ifr.style.display = 'none';
+        ifr.style.pageBreakBefore = 'always';
+        ifr.setAttribute('download', 'printPdf' + date + '.jpeg');
+        ifr.setAttribute('id', 'printPdf' + date + '.jpeg');
+        ifr.src = window.URL.createObjectURL(blob);
+        document.body.appendChild(ifr);
+
+        this.doPrint('printPdf' + date + '.jpeg')
+        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
+        //=========================================================
+      })
     },
     createWashedMark(no) {
       let data = {
@@ -219,15 +325,17 @@ export default {
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
       })
-    },
-    // 打印
+    }
+    ,
+// 打印
     doPrint(val) {
       var ordonnance = document.getElementById(val).contentWindow;
       setTimeout(() => {
         // window.print()
         ordonnance.print();
       }, 0)
-    },
+    }
+    ,
   }
 }
 </script>

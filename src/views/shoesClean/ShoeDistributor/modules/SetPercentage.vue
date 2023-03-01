@@ -15,7 +15,7 @@
         <!--          v-decorator="['note', { rules: [{ required: true, message: '请输入1-100之间的整数!' },{ pattern: /^([1-9][0-9]{0,1}|100)$/, message: '请输入1-100之间的整数!'},] }]"-->
         <!--        />-->
         <!--      </a-form-item>-->
-        <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
+        <a-form-model-item label=" 收益比例" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
           <a-input v-model="model.percentage" placeholder="请输入0-100的整数" autocomplete="off" suffix="%"></a-input>
         </a-form-model-item>
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">

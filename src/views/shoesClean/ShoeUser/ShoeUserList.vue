@@ -26,8 +26,8 @@
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
-<!--    <div class="table-operator">-->
-<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+   <div class="table-operator">
+     <!-- <a-button @click="manualDistribute" type="primary">手动派发</a-button> -->
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_user')">导出</a-button>-->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
@@ -40,7 +40,7 @@
 <!--        </a-menu>-->
 <!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
 <!--      </a-dropdown>-->
-<!--    </div>-->
+   </div>
 
     <!-- table区域-begin -->
     <div>
@@ -104,6 +104,8 @@
 
     <distribute-coupon-modal ref="distributeCouponModal" @ok="modalFormOk"></distribute-coupon-modal>
 
+    <manual-distribute-coupon-modal ref="manualDistributeCouponModal" @submit="manualSubmit"></manual-distribute-coupon-modal>
+
   </a-card>
 </template>
 
@@ -114,13 +116,15 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeUserModal from './modules/ShoeUserModal'
   import DistributeCouponModal from "./modules/DistributeCouponModal";
+  import ManualDistributeCouponModal from "./modules/ManualDistributeCouponModal";
 
   export default {
     name: 'ShoeUserList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeUserModal,
-      DistributeCouponModal
+      DistributeCouponModal,
+      ManualDistributeCouponModal
     },
     data () {
       return {
@@ -194,6 +198,11 @@
       },
     },
     methods: {
+      // 手动派券提交
+      manualSubmit(data) {
+        console.log('data',data);
+        this.$refs.distributeCouponModal.show({});
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
@@ -210,6 +219,9 @@
       },
       handleDistribute(record) {
         this.$refs.distributeCouponModal.show(record);
+      },
+      manualDistribute(record) {
+        this.$refs.manualDistributeCouponModal.show(record);
       }
     }
   }

@@ -37,6 +37,20 @@
             >
               <a-select-option v-for="item in couponList" :value="item.couponId" :key="item.couponId">{{item.name}}</a-select-option>
             </a-select>
+            <!-- <XfSelect
+                :list="weekList.records"
+                labelKey="weekValue"
+                valueKey="weekKey"
+                :pageSize="weekList.size"
+                :page="weekList.current"
+                :total="weekList.total"
+                :spinning="spinning"
+                @change="selectTimeZone"
+                @changePage="selectTimeZonePage"
+                @handleSearch="handleSearch"
+                v-model="selectOption"
+              >
+              </XfSelect> -->
           </a-form-model-item>
           <a-form-model-item v-else-if="type === '1'" label="选择卡包" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
             <a-select
@@ -69,12 +83,26 @@
 </template>
 
 <script>
+  import XfSelect from '@/components/Xf/XfSelect'
 import {getAction, httpAction} from "../../../../api/manage";
 
 export default {
   name: "DistributeCouponModal",
+  components:{
+    XfSelect
+  },
   data() {
     return {
+      weekList:{
+        records:[{
+          weekValue:'1',
+          weekKey:'2'
+        }],
+        size:1,
+        current:1,
+        total:1
+      },
+      spinning:false,
       visible: false,
       title: '优惠券派送',
       couponTypeLabel: '选择优惠券',
@@ -104,6 +132,15 @@ export default {
   created() {
   },
   methods: {
+    selectTimeZonePage(val) {
+      console.log(val,1);
+    },
+    selectTimeZone(val) {
+      console.log(val,2);
+    },
+    handleSearch(val) {
+      console.log(val,3);
+    },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
