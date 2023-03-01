@@ -89,14 +89,14 @@
           <a-descriptions-item label="寄回地址"> {{ recManPrintAddr }} </a-descriptions-item>
         </template>
       </a-descriptions>
-      
+
       <a-descriptions v-if="'快递上门' === data.type" title="快递信息" layout="vertical" bordered :column="5" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="快递单号(取鞋)">
           {{ OrderDetail.sendKuaidinum || '——'}}
         </a-descriptions-item>
         <a-descriptions-item label="快递员(取鞋)">
           <template v-if="OrderDetail.sendCourierName">
-            {{OrderDetail.sendCourierName}}({{ OrderDetail.sendCourierMobile }})
+            {{OrderDetail.sendCourierName}}{{ OrderDetail.sendCourierMobile }}
           </template>
           <template v-else>——</template>
         </a-descriptions-item>
@@ -105,7 +105,7 @@
         </a-descriptions-item>
         <a-descriptions-item label="快递员(寄回)">
           <template v-if="OrderDetail.backCourierName">
-            {{ OrderDetail.backCourierName }}({{ OrderDetail.backCourierMobile }})
+            {{ OrderDetail.backCourierName }}{{ OrderDetail.backCourierMobile }}
           </template>
           <template v-else>——</template>
         </a-descriptions-item>
@@ -201,7 +201,7 @@
     </a-modal>
   </j-modal>
 </template>
-  
+
   <script>
 import JImageUploadByOneForShoeOrder from '../components/JImageUploadByOneForShoeOrder'
 import { getAction, httpAction } from '../../../../api/manage'
@@ -431,7 +431,7 @@ export default {
   },
 }
 </script>
-  
+
   <style scoped lang="less">
 .table {
   &-title {
