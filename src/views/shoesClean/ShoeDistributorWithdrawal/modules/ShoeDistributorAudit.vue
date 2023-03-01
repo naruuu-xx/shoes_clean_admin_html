@@ -33,7 +33,7 @@
 import {httpAction, putAction} from "@api/manage";
 
 export default {
-  name: "ShoeInvestorsAudit",
+  name: "ShoeDistributorAudit",
   props: {
     //表单禁用
     disabled: {
@@ -60,7 +60,7 @@ export default {
     handleOk() {
       const that = this;
       let data = {
-        "investorsWithdrawalId": that.id,
+        "distributorWithdrawalId": that.id,
         "status": that.model.status,
         "note": that.model.note,
         "amount": that.amount * 100,
@@ -68,7 +68,7 @@ export default {
       if (that.model.note == null && that.model.status == 1) {
         that.$message.error('请填写拒绝原因')
       } else {
-        putAction("/shoes/shoeInvestors/updateWithdrawalAuditStatus", data).then((res) => {
+        putAction("/shoeDistributor/shoeDistributor/updateWithdrawalAuditStatus", data).then((res) => {
           if (res.code === 200) {
             this.visible = false;
             that.$message.success('提交成功')
@@ -77,8 +77,6 @@ export default {
           }
         })
       }
-
-
     },
     handleCancel() {
       this.visible = false;
@@ -86,14 +84,9 @@ export default {
     show(record) {
       this.visible = true;
 
-      httpAction("/shoes/shoeInvestors/withdrawalDetail?id=" + record.investorsWithdrawalId, null, "get").then((res) => {
-        if (res) {
-          this.visible = true;
-          this.id = res.result.investorsWithdrawalId;
-          this.name = res.result.name;
-          this.amount = res.result.amount;
-        }
-      })
+      this.id = record.distributorWithdrawalId;
+      this.name = record.name;
+      this.amount = record.amount;
     }
   }
 
