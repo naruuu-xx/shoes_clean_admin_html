@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:visible="visible" title="二级推广人" :footer="null" width="1200px">
+  <a-modal v-model:visible="visible" title="订单" :footer="null" width="1200px">
     <!-- 查询区域-begin -->
 
     <!-- table区域-begin -->
