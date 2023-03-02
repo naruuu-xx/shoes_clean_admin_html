@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:visible="visible" title="二级推广人" :footer="null" width="1200px">
+  <a-modal v-model:visible="visible" title="订单" :footer="null" width="1200px">
     <!-- 查询区域-begin -->
 
     <!-- table区域-begin -->
@@ -14,7 +14,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
         <template slot="htmlSlot" slot-scope="text">
@@ -34,64 +33,57 @@ import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import {getAction} from "../../../../api/manage";
 
 export default {
-  name: "SecondDistributorList",
+  name: "DistributorOrderList",
   mixins:[JeecgListMixin, mixinDevice],
   data () {
     return {
       queryParam:{},
       visible: false,
-      distributorId: null,
+      benefitDistributorId: null,
       dataSource: [],
       ipagination: { total: 0},
       loading:false,
       url: {
-        list: "/shoeDistributor/shoeDistributor/querySecondDistributorList",
+        list: "/shoeDistributor/shoeDistributor/queryDistributorOrderList",
       },
       columns: [
         {
           title:'订单编号',
           align:"center",
-          dataIndex: 'nickname'
+          dataIndex: 'no'
         },
         {
-          title:'手机号',
+          title:'订单类型',
           align:"center",
-          dataIndex: 'phone'
+          dataIndex: 'type'
         },
         {
-          title:'总推新数',
+          title:'实付金额',
           align:"center",
-          dataIndex: 'num'
+          dataIndex: 'actualPrice'
         },
         {
-          title:'本月推新数',
+          title:'配送费/运费',
           align:"center",
-          dataIndex: 'monthNum'
+          dataIndex: 'courierPrice'
         },
         {
-          title:'今日推新数',
+          title:'收益比例',
           align:"center",
-          dataIndex: 'todayNum'
+          dataIndex: 'percentage',
+          customRender: (text) => {
+            return text + '%';
+          },
         },
         {
-          title:'总完单数',
+          title:'收益金额',
           align:"center",
-          dataIndex: 'finishNum'
+          dataIndex: 'incomeAmount'
         },
         {
-          title:'本月完单数',
+          title:'订单状态',
           align:"center",
-          dataIndex: 'monthFinishNum'
-        },
-        {
-          title:'今日完单数',
-          align:"center",
-          dataIndex: 'todayFinishNum'
-        },
-        {
-          title:'加入时间',
-          align:"center",
-          dataIndex: 'createTime'
+          dataIndex: 'status'
         },
       ],
     }
@@ -100,10 +92,10 @@ export default {
 
   },
   methods: {
-    initDataByDIY(distributorId) {
-      this.queryParam.distributorId = distributorId;
-      this.distributorId=distributorId;
-      getAction(this.url.list+"?distributorId="+distributorId).then((res) => {
+    initDataByDIY(benefitDistributorId) {
+      this.queryParam.benefitDistributorId = benefitDistributorId;
+      this.benefitDistributorId=benefitDistributorId;
+      getAction(this.url.list+"?benefitDistributorId="+benefitDistributorId).then((res) => {
         if (res.success) {
           //把数据传入dataSource
           this.dataSource = res.result.records;
@@ -117,9 +109,7 @@ export default {
     },
     initDataByDIY2() {
       let data = {
-        "distributorId": this.distributorId,
-        "nickname":this.queryParam.nickname,
-        "phone":this.queryParam.phone
+        "benefitDistributorId": this.benefitDistributorId
       }
       getAction(this.url.list,data).then((res) => {
         if (res.success) {
