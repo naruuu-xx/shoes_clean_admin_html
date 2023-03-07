@@ -77,11 +77,11 @@
               <a-menu-item>
                 <a @click="showDistributorOrderList(record)">订单</a>
               </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.distributorId)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
+<!--              <a-menu-item>-->
+<!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.distributorId)">-->
+<!--                  <a>删除</a>-->
+<!--                </a-popconfirm>-->
+<!--              </a-menu-item>-->
             </a-menu>
           </a-dropdown>
         </span>
