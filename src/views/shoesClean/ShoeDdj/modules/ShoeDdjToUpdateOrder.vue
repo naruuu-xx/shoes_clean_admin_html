@@ -104,7 +104,7 @@ export default {
     "form.code"(val) {
 
       this.codes = val && val.split(',')
-   
+
     }
   },
   methods: {
