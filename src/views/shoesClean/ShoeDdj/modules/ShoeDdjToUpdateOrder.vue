@@ -102,7 +102,9 @@ export default {
   },
   watch: {
     "form.code"(val) {
-      this.codes = val.split(',')
+
+      this.codes = val && val.split(',')
+   
     }
   },
   methods: {
@@ -153,7 +155,7 @@ export default {
     handleSubmit() {
       this.$refs.ruleForm.validate((valid, object) => {
         if (valid) {
-          this.loading = true
+
           debounce(() => {
             this.loading = true
             let form = {kuaidinum: this.form.kuaidinum, code: this.form.code,ddjId: this.form.ddjId}
