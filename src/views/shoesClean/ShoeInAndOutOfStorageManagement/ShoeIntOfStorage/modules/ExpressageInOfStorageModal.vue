@@ -69,6 +69,8 @@
 
     <confirm-expressage-print-modal ref="confirmExpressagePrintModal"></confirm-expressage-print-modal>
 
+    <platform-confirm-modal ref="platformConfirmModal"></platform-confirm-modal>
+
   </j-modal>
 </template>
 
@@ -76,10 +78,11 @@
 
 import {downFile, httpAction} from "../../../../../api/manage";
 import ConfirmExpressagePrintModal from "./ConfirmExressagePrintModal";
+import PlatformConfirmModal from "./PlatformConfirmModal";
 
 export default {
   name: "ShoeInOfStorageModal",
-  components: {ConfirmExpressagePrintModal},
+  components: {ConfirmExpressagePrintModal, PlatformConfirmModal},
   data() {
     return {
       visible: false,
@@ -146,17 +149,22 @@ export default {
             })
             return false;
           } else {
-            this.dataList = res.result.map(item => {
-              let imageList = JSON.parse(item.orderImages)
-              return Object.assign({},item,{imageList})
-            })
-            this.shoeOrderInfo = true;
-            //清空输入框并重新聚焦
-            this.KuaidiNum = "";
-            this.selectedNote = [];
-            this.$nextTick(()=> {
-              this.$refs.autoInput.focus();
-            })
+            res.result[0].orderId
+            if (res.result[0].orderId == null) {
+              this.$refs.platformConfirmModal.show(res.result);
+            } else {
+              this.dataList = res.result.map(item => {
+                let imageList = JSON.parse(item.orderImages)
+                return Object.assign({},item,{imageList})
+              })
+              this.shoeOrderInfo = true;
+              //清空输入框并重新聚焦
+              this.KuaidiNum = "";
+              this.selectedNote = [];
+              this.$nextTick(()=> {
+                this.$refs.autoInput.focus();
+              })
+            }
           }
         })
       }
