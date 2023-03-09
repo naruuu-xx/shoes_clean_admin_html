@@ -163,6 +163,16 @@
             dataIndex: 'num'
           },
           {
+            title:'省',
+            align:"center",
+            dataIndex: 'province'
+          },
+          {
+            title:'市',
+            align:"center",
+            dataIndex: 'city'
+          },
+          {
             title:'区',
             align:"center",
             dataIndex: 'area'

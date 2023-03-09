@@ -27,6 +27,13 @@
             </a-form-model-item>
           </a-col>
         </a-row>
+        <a-row type="flex" justify="space-around">
+          <a-col :span="20">
+            <a-form-model-item label="核销码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="code">
+              <a-tag v-for="(item,idx) in codes" :key="idx">{{ item }}</a-tag>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
         <a-row type="flex" justify="space-around" v-if="form.orderType != 2">
           <a-col :span="20">
             <a-form-model-item label="上门时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="dayTime">
@@ -78,6 +85,7 @@ export default {
       },
       model: {},
       rules: {},
+      codes: [],
       form:{
         orderType:'1',
         code: null,
@@ -133,6 +141,11 @@ export default {
           }
         }
       }
+    },
+    "form.code"(val) {
+      val = val.replace(/；/g,';')
+      this.codes = val && val.split(';')
+
     }
   },
   methods: {
@@ -173,8 +186,16 @@ export default {
           this.loading = true
           debounce(() => {
             this.loading = true
+
+            let code=null
+            if (this.form.code){
+              code = this.form.code.replace(/；/g,';')
+            }
+
+
             let obj = this.form.orderType == 2 ? {day:'',time:'',orderType: 2} : {orderType:1}
-            let form = Object.assign({},this.form,obj)
+            
+            let form = Object.assign({},this.form,obj,{code})
             httpAction("/shoeDdj/order", form, "put").then((res) => {
               if (res.success) {
                 this.$message.success(res.message);
