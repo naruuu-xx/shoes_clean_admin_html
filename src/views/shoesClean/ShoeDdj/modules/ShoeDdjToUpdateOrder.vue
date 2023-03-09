@@ -102,8 +102,8 @@ export default {
   },
   watch: {
     "form.code"(val) {
-
-      this.codes = val && val.split(',')
+      val = val.replace(/；/g,';')
+      this.codes = val && val.split(';')
 
     }
   },
@@ -158,7 +158,8 @@ export default {
 
           debounce(() => {
             this.loading = true
-            let form = {kuaidinum: this.form.kuaidinum, code: this.form.code,ddjId: this.form.ddjId}
+            let code = this.form.code.replace(/；/g,';')
+            let form = {kuaidinum: this.form.kuaidinum, code,ddjId: this.form.ddjId}
             httpAction("/shoeDdj/updateOrder", form, "put").then((res) => {
               if (res.success) {
                 this.$message.success(res.message);

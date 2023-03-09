@@ -194,7 +194,8 @@ export default {
       immediate: true,
     },
       "form.code"(val) {
-        this.codes = val.split(',')
+        val = val.replace(/；/g,';')
+        this.codes = val.split(';')
     },
   },
   methods: {
@@ -239,8 +240,12 @@ export default {
     handleSubmit() {
       this.$refs.ruleForm.validate((valid, object) => {
         if (valid) {
+            let code=null
+            if (this.form.code){
+             code = this.form.code.replace(/；/g,';')
+            }
 
-            let form = this.form
+          let form = Object.assign({}, this.form, {code})
             httpAction("/shoeDdj/add", form, "post").then((res) => {
               if (res.success) {
                 this.$message.success(res.message);

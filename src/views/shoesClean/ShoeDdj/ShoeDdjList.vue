@@ -165,12 +165,12 @@
           {
             title:'省',
             align:"center",
-            dataIndex: 'area'
+            dataIndex: 'province'
           },
           {
             title:'市',
             align:"center",
-            dataIndex: 'province'
+            dataIndex: 'city'
           },
           {
             title:'区',
