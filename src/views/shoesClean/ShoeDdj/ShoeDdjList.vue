@@ -14,6 +14,11 @@
               <a-input placeholder="请输入手机号" v-model="queryParam.phone" :allowClear="true"></a-input>
             </a-form-item>
           </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="快递号">
+              <a-input placeholder="请输入快递号" v-model="queryParam.kuaidinum" :allowClear="true"></a-input>
+            </a-form-item>
+          </a-col>
           <a-col :xl="3" :lg="3" :md="4" :sm="12">
             <a-form-item label="省">
               <a-input placeholder="请输入省" v-model="queryParam.province" :allowClear="true"></a-input>
@@ -99,7 +104,7 @@
         <template slot="delay" slot-scope="delay">
           <div>{{delay | delayFilter}}</div>
         </template>
-        
+
         <template slot="status" slot-scope="status">
           <div>{{status | statusFilter}}</div>
         </template>
@@ -183,7 +188,7 @@
             align:"center",
             dataIndex: 'address'
           },
-          
+
           {
             title:'快递单号',
             align:"center",
@@ -276,7 +281,7 @@
             break;
         }
         return text
-         
+
       },
       statusFilter(val) {
         let text = '未下单'
@@ -333,7 +338,7 @@
         // console.log(8888,record);
         let {ddjId,delay,num} = record
         let orderType = delay === 1 ? '0' : '1'
-        this.$refs.shoeDdjToOrder.show({ddjId,orderType,num}) 
+        this.$refs.shoeDdjToOrder.show({ddjId,orderType,num})
       },
       updateOrder(record) {
 
@@ -348,7 +353,7 @@
         this.$refs.shoeDdjToOrderMerge.show({
           ids:this.selectedRowKeys,
           orderType:this.type == 1 ? '4' : '3'
-        }) 
+        })
       },
       initDictConfig(){
       },
