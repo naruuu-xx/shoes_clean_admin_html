@@ -286,7 +286,6 @@ export default {
             if (orderMoneyTotal==null){
               orderMoneyTotal=0
             }
-            orderMoneyTotal =orderMoneyTotal / 100;
             return orderMoneyTotal;
           },
         },

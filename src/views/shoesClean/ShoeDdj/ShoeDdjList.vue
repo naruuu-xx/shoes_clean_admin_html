@@ -14,11 +14,22 @@
               <a-input placeholder="请输入手机号" v-model="queryParam.phone" :allowClear="true"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+          <a-col :xl="3" :lg="3" :md="4" :sm="12">
+            <a-form-item label="省">
+              <a-input placeholder="请输入省" v-model="queryParam.province" :allowClear="true"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="3" :md="4" :sm="12">
+            <a-form-item label="市">
+              <a-input placeholder="请输入市" v-model="queryParam.city" :allowClear="true"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="3" :md="4" :sm="12">
             <a-form-item label="区">
               <a-input placeholder="请输入区" v-model="queryParam.area" :allowClear="true"></a-input>
             </a-form-item>
           </a-col>
+
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="状态">
               <a-select v-model="queryParam.status" style="width: 120px" :options="stateOption">
@@ -31,10 +42,18 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="来源">
+              <a-select v-model="queryParam.platformId" style="width: 120px" :options="sourceOption">
+              </a-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="add" icon="plus" style="margin-left: 12px">新增</a-button>
               <!-- <a-button type="primary" @click="onMergeOrder" style="margin-left: 8px" :disabled="!selectedRowKeys.length">合并下单</a-button> -->
             </span>
           </a-col>
@@ -86,7 +105,8 @@
         </template>
 
         <span slot="action" slot-scope="record">
-          <a-button type="link" @click="onOrder(record)" :disabled="record.status == 1">{{record.status == 1 ? '已下单' : '下单'}}</a-button>
+          <a-button type="link" @click="onOrder(record)" v-if="record.status != 1" >下单</a-button>
+          <a-button type="link" @click="updateOrder(record)" v-if="record.status == 1" >编辑</a-button>
         </span>
 
       </a-table>
@@ -94,7 +114,9 @@
 
     <shoe-ddj-modal ref="modalForm" @ok="modalFormOk"></shoe-ddj-modal>
     <ShoeDdjToOrder ref="shoeDdjToOrder" @ok="modalFormOk"></ShoeDdjToOrder>
+    <ShoeDdjToUpdateOrder ref="shoeDdjToUpdateOrder" @ok="modalFormOk"></ShoeDdjToUpdateOrder>
     <ShoeDdjToOrderMerge ref="shoeDdjToOrderMerge" @ok="modalFormOk"></ShoeDdjToOrderMerge>
+    <shoeDdjToAdd ref="shoeDdjToAdd" @ok="modalFormOk"></shoeDdjToAdd>
   </a-card>
 </template>
 
@@ -106,13 +128,18 @@
   import ShoeDdjModal from './modules/ShoeDdjModal'
   import ShoeDdjToOrder from "./modules/ShoeDdjToOrder";
   import ShoeDdjToOrderMerge from "./modules/ShoeDdjToOrderMerge";
+  import {httpAction} from "@api/manage";
+  import ShoeDdjToUpdateOrder from "@views/shoesClean/ShoeDdj/modules/ShoeDdjToUpdateOrder";
+  import ShoeDdjToAdd from "@views/shoesClean/ShoeDdj/modules/ShoeDdjToAdd";
 
   export default {
     name: 'ShoeDdjList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeDdjModal,
+      ShoeDdjToUpdateOrder,
       ShoeDdjToOrder,
+      ShoeDdjToAdd,
       ShoeDdjToOrderMerge
     },
     data () {
@@ -134,6 +161,16 @@
             title:'双数',
             align:"center",
             dataIndex: 'num'
+          },
+          {
+            title:'省',
+            align:"center",
+            dataIndex: 'province'
+          },
+          {
+            title:'市',
+            align:"center",
+            dataIndex: 'city'
           },
           {
             title:'区',
@@ -172,6 +209,12 @@
             scopedSlots: { customRender: 'delay' }
           },
           {
+            title:'来源',
+            align:"center",
+            dataIndex: 'platformName',
+            scopedSlots: { customRender: 'platformName' }
+          },
+          {
             title:'状态',
             align:"center",
             dataIndex: 'status',
@@ -198,6 +241,7 @@
           label:'下单失败',
           value:2
         }],
+        sourceOption:[],
         typeOption:[{
           label:'全部',
           value:''
@@ -248,12 +292,18 @@
       }
     },
     created() {
-
+    this.getSource();
     },
     computed: {
 
     },
     methods: {
+      getSource(){
+        httpAction("/shoeDdj/getSource", "", "get").then((res)=> {
+          console.log("====",res.result);
+          this.sourceOption=res.result;
+        })
+      },
       selecteChange(selectedRowKeys, selectedRows) {
         let ddjId = selectedRowKeys.filter(v => !this.selectedRowKeys.includes(v))[0] // 获取选中项的id
         let idx = selectedRows.findIndex(item => item.ddjId == ddjId) // 获取选中项的下标
@@ -285,6 +335,14 @@
         let orderType = delay === 1 ? '0' : '1'
         this.$refs.shoeDdjToOrder.show({ddjId,orderType,num}) 
       },
+      updateOrder(record) {
+
+        this.$refs.shoeDdjToUpdateOrder.show(record.ddjId)
+      },
+      add(){
+        this.$refs.shoeDdjToAdd.show()
+      },
+
       onMergeOrder() {
         console.log(888,this.selectedRowKeys);
         this.$refs.shoeDdjToOrderMerge.show({

@@ -37,7 +37,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -73,8 +72,16 @@
 <!--                <a @click="setPercentage(record)">收益比例</a>-->
 <!--              </a-menu-item>-->
               <a-menu-item>
-                <a @click="shoeSecondDistributorList(record)">二级推广人</a>
+                <a @click="showSecondDistributorList(record)">二级推广人</a>
               </a-menu-item>
+              <a-menu-item>
+                <a @click="showDistributorOrderList(record)">订单</a>
+              </a-menu-item>
+<!--              <a-menu-item>-->
+<!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.distributorId)">-->
+<!--                  <a>删除</a>-->
+<!--                </a-popconfirm>-->
+<!--              </a-menu-item>-->
             </a-menu>
           </a-dropdown>
         </span>
@@ -93,6 +100,8 @@
 
     <second-distributor-list ref="secondDistributorList"></second-distributor-list>
 
+    <distributor-order-list ref="distributorOrderList"></distributor-order-list>
+
   </a-card>
 </template>
 
@@ -106,6 +115,7 @@
   import debounce from '@/utils/debounce'
   import SetPercentage from "../ShoeDistributor/modules/SetPercentage";
   import SecondDistributorList from "./modules/SecondDistributorList";
+  import DistributorOrderList from "./modules/DistributorOrderList";
 
   export default {
     name: 'ShoeDistributorList',
@@ -114,6 +124,7 @@
       ShoeDistributorModal,
       SetPercentage,
       SecondDistributorList,
+      DistributorOrderList
     },
     data () {
       return {
@@ -142,12 +153,12 @@
             align:"center",
             dataIndex: 'createTime'
           },
-          {
-            title:'状态',
-            align:"center",
-            dataIndex: 'status',
-            scopedSlots: { customRender: 'statusAction' }
-          },
+          // {
+          //   title:'状态',
+          //   align:"center",
+          //   dataIndex: 'status',
+          //   scopedSlots: { customRender: 'statusAction' }
+          // },
           {
             title:'收益比例',
             align:"center",
@@ -168,10 +179,6 @@
         url: {
           list: "/shoeDistributor/shoeDistributor/list",
           delete: "/shoeDistributor/shoeDistributor/delete",
-          deleteBatch: "/shoeDistributor/shoeDistributor/deleteBatch",
-          exportXlsUrl: "/shoeDistributor/shoeDistributor/exportXls",
-          importExcelUrl: "shoeDistributor/shoeDistributor/importExcel",
-
         },
         dictOptions:{},
         superFieldList:[],
@@ -237,11 +244,16 @@
       setPercentage(record) {
         this.$refs.setPercentage.show(record);
       },
-      shoeSecondDistributorList(record) {
+      showSecondDistributorList(record) {
         this.$refs.secondDistributorList.visible = true;
         this.$refs.secondDistributorList.initDataByDIY(record.distributorId);
         this.$refs.secondDistributorList.dataSource = [];
-      }
+      },
+      showDistributorOrderList(record){
+        this.$refs.distributorOrderList.visible = true;
+        this.$refs.distributorOrderList.initDataByDIY(record.distributorId);
+        this.$refs.distributorOrderList.dataSource = [];
+      },
     }
   }
 </script>
