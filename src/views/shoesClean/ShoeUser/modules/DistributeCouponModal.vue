@@ -50,14 +50,14 @@
               <a-select-option v-for="item in cardBagList" :value="item.cardBagId" :key="item.cardBagId">{{item.name}}</a-select-option>
             </a-select>
           </a-form-model-item>
-          <XfSelect
+          <!-- <XfSelect
                 :list="weekList.records"
                 @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="selectOption"
                 :url="type == 0 ? '/ShoeCoupon/shoeCoupon/queryAllCouponList' : '/shoes/ShoeCardBag/queryAllCardBagList'"
               >
-              </XfSelect>
+              </XfSelect> -->
         </a-col>
       </a-row>
       <a-row>
