@@ -34,13 +34,18 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
+              <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+                <a-input v-model="model.name" placeholder="请输入姓名" style="width: 200px"></a-input>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
               <a-form-model-item label="手机号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
                 <a-input v-model="model.phone" placeholder="请输入手机号" style="width: 200px"></a-input>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-                <a-input v-model="model.name" placeholder="请输入姓名" style="width: 200px"></a-input>
+              <a-form-model-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="noteAddress">
+                <a-textarea v-model="model.noteAddress" placeholder="请输入地址"></a-textarea>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
@@ -103,15 +108,12 @@ export default {
         platformId: [
           {required: true, message: '请选择订单类型!'},
         ],
-        title: [
-          {required: true, message: '请输入商品名称!'},
-        ],
-        skuTitle: [
-          {required: true, message: '请输入商品规格!'},
-        ],
         phone: [
           {required: true, message: '请输入手机号!'},
           { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'}
+        ],
+        noteAddress: [
+          { required: true, message: '请输入地址!' }
         ],
         name: [
           {required: true, message: '请输入姓名!'},
