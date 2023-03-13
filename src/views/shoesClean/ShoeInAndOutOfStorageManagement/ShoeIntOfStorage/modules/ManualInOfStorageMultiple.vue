@@ -180,7 +180,7 @@ export default {
               this.form = [];
               this.$emit('ok');
               //打印水洗唛
-              // this.createWashedMark(no);
+              this.createWashedMark(res.result);
             } else {
               this.$message.warning(res.message);
             }
@@ -191,11 +191,8 @@ export default {
         console.log(555,err);
       })
     },
-    createWashedMark(no){
-      let data = {
-        "no": no
-      }
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+    createWashedMark(data){
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/batchCreateWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
