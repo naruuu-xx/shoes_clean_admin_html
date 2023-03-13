@@ -136,9 +136,9 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { filterDictTextByCache } from "../../../components/dict/JDictSelectUtil";
-  import ShoeOrderDetail from "./modules/ShoeOrderDetail";
+  import ShoeOrderDetail from "../ShoeOrder/modules/ShoeOrderDetail";
   import { httpAction, getAction } from "@api/manage";
-  import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
+  import HandleOrderFinishModal from "../ShoeOrder/modules/HandleOrderFinishModal";
 
   export default {
     name: 'ShoeOrderList',
