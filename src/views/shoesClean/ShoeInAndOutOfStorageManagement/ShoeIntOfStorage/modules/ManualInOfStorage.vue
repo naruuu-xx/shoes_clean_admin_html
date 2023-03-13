@@ -16,10 +16,9 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label="订单类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="source">
-                <!--                  <a-input v-model="model.source" placeholder="请选择订单类型"></a-input>-->
-                <a-select v-model="model.source" style="width: 100px">
-                  <a-select-option v-for="item in orderType" :value="item.value" :key="item.value">{{ item.name }}
+              <a-form-model-item label="订单类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="platformId">
+                <a-select v-model="model.platformId" style="width: 200px">
+                  <a-select-option v-for="item in orderType" :value="item.value.toString()" :key="item.value">{{ item.name }}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
@@ -87,7 +86,7 @@ export default {
       visible: false,
       confirmLoading: false,
       model: {},
-      orderType: [{"value": "2", "name": "候鸟洗衣"}, {"value": "3", "name": "干洗店"}, {"value": "4", "name": "供应商"}, {"value": "5", "name": "叼到家"}],
+      orderType: [],
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -101,7 +100,7 @@ export default {
           {required: true, message: '请输入订单编号!'},
           { pattern: /^[0-9]*$/, message: '只能输入数字!'}
         ],
-        source: [
+        platformId: [
           {required: true, message: '请选择订单类型!'},
         ],
         title: [
@@ -134,6 +133,16 @@ export default {
     show() {
       this.visible = true;
       this.model = {};
+
+      let url = "/ShoeFactoryOrder/shoeFactoryOrder/getFactoryPlatformList?type=" + 2;
+
+      httpAction(url, null, "get").then((res) => {
+        this.orderType = res.result.map((item, index, arr) => {
+          let c = {value : item.platformId, name : item.name}
+          return c;
+        })
+      })
+
     },
     handleCancel() {
       this.visible = false;
