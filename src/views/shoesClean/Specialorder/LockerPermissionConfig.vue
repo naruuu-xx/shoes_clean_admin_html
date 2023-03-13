@@ -65,8 +65,8 @@ export default {
     newLockerList() {
       return this.lockerList.map((item) => ({
         lockerId: item.lockerId,
-        isVisible: this.selectedLocker.includes(item.lockerId) ? 1 : 0
-      })).filter((item, index) => item.isVisible !== this.lockerList[index].isVisible)
+        isOperation: this.selectedLocker.includes(item.lockerId) ? 1 : 0
+      })).filter((item, index) => item.isOperation !== this.lockerList[index].isOperation)
     }
   },
   methods: {
@@ -85,8 +85,8 @@ export default {
       // TODO 
       httpAction("/shoes/shoeLocker/getAllLockerList", null, "get").then((res) => {
         if (res.success) {
-          this.lockerList = res.result.map((item, index) => {return {lockerId: item.lockerId, name: `${item.name}(${item.lockerCode})`, isVisible: item.isVisible}});
-          this.selectedLocker = res.result.filter(item => item.isVisible).map(item => item.lockerId);
+          this.lockerList = res.result.map((item, index) => {return {lockerId: item.lockerId, name: `${item.name}(${item.lockerCode})`, isOperation: item.isOperation}});
+          this.selectedLocker = res.result.filter(item => item.isOperation).map(item => item.lockerId);
           this.checkAll = this.lockerList.length === this.selectedLocker.length
           this.indeterminate = this.selectedLocker.length < this.lockerList.length
         } else {
@@ -109,14 +109,10 @@ export default {
     },
     onSubmit(){
       this.confirmLoading = true;
-
-      let lockerList = this.lockerList;
-      let selectedLocker = this.selectedLocker;
-      // TODO 
-      httpAction("/shoes/shoeLocker/setLockerVisible", this.newLockerList, "post").then((res) => {
+      httpAction("/shoes/shoeSpecialOrder/setOperation", this.newLockerList, "post").then((res) => {
         if (res.success) {
           setTimeout(() => {
-            this.$message.success(res.message);
+            this.$message.success(res.message || '更新成功');
             this.getLockerList();
           }, 700)
         }

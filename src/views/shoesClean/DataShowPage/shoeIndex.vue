@@ -91,7 +91,7 @@
           </div>
         </div>
         <a-row>
-          <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+          <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <bar
                 :title="`${barQuery.time.name}${barQuery.type.name}排行`"
@@ -101,11 +101,11 @@
             </a-spin>
 
           </a-col>
-          <!-- <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
+          <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
             <div style="padding-top: 20px;">
               <Pie :height="300" :dataSource="pieData"/>
             </div>
-          </a-col> -->
+          </a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
@@ -215,6 +215,10 @@ export default {
           value: 'month',
         },
         {
+          name: '上月',
+          value: 'lastMonth',
+        },
+        {
           name: '本年',
           value: 'year',
         },
@@ -230,10 +234,10 @@ export default {
       },
       spinning: false,
       pieData:[
-        { item: '配送', count: 40 },
-        { item: '自提', count: 21 },
-        { item: '快递', count: 17 },
-        { item: '站点', count: 13 }
+        { item: '配送', count: 0 },
+        { item: '自提', count: 0 },
+        { item: '快递', count: 0 },
+        { item: '站点', count: 0 }
       ]
     }
   },
@@ -305,6 +309,9 @@ export default {
         this.barData = res.barData
         this.goodRankingList = res.goodRankingList
         this.lockerRankingList = res.lockerRankingList
+        this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
+          item,count: parseInt(num)
+        }))
         // this.siteRankingList = res.siteRankingList
 
       }).finally(s => {

@@ -301,7 +301,7 @@ export default {
       }
 
       let orderImagesString = ''
-      let orderImagesArray = JSON.parse(orderInfo.orderImages)
+      let orderImagesArray = orderInfo.orderImages ? JSON.parse(orderInfo.orderImages) : []
       for (let i = 0; i < orderImagesArray.length; i++) {
         orderImagesString += orderImagesArray[i]
         if (i < orderImagesArray.length - 1) {
@@ -313,7 +313,7 @@ export default {
 
       this.visible = true
       this.data = orderInfo
-
+      console.log(33333);
       //如果此订单是异常的状态，要查询此订单的异常情况，如果此订单要”增加服务费“，将再此查询补款记录
       if (this.data.exceptionTime !== null && this.data.exceptionTime !== '' && this.data.exceptionTime !== undefined) {
         let ShoeOrderExceptionData = {

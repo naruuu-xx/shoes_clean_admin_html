@@ -29,9 +29,10 @@
       </a-row>
       <a-row>
         <a-col :span="24">
-          <p>地址：{{ model.address }}</p>
+          <p>地址：{{ model.noteAddress }}</p>
         </a-col>
       </a-row>
+      <div style="display: flex;justify-content: center;"><a-button @click="rk">入库</a-button></div>
     </div>
   </j-modal>
 </template>
@@ -39,7 +40,6 @@
 <script>
 export default {
   name: "PlatformConfirmModal",
-  components: {},
   data () {
     return {
       visible: false,
@@ -56,6 +56,10 @@ export default {
     handleCancel() {
       this.visible = false;
       this.model = {};
+    },
+    rk() {
+      this.visible = false
+      this.$emit('rk',this.platformList)
     }
   }
 }

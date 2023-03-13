@@ -57,14 +57,14 @@
     <div class="table-operator">
       <a-space>
         <a-popconfirm placement="bottom" title="是否批量改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState(1)"
-          @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 15">
-          <a-button type="primary" :disabled="selectedRowKeys.length == 0 || type != 15">
+          @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 1">
+          <a-button type="primary" :disabled="selectedRowKeys.length == 0 || type != 1">
             批量转换
           </a-button>
         </a-popconfirm>
         <a-popconfirm placement="bottom" title="是否批量改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState(2)"
-          @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 2">
-          <a-button type="primary" :disabled="selectedRowKeys.length == 0 || type != 2">
+          @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 6">
+          <a-button type="primary" :disabled="selectedRowKeys.length == 0 || type != 6">
             批量完单
           </a-button>
         </a-popconfirm>
@@ -107,10 +107,10 @@
         <span slot="action" slot-scope="text, record">
           <a-space>
             <a @click="handleOrderDetail(record)">查看详情</a>
-            <a-popconfirm title="是否改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState(2,record.orderId)" @cancel="cancel">
+            <a-popconfirm v-if="record.status == 6" title="是否改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState(2,record.orderId)" @cancel="cancel">
               <a>完单</a>
             </a-popconfirm>
-            <a-popconfirm title="是否改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState(1,record.orderId)" @cancel="cancel">
+            <a-popconfirm v-if="record.status == 1" title="是否改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState(1,record.orderId)" @cancel="cancel">
               <a>转换</a>
             </a-popconfirm>
 
@@ -137,7 +137,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { filterDictTextByCache } from "../../../components/dict/JDictSelectUtil";
   import ShoeOrderDetail from "./modules/ShoeOrderDetail";
-  import { httpAction } from "@api/manage";
+  import { httpAction, getAction } from "@api/manage";
   import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
 
   export default {
@@ -238,7 +238,7 @@
         ],
         url: {
           // list: "/ShoeOrder/shoeOrder/list",
-          list: "/ShoeOrder/shoeOrder/queryList",
+          list: "/shoes/shoeSpecialOrder/specialOrderList",
           delete: "/ShoeOrder/shoeOrder/delete",
           deleteBatch: "/ShoeOrder/shoeOrder/deleteBatch",
           exportXlsUrl: "/ShoeOrder/shoeOrder/exportXls",
@@ -301,18 +301,17 @@
       onChangeState(status, id) {
         // this.visible = true
         let form = {
-          ids: id ? [id] : this.selectedRowKeys,
-          status
+          orderIds: id || this.selectedRowKeys.join(',')
         }
-        // TODO
-        // httpAction("ShoeOrder/shoeOrder/getSelfCode?no=" + record.no, form, "post").then((res) => {
-        //   if (res) {
-        //     console.log(88888,res);
-        //     // this.selfCode = res.result;
-        //     this.loadData();
-        //   }
-        // })
-        // console.log(888,form);
+        
+        getAction("/shoes/shoeSpecialOrder/orderStatusBatchChange", form).then((res) => {
+          if (res) {
+            console.log(88888,res);
+            // this.selfCode = res.result;
+            this.loadData();
+          }
+        })
+        console.log(888,form);
        
       },
       selecteChange(selectedRowKeys, selectedRows) {
