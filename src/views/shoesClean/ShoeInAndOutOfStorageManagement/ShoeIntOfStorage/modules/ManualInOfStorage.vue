@@ -16,10 +16,9 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label="订单类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="source">
-                <!--                  <a-input v-model="model.source" placeholder="请选择订单类型"></a-input>-->
-                <a-select v-model="model.source" style="width: 100px">
-                  <a-select-option v-for="item in orderType" :value="item.value" :key="item.value">{{ item.name }}
+              <a-form-model-item label="订单类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="platformId">
+                <a-select v-model="model.platformId" style="width: 200px">
+                  <a-select-option v-for="item in orderType" :value="item.value.toString()" :key="item.value">{{ item.name }}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
@@ -35,13 +34,18 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
+              <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+                <a-input v-model="model.name" placeholder="请输入姓名" style="width: 200px"></a-input>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
               <a-form-model-item label="手机号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
                 <a-input v-model="model.phone" placeholder="请输入手机号" style="width: 200px"></a-input>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-                <a-input v-model="model.name" placeholder="请输入姓名" style="width: 200px"></a-input>
+              <a-form-model-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="noteAddress">
+                <a-textarea v-model="model.noteAddress" placeholder="请输入地址"></a-textarea>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
@@ -87,7 +91,7 @@ export default {
       visible: false,
       confirmLoading: false,
       model: {},
-      orderType: [{"value": "2", "name": "候鸟洗衣"}, {"value": "3", "name": "干洗店"}, {"value": "4", "name": "供应商"}, {"value": "5", "name": "叼到家"}, {"value": "6", "name": "魔法阿嫲"}],
+      orderType: [],
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -101,18 +105,15 @@ export default {
           {required: true, message: '请输入订单编号!'},
           { pattern: /^[0-9]*$/, message: '只能输入数字!'}
         ],
-        source: [
+        platformId: [
           {required: true, message: '请选择订单类型!'},
-        ],
-        title: [
-          {required: true, message: '请输入商品名称!'},
-        ],
-        skuTitle: [
-          {required: true, message: '请输入商品规格!'},
         ],
         phone: [
           {required: true, message: '请输入手机号!'},
           { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'}
+        ],
+        noteAddress: [
+          { required: true, message: '请输入地址!' }
         ],
         name: [
           {required: true, message: '请输入姓名!'},
@@ -134,6 +135,16 @@ export default {
     show() {
       this.visible = true;
       this.model = {};
+
+      let url = "/ShoeFactoryOrder/shoeFactoryOrder/getFactoryPlatformList?type=" + 2;
+
+      httpAction(url, null, "get").then((res) => {
+        this.orderType = res.result.map((item, index, arr) => {
+          let c = {value : item.platformId, name : item.name}
+          return c;
+        })
+      })
+
     },
     handleCancel() {
       this.visible = false;

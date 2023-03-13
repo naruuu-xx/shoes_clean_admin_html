@@ -81,6 +81,7 @@
 
     <shoe-factory-platform-add ref="shoeFactoryPlatformAdd" @ok="queryFactoryPlatformList"></shoe-factory-platform-add>
     <shoe-factory-platform-update ref="shoeFactoryPlatformUpdate" @ok="queryFactoryPlatformList"></shoe-factory-platform-update>
+
   </a-card>
 </template>
 
@@ -91,8 +92,8 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import {getAction, httpAction} from "../../../api/manage";
-  import ShoeFactoryPlatformAdd from "@views/shoesClean/ShoeDdj/modules/ShoeFactoryPlatformAdd";
-  import ShoeFactoryPlatformUpdate from "@views/shoesClean/ShoeDdj/modules/ShoeFactoryPlatformUpdate";
+  import ShoeFactoryPlatformAdd from "@views/shoesClean/ShoeFactoryOrder/modules/ShoeFactoryPlatformAdd";
+  import ShoeFactoryPlatformUpdate from "@views/shoesClean/ShoeFactoryOrder/modules/ShoeFactoryPlatformUpdate";
 
   export default {
     name: 'ShoeFactoryPlatformList',
@@ -128,11 +129,10 @@
           }
         ],
         url: {
-          list: "/shoeFactoryPlatform/list",
+          list: "/shoeFactoryPlatform/listByFactory",
           delete: "/shoeFactoryPlatform/delete",
         },
         superFieldList:[],
-
       }
     },
     created() {
@@ -157,7 +157,7 @@
           "name": this.queryParam.name
         }
 
-        getAction("/shoeFactoryPlatform/list", data).then((res) => {
+        getAction("/shoeFactoryPlatform/listByFactory", data).then((res) => {
           if (res.success) {
             this.dataSource = res.result.records;
             this.ipagination.current = 1;
@@ -171,7 +171,7 @@
         this.searchQueryByDiy();
       },
       queryFactoryPlatformList() {
-        httpAction("/shoeFactoryPlatform/list", null, "get").then((res) => {
+        httpAction("/shoeFactoryPlatform/listByFactory", null, "get").then((res) => {
           if (res.success) {
             this.dataSource = res.result.records;
             this.ipagination.current = 1;
@@ -185,15 +185,13 @@
       handleAdd(){
         this.$refs.shoeFactoryPlatformAdd.show()
       },
-
       handleDeleteByDiy(record){
-
         let platformId = record.platformId;
         let canDel = record.canDel;
 
         let form = {
           "platformId": platformId,
-          "createBy": 1
+          "createBy": 2
         }
 
         if (0 === canDel) {

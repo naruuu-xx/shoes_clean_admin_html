@@ -17,6 +17,13 @@
             </a-form-model-item>
           </a-col>
         </a-row>
+        <a-row type="flex" justify="space-around">
+          <a-col :span="20">
+            <a-form-model-item label="标识" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="tag">
+              <a-input v-model="form.tag" placeholder="请输入标识"></a-input>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
         <a-row>
           <a-col :span="24">
             <a-col :span="6"></a-col>
@@ -80,7 +87,7 @@ export default {
       this.$refs.ruleForm.validate((valid, object) => {
         if (valid) {
             let form = this.form;
-            form = Object.assign(form, {createBy: 1})
+            form = Object.assign(form, {createBy: 2})
             httpAction("/shoeFactoryPlatform/add", form, "post").then((res) => {
               if (res.success) {
                 this.$message.success(res.message);

@@ -55,7 +55,7 @@ export default {
         sm: {span: 16},
       },
       model: {},
-      form:{name:''},
+      form:{name:'',platformId:''},
       rules: {
         name: [{required: true, message: '请输入来源'}],
       },
@@ -69,19 +69,30 @@ export default {
 
 
   methods: {
-    show() {
+    show(id) {
       this.visible = true;
+      this.showUpdate(id);
+      this.form.platformId=id;
     },
     handleCancel() {
       this.visible = false;
       this.form={name:''};
     },
+    showUpdate(id){
+      httpAction("/shoeFactoryPlatform/showUpdate?id="+id, null, "get").then((res) => {
+        if (res.success) {
+          this.form.name=res.result;
+        } else {
+          this.$message.warning(res.message);
+        }
+      })
+    },
+
     handleSubmit() {
       this.$refs.ruleForm.validate((valid, object) => {
         if (valid) {
-            let form = this.form;
-            form = Object.assign(form, {createBy: 1})
-            httpAction("/shoeFactoryPlatform/add", form, "post").then((res) => {
+            let form = this.form
+            httpAction("/shoeFactoryPlatform/update", form, "put").then((res) => {
               if (res.success) {
                 this.$message.success(res.message);
                 this.handleCancel()
