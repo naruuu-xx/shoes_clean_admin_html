@@ -86,15 +86,15 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleDistribute(record)">派发</a>
 
-<!--          <a-divider type="vertical" />-->
-<!--          <a-dropdown>-->
-<!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
-<!--            <a-menu slot="overlay">-->
-<!--              <a-menu-item>-->
-<!--                <a @click="handleDetail(record)">详情</a>-->
-<!--              </a-menu-item>-->
-<!--            </a-menu>-->
-<!--          </a-dropdown>-->
+          <a-divider type="vertical" />
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a @click="getCouponDetail(record)">优惠券列表</a>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
         </span>
 
       </a-table>
@@ -106,6 +106,7 @@
 
     <manual-distribute-coupon-modal ref="manualDistributeCouponModal" @submit="manualSubmit"></manual-distribute-coupon-modal>
 
+    <coupon-list ref="couponList" ></coupon-list>
   </a-card>
 </template>
 
@@ -117,12 +118,14 @@
   import ShoeUserModal from './modules/ShoeUserModal'
   import DistributeCouponModal from "./modules/DistributeCouponModal";
   import ManualDistributeCouponModal from "./modules/ManualDistributeCouponModal";
+  import couponList from "@views/shoesClean/ShoeUser/modules/couponList";
 
   export default {
     name: 'ShoeUserList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeUserModal,
+      couponList,
       DistributeCouponModal,
       ManualDistributeCouponModal
     },
@@ -204,6 +207,9 @@
         this.$refs.distributeCouponModal.show({});
       },
       initDictConfig(){
+      },
+      getCouponDetail(record){
+        this.$refs.couponList.show(record);
       },
       getSuperFieldList(){
         let fieldList=[];
