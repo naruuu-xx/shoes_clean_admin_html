@@ -53,7 +53,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-model-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="noteAddress">
-                  <a-input v-model="mm.noteAddress" placeholder="请输入地址" style="width: 200px"></a-input>
+                  <a-textarea v-model="mm.noteAddress" placeholder="请输入地址"></a-textarea>
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
