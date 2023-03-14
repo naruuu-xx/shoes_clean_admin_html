@@ -98,6 +98,14 @@ export default {
     }
   },
   data() {
+    let validatorNo = (rule, value, callback) => {
+      let arr = this.form.filter(item => item.no === value);
+      if(arr.length >1) {
+        callback(new Error('订单编号重复'))
+      } else {
+        callback();
+      }
+    }
     return {
       visible: false,
       confirmLoading: false,
@@ -114,7 +122,8 @@ export default {
       validatorRules: {
         no: [
           {required: true, message: '请输入订单编号!'},
-          { pattern: /^[0-9]*$/, message: '只能输入数字!'}
+          { pattern: /^[0-9]*$/, message: '只能输入数字!'},
+          { validator: validatorNo, trigger: ['change','blur'] }
         ],
         platformId: [
           {required: true, message: '请选择订单来源!'},
@@ -144,6 +153,7 @@ export default {
   created() {
   },
   methods: {
+    
     show(data) {
       this.form = data
       this.visible = true;
@@ -169,10 +179,12 @@ export default {
     },
     handleSubmit(){
       Promise.all(this.validate()).then(res => {
+        // let form = this.form.map(({name,no,note,noteAddress,orderId,phone,platformId,skuTitle,title}) => ({
+        //     name,no,note,noteAddress,orderId,phone,platformId,skuTitle,title
+        //   }))
+
           this.confirmLoading = true;
-          // let form = this.form.map(({name,no,note,noteAddress,orderId,phone,platformId,skuTitle,title}) => ({
-          //   name,no,note,noteAddress,orderId,phone,platformId,skuTitle,title
-          // }))
+          
           httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",this.form, "post").then((res)=> {
             if (res.success) {
               this.$message.success(res.message);
