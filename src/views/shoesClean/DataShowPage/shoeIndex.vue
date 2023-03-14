@@ -310,7 +310,7 @@ export default {
         this.goodRankingList = res.goodRankingList
         this.lockerRankingList = res.lockerRankingList
         this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
-          item,count: parseInt(num)
+          item,count: parseFloat(num)
         }))
         // this.siteRankingList = res.siteRankingList
 
