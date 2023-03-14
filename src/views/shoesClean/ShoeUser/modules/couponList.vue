@@ -53,12 +53,14 @@
 
         <span slot="action" slot-scope="text, record">
 <!--          <a @click="stopStatus(record)" v-if="record.status==1 && record.useStatus=='可使用'" style="color: red">停用</a>-->
-
-           <a-popconfirm title="确定停用吗?" @confirm="() => handleDeleteByDiy(record)"  v-if="record.status==1 && record.useStatus=='可使用'">
-            <a  style="color: red">停用</a>
+  <a @click="handleDeleteByDiy(record)" v-if="record.status==0 && record.useStatus=='可使用'"
+     v-has="'user:status:button'">启用</a>
+           <a-popconfirm title="确定停用吗?" @confirm="() => handleDeleteByDiy(record)"
+                         v-if="record.status==1 && record.useStatus=='可使用'">
+            <a style="color: red" v-has="'user:status:button'">停用</a>
           </a-popconfirm>
 
-          <a @click="handleDeleteByDiy(record)" v-if="record.status==0 && record.useStatus=='可使用'">启用</a>
+
 
         </span>
 
@@ -152,10 +154,8 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          align: "center",
-          fixed: "right",
-          width: 147,
-          scopedSlots: {customRender: 'action'}
+          align: 'center',
+          scopedSlots: { customRender: 'action' }
         }
       ],
     }

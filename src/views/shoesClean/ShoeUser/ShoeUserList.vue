@@ -84,14 +84,14 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleDistribute(record)">派发</a>
+          <a @click="handleDistribute(record)" v-has="'user:coupon'">派发</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+          <a-divider type="vertical" v-has="'user:more'"/>
+          <a-dropdown >
+            <a class="ant-dropdown-link" v-has="'user:more'">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="getCouponDetail(record)">优惠券列表</a>
+                <a @click="getCouponDetail(record)" v-has="'user:couponList'">优惠券列表</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
