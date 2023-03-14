@@ -153,6 +153,26 @@
             align:"center",
             dataIndex: 'createTime'
           },
+          {
+            title:'总收入',
+            align:"center",
+            dataIndex: 'income'
+          },
+          {
+            title:'账户余额',
+            align:"center",
+            dataIndex: 'amount'
+          },
+          {
+            title:'可提现余额',
+            align:"center",
+            dataIndex: 'canWithdrawaling'
+          },
+          {
+            title:'提现中余额',
+            align:"center",
+            dataIndex: 'withdrawalingAmount'
+          },
           // {
           //   title:'状态',
           //   align:"center",
