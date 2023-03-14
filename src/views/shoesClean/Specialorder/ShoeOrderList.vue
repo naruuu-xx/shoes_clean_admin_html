@@ -202,9 +202,6 @@
             title: '实付金额（元）',
             align: "center",
             dataIndex: 'actualPrice',
-            customRender: (text) => {
-              return (text * 0.01).toFixed(2);
-            }
           },
           {
             title: '下单时间',
