@@ -57,7 +57,7 @@
     <div class="table-operator">
       <a-space>
         <a-popconfirm placement="bottom" title="是否批量改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState"
-          @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 1">
+          @cancel="cancel" :disabled="selectedRowKeys.length == 0 || (type != 1 && type != 4)">
           <a-button type="primary" :disabled="selectedRowKeys.length == 0 || (type != 1 && type != 4)">
             批量转换
           </a-button>
