@@ -69,7 +69,9 @@
 
     <confirm-expressage-print-modal ref="confirmExpressagePrintModal"></confirm-expressage-print-modal>
 
-    <platform-confirm-modal ref="platformConfirmModal"></platform-confirm-modal>
+    <platform-confirm-modal ref="platformConfirmModal" @rk="rk"></platform-confirm-modal>
+
+    <ManualInOfStorageMultiple ref="ManualInOfStorageMultiple"></ManualInOfStorageMultiple>
 
   </j-modal>
 </template>
@@ -79,10 +81,11 @@
 import {downFile, httpAction} from "../../../../../api/manage";
 import ConfirmExpressagePrintModal from "./ConfirmExressagePrintModal";
 import PlatformConfirmModal from "./PlatformConfirmModal";
+import ManualInOfStorageMultiple from './ManualInOfStorageMultiple'
 
 export default {
   name: "ShoeInOfStorageModal",
-  components: {ConfirmExpressagePrintModal, PlatformConfirmModal},
+  components: {ConfirmExpressagePrintModal, PlatformConfirmModal,ManualInOfStorageMultiple},
   data() {
     return {
       visible: false,
@@ -221,6 +224,9 @@ export default {
         ordonnance.print();
       }, 0)
     },
+    rk(val) {
+      this.$refs.ManualInOfStorageMultiple.show(val)
+    }
   }
 }
 </script>

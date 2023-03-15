@@ -37,20 +37,6 @@
             >
               <a-select-option v-for="item in couponList" :value="item.couponId" :key="item.couponId">{{item.name}}</a-select-option>
             </a-select>
-            <!-- <XfSelect
-                :list="weekList.records"
-                labelKey="weekValue"
-                valueKey="weekKey"
-                :pageSize="weekList.size"
-                :page="weekList.current"
-                :total="weekList.total"
-                :spinning="spinning"
-                @change="selectTimeZone"
-                @changePage="selectTimeZonePage"
-                @handleSearch="handleSearch"
-                v-model="selectOption"
-              >
-              </XfSelect> -->
           </a-form-model-item>
           <a-form-model-item v-else-if="type === '1'" label="选择卡包" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
             <a-select
@@ -64,6 +50,14 @@
               <a-select-option v-for="item in cardBagList" :value="item.cardBagId" :key="item.cardBagId">{{item.name}}</a-select-option>
             </a-select>
           </a-form-model-item>
+          <!-- <XfSelect
+                :list="weekList.records"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="selectOption"
+                :url="type == 0 ? '/ShoeCoupon/shoeCoupon/queryAllCouponList' : '/shoes/ShoeCardBag/queryAllCardBagList'"
+              >
+              </XfSelect> -->
         </a-col>
       </a-row>
       <a-row>
@@ -94,14 +88,12 @@ export default {
   data() {
     return {
       weekList:{
-        records:[{
-          weekValue:'1',
-          weekKey:'2'
-        }],
-        size:1,
+        records:[],
+        size:10,
         current:1,
         total:1
       },
+      selectList:[], // 下拉选择的数组
       spinning:false,
       visible: false,
       title: '优惠券派送',
@@ -132,14 +124,14 @@ export default {
   created() {
   },
   methods: {
-    selectTimeZonePage(val) {
-      console.log(val,1);
+    changeSelect(data) {
+      this.weekList.records = data.map(item => ({
+        label: item.name,
+        value: item.couponId
+      }));
     },
-    selectTimeZone(val) {
-      console.log(val,2);
-    },
-    handleSearch(val) {
-      console.log(val,3);
+    checkedSelect(val) {
+      console.log(val,'checkedSelect');
     },
     filterOption(input, option) {
       return (

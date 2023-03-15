@@ -59,6 +59,7 @@
             <template v-else>——</template>
           </a-descriptions-item>
         </template>
+        <a-descriptions-item label="袋子码"> {{ data.bagCode || "——" }} </a-descriptions-item>
       </a-descriptions>
 
       <a-descriptions v-if="orderRefund" title="退款信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
