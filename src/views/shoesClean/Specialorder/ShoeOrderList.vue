@@ -56,13 +56,13 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-space>
-        <a-popconfirm placement="bottom" title="是否批量改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState"
+        <a-popconfirm placement="bottom" title="是否批量改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState(false)"
           @cancel="cancel" :disabled="selectedRowKeys.length == 0 || (type != 1 && type != 4)">
           <a-button type="primary" :disabled="selectedRowKeys.length == 0 || (type != 1 && type != 4)">
             批量转换
           </a-button>
         </a-popconfirm>
-        <a-popconfirm placement="bottom" title="是否批量改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState"
+        <a-popconfirm placement="bottom" title="是否批量改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState(false)"
           @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 6">
           <a-button type="primary" :disabled="selectedRowKeys.length == 0 || type != 6">
             批量完单
