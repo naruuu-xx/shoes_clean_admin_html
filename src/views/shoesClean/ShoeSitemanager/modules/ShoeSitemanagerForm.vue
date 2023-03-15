@@ -26,20 +26,30 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24">
+            <a-col :span="24" v-if="!model.sitemanagerId">
               <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
                 <a-select
                   show-search
-                  placeholder="选择或搜索需要绑定的用户"
-                  option-filter-prop="children"
-                  style="width: 200px"
-                  v-model="model.userId"
-                  :disabled="disabledStatus"
+                  label-in-value
+                  :value="value"
+                  placeholder="请输入昵称或手机号"
+                  style="width: 100%"
+                  :filter-option="false"
+                  :not-found-content="fetching ? undefined : null"
+                  :showArrow="false"
+                  @search="fetchUser"
+                  @change="handleChange"
                 >
-                  <a-select-option v-for="i in shoeUserList" :value="i.userId.toString()" :key="i.nickname">
-                    {{ i.nickname }}
+                  <a-spin v-if="fetching" slot="notFoundContent" size="small" />
+                  <a-select-option v-for="item in userList" :key="item.userId">
+                    {{ item.wxInfo }}
                   </a-select-option>
                 </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" v-if="model.sitemanagerId">
+              <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+                <a-input v-model="model.wxInfo" :disabled="true"></a-input>
               </a-form-model-item>
             </a-col>
 
@@ -134,6 +144,7 @@ import {httpAction, getAction} from '@/api/manage'
 import {validateDuplicateValue} from '@/utils/util'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
 import $ from 'jquery'
+import debounce from '@/utils/debounce'
 
 let map, marker, polygon, drawingManager, lngLat, ap;
 
@@ -262,6 +273,10 @@ export default {
       areaJson: [],
 
       searchList: [],
+
+      userList: [],
+      fetching: false,
+      lastFetchId: 0,
       //=================
     }
   },
@@ -336,6 +351,28 @@ export default {
 
       this.getShoeUserList();
 
+    },
+    fetchUser (value) {
+      debounce(() => {
+        this.lastFetchId += 1;
+
+        this.userList = [];
+
+        this.fetching = true;
+
+        httpAction("/shoes/shoeUser/queryWXUserList?searchWord="+value, null, "get").then((res) => {
+          this.userList = res.result;
+          this.fetching = false;
+        })
+      }, 1000);
+    },
+    handleChange (value) {
+      Object.assign(this.model, {userId: value.key});
+      Object.assign(this, {
+        value,
+        userList: [],
+        fetching: false,
+      });
     },
     submitForm() {
       const that = this;
