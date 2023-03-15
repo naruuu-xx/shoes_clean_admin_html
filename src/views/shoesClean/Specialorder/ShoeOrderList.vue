@@ -300,15 +300,13 @@
     },
     methods: {
       onChangeState(id) {
-        // this.visible = true
         let form = {
           orderIds: id || this.selectedRowKeys.join(',')
         }
         
         getAction("/shoes/shoeSpecialOrder/orderStatusBatchChange", form).then((res) => {
-          if (res) {
-            console.log(88888,res);
-            // this.selfCode = res.result;
+          if (res.success) {
+            this.selectedRowKeys = []
             this.loadData();
           }
         })
