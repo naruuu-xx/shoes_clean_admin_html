@@ -114,7 +114,7 @@
   import {httpAction} from "../../../api/manage";
   import debounce from '@/utils/debounce'
   import SetPercentage from "../ShoeDistributor/modules/SetPercentage";
-  import SecondDistributorList from "./modules/SecondDistributorList";
+  import SecondDistributorList from "../ShoeUser/modules/couponList";
   import DistributorOrderList from "./modules/DistributorOrderList";
 
   export default {
@@ -152,6 +152,26 @@
             title:'创建时间',
             align:"center",
             dataIndex: 'createTime'
+          },
+          {
+            title:'总收入',
+            align:"center",
+            dataIndex: 'income'
+          },
+          {
+            title:'账户余额',
+            align:"center",
+            dataIndex: 'amount'
+          },
+          {
+            title:'可提现余额',
+            align:"center",
+            dataIndex: 'canWithdrawaling'
+          },
+          {
+            title:'提现中余额',
+            align:"center",
+            dataIndex: 'withdrawalingAmount'
           },
           // {
           //   title:'状态',

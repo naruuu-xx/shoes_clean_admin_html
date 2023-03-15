@@ -91,7 +91,7 @@
           </div>
         </div>
         <a-row>
-          <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+          <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <bar
                 :title="`${barQuery.time.name}${barQuery.type.name}排行`"
@@ -100,6 +100,11 @@
               />
             </a-spin>
 
+          </a-col>
+          <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
+            <div style="padding-top: 20px;">
+              <Pie :height="300" :dataSource="pieData"/>
+            </div>
           </a-col>
         </a-row>
         <a-row :gutter="24">
@@ -158,34 +163,15 @@
 </template>
 
 <script>
-import ChartCard from '@/components/ChartCard'
-import ACol from 'ant-design-vue/es/grid/Col'
-import ATooltip from 'ant-design-vue/es/tooltip/Tooltip'
-import MiniArea from '@/components/chart/MiniArea'
-import MiniBar from '@/components/chart/MiniBar'
-import MiniProgress from '@/components/chart/MiniProgress'
-import RankList from '@/components/chart/RankList'
 import Bar from '@/components/chart/Bar'
-import LineChartMultid from '@/components/chart/LineChartMultid'
-import HeadInfo from '@/components/tools/HeadInfo.vue'
-
-import Trend from '@/components/Trend'
+import Pie from './components/Pie'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
 export default {
   name: 'ShoeAnalysis',
   components: {
-    ATooltip,
-    ACol,
-    ChartCard,
-    MiniArea,
-    MiniBar,
-    MiniProgress,
-    RankList,
     Bar,
-    Trend,
-    LineChartMultid,
-    HeadInfo,
+    Pie
   },
   data() {
     return {
@@ -229,6 +215,10 @@ export default {
           value: 'month',
         },
         {
+          name: '上月',
+          value: 'lastMonth',
+        },
+        {
           name: '本年',
           value: 'year',
         },
@@ -242,7 +232,13 @@ export default {
         withdrawCheckPending: [], // 提现待审核
         withdrawToBeConfirmed: [], // 提现待确认
       },
-      spinning: false
+      spinning: false,
+      pieData:[
+        { item: '配送', count: 0 },
+        { item: '自提', count: 0 },
+        { item: '快递', count: 0 },
+        { item: '站点', count: 0 }
+      ]
     }
   },
   created() {
@@ -313,6 +309,9 @@ export default {
         this.barData = res.barData
         this.goodRankingList = res.goodRankingList
         this.lockerRankingList = res.lockerRankingList
+        this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
+          item,count: parseFloat(num)
+        }))
         // this.siteRankingList = res.siteRankingList
 
       }).finally(s => {
