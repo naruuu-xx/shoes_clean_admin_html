@@ -56,13 +56,13 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-space>
-        <a-popconfirm placement="bottom" title="是否批量改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState(1)"
+        <a-popconfirm placement="bottom" title="是否批量改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState"
           @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 1">
-          <a-button type="primary" :disabled="selectedRowKeys.length == 0 || type != 1">
+          <a-button type="primary" :disabled="selectedRowKeys.length == 0 || (type != 1 && type != 4)">
             批量转换
           </a-button>
         </a-popconfirm>
-        <a-popconfirm placement="bottom" title="是否批量改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState(2)"
+        <a-popconfirm placement="bottom" title="是否批量改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState"
           @cancel="cancel" :disabled="selectedRowKeys.length == 0 || type != 6">
           <a-button type="primary" :disabled="selectedRowKeys.length == 0 || type != 6">
             批量完单
@@ -80,10 +80,11 @@
           selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
-
+      <!-- columnTitle:'选择', -->
       <a-table ref="table" size="middle" :scroll="{x:true}" bordered rowKey="orderId" :columns="columns"
         :dataSource="dataSource" :pagination="ipagination" :loading="loading" class="j-table-force-nowrap"
-        :rowSelection="{columnTitle:'选择',
+        :rowSelection="{
+        onSelectAll:onSelectAll,
         fixed:true,
         selectedRowKeys:selectedRowKeys,
         onChange:selecteChange
@@ -107,10 +108,10 @@
         <span slot="action" slot-scope="text, record">
           <a-space>
             <a @click="handleOrderDetail(record)">查看详情</a>
-            <a-popconfirm v-if="record.status == 6" title="是否改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState(2,record.orderId)" @cancel="cancel">
+            <a-popconfirm v-if="record.status == 6" title="是否改为已完单" ok-text="是" cancel-text="否" @confirm="onChangeState(record.orderId)" @cancel="cancel">
               <a>完单</a>
             </a-popconfirm>
-            <a-popconfirm v-if="record.status == 1" title="是否改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState(1,record.orderId)" @cancel="cancel">
+            <a-popconfirm v-if="record.status == 1 || record.status == 4" title="是否改为洗护中" ok-text="是" cancel-text="否" @confirm="onChangeState(record.orderId)" @cancel="cancel">
               <a>转换</a>
             </a-popconfirm>
 
@@ -295,7 +296,7 @@
       },
     },
     methods: {
-      onChangeState(status, id) {
+      onChangeState(id) {
         // this.visible = true
         let form = {
           orderIds: id || this.selectedRowKeys.join(',')
@@ -308,8 +309,14 @@
             this.loadData();
           }
         })
-        console.log(888,form);
        
+      },
+      onSelectAll(selected, selectedRows, changeRows) {
+        if(selected) {
+          let type = this.selectedRowKeys.length ? this.type : this.changeRows[0].status
+          let arr = new Set([...this.selectedRowKeys,...changeRows.filter(item => item.status == type).map(item => item.orderId)])
+          this.selectedRowKeys = [...arr]
+        }
       },
       selecteChange(selectedRowKeys, selectedRows) {
         let orderId = selectedRowKeys.filter(v => !this.selectedRowKeys.includes(v))[0] // 获取选中项的id
@@ -320,7 +327,7 @@
             this.type = selected.status
           }
           if (selected.status == this.type || this.selectedRowKeys.length == 0) {
-            this.selectedRowKeys = selectedRowKeys
+            this.selectedRowKeys = selectedRows.filter(item => item.status == this.type).map(item => item.orderId)
           } else {
             this.$message.warning("只能勾选同类型的订单！");
           }
