@@ -293,14 +293,14 @@ export default {
       this.visible = true
     },
     handleCancel() {
+      this.expandedRowKeys1 = []
+      this.selectedDataSource = []
       this.visible = false
     },
     handleSubmit() {
-      let data = {
-        type: this.type,
-        ids: this.expandedRowKeys1
-      }
-      this.$emit('submit', data)
+      let userIds = this.type == 0 ? [] : this.expandedRowKeys1
+      this.$emit('submit', userIds)
+      this.handleCancel()
     },
     radioChange() {
       //根据所选的单选值，请求不同的接口
