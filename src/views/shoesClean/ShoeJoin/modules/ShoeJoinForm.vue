@@ -4,29 +4,43 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-              <a-input v-model="model.name" placeholder="请输入名称"  ></a-input>
+            <a-form-model-item label="joinId" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="joinId">
+              <a-input-number v-model="model.joinId" placeholder="请输入joinId" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="轮播图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="image">
-              <j-image-upload isMultiple  v-model="model.image" ></j-image-upload>
+            <a-form-model-item label="手机号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
+              <a-input v-model="model.phone" placeholder="请输入手机号"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="跳转地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="url">
-              <a-input v-model="model.url" placeholder="请输入跳转地址"  ></a-input>
+            <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+              <a-input v-model="model.name" placeholder="请输入姓名"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-              <j-switch v-model="model.status"  ></j-switch>
-<!--              <switch v-model="model.status"></switch>-->
+            <a-form-model-item label="来访原因" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reason">
+              <a-input v-model="model.reason" placeholder="请输入来访原因"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
-              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%" />
+            <a-form-model-item label="提交人userId" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+              <a-input v-model="model.userId" placeholder="请输入提交人userId"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="0=未处理，1=已处理" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
+              <a-input v-model="model.status" placeholder="请输入0=未处理，1=已处理"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
+              <a-input v-model="model.note" placeholder="请输入备注"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="openId" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="openId">
+              <a-input v-model="model.openId" placeholder="请输入openId"  ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -41,7 +55,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'ShoeBannerForm',
+    name: 'ShoeJoinForm',
     components: {
     },
     props: {
@@ -51,15 +65,10 @@
         default: false,
         required: false
       }
-
     },
     data () {
       return {
         model:{
-            status:{
-              options: [1,0],
-            }
-
          },
         labelCol: {
           xs: { span: 24 },
@@ -71,27 +80,26 @@
         },
         confirmLoading: false,
         validatorRules: {
+           joinId: [
+              { required: true, message: '请输入joinId!'},
+           ],
+           phone: [
+              { required: true, message: '请输入手机号!'},
+           ],
            name: [
-              { required: true, message: '请输入名称!'},
+              { required: true, message: '请输入姓名!'},
            ],
-           image: [
-              { required: true, message: '请输入轮播图!'},
-           ],
-           url: [
-              { required: false, message: '请输入跳转地址!'},
+           userId: [
+              { required: true, message: '请输入提交人userId!'},
            ],
            status: [
-              { required: true, message: '请输入状态:0=关闭,1=开启!'},
-           ],
-           weight: [
-              { required: true, message: '请输入权重!'},
-              { pattern: /^-?\d+\.?\d*$/, message: '请输入数字!'},
+              { required: true, message: '请输入0=未处理，1=已处理!'},
            ],
         },
         url: {
-          add: "/shoes/shoeBanner/add",
-          edit: "/shoes/shoeBanner/edit",
-          queryById: "/shoes/shoeBanner/queryById"
+          add: "/shoeJoin/shoeJoin/add",
+          edit: "/shoeJoin/shoeJoin/edit",
+          queryById: "/shoeJoin/shoeJoin/queryById"
         }
       }
     },
@@ -107,7 +115,6 @@
     methods: {
       add () {
         this.edit(this.modelDefault);
-        this.model.status = '0';
       },
       edit (record) {
         this.model = Object.assign({}, record);
@@ -121,7 +128,7 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            if(!this.model.bannerId){
+            if(!this.model.id){
               httpurl+=this.url.add;
               method = 'post';
             }else{
@@ -139,7 +146,7 @@
               that.confirmLoading = false;
             })
           }
-
+         
         })
       },
     }
