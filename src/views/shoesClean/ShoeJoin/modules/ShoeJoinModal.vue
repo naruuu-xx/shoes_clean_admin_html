@@ -9,7 +9,7 @@
     @cancel="handleCancel"
     cancelText="关闭">
     <h2>备注</h2>
-    <a-textarea v-model="model.note" placeholder="多行输入" :rows="4" />
+    <a-textarea v-model="model.note" placeholder="输入备注" :rows="4" />
   </j-modal>
 </template>
 
