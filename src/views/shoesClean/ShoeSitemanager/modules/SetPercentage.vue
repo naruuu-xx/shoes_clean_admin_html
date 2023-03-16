@@ -93,8 +93,8 @@ export default {
     show(record) {
       Object.assign(this.model, record);
       this.lockerId = record.lockerId;
-      this.model.firstNum = (record.freight/100).toFixed(0);
-      this.model.secondNum = (record.freightIncrease/100).toFixed(0);
+      this.model.firstNum = record.freight;
+      this.model.secondNum = record.freightIncrease;
       this.visible = true;
       this.model.percentage= (record.percentage * 100).toFixed(0);
     },

@@ -78,7 +78,7 @@ import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 import {getAction, httpAction} from "@api/manage";
 
 export default {
-  name: "SecondDistributorList",
+  name: "couponList",
   mixins: [JeecgListMixin, mixinDevice],
   data() {
     return {

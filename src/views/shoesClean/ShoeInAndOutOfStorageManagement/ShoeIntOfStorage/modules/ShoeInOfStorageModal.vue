@@ -28,7 +28,7 @@
             </a-col>
             <a-col :span="2"></a-col>
             <a-col :span="4">
-              <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
+              <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;" :loading="loadingBtn">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
@@ -109,7 +109,7 @@
 
 <script>
 
-import {downFile, httpAction} from "../../../../../api/manage";
+import {downFile, httpAction, postAction} from "../../../../../api/manage";
 import ConfirmPrintModal from "./ConfirmPrintModal";
 
 export default {
@@ -129,6 +129,7 @@ export default {
       showInOfStoragePrintModal: false,
       selectedNote: [],
       noteOptions: [],
+      loadingBtn: false,
     }
   },
   created() {
@@ -157,6 +158,7 @@ export default {
       this.bagCode = "";
       //关闭弹窗并刷新列表
       this.$emit('ok');
+      this.loadingBtn = false;
     },
     showImage(item) {
       this.showImageModal = true;
@@ -217,43 +219,6 @@ export default {
     shoeInOfStorageModal() {
       // this.showInOfStoragePrintModal = true;
       this.$refs.confirmPrintModal.show(this.data);
-    },
-    handleInOfStorage(){
-      this.confirmLoading = true;
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
-        if (!res) {
-          this.$message.warning(res.message)
-          return
-        }
-        const content = res;
-        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
-        // 要不然无法进行打印
-        const blob = new Blob([content], { type: 'application/pdf' });
-        //=========================================================
-        var date = (new Date()).getTime();
-        var ifr = document.createElement('iframe');
-        ifr.style.frameborder = 'no';
-        ifr.style.display = 'none';
-        ifr.style.pageBreakBefore = 'always';
-        ifr.setAttribute('download', 'printPdf' + date + '.pdf');
-        ifr.setAttribute('id', 'printPdf' + date + '.pdf');
-        ifr.src = window.URL.createObjectURL(blob);
-        document.body.appendChild(ifr);
-
-        this.doPrint('printPdf' + date + '.pdf')
-        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
-        //=========================================================
-        // this.$message.success("入库成功");
-        this.confirmLoading = false;
-      })
-    },
-    // 打印
-    doPrint(val) {
-      var ordonnance = document.getElementById(val).contentWindow;
-      setTimeout(() => {
-        // window.print()
-        ordonnance.print();
-      }, 0)
     },
   }
 }
