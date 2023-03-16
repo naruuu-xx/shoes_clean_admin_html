@@ -107,9 +107,9 @@
     methods: {
       add () {
         this.edit(this.modelDefault);
+        this.model.status = '0';
       },
       edit (record) {
-        console.log("eeee!"+record);
         this.model = Object.assign({}, record);
         this.visible = true;
       },
