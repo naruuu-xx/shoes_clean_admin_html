@@ -71,9 +71,9 @@ export default {
   methods: {
     show(record) {
       Object.assign(this.model, record);
-      this.model.courierCost = (record.courierCost/100).toFixed(0);
-      this.model.courierCostIncrease = (record.courierCostIncrease/100).toFixed(0);
-      this.model.courierSendCost = (record.courierSendCost/100).toFixed(0);
+      this.model.courierCost = record.courierCost;
+      this.model.courierCostIncrease = record.courierCostIncrease;
+      this.model.courierSendCost = record.courierSendCost;
       this.visible = true;
     },
     handleCancel() {
