@@ -114,7 +114,7 @@
   import {httpAction} from "../../../api/manage";
   import debounce from '@/utils/debounce'
   import SetPercentage from "../ShoeDistributor/modules/SetPercentage";
-  import SecondDistributorList from "../ShoeUser/modules/couponList";
+  import SecondDistributorList from "../"
   import DistributorOrderList from "./modules/DistributorOrderList";
 
   export default {
