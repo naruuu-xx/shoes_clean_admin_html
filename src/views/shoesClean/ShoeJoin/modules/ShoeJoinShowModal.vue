@@ -43,6 +43,9 @@ import {httpAction} from "@api/manage";
        this.reason=record.reason;
        this.visible=true;
      },
+      handleOk(){
+        this.visible=false;
+      },
 
       handleCancel(){
         this.visible=false;
