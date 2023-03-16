@@ -220,7 +220,26 @@ export default {
     },
     handleInOfStorage(){
       this.confirmLoading = true;
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
+
+      //处理出库
+      if (this.bagCode === "" || this.bagCode === null || this.bagCode === undefined) {
+        this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
+      } else {
+        let data = {
+          "bagCode": this.bagCode
+        }
+
+
+      }
+
+      this.confirmLoading = false;
+    },
+    downWaterMark(no) {
+      let data = {
+        "no": no
+      }
+
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
@@ -243,8 +262,6 @@ export default {
         this.doPrint('printPdf' + date + '.pdf')
         window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
         //=========================================================
-        // this.$message.success("入库成功");
-        this.confirmLoading = false;
       })
     },
     // 打印
