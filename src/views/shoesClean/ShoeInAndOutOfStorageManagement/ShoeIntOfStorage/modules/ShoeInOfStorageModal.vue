@@ -223,7 +223,7 @@ export default {
     handleInOfStorage(){
       this.confirmLoading = true;
 
-      //处理出库
+      //处理入库
       if (this.bagCode === "" || this.bagCode === null || this.bagCode === undefined) {
         this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
       } else {
@@ -235,6 +235,14 @@ export default {
           if (res.code !== 200) {
             this.$message.warning(res.message);
           } else {
+            //清空输入框并重新聚焦
+            this.bagCode = "";
+            this.$nextTick(() => {
+              this.$refs.autoInput.focus();
+            })
+
+            //打印水洗唛
+            this.downWaterMark(res.result);
 
           }
         }).finally(res => {
