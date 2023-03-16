@@ -159,10 +159,7 @@ export default {
         {
           title:' 订单状态',
           align:"center",
-          dataIndex: 'status',
-          customRender: (text) => {
-            return filterDictTextByCache('courier_order_status', text);
-          }
+          dataIndex: 'status'
         },
         {
           title:' 接单时间',
@@ -196,18 +193,20 @@ export default {
   methods: {
     initDataByDIY(courierId,name) {
       this.name=name;
+      this.id=courierId;
       this.queryParam.id = courierId;
       this.courierId=courierId;
       getAction(this.url.list+"?id="+courierId).then((res) => {
         if (res.success) {
           //把数据传入dataSource
           this.dataSource = res.result.records;
+          this.ipagination.current = 1;
           this.ipagination.total = res.result.total;
         }
       })
     },
     searchReset2(){
-      this.queryParam = {}
+      this.queryParam = {id:this.id}
       this.initDataByDIY2();
     },
     initDataByDIY2() {
@@ -221,7 +220,7 @@ export default {
         "status":this.queryParam.status,
       }
       //getAction(this.url.list+"?id="+this.courierId+"&noc="+this.queryParam.noc+"&putStartTime="+this.queryParam.startTime+"&putEndTime="+this.queryParam.endTime).then((res) => {
-        getAction(this.url.list,data).then((res) => {
+        getAction(this.url.list+"?id=" + this.courierId,data).then((res) => {
         if (res.success) {
           //把数据传入dataSource
           this.dataSource = res.result.records;

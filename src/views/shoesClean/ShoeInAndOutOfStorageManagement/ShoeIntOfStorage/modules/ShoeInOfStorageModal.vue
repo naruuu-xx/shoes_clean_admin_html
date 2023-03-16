@@ -28,7 +28,7 @@
             </a-col>
             <a-col :span="2"></a-col>
             <a-col :span="4">
-              <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
+              <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;" :loading="loadingBtn">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
@@ -109,7 +109,7 @@
 
 <script>
 
-import {downFile, httpAction} from "../../../../../api/manage";
+import {downFile, httpAction, postAction} from "../../../../../api/manage";
 import ConfirmPrintModal from "./ConfirmPrintModal";
 
 export default {
@@ -129,6 +129,7 @@ export default {
       showInOfStoragePrintModal: false,
       selectedNote: [],
       noteOptions: [],
+      loadingBtn: false,
     }
   },
   created() {
@@ -157,6 +158,7 @@ export default {
       this.bagCode = "";
       //关闭弹窗并刷新列表
       this.$emit('ok');
+      this.loadingBtn = false;
     },
     showImage(item) {
       this.showImageModal = true;
@@ -220,7 +222,41 @@ export default {
     },
     handleInOfStorage(){
       this.confirmLoading = true;
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
+
+      //处理入库
+      if (this.bagCode === "" || this.bagCode === null || this.bagCode === undefined) {
+        this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
+      } else {
+        let data = {
+          "bagCode": this.bagCode
+        }
+        this.loadingBtn = true;
+        postAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", data).then((res) => {
+          if (res.code !== 200) {
+            this.$message.warning(res.message);
+          } else {
+            //清空输入框并重新聚焦
+            this.bagCode = "";
+            this.$nextTick(() => {
+              this.$refs.autoInput.focus();
+            })
+
+            //打印水洗唛
+            this.downWaterMark(res.result);
+
+          }
+        }).finally(res => {
+          this.loadingBtn = false;
+          this.confirmLoading = false;
+        })
+      }
+    },
+    downWaterMark(no) {
+      let data = {
+        "no": no
+      }
+
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
