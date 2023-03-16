@@ -48,7 +48,7 @@
 
 <script>
 
-import {downFile, httpAction} from "../../../../../api/manage";
+import {downFile, httpAction, postAction} from "../../../../../api/manage";
 
 export default {
   name: "ConfirmPrintModal",
@@ -85,26 +85,11 @@ export default {
 
       this.data = record;
 
-      //获取备注项列表
-      // httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
-      //   this.noteOptions = res.result.records.map((item,index,arr)=>{
-      //     let c = {label:item.note, value:item.note}
-      //     return c;
-      //   })
-      // })
     },
     handleCancel(){
       this.visible = false;
     },
     handleOk(){
-      // let selectedNotes = this.selectedNote;
-      // let selectedNoteString = "";
-      // for (let i = 0 ; i < this.selectedNote.length ; i ++) {
-      //   selectedNoteString += selectedNotes[i] + "；";
-      // }
-      //
-      // selectedNoteString = selectedNoteString.substring(0, selectedNoteString.length - 1);
-      //
 
       this.handleInOfStorage();
 
@@ -112,7 +97,27 @@ export default {
     handleInOfStorage(){
       this.confirmLoading = true;
 
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data, "post").then((res) => {
+      //处理入库
+      this.loadingBtn = true;
+      postAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data).then((res) => {
+        if (res.code !== 200) {
+          this.$message.warning(res.message);
+        } else {
+          //打印水洗唛
+          this.downWaterMark(res.result);
+          this.visible = false;
+        }
+      }).finally(res => {
+        this.loadingBtn = false;
+        this.confirmLoading = false;
+      })
+    },
+    downWaterMark(no) {
+      let data = {
+        "no": no
+      }
+
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
@@ -137,9 +142,6 @@ export default {
         //=========================================================
         // this.$message.success("入库成功");
         this.confirmLoading = false;
-        this.selectedNote = [];
-        this.data.note = "";
-        this.visible = false  ;
       })
     },
     // 打印
