@@ -109,7 +109,7 @@ export default {
         {
           title: '配送费',
           align: "center",
-          dataIndex: 'platformPlatform'
+          dataIndex: 'platformFreight'
         },
         {
           title: '实付金额',
