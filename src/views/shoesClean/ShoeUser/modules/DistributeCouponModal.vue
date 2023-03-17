@@ -9,7 +9,7 @@
     :footer="null"
     wrapClassName="full-modal">
     <div>
-      <a-row type="flex" justify="space-around">
+      <a-row type="flex" justify="space-around" v-if="!userIds">
         <a-col :span="24">
           <div style="text-align: center;margin-bottom: 24px;color: #000000">用户昵称：{{nickname}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;手机号：{{phone}}</div>
         </a-col>
@@ -26,38 +26,17 @@
       </a-row>
       <a-row type="flex" justify="space-around">
         <a-col :span="20">
-          <a-form-model-item v-if="type === '0'" label="选择优惠券" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
-            <a-select
-              v-model:value="selectOption"
-              show-search
-              placeholder="选择优惠券"
-              style="width: 200px"
-              option-filter-prop="children"
-              :filter-option="filterOption"
-            >
-              <a-select-option v-for="item in couponList" :value="item.couponId" :key="item.couponId">{{item.name}}</a-select-option>
-            </a-select>
-          </a-form-model-item>
-          <a-form-model-item v-else-if="type === '1'" label="选择卡包" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
-            <a-select
-              v-model:value="selectOption"
-              show-search
-              placeholder="选择卡包"
-              style="width: 200px"
-              option-filter-prop="children"
-              :filter-option="filterOption"
-            >
-              <a-select-option v-for="item in cardBagList" :value="item.cardBagId" :key="item.cardBagId">{{item.name}}</a-select-option>
-            </a-select>
-          </a-form-model-item>
-          <!-- <XfSelect
-                :list="weekList.records"
+          <a-form-model-item v-if="" :label="type === '0' ? '选择优惠券' : '选择卡包' " :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
+            <XfSelect
+                :list="weekList"
                 @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="selectOption"
-                :url="type == 0 ? '/ShoeCoupon/shoeCoupon/queryAllCouponList' : '/shoes/ShoeCardBag/queryAllCardBagList'"
+                :url='`/shoes/shoeUser/getCouponOrCardBag?type=${type}`'
               >
-              </XfSelect> -->
+              </XfSelect>
+          </a-form-model-item>
+          
         </a-col>
       </a-row>
       <a-row>
@@ -87,12 +66,7 @@ export default {
   },
   data() {
     return {
-      weekList:{
-        records:[],
-        size:10,
-        current:1,
-        total:1
-      },
+      weekList:[],
       selectList:[], // 下拉选择的数组
       spinning:false,
       visible: false,
@@ -113,72 +87,79 @@ export default {
       phone: "",
       type: "0",
       selectOption: "",
-      couponList: "",
-      cardBagList: "",
       record: null,
       validatorRules: {
         couponType: [{require: true, message: '请选择优惠券或卡包'}]
-    }
+      },
+      userIds:undefined
     }
   },
   created() {
   },
   methods: {
     changeSelect(data) {
-      this.weekList.records = data.map(item => ({
+      this.weekList = data.records.map(item => ({
         label: item.name,
-        value: item.couponId
+        value: item.id
       }));
     },
     checkedSelect(val) {
-      console.log(val,'checkedSelect');
+      console.log(val,'checkedSelect',this.selectOption);
     },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       );
     },
-    show(record) {
+    show(record,userIds) {
       this.visible = true;
-      this.nickname = record.nickname;
-      this.phone = record.phone;
-      this.record = record;
-      //默认是优惠券列表
-      this.queryAllCouponList();
+      if(userIds) {
+        this.userIds = userIds
+      } else {
+        this.nickname = record.nickname;
+        this.phone = record.phone;
+        this.record = record;
+      }
+      
     },
     handleCancel() {
       this.nickname = "";
       this.phone = "";
       this.type = "0";
-      this.couponList = "";
-      this.cardBagList = "";
       this.selectOption = "";
+      this.userIds = undefined
       this.visible = false;
     },
     handleSubmit() {
       if (this.selectOption === null || this.selectOption === "") {
         this.$message.warning("请选择优惠券或卡包！");
       } else {
-        let userId = this.record.userId;
-        console.log(userId);
+        
+        let url = ''
+        let form = {}
+        if(this.userIds) {
+          // 手动派券
+          url = "/shoes/shoeUser/sendCouponOrCardBagToAll"
+          form = {
+            type: this.type,
+            id: this.selectOption,
+            userIds: this.userIds
+          }
+        } else {
+          // 当个派券
+          url = "/shoes/shoeUser/distribute"
+          let userId = this.record.userId;
+          form = {
+            "userId": userId,
+            "distributeType": this.type,
+            "couponOrCardBagId": this.selectOption
+          }
+        }
 
-        let data = {
-          "userId": userId,
-          "distributeType": this.type,
-          "couponOrCardBagId": this.selectOption
-        };
-
-        httpAction("/shoes/shoeUser/distribute", data, "post").then((res) => {
+        httpAction(url, form, "post").then((res) => {
           if (res.success) {
             this.$message.success(res.message);
-            this.nickname = "";
-            this.phone = "";
-            this.type = "0";
-            this.couponList = "";
-            this.cardBagList = "";
-            this.selectOption = "";
-            this.visible = false;
-            this.$emit("ok");
+            this.handleCancel()
           } else {
             this.$message.warning(res.message);
           }
@@ -186,31 +167,8 @@ export default {
       }
     },
     radioChange(){
-      //根据所选的单选值，请求不同的接口
-      if (this.type === '0') {
-        this.selectOption = "";
-        this.cardBagList = "";
-        this.queryAllCouponList();
-      } else if (this.type === '1') {
-        this.selectOption = "";
-        this.couponList = "";
-        this.queryAllCardBag();
-      }
+      this.selectOption = "";
     },
-    queryAllCouponList(){
-      getAction("/ShoeCoupon/shoeCoupon/queryAllCouponList", null).then((res) => {
-        if (res.success) {
-          this.couponList = res.result;
-        }
-      })
-    },
-    queryAllCardBag(){
-      getAction("/shoes/ShoeCardBag/queryAllCardBagList", null).then((res) => {
-        if (res.success) {
-          this.cardBagList = res.result;
-        }
-      })
-    }
   }
 }
 </script>

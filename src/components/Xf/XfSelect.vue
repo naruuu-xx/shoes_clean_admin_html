@@ -1,6 +1,6 @@
 <template>
   <a-select
-    v-model="value"
+    v-model="selectVlaue"
     :placeholder="placeholder"
     :allow-clear="allowClear"
     @change="chooseOption"
@@ -67,10 +67,10 @@ export default {
     },
 
     // 默认值
-    // value: {
-    //   type: String,
-    //   default: ''
-    // }
+    value: {
+      type: String,
+      default: ''
+    },
     // 请求地址
     url: {
       type: String,
@@ -98,7 +98,7 @@ export default {
 
   data() {
     return {
-      value: undefined,
+      selectVlaue: undefined,
       total: 0,
       page: 1,
       spinning: false
@@ -112,7 +112,14 @@ export default {
       },
       //立刻执行handler
       immediate: true
-    }
+    },
+    value: {
+				handler(value, oldValue) {
+					this.selectVlaue = value
+				},
+				deep: true,
+				immediate: true
+			}
   },
 
   computed: {
@@ -130,12 +137,6 @@ export default {
   },
 
   methods: {
-    // 清空数据
-
-    clearValue() {
-      this.value = ''
-    },
-
     // 换页事件，-1切换到上一页，1切换到下一页
     changePage(val) {
       this.page += val
@@ -144,12 +145,14 @@ export default {
 
     // 选择下拉框时进行父传子
     chooseOption(value) {
+      this.$emit('input', value)
       this.$emit('change', value)
     },
 
     handleSearch(value) {
       this.value = value
       debounce(() => {
+        this.page = 1
         this.getList(value)
       },1000,false)
     },
