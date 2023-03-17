@@ -134,8 +134,7 @@ export default {
       if (this.selectOption === null || this.selectOption === "") {
         this.$message.warning("请选择优惠券或卡包！");
       } else {
-        let userId = this.record.userId;
-        console.log(userId);
+        
         let url = ''
         let form = {}
         if(this.userIds) {
@@ -149,6 +148,7 @@ export default {
         } else {
           // 当个派券
           url = "/shoes/shoeUser/distribute"
+          let userId = this.record.userId;
           form = {
             "userId": userId,
             "distributeType": this.type,
