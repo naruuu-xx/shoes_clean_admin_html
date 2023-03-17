@@ -195,7 +195,7 @@ export default {
       }
       httpAction("/ShoeCoupon/shoeCoupon/update", form, "put").then((res) => {
         if (res.success) {
-          this.initDataByDIY2();
+          this.initDataByDIY3();
         } else {
           this.$message.warning(res.message);
         }
@@ -217,6 +217,23 @@ export default {
           //把数据传入dataSource
           this.dataSource = res.result.records;
           this.ipagination.current = 1;
+          this.ipagination.total = res.result.total;
+        }
+      })
+    },
+    initDataByDIY3() {
+      let data = {
+        "id": this.id,
+        "name": this.queryParam.name,
+        "status": this.queryParam.status,
+        "delFlag": this.queryParam.delFlag,
+        "pageNo":this.ipagination.current,
+        "pageSize":this.ipagination.pageSize,
+      }
+      getAction(this.url.list, data).then((res) => {
+        if (res.success) {
+          //把数据传入dataSource
+          this.dataSource = res.result.records;
           this.ipagination.total = res.result.total;
         }
       })
