@@ -271,7 +271,6 @@ export default {
         orderId: orderInfo.orderId,
       }
       getAction('/ShoeOrder/shoeOrder/getShoeOrderDetail', requestData).then(({result:res}) => {
-        console.log(8787878, res)
         this.OrderDetail = res || {}
         orderInfo.couponName = res.couponName
         orderInfo.timecardName = res.timecardName
@@ -280,7 +279,7 @@ export default {
       })
       if (type === 'self') {
         orderInfo.type = '站点自寄'
-      } else if (type === 'service') {
+      } else if (type === 'service' || type === 'site') {
         orderInfo.type = '上门取件'
         //获取配送信息
         getAction('/ShoeOrder/shoeOrder/getCourierInfo', requestData).then((res) => {

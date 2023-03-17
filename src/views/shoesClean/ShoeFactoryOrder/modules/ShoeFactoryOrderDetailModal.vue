@@ -23,6 +23,9 @@
             <a-row>
               <a-col :span="24"><p class="label-content">商品规格：{{ data.skuTitle }}</p></a-col>
             </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">附加服务：{{ data.additionalName || "无" }}</p></a-col>
+            </a-row>
           </a-row>
           <a-row>
             <a-row>
