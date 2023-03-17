@@ -139,7 +139,7 @@
                 <p align="center">取件码</p>
                  <p align="center" class="textCode">{{ serviceCode }}</p>
                </template>
-          <a v-if="record.type==='service' && record.status==='12'" @click="getServiceCode(record)">取件码</a>
+          <a v-if=" ( record.type==='service' || record.type==='site' ) && record.status==='12'" @click="getServiceCode(record)">取件码</a>
           </a-popover>
 
           <a-divider v-if="'9' === record.status" type="vertical"/>
