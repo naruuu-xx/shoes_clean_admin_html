@@ -131,7 +131,7 @@
 <!--          <a v-if="record.type==='self' && record.status==='10'" @click="getSelfCode(record)">取件码</a>-->
 <!--          </a-popover>-->
 
-          <a-divider v-if="record.type==='service' && record.status==='12'" type="vertical" v-has="'order:getCode'"/>
+          <a-divider v-if=" ( record.type==='service' || record.type==='site' ) && record.status==='12'" type="vertical" v-has="'order:getCode'"/>
 
           <a-popover trigger="click" placement="top" v-has="'order:getCode'">
 
@@ -142,8 +142,8 @@
           <a v-if=" ( record.type==='service' || record.type==='site' ) && record.status==='12'" @click="getServiceCode(record)">取件码</a>
           </a-popover>
 
-          <a-divider v-if="'9' === record.status" type="vertical"/>
-          <a v-if="'9' === record.status" @click="handleOrderFinish(record)">完单</a>
+          <a-divider v-if="'9' === record.status && record.type==='self'" type="vertical"/>
+          <a v-if="'9' === record.status && record.type==='self'" @click="handleOrderFinish(record)">完单</a>
 
         </span>
 
