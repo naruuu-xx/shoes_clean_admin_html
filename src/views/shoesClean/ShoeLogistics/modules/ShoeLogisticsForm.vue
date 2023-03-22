@@ -14,9 +14,16 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
+            <a-form-model-item label=" 绑定快递柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
               <a-select v-model="model.lockerCodeList" mode="multiple">
                 <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label=" 绑定站点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="siteCodeList">
+              <a-select v-model="model.siteCodeList" mode="multiple">
+                <a-select-option v-for="i in siteList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -72,7 +79,9 @@
           status:'1',
           password:'',
           lockerIdList:[],
+          siteIdList:[],
           lockerCodeList:[],
+          siteCodeList:[],
          },
         labelCol: {
           xs: { span: 24 },
@@ -94,9 +103,6 @@
            status: [
               { required: true, message: '请输入选择状态!'},
            ],
-          lockerCodeList:[
-            { required: true, message: '请输入机柜编码'},
-          ],
           password: [{required: true,pattern:/^.{6,16}$/,message: '请输入6到16位任意字符!'},
             {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{required: true, message: '请重新输入登录密码!'},
@@ -108,6 +114,7 @@
           queryById: "/shoes/shoeLogistics/queryById"
         },
         lockerList:[],
+        siteList:[],
       }
     },
     computed: {
@@ -125,7 +132,6 @@
       },
       edit (record) {
         this.model = Object.assign({}, record);
-        //this.model.lockerCodeList = record.lockerCodeList;
         this.getLockerList();
         this.visible = true;
       },
@@ -183,7 +189,8 @@
       getLockerList(){
         httpAction("/shoes/shoeLogistics/lockerList?logisticsId=" + this.model.logisticsId, "", "get").then((res) => {
           if (res.success) {
-            this.lockerList = res.result;
+            this.lockerList = res.result.lockerList;
+            this.siteList = res.result.siteList;
           }
         })
       },
@@ -196,6 +203,16 @@
           }
         }
         that.model.lockerIdList = lockerIdList;
+
+        let siteIdList = [];
+        for(let i = 0; i < that.siteList.length; i++){
+          if(that.model.siteCodeList.indexOf(that.siteList[i].lockerCode) != -1){
+            siteIdList.push(that.siteList[i].lockerId);
+          }
+        }
+
+        that.model.siteIdList = siteIdList;
+
       }
     }
   }

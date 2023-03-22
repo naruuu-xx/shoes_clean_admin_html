@@ -56,6 +56,11 @@
               <a-input v-model="model.bankAddress" placeholder="请输入开户行地址" autocomplete="off"/>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="接单状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
+              <j-dict-select-tag type="radio" v-model="model.orderStatus" dictCode="shoe_courier_order_status" placeholder="请选择接单状态" />
+            </a-form-model-item>
+          </a-col>
 
         </a-row>
       </a-form-model>
@@ -129,7 +134,10 @@
           ],
           bankAddress: [
             { required: true, message: '请输入开户行地址' }
-          ]
+          ],
+          orderStatus: [
+            { required: true, message: '请选择接单状态'},
+          ],
         },
         url: {
           add: "/shoeCourier/shoeCourier/add",

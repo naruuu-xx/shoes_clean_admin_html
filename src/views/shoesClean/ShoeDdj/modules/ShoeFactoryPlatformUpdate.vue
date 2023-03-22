@@ -17,6 +17,13 @@
             </a-form-model-item>
           </a-col>
         </a-row>
+        <a-row type="flex" justify="space-around">
+          <a-col :span="20">
+            <a-form-model-item label="标识" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="tag">
+              <a-input :maxlength="1" v-model="form.tag" placeholder="请输入标识"></a-input>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
         <a-row>
           <a-col :span="24">
             <a-col :span="6"></a-col>
@@ -58,6 +65,7 @@ export default {
       form:{name:'',platformId:''},
       rules: {
         name: [{required: true, message: '请输入来源'}],
+        tag: [{required: true, message: '请输入标识'}, {pattern: /^[\u4e00-\u9fa5]$/, message: '请输入一个中文的标识!'}],
       },
     }
   },
@@ -66,8 +74,6 @@ export default {
   computed: {
 
   },
-
-
   methods: {
     show(id) {
       this.visible = true;
@@ -81,7 +87,7 @@ export default {
     showUpdate(id){
       httpAction("/shoeFactoryPlatform/showUpdate?id="+id, null, "get").then((res) => {
         if (res.success) {
-          this.form.name=res.result;
+          this.form=res.result;
         } else {
           this.$message.warning(res.message);
         }

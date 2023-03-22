@@ -13,6 +13,11 @@
               <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="describe">
+              <a-input v-model="model.describe" placeholder="请输入描述" />
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -53,6 +58,9 @@
            name: [
               { required: true, message: '请输入分类名称!'},
            ],
+          describe: [
+            { required: true, message: '请输入描述!'},
+          ],
            weight: [
               { required: true, message: '请输入权重!'},
               { pattern: /^-?\d+\.?\d*$/, message: '请输入数字!'},
