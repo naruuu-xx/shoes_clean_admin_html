@@ -315,6 +315,11 @@ export default {
             return filterDictTextByCache('shoe_locker_online_status', text);
           },
         },
+        {
+          title: '权重',
+          align: "center",
+          dataIndex: 'weight'
+        },
         // {
         //   title:'添加时间',
         //   align:"center",
