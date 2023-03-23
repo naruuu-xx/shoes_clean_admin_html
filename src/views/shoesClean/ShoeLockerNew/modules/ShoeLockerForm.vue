@@ -41,6 +41,15 @@
                 <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
               </a-form-model-item>
             </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
+                <j-dict-select-tag
+                  type="radio"
+                  v-model="model.orderStatus"
+                  dictCode="shoe_locker_order_status"
+                />
+              </a-form-model-item>
+            </a-col>
   <!--          <a-col :span="24">-->
   <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
                 <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
@@ -185,6 +194,7 @@ export default {
           {required: true, message: '请输入空闲格子数!'},
           {pattern: /^-?\d+$/, message: '请输入整数!'},
         ],
+        orderStatus: [{ required: true, message: '请选择接单状态' }],
       },
       url: {
         add: "/shoes/shoeLocker/addNew",
@@ -237,6 +247,7 @@ export default {
       this.model = {
         status: 1,
         type: "real",
+        orderStatus: 1,
       };
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
@@ -295,6 +306,7 @@ export default {
             "num": this.model.num,
             "type": this.model.type,
             "weight": this.model.weight,
+            "orderStatus": this.model.orderStatus,
           }
 
           // console.log(data);
