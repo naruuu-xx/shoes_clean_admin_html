@@ -73,7 +73,7 @@
         <a-descriptions-item label="昵称"> {{ data.nickname }} </a-descriptions-item>
         <a-descriptions-item label="绑定手机"> {{ data.wxPhone }} </a-descriptions-item>
         <a-descriptions-item label="订单类型"> {{ data.type }} </a-descriptions-item>
-        <template v-if="'站点自寄' === data.type">
+        <template v-if="'站点自寄' === data.type || '上门取件' === data.type">
           <a-descriptions-item label="用户姓名"> {{ data.name }} </a-descriptions-item>
           <a-descriptions-item label="手机号码"> {{ data.phone }} </a-descriptions-item>
         </template>
