@@ -284,6 +284,14 @@ export default {
             return filterDictTextByCache('shoe_locker_online_status', text);
           },
         },
+        {
+          title:'接单状态',
+          align:"center",
+          dataIndex: 'orderStatus',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_locker_order_status', text);
+          },
+        },
         // {
         //   title:'添加时间',
         //   align:"center",

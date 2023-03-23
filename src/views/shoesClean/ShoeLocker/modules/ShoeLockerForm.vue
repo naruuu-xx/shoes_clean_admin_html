@@ -137,6 +137,16 @@
             <!--              <a-input-number v-model="model.free" placeholder="请输入空闲格子数" style="width: 100%" />-->
             <!--            </a-form-model-item>-->
             <!--          </a-col>-->
+            <a-col :span="24">
+              <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
+                <j-dict-select-tag
+                  type="radio"
+                  v-model="model.orderStatus"
+                  dictCode="shoe_locker_order_status"
+
+                />
+              </a-form-model-item>
+            </a-col>
           </a-row>
         </div>
       </a-form-model>
@@ -167,7 +177,8 @@ export default {
   },
   data() {
     return {
-      model: {},
+      model: {
+      },
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 },
@@ -260,6 +271,7 @@ export default {
         address: '',
         longitude: '',
         latitude: '',
+        orderStatus: 1,
       }
       let center = new window.qq.maps.LatLng(24.500646, 118.12699) // 设置地图中心点坐标
       this.option = {
@@ -317,6 +329,7 @@ export default {
             latitude: this.model.latitude,
             num: this.model.num,
             type: this.model.type,
+            orderStatus: this.model.orderStatus,
           }
 
           // console.log(data);
