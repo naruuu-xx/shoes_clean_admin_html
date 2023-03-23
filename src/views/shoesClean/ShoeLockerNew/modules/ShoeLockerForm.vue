@@ -36,6 +36,15 @@
                 <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
               </a-form-model-item>
             </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
+                <j-dict-select-tag
+                  type="radio"
+                  v-model="model.orderStatus"
+                  dictCode="shoe_locker_order_status"
+                />
+              </a-form-model-item>
+            </a-col>
   <!--          <a-col :span="24">-->
   <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
                 <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
@@ -87,15 +96,7 @@
                 </a-col>
               </a-row>
             </a-col>
-            <a-col :span="24">
-              <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
-                <j-dict-select-tag
-                  type="radio"
-                  v-model="model.orderStatus"
-                  dictCode="shoe_locker_order_status"
-                />
-              </a-form-model-item>
-            </a-col>
+
             <!--          <a-col :span="24">-->
             <!--            <a-form-model-item label="空闲格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="free">-->
             <!--              <a-input-number v-model="model.free" placeholder="请输入空闲格子数" style="width: 100%" />-->
@@ -186,6 +187,7 @@ export default {
           {required: true, message: '请输入空闲格子数!'},
           {pattern: /^-?\d+$/, message: '请输入整数!'},
         ],
+        orderStatus: [{ required: true, message: '请选择接单状态' }],
       },
       url: {
         add: "/shoes/shoeLocker/addNew",
