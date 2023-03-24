@@ -36,13 +36,34 @@
             <a-col :span="6">
               <span class="content">商品名：{{item.title}}</span>
             </a-col>
-            <a-col :span="6">
+            <a-col :span="18">
               <span class="content">商品规格：{{item.skuTitle}}</span>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="24">
               <span class="content">附加项：{{item.name}}</span>
+            </a-col>
+          </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="8">
+              <span class="content">姓名：{{data.userName}}</span>
+            </a-col>
+            <a-col :span="8">
+              <span class="content">电话：{{data.userPhone}}</span>
+            </a-col>
+          </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="24">
+              <span class="content">地址：{{data.userAddress}}</span>
+            </a-col>
+          </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="12">
+              <span class="content">订单类型：{{data.orderType}}</span>
+            </a-col>
+            <a-col :span="12">
+              <span class="content">{{data.orderType == '站点订单' ? '站点' : '机柜'}}名称：{{data.lockerName}}</span>
             </a-col>
           </a-row>
           <!--          <a-row style="margin-bottom: 30px">-->
