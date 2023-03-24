@@ -47,23 +47,25 @@
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="8">
-              <span class="content">姓名：{{data.userName}}</span>
+              <span class="content">姓名：{{item.userName}}</span>
             </a-col>
             <a-col :span="8">
-              <span class="content">电话：{{data.userPhone}}</span>
+              <span class="content">电话：{{item.userPhone}}</span>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="24">
-              <span class="content">地址：{{data.userAddress}}</span>
+              <span class="content">地址（用户寄）：{{item.userAddressSend}}</span>
+            </a-col>
+          </a-row>
+          <a-row style="margin-bottom: 30px">
+            <a-col :span="24">
+              <span class="content">地址（用户收）：{{item.userAddressReceive}}</span>
             </a-col>
           </a-row>
           <a-row style="margin-bottom: 30px">
             <a-col :span="12">
-              <span class="content">订单类型：{{data.orderType}}</span>
-            </a-col>
-            <a-col :span="12">
-              <span class="content">{{data.orderType == '站点订单' ? '站点' : '机柜'}}名称：{{data.lockerName}}</span>
+              <span class="content">订单类型：{{item.orderType}}</span>
             </a-col>
           </a-row>
           <!--          <a-row style="margin-bottom: 30px">-->
