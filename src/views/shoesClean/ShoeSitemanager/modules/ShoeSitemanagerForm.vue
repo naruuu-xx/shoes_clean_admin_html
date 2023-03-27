@@ -28,23 +28,14 @@
 
             <a-col :span="24" v-if="!model.sitemanagerId">
               <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-                <a-select
-                  show-search
-                  label-in-value
-                  :value="value"
-                  placeholder="请输入昵称或手机号"
-                  style="width: 100%"
-                  :filter-option="false"
-                  :not-found-content="fetching ? undefined : null"
-                  :showArrow="false"
-                  @search="fetchUser"
-                  @change="handleChange"
+                <XfSelect
+                  :list="weekList"
+                  @change="checkedSelect"
+                  @changeList="changeSelect"
+                  v-model="model.userId"
+                  :url='`/shoes/shoeUser/getCouponOrCardBag?type=0`'
                 >
-                  <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-                  <a-select-option v-for="item in userList" :key="item.userId">
-                    {{ item.wxInfo }}
-                  </a-select-option>
-                </a-select>
+                </XfSelect>
               </a-form-model-item>
             </a-col>
             <a-col :span="24" v-if="model.sitemanagerId">
@@ -145,13 +136,16 @@ import {validateDuplicateValue} from '@/utils/util'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
 import $ from 'jquery'
 import debounce from '@/utils/debounce'
+import XfSelect from '@/components/Xf/XfSelect'
+
 
 let map, marker, polygon, drawingManager, lngLat, ap;
 
 export default {
   name: 'ShoeLockerForm',
   components: {
-    AlCascader
+    AlCascader,
+    XfSelect
   },
   props: {
     //表单禁用
@@ -163,6 +157,7 @@ export default {
   },
   data() {
     return {
+      weekList:[],
       model: {
         lockerName:"",
         cardNo:"",
@@ -296,6 +291,14 @@ export default {
   mounted() {
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: +item.id
+      }));
+    },
+    checkedSelect(val) {
+    },
     add() {
       // this.edit(this.modelDefault);
       this.disabledStatus = false;
