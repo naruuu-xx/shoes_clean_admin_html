@@ -244,6 +244,14 @@ export default {
           },
         },
         {
+          title:'接单状态',
+          align:"center",
+          dataIndex: 'orderStatus',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_locker_order_status', text);
+          },
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           align: "center",
