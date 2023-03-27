@@ -134,7 +134,7 @@
                    <a @click="handleGrid(record)">格子状态</a>
                 </a-menu-item>
                 <a-menu-item>
-                   <a @click="sceneGraph(record)">场景图</a>
+                   <a @click="sceneGraph(record)">位置图</a>
                 </a-menu-item>
               </a-menu>
           </a-dropdown>
