@@ -32,6 +32,11 @@
 <!--              </a-form-model-item>-->
 <!--            </a-col>-->
             <a-col :span="24">
+              <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
+                <a-input-number v-model="model.weight" placeholder="请输入权重" autocomplete="off"></a-input-number>（权重值越高，排序越靠前）
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
               <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
                 <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
               </a-form-model-item>
@@ -96,7 +101,6 @@
                 </a-col>
               </a-row>
             </a-col>
-
             <!--          <a-col :span="24">-->
             <!--            <a-form-model-item label="空闲格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="free">-->
             <!--              <a-input-number v-model="model.free" placeholder="请输入空闲格子数" style="width: 100%" />-->
@@ -158,6 +162,9 @@ export default {
         ],
         status: [
           {required: true, message: '请选择状态'},
+        ],
+        weight: [
+          {required: true, message: '请输入权重值'},
         ],
         longitude: [
           {required: true, message: '请输入经度!'},
@@ -298,6 +305,7 @@ export default {
             "latitude": this.model.latitude,
             "num": this.model.num,
             "type": this.model.type,
+            "weight": this.model.weight,
             "orderStatus": this.model.orderStatus,
           }
 

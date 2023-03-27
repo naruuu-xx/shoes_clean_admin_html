@@ -38,6 +38,11 @@
                 />
               </a-form-model-item>
             </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
+                <a-input-number v-model="model.weight" placeholder="请输入权重" autocomplete="off"></a-input-number>（权重值越高，排序越靠前）
+              </a-form-model-item>
+            </a-col>
             <!--            <a-col :span="24">-->
             <!--              <a-form-model-item label="机柜类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">-->
             <!--                <j-dict-select-tag type="radio" v-model="model.type" dictCode="shoe_locker_type" placeholder="请选择机柜类型"/>-->
@@ -177,8 +182,7 @@ export default {
   },
   data() {
     return {
-      model: {
-      },
+      model: {},
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 },
@@ -192,6 +196,7 @@ export default {
         lockerId: [{ required: true, message: '请输入ID!' }],
         lockerCode: [{ required: true, message: '请输入机柜编码!' }],
         orgCode: [{ required: true, message: '请选择区域!' }],
+        weight: [{ required: true, message: '请选择权重值!' }],
         type: [{ required: true, message: '请选择机柜类型' }],
         status: [{ required: true, message: '请选择状态' }],
         longitude: [
@@ -214,7 +219,6 @@ export default {
           { required: true, message: '请输入空闲格子数!' },
           { pattern: /^-?\d+$/, message: '请输入整数!' },
         ],
-        orderStatus: [{ required: true, message: '请选择接单状态' }],
       },
       url: {
         add: '/shoes/shoeLocker/add',
@@ -273,6 +277,7 @@ export default {
         longitude: '',
         latitude: '',
         orderStatus: 1,
+
       }
       let center = new window.qq.maps.LatLng(24.500646, 118.12699) // 设置地图中心点坐标
       this.option = {
@@ -330,6 +335,7 @@ export default {
             latitude: this.model.latitude,
             num: this.model.num,
             type: this.model.type,
+            weight: this.model.weight,
             orderStatus: this.model.orderStatus,
           }
 
