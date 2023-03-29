@@ -8,6 +8,7 @@
     showSearch
     :filter-option="false"
     @search="handleSearch"
+    :mode="mode"
   >
     <div slot="dropdownRender" slot-scope="menu">
       <a-spin :spinning="spinning" class="my-spin" @mousedown="e => e.preventDefault()" >
@@ -68,7 +69,7 @@ export default {
 
     // 默认值
     value: {
-      type: String,
+      type: [String,Number,Array],
       default: ''
     },
     // 请求地址
@@ -85,6 +86,11 @@ export default {
     allowClear: {
       type: Boolean,
       default: false
+    },
+    // 默认模式
+    mode: {
+      type: String,
+      default: 'default' // 'default' | 'multiple' | 'tags' | 'combobox'
     }
   },
 
@@ -150,7 +156,6 @@ export default {
     },
 
     handleSearch(value) {
-      this.value = value
       debounce(() => {
         this.page = 1
         this.getList(value)
