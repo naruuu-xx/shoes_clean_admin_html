@@ -68,7 +68,6 @@
             </a-col>
 
             <a-col :span="24">
-
               <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="statusRadio">
                 <a-radio-group v-model:value="model.statusRadio">
                   <a-radio value="1">启用</a-radio>
@@ -77,6 +76,14 @@
               </a-form-model-item>
             </a-col>
 
+            <a-col :span="24">
+              <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatusRadio">
+                <a-radio-group v-model:value="model.orderStatusRadio">
+                  <a-radio value="1">是</a-radio>
+                  <a-radio value="0">否</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
@@ -171,6 +178,7 @@ export default {
         userId:"",
         name:"",
         phone:"",
+        orderStatusRadio:"",
 
       },
       disabledStatus: false,
@@ -195,6 +203,9 @@ export default {
         ],
         statusRadio: [
           {required: true, message: '请选择状态'},
+        ],
+        orderStatusRadio: [
+          {required: true, message: '请选择接单状态'},
         ],
         phone: [
           {required: true, message: '请输入手机号!'},
@@ -309,6 +320,7 @@ export default {
         address:"",
         longitude:"",
         latitude:"",
+        orderStatusRadio: "1",
       };
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
@@ -319,9 +331,13 @@ export default {
       this.initMapByJQ(24.500646, 118.126990);
     },
     edit(record) {
+
+      console.log(record.orderStatus)
       this.disabledStatus = true;
 
-      Object.assign(this.model, record);
+      Object.assign(this.model, record, {orderStatusRadio: record.orderStatus + ""});
+      console.log(this.model.orderStatusRadio)
+      console.log(this.model)
       this.model.orgCode = record.orgCode + "";
       //this.model.departName = record.departName;
       this.model.sitemanagerId = record.sitemanagerId;
@@ -419,6 +435,7 @@ export default {
             "num": this.model.num,
             "type": this.model.type,
             "sitemanagerId": this.model.sitemanagerId,
+            "orderStatus":this.model.orderStatusRadio,
           }
 
           console.log(data);

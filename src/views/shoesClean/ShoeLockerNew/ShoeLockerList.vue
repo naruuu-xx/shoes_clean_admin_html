@@ -133,6 +133,9 @@
                 <a-menu-item>
                    <a @click="handleGrid(record)">格子状态</a>
                 </a-menu-item>
+                <a-menu-item>
+                   <a @click="sceneGraph(record)">位置图</a>
+                </a-menu-item>
               </a-menu>
           </a-dropdown>
 
@@ -157,6 +160,7 @@
     <shoe-locker-modal ref="modalForm" @ok="modalFormOk"></shoe-locker-modal>
     <shoe-locker-grid-modal ref="gridModal"></shoe-locker-grid-modal>
     <set-percentage ref="setPercentage" @ok="modalFormOk"></set-percentage>
+    <shoe-locker-img-modal ref="imgModal" @ok="modalFormOk"></shoe-locker-img-modal>
   </a-card>
 </template>
 
@@ -166,6 +170,7 @@ import '@/assets/less/TableExpand.less'
 import {mixinDevice} from '@/utils/mixin'
 import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 import ShoeLockerModal from './modules/ShoeLockerModal'
+import ShoeLockerImgModal from './modules/ShoeLockerImgModal'
 import shoeLockerGridModal from './modules/shoeLockerGridModal'
 import Area from '@/components/_util/Area'
 import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
@@ -180,7 +185,8 @@ export default {
   components: {
     ShoeLockerModal,
     shoeLockerGridModal,
-    SetPercentage
+    SetPercentage,
+    ShoeLockerImgModal
   },
   data() {
     return {
@@ -289,6 +295,14 @@ export default {
           align: "center",
           dataIndex: 'weight'
         },
+        {
+          title:'接单状态',
+          align:"center",
+          dataIndex: 'orderStatus',
+          customRender: (text) => {
+            return filterDictTextByCache('shoe_locker_order_status', text);
+          },
+        },
         // {
         //   title:'添加时间',
         //   align:"center",
@@ -362,6 +376,9 @@ export default {
     },
     handleGrid(record) {
       this.$refs.gridModal.show(record);
+    },
+    sceneGraph(record) {
+      this.$refs.imgModal.show(record);
     },
     setPercentage(record) {
       this.$refs.setPercentage.show(record);

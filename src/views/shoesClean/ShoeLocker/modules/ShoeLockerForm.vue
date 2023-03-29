@@ -58,6 +58,16 @@
                 />
               </a-form-model-item>
             </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
+                <j-dict-select-tag
+                  type="radio"
+                  v-model="model.orderStatus"
+                  dictCode="shoe_locker_order_status"
+
+                />
+              </a-form-model-item>
+            </a-col>
             <!--          <a-col :span="24">-->
             <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
             <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
@@ -266,6 +276,7 @@ export default {
         address: '',
         longitude: '',
         latitude: '',
+        orderStatus: 1,
 
       }
       let center = new window.qq.maps.LatLng(24.500646, 118.12699) // 设置地图中心点坐标
@@ -325,6 +336,7 @@ export default {
             num: this.model.num,
             type: this.model.type,
             weight: this.model.weight,
+            orderStatus: this.model.orderStatus,
           }
 
           // console.log(data);
