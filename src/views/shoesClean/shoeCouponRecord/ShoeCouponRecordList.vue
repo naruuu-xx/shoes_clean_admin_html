@@ -5,19 +5,44 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="发放批次(从1递增)">
-              <a-input placeholder="请输入发放批次(从1递增)" v-model="queryParam.recordNo"></a-input>
+            <a-form-item label="用户昵称">
+              <a-input placeholder="请输入用户昵称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="状态:0=冻结，1=正常">
-              <a-input placeholder="请输入状态:0=冻结，1=正常" v-model="queryParam.status"></a-input>
+            <a-form-item label="手机号">
+              <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="发放批次">
+              <a-input placeholder="请输入发放批次" v-model="queryParam.recordNo"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="使用情况">
+              <a-select v-model="queryParam.useStatus" style="width: 180px">
+                <a-select-option v-for="item in useStatusOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="是否停用">
+              <a-select v-model="queryParam.status" style="width: 180px">
+                <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <template >
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="派发时间">
-                <j-date placeholder="请选择派发时间" v-model="queryParam.grantTime"></j-date>
+                <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.createTimeBegin"></j-date>
+                <span class="query-group-split-cust"></span>
+                <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.createTimeEnd"></j-date>
               </a-form-item>
             </a-col>
           </template>
@@ -25,10 +50,7 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
+
             </span>
           </a-col>
         </a-row>
@@ -37,26 +59,28 @@
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
-    <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('shoe_coupon_record')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
-    </div>
+<!--    <div class="table-operator">-->
+<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_coupon_record')">导出</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
+<!--      &lt;!&ndash; 高级查询区域 &ndash;&gt;-->
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
+<!--      <a-dropdown v-if="selectedRowKeys.length > 0">-->
+<!--        <a-menu slot="overlay">-->
+<!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
+<!--        </a-menu>-->
+<!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
+<!--      </a-dropdown>-->
+<!--    </div>-->
 
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected2">批量停用</a>
+        <a-divider type="vertical" />
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
@@ -77,40 +101,20 @@
         <template slot="htmlSlot" slot-scope="text">
           <div v-html="text"></div>
         </template>
-        <template slot="imgSlot" slot-scope="text,record">
-          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
-        </template>
-        <template slot="fileSlot" slot-scope="text">
-          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
-          <a-button
-            v-else
-            :ghost="true"
-            type="primary"
-            icon="download"
-            size="small"
-            @click="downloadFile(text)">
-            下载
-          </a-button>
-        </template>
+
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
+
+              <a-menu-item v-if="record.status=='1' && record.useStatus != '已使用'">
+                <a-popconfirm title="确定停用吗?" @confirm="() => handleDelete(record.shoeCouponRecordId)">
+                  <a>停用</a>
                 </a-popconfirm>
               </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+                  <a v-if="record.status=='0'" style="color: black" >已停用</a>
+
+
+
         </span>
 
       </a-table>
@@ -126,6 +130,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeCouponRecordModal from './modules/ShoeCouponRecordModal'
+  import {deleteAction} from "@api/manage";
 
   export default {
     name: 'ShoeCouponRecordList',
@@ -135,89 +140,56 @@
     },
     data () {
       return {
+        useStatusOptionList: [{"value":"", "name":"全部"}, {"value":"已使用", "name":"已使用"}, {"value":"未使用", "name":"未使用"}, {"value":"已过期", "name":"已过期"}],
+        statusOptionList: [{"value":"", "name":"全部"}, {"value":"0", "name":"是"}, {"value":"1", "name":"否"}],
         description: 'shoe_coupon_record管理页面',
         // 表头
         columns: [
+          // {
+          //   title: '#',
+          //   dataIndex: '',
+          //   key:'rowIndex',
+          //   width:60,
+          //   align:"center",
+          //   customRender:function (t,r,index) {
+          //     return parseInt(index)+1;
+          //   }
+          // },
+
           {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
+            title:'用户昵称',
             align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
+            dataIndex: 'nickName'
           },
           {
-            title:'优惠券发放记录ID',
+            title:'手机号',
             align:"center",
-            dataIndex: 'couponRecordId'
+            dataIndex: 'phone'
           },
           {
-            title:'优惠券id',
+            title:'优惠券名称',
             align:"center",
-            dataIndex: 'couponId'
+            dataIndex: 'couponName'
           },
           {
-            title:'用户id',
-            align:"center",
-            dataIndex: 'userId'
-          },
-          {
-            title:'用户优惠券id',
-            align:"center",
-            dataIndex: 'userCouponId'
-          },
-          {
-            title:'发放批次(从1递增)',
+            title:'发放批次',
             align:"center",
             dataIndex: 'recordNo'
           },
           {
-            title:'状态:0=冻结，1=正常',
+            title:'使用情况',
             align:"center",
-            dataIndex: 'status'
+            dataIndex: 'useStatus'
           },
           {
-            title:'派发人id',
-            align:"center",
-            dataIndex: 'grantUserId'
-          },
-          {
-            title:'派发人姓名',
+            title:'派发人',
             align:"center",
             dataIndex: 'grantUsername'
           },
           {
-            title:'撤销人id',
-            align:"center",
-            dataIndex: 'repealUserId'
-          },
-          {
-            title:'撤销人姓名',
-            align:"center",
-            dataIndex: 'repealUsername'
-          },
-          {
-            title:'派发方式:1=手动派发，2=系统派发',
-            align:"center",
-            dataIndex: 'grantType'
-          },
-          {
             title:'派发时间',
             align:"center",
-            dataIndex: 'grantTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'撤销时间',
-            align:"center",
-            dataIndex: 'repealTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'grantTime'
           },
           {
             title: '操作',
@@ -229,15 +201,13 @@
           }
         ],
         url: {
-          list: "/shoeCouponRecord/shoeCouponRecord/list",
-          delete: "/shoeCouponRecord/shoeCouponRecord/delete",
-          deleteBatch: "/shoeCouponRecord/shoeCouponRecord/deleteBatch",
-          exportXlsUrl: "/shoeCouponRecord/shoeCouponRecord/exportXls",
-          importExcelUrl: "shoeCouponRecord/shoeCouponRecord/importExcel",
-          
+          list: "/shoeCouponRecord/list",
+          delete: "/shoeCouponRecord/delete",
+          deleteBatch: "/shoeCouponRecord/deleteBatch",
         },
         dictOptions:{},
         superFieldList:[],
+        selectionRows: [],
       }
     },
     created() {
@@ -249,6 +219,39 @@
       },
     },
     methods: {
+      onClearSelected2(){
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          var ids = "";
+          console.log(this.selectedRowKeys);
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectionRows[a].shoeCouponRecordId + ",";
+          }
+          var that = this;
+          this.$confirm({
+            title: "确认停用",
+            content: "是否停用选中数据?",
+            onOk: function () {
+              that.loading = true;
+              deleteAction(that.url.deleteBatch, {ids: ids}).then((res) => {
+                if (res.success) {
+                  //重新计算分页问题
+                  that.reCalculatePage(that.selectedRowKeys.length)
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
