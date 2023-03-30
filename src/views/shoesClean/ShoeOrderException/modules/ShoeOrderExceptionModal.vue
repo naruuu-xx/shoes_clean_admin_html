@@ -13,30 +13,21 @@
         <a-col :span="24">
           <p class="label-content">订单编号：{{data.no}}</p>
         </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="7">
+        <a-col :span="8">
           <p class="label-content">商品名：{{data.title}}</p>
         </a-col>
-        <a-col :span="7">
+        <a-col :span="16">
           <p class="label-content">商品规格：{{data.skuTitle}}</p>
         </a-col>
-        <a-col :span="10">
-        </a-col>
-      </a-row>
-      <a-row>
         <a-col :span="24">
           <p class="label-content">订单备注：{{data.orderNote}}</p>
         </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="7">
+        <a-col :span="8">
           <p class="label-content">用户姓名：{{data.name}}</p>
         </a-col>
-        <a-col :span="7">
+        <a-col :span="16">
           <p class="label-content">手机号：{{data.phone}}</p>
         </a-col>
-        <a-col :span="10"></a-col>
       </a-row>
       <a-divider />
       <a-row>
@@ -51,42 +42,41 @@
         </a-col>
       </a-row>
       <a-divider />
+
+      <a-form-model ref="form" :model="form" :rules="validatorRules">
+        <a-row>
+          <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="处理方式" prop="handleType">
+              <a-radio-group :options="options" v-model="form.handleType" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" v-if="form.handleType == 1">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="服务项名称" prop="title">
+              <a-input v-model="form.title" style="width: 200px" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" v-if="form.handleType == 1">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="追加金额" prop="amount">
+              <a-input-number v-model="form.amount" :min="0.01" @change="onChangeAmount" /><span class="label-content">&nbsp;元</span>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" v-if="form.handleType == 2">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="退款金额" prop="refundType">
+              <a-radio-group :options="options1" v-model="form.refundType" />
+            </a-form-model-item>
+          </a-col>
+          </a-row>
+      </a-form-model>
       <a-row>
         <a-col :span="8"></a-col>
-        <a-col :span="4"><a-button type="primary" @click="sendBack" size="large">退&nbsp;回</a-button></a-col>
-        <a-col :span="4"><a-button type="primary" @click="additionalExpense" size="large">追加金额</a-button></a-col>
+        <a-col :span="4"><a-button @click="handleCancel" size="large">取消</a-button></a-col>
+        <a-col :span="4"><a-button type="primary" @click="sendAdditionalOrder" size="large">确认</a-button></a-col>
         <a-col :span="8"></a-col>
       </a-row>
     </div>
 
     <a-modal :zIndex="2000" :width="1000" :visible="showImageModal" :footer="null" @cancel="handleShoeImageModalCancel()">
       <img alt="example" style="width: 100%" :src="clickedImage">
-    </a-modal>
-
-    <a-modal :zIndex="1500" :width="600" :visible="additionalExpenseModal" :footer="null" @cancel="handleAdditionalExpenseModalCancel()">
-      <div>
-        <a-row style="margin: 20px 0 20px 0;">
-          <a-col :span="24">
-            <p class="label-content">订单编号：{{data.no}}</p>
-          </a-col>
-        </a-row>
-        <a-row style="margin: 20px 0 20px 0;">
-          <a-col :span="24">
-            <span class="label-content">服务项名称：<a-input v-model:value="serviceTitle" style="width: 200px" /></span>
-          </a-col>
-        </a-row>
-        <a-row style="margin: 20px 0 20px 0;">
-          <a-col :span="24">
-            <span class="label-content">追加金额：</span><a-input-number v-model:value="amount" :min="1" /><span class="label-content">&nbsp;元</span>
-          </a-col>
-        </a-row>
-        <a-row style="margin: 20px 0 20px 0;">
-          <a-col :span="9"></a-col>
-          <a-col :span="15">
-            <a-button type="primary" @click="sendAdditionalOrder" size="large">发送订单</a-button>
-          </a-col>
-        </a-row>
-      </div>
     </a-modal>
 
   </j-modal>
@@ -101,6 +91,14 @@ export default {
   },
   data(){
     return {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 3 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
       visible: false,
       title: '异常订单处理',
       data: {},
@@ -110,15 +108,52 @@ export default {
       additionalExpenseModal: false,
       amount: 1,
       serviceTitle: "",
+      options: [
+        { label: '增加服务费', value: '1' },
+        { label: '退回', value: '2' },
+        { label: '继续洗', value: '3' },
+      ],
+      options1: [
+        { label: '整单退款', value: '1' },
+        { label: '仅退回商品金额', value: '2' }
+      ],
+      form:{
+        orderExceptionId:'',
+        orderId:'',
+        handleType: '',
+        refundType: '',
+        amount:'',
+        title:''
+      },
+      validatorRules:{
+
+        handleType: [
+          { required: true, message: '请选择处理方式!' },
+        ],
+        title: [
+          { required: true, message: '请输入商品名称!' },
+        ],
+        amount: [
+          { required: true, message: '请输追加金额!' },
+        ],
+        refundType: [
+          { required: true, message: '请选择退款金额类型!' },
+        ],
+      }
     }
   },
   created() {
   },
   methods: {
+    onChangeAmount(value) {
+       this.form.amount = parseFloat(`${parseFloat(value+0).toFixed(2)}`) || 0.01
+    },
     show(record){
       this.visible = true;
       this.data = Object.assign({}, record);
-      this.exceptionImageList = JSON.parse(record.images);
+      this.form.orderExceptionId = record.orderExceptionId
+      this.form.orderId = record.orderId
+      this.exceptionImageList = record.imagesList;
     },
     handleCancel(){
       this.visible = false;
@@ -161,30 +196,31 @@ export default {
       this.serviceTitle = "";
     },
     sendAdditionalOrder(){
-      if (this.amount !== null) {
-        let that = this;
 
-        //处理金额单位
-        let amount = this.amount;
-        amount = amount * 100
-
-        let data = {
-          "orderExceptionId": this.data.orderExceptionId,
-          "orderId": this.data.orderId,
-          "amount": amount,
-          "title": this.serviceTitle
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          httpAction("/ShoeOrder/shoeOrder/handleOrderException", this.form, "post").then((res) => {
+            if (res.success){
+              this.$message.success(res.message);
+              this.visible = false;
+              this.reset()
+              this.$emit('ok');
+            }else{
+              this.$message.warning(res.message);
+            }
+          })
         }
 
-        httpAction("/ShoeOrder/shoeOrder/shoeOrderExceptionAdditional", data, "post").then((res) => {
-          if (res.success){
-            that.$message.success(res.message);
-            this.additionalExpenseModal = false;
-            this.visible = false;
-            this.$emit('ok');
-          }else{
-            that.$message.warning(res.message);
-          }
-        })
+      })
+    },
+    reset() {
+      this.form = {
+        orderExceptionId:'',
+        orderId:'',
+        handleType: '',
+        refundType: '',
+        amount:'',
+        title:''
       }
     }
   }
