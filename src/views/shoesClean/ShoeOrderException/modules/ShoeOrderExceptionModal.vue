@@ -126,7 +126,7 @@ export default {
         title:''
       },
       validatorRules:{
-        
+
         handleType: [
           { required: true, message: '请选择处理方式!' },
         ],
@@ -153,9 +153,7 @@ export default {
       this.data = Object.assign({}, record);
       this.form.orderExceptionId = record.orderExceptionId
       this.form.orderId = record.orderId
-      console.log(99,this.form);
-      this.exceptionImageList = JSON.parse(record.images);
-      console.log(88,this.exceptionImageList);
+      this.exceptionImageList = record.imagesList;
     },
     handleCancel(){
       this.visible = false;
@@ -203,12 +201,12 @@ export default {
         if (valid) {
           httpAction("/ShoeOrder/shoeOrder/handleOrderException", this.form, "post").then((res) => {
             if (res.success){
-              that.$message.success(res.message);
+              this.$message.success(res.message);
               this.visible = false;
               this.reset()
               this.$emit('ok');
             }else{
-              that.$message.warning(res.message);
+              this.$message.warning(res.message);
             }
           })
         }
