@@ -21,21 +21,33 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">-->
+<!--              <a-select-->
+<!--                show-search-->
+<!--                placeholder="选择或搜索需要绑定的用户"-->
+<!--                option-filter-prop="children"-->
+<!--                style="width: 200px"-->
+<!--                :filter-option="filterOption"-->
+<!--                v-model="model.userId"-->
+<!--                :disabled="(!(model.investorsId === null || model.investorsId === ''))"-->
+<!--              >-->
+<!--                <a-select-option  v-for="i in shoeUserList" :value="i.userId" :key="i.nickname">-->
+<!--                  {{i.nickname}}-->
+<!--                </a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
+          <a-col :span="24" >
             <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-              <a-select
-                show-search
-                placeholder="选择或搜索需要绑定的用户"
-                option-filter-prop="children"
-                style="width: 200px"
-                :filter-option="filterOption"
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
                 v-model="model.userId"
-                :disabled="(!(model.investorsId === null || model.investorsId === ''))"
+                :url='`/shoes/shoeUser/getUserListBytype?type=investors`'
               >
-                <a-select-option  v-for="i in shoeUserList" :value="i.userId" :key="i.nickname">
-                  {{i.nickname}}
-                </a-select-option>
-              </a-select>
+              </XfSelect>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -107,10 +119,12 @@
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
   import router from "@/router";
+  import XfSelect from "@comp/Xf/XfSelect";
 
   export default {
     name: 'ShoeInvestorsForm',
     components: {
+    XfSelect
     },
     props: {
       //表单禁用
@@ -122,6 +136,7 @@
     },
     data () {
       return {
+        weekList:[],
         model:{
           investorsId:'',
           cardNo:'',
@@ -224,7 +239,7 @@
     created () {
        //备份model原始值
 
-      this.getShoeUserList();
+      //this.getShoeUserList();
       this.getLockerList();
       this.getAgentList();
 
@@ -239,13 +254,22 @@
       add () {
         this.edit(this.modelDefault);
       },
+      changeSelect(data) {
+        this.weekList = data.records.map(item => ({
+          label: item.nickname+'('+item.phone+')',
+          value: +item.userId
+        }));
+      },
+      checkedSelect(val) {
+      },
       edit (record) {
         console.log("===",record)
         this.model = Object.assign({}, record,this.model);
         this.model.investorsId=record.investorsId;
         this.getBank();
         this.getLockerList();
-        this.getShoeUserList();
+
+       this.getShoeUserList(record.userId);
 
         this.visible = true;
       },
@@ -280,12 +304,12 @@
 
         })
       },
-      getShoeUserList(){
-        httpAction("/shoes/shoeUser/shoeUserList?investorsId="+this.model.investorsId,"", "get").then((res)=>{
+      getShoeUserList(userId){
+        httpAction("/shoes/shoeUser/getUser?userId="+userId,"", "get").then((res)=>{
           if(res){
-            console.log(res.result);
-            this.shoeUserList = res.result;
-
+            this.model.userId=res.result.userId;
+            this.weekList.push({label:res.result.nickname+"("+res.result.phone+")"
+              ,value:res.result.userId});
           }
         })
       },
