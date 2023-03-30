@@ -89,7 +89,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="id"
+        rowKey="shoeCouponRecordId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -182,6 +182,11 @@
             dataIndex: 'useStatus'
           },
           {
+            title:'派发原因',
+            align:"center",
+            dataIndex: 'note'
+          },
+          {
             title:'派发人',
             align:"center",
             dataIndex: 'grantUsername'
@@ -225,9 +230,8 @@
           return;
         } else {
           var ids = "";
-          console.log(this.selectedRowKeys);
           for (var a = 0; a < this.selectedRowKeys.length; a++) {
-            ids += this.selectionRows[a].shoeCouponRecordId + ",";
+            ids += this.selectedRowKeys[a] + ",";
           }
           var that = this;
           this.$confirm({

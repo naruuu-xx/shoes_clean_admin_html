@@ -15,7 +15,7 @@
         </a-col>
       </a-row>
       <a-row type="flex" justify="space-around">
-        <a-col :span="20">
+        <a-col :span="24">
           <a-form-model-item label="派送类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
             <a-radio-group v-model:value="type" @change="radioChange">
               <a-radio value="0" style="margin-right: 60px">优惠券</a-radio>
@@ -25,7 +25,7 @@
         </a-col>
       </a-row>
       <a-row type="flex" justify="space-around">
-        <a-col :span="20">
+        <a-col :span="24">
           <a-form-model-item v-if="" :label="type === '0' ? '选择优惠券' : '选择卡包' " :labelCol="labelCol" :wrapperCol="wrapperCol" prop="couponType">
             <XfSelect
                 :list="weekList"
@@ -37,6 +37,13 @@
               </XfSelect>
           </a-form-model-item>
           
+        </a-col>
+      </a-row>
+      <a-row type="flex" justify="space-around">
+        <a-col :span="24">
+          <a-form-model-item label="派发原因" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
+            <a-input v-model="note" placeholder="请输入派发原因"></a-input>
+          </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
@@ -71,6 +78,7 @@ export default {
       spinning:false,
       visible: false,
       title: '优惠券派送',
+      note: '',
       couponTypeLabel: '选择优惠券',
       labelCol: {
         xs: { span: 24 },
@@ -89,7 +97,8 @@ export default {
       selectOption: "",
       record: null,
       validatorRules: {
-        couponType: [{require: true, message: '请选择优惠券或卡包'}]
+        couponType: [{require: true, message: '请选择优惠券或卡包'}],
+        note: [{require: true, message: '请输入派发原因'}]
       },
       userIds:undefined
     }
@@ -118,6 +127,7 @@ export default {
       } else {
         this.nickname = record.nickname;
         this.phone = record.phone;
+        this.note = record.note;
         this.record = record;
       }
       
@@ -125,6 +135,7 @@ export default {
     handleCancel() {
       this.nickname = "";
       this.phone = "";
+      this.note = "";
       this.type = "0";
       this.selectOption = "";
       this.userIds = undefined
@@ -133,6 +144,8 @@ export default {
     handleSubmit() {
       if (this.selectOption === null || this.selectOption === "") {
         this.$message.warning("请选择优惠券或卡包！");
+      } else if (this.note === null || this.note == "") {
+        this.$message.warning("请输入派发原因！");
       } else {
         
         let url = ''
@@ -143,7 +156,8 @@ export default {
           form = {
             type: this.type,
             id: this.selectOption,
-            userIds: this.userIds
+            userIds: this.userIds,
+            note: this.note
           }
         } else {
           // 当个派券
@@ -152,7 +166,8 @@ export default {
           form = {
             "userId": userId,
             "distributeType": this.type,
-            "couponOrCardBagId": this.selectOption
+            "couponOrCardBagId": this.selectOption,
+            "note": this.note
           }
         }
 

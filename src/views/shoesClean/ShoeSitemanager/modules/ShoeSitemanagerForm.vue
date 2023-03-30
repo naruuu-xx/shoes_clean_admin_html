@@ -26,23 +26,19 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24" v-if="!model.sitemanagerId">
+            <a-col :span="24" >
               <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
                 <XfSelect
                   :list="weekList"
                   @change="checkedSelect"
                   @changeList="changeSelect"
                   v-model="model.userId"
-                  :url='`/shoes/shoeUser/getCouponOrCardBag?type=0`'
+                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
                 >
                 </XfSelect>
               </a-form-model-item>
             </a-col>
-            <a-col :span="24" v-if="model.sitemanagerId">
-              <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-                <a-input v-model="model.wxInfo" :disabled="true"></a-input>
-              </a-form-model-item>
-            </a-col>
+
 
             <a-col :span="24">
               <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardNo">
@@ -304,8 +300,8 @@ export default {
   methods: {
     changeSelect(data) {
       this.weekList = data.records.map(item => ({
-        label: item.name,
-        value: +item.id
+        label: item.nickname+'('+item.phone+')',
+        value: +item.userId
       }));
     },
     checkedSelect(val) {
@@ -354,6 +350,8 @@ export default {
         this.model.latitude=res.latitude;
         this.model.longitude=res.longitude;
         this.model.userId=res.nickname[0].userId;
+        this.weekList.push({label:res.nickname[0].nickname+"("+res.nickname[0].phone+")"
+        ,value:res.nickname[0].userId});
 
 
 
