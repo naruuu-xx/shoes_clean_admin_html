@@ -32,7 +32,7 @@
           </a-select>
         </span>
         <span slot="price" slot-scope="text, record, idx">
-          <a-input-number v-model="goodList[idx].price" placeholder="价格" @change="onChangePrice($event,idx)" :min="0.00"/>
+          <a-input-number v-model="goodList[idx].price" placeholder="价格" @change="onChangePrice($event,idx)" :min="0.01"/>
         </span>
         <span slot="action" slot-scope="text, record, idx">
           <a @click="onDel(idx)" style="color: #f92525">删除</a>
@@ -116,13 +116,13 @@ export default {
       return Math.random().toString(16).substr(2)
     },
     addProduct() {
-      let keys = ['goodsId','skuId']
+      let keys = ['goodsId','skuId','price']
       let flag = this.goodList.every(item => keys.every(key => item[key]))
       if(!this.goodList.length || flag) {
         this.goodList.push({
           goodsId:'',
           skuId:'',
-          price: 0.00,
+          price: 0.01,
           uuid: this.getUuid(),
           customerId:1,
           disabled: true
@@ -136,7 +136,7 @@ export default {
       this.goodList.splice(idx,1)
     },
     onChangePrice(v,idx) {
-      let price = parseFloat(parseFloat(v).toFixed(2)) || 0.00
+      let price = parseFloat(parseFloat(v).toFixed(2)) || 0.01
       this.goodList[idx].price = price
     },
     show(customerId) {
@@ -169,7 +169,7 @@ export default {
       this.goodList = []
     },
     handleSubmit2() {
-      let keys = ['goodsId','skuId']
+      let keys = ['goodsId','skuId','price']
       let idx = this.goodList.length - 1
       if(idx > -1 && keys.every(key => this.goodList[idx][key])) {
         // 保存 
