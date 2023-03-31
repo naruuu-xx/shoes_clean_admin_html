@@ -39,13 +39,13 @@
         <a-row>
           <a-col :span="24">
             <span class="content">
-              1
+              品牌：
               <XfSelect
                 :list="weekList"
                 @change="checkedSelect"
                 @changeList="changeSelect"
-                v-model="selectOption"
-                :url='`/shoes/shoeUser/getCouponOrCardBag?type=${type}`'
+                v-model="brandId"
+                :url='`/shoeBrand/list`'
               >
               </XfSelect>
             </span>
@@ -101,7 +101,7 @@ export default {
     changeSelect(data) {
       this.weekList = data.records.map(item => ({
         label: item.name,
-        value: item.id
+        value: item.brandId
       }));
     },
     checkedSelect(val) {
