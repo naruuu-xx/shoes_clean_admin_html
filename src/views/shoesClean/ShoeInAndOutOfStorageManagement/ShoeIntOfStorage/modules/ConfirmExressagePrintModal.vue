@@ -34,23 +34,24 @@
               备注：
               <a-input style="width: 50%" v-model.trim="item.selectedNote" placeholder="请输入备注"/>
             </span>
-<!--            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">-->
-<!--              <a-select-->
-<!--                v-model="item.selectedNote"-->
-<!--                mode="multiple"-->
-<!--                style="width: 100%;"-->
-<!--                placeholder="请选择"-->
-<!--                :options="noteOptions"-->
-<!--                :z-index="2000"-->
-<!--                :ref="`selectedNote${idx}`"-->
-<!--                @blur="selectedNoteBlur('blur',`selectedNote${idx}`)"-->
-<!--                @focus="selectedNoteBlur('focus',`selectedNote${idx}`)"-->
-<!--              >-->
-<!--              </a-select>-->
-<!--              <a-input v-model.trim="item.selectedNote" placeholder="请输入备注"/>-->
-<!--            </a-form-model-item>-->
           </a-col>
         </a-row>
+        <a-row>
+          <a-col :span="24">
+            <span class="content">
+              1
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="selectOption"
+                :url='`/shoes/shoeUser/getCouponOrCardBag?type=${type}`'
+              >
+              </XfSelect>
+            </span>
+          </a-col>
+        </a-row>
+
         <a-divider v-if="dataList.length > idx + 1 "/>
       </div>
     </div>
@@ -61,10 +62,13 @@
 <script>
 
 import {downFile, httpAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
 
 export default {
   name: "ConfirmPrintModal",
-  components: {},
+  components: {
+    XfSelect
+  },
   data() {
     return {
       labelCol: {
@@ -87,12 +91,21 @@ export default {
       showInOfStoragePrintModal: false,
       noteOptions: [],
       dataList:[],
-      selectedNoteKey: ''
+      selectedNoteKey: '',
+      weekList:[],
     }
   },
   created() {
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: item.id
+      }));
+    },
+    checkedSelect(val) {
+    },
     selectedNoteBlur(type,e) {
       // 后期在优化
       // if(type == 'focus') {

@@ -42,6 +42,21 @@
           </a-form-model-item>
         </a-col>
       </a-row>
+      <a-row>
+        <a-col :span="24">
+            <span class="content">
+              1
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="selectOption"
+                :url='`/shoes/shoeUser/getCouponOrCardBag?type=${type}`'
+              >
+              </XfSelect>
+            </span>
+        </a-col>
+      </a-row>
     </a-spin>
   </j-modal>
 </template>
@@ -49,12 +64,16 @@
 <script>
 
 import {downFile, httpAction, postAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
 
 export default {
   name: "ConfirmPrintModal",
-  components: {},
+  components: {
+    XfSelect
+  },
   data() {
     return {
+      weekList:[],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 2 },
@@ -80,6 +99,14 @@ export default {
   created() {
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: item.id
+      }));
+    },
+    checkedSelect(val) {
+    },
     show(record) {
       this.visible = true;
 
