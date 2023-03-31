@@ -194,7 +194,6 @@ export default {
     getGoodList() {
       getAction('/shoes/shoeCustomerGoods/list').then((res) => {
           if (res.success) {
-            this.$message.success(res.message);
             this.goodOptions = res.result.map(good => ({
               label:good.goodsName,
               value:good.goodsId,
@@ -203,7 +202,6 @@ export default {
                 value:sku.skuId
               }))
             }))
-            console.log(99,this.goodOptions);
           } else {
             this.$message.warning(res.message);
           }
