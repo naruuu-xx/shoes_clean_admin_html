@@ -228,6 +228,7 @@ export default {
     submitForm () {
       const that = this;
       // 触发表单验证
+      console.log(77,that.model.startAndEndTime)
       this.$refs.form.validate(valid => {
         if (valid && that.cardCouponListCheck()) {
           let httpurl = '';
@@ -235,8 +236,8 @@ export default {
             httpurl = that.url.edit;
           }else{
             httpurl = that.url.add;
-            that.model.startTime = that.model.startAndEndTime[0].format("YYYY-MM-DD HH:mm:ss");
-            that.model.endTime = that.model.startAndEndTime[1].format("YYYY-MM-DD HH:mm:ss");
+            that.model.startTime = that.model.startAndEndTime[0]+':00';
+            that.model.endTime = that.model.startAndEndTime[1]+':00';
           }
           httpAction(httpurl, this.model,"post").then((res)=>{
             if(res.success){
