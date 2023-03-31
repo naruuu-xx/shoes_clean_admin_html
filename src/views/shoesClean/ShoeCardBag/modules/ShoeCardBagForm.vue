@@ -55,11 +55,11 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24">
+            <!-- <a-col :span="24">
               <a-form-model-item label="背景图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="image">
                 <j-image-upload v-model="model.image" :isMultiple="false" text="上传" :disabled="editDisabled"></j-image-upload>
               </a-form-model-item>
-            </a-col>
+            </a-col> -->
 
             <a-col :span="24">
               <a-form-model-item label="领取成功回复内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="successMessage">
