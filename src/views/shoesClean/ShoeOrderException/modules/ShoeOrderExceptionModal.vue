@@ -153,7 +153,7 @@ export default {
       this.data = Object.assign({}, record);
       this.form.orderExceptionId = record.orderExceptionId
       this.form.orderId = record.orderId
-      this.exceptionImageList = record.imagesList;
+      this.exceptionImageList = JSON.parse(record.images);
     },
     handleCancel(){
       this.visible = false;
