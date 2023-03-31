@@ -15,6 +15,7 @@
     @ok="handleOk"
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
+    :destroyOnClose="false"
     cancelText="关闭">
     <shoe-cooperative-client-Form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-cooperative-client-Form>
   </j-modal>
@@ -27,6 +28,9 @@
     name: 'ShoeTimecardModal',
     components: {
       ShoeCooperativeClientForm
+    },
+    created() {
+      console.log(888888888);
     },
     data () {
       return {
@@ -47,6 +51,7 @@
         })
       },
       close () {
+        this.$refs.realForm.reset()
         this.$emit('close');
         this.visible = false;
       },

@@ -16,7 +16,7 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="配送方式">
-              <a-select v-model="queryParam.type">
+              <a-select v-model="queryParam.courierType">
                 <a-select-option v-for="item in typeOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
                 </a-select-option>
@@ -46,7 +46,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="timecardId"
+        rowKey="customerId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -90,21 +90,44 @@
         // 表头
         columns: [
           {
-            title:'鞋蜂卡名称',
+            title:'姓名',
             align:"center",
             dataIndex: 'name'
           },
           {
-            title:'领取人数',
+            title:'手机号',
             align:"center",
-            dataIndex: 'sale'
+            dataIndex: 'phone'
           },
           {
-            title:'是否售卖',
+            title:'配送方式',
             align:"center",
-            dataIndex: 'isShow',
+            dataIndex: 'courierType',
             customRender: (text) => {
-              return filterDictTextByCache('shoe_timecard_isShow', text);
+              return text == 'logistics' ? "物流" : "快递";
+            },
+          },
+          {
+            title:'最低下单鞋数',
+            align:"center",
+            dataIndex: 'miniNum'
+          },
+          {
+            title:'已下单',
+            align:"center",
+            dataIndex: 'orderNum'
+          },
+          {
+            title:'总下单金额',
+            align:"center",
+            dataIndex: 'totalPrice'
+          },
+          {
+            title:'状态',
+            align:"center",
+            dataIndex: 'status',
+            customRender: (text) => {
+              return text == 1 ? "启用" : "禁用";
             },
           },
           {
@@ -121,15 +144,15 @@
             value: "", name: "全部"
           },
           {
-            value: "service", name: "物流"
+            value: "logistics", name: "物流"
           }, 
           { 
             value: "expressage", name: "快递"
           },
         ],
         url: {
-          list: "/shoeTimecard/list",
-          delete: "/shoeTimecard/delete",
+          list: "/shoes/shoeCustomer/list",
+          delete: "/shoes/shoeCustomer/delete",
         },
         dictOptions:{},
       }
@@ -143,8 +166,8 @@
       },
     },
     methods: {
-      onCommodityManagement() {
-        this.$refs.managementForm.show()
+      onCommodityManagement(r) {
+        this.$refs.managementForm.show(r.customerId)
       },
       initDictConfig(){
       },

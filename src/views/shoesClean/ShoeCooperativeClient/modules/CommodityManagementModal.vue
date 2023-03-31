@@ -24,15 +24,15 @@
         class="j-table-force-nowrap">
 
         <span slot="goodsId" slot-scope="text, record, idx">
-          <a-select v-model="goodList[idx].goodsId" style="width: 240px" :options="goodOptions" @change="changeGood($event,idx)">
+          <a-select showSearch :filterOption="((input,option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0)" optionFilterProp="value" v-model="goodList[idx].goodsId" style="width: 240px" :options="goodOptions" @change="changeGood($event,idx)">
           </a-select>
         </span>
         <span slot="skuId" slot-scope="text, record, idx">
-          <a-select v-model="goodList[idx].skuId" style="width: 140px" :options="skuOptions" :disabled="goodList[idx].disabled" @focus="onClickSku(idx)">
+          <a-select ref="skuSelect" v-model="goodList[idx].skuId" style="width: 140px" :options="skuOptions" :disabled="goodList[idx].disabled" @focus="onClickSku(idx)" @change="$refs.skuSelect.blur()">
           </a-select>
         </span>
         <span slot="price" slot-scope="text, record, idx">
-          <a-input-number v-model="goodList[idx].price" placeholder="价格" @change="onChangePrice($event,idx)" :min="0.01"/>
+          <a-input-number v-model="goodList[idx].price" placeholder="价格" @change="onChangePrice($event,idx)" :min="0.00"/>
         </span>
         <span slot="action" slot-scope="text, record, idx">
           <a @click="onDel(idx)" style="color: #f92525">删除</a>
@@ -54,34 +54,8 @@ export default {
       data: {},
       confirmLoading: false,
       goodList:[],
-      goodOptions:[
-        {
-          value:'1',
-          label:'商品1'
-        },
-        {
-          value:'2',
-          label:'商品2'
-        },
-        {
-          value:'3',
-          label:'商品3'
-        },
-      ],
-      skuOptions:[
-        {
-          value:'1',
-          label:'规格1'
-        },
-        {
-          value:'2',
-          label:'规格2'
-        },
-        {
-          value:'3',
-          label:'规格3'
-        },
-      ],
+      goodOptions:[],
+      skuOptions:[],
       // 表头
       columns: [
           {
@@ -111,6 +85,7 @@ export default {
             scopedSlots: { customRender: 'action' }
           }
         ],
+        customerId:0
     }
   },
   created() {
@@ -124,14 +99,11 @@ export default {
   methods: {
     onClickSku(idx) {
       let value = this.goodList[idx].goodsId
-      console.log(88888,idx,value);
       this.setSkuOptions(value)
     },
     changeGood(value,idx) {
       this.goodList[idx].skuId = ''
       this.goodList[idx].disabled = false
-      console.log(111,value);
-      // this.setSkuOptions(value)
     },
     setSkuOptions(value) {
       let skuTable = this.goodOptions.find(good => good.value == value).skuTable
@@ -144,24 +116,51 @@ export default {
       return Math.random().toString(16).substr(2)
     },
     addProduct() {
-      this.goodList.push({
-        goodsId:'',
-        skuId:'',
-        price:'',
-        uuid: this.getUuid(),
-        disabled: true
-      })
+      let keys = ['goodsId','skuId']
+      let flag = this.goodList.every(item => keys.every(key => item[key]))
+      if(!this.goodList.length || flag) {
+        this.goodList.push({
+          goodsId:'',
+          skuId:'',
+          price: 0.00,
+          uuid: this.getUuid(),
+          customerId:1,
+          disabled: true
+        })
+      } else {
+        this.$message.warning('请先填写完整再新增！')
+      }
+      
     },
     onDel(idx) {
       this.goodList.splice(idx,1)
     },
     onChangePrice(v,idx) {
-      let price = parseFloat(parseFloat(v).toFixed(2)) || 0.01
+      let price = parseFloat(parseFloat(v).toFixed(2)) || 0.00
       this.goodList[idx].price = price
     },
-    show(record) {
+    show(customerId) {
       this.visible = true;
-      // this.data = record;
+      this.customerId = customerId;
+      this.confirmLoading = true;
+      getAction('/shoes/shoeCustomerGoods/listByCustomerId', {customerId}).then((res) => {
+          if (res.success) {
+            res.result.forEach(item => {
+              this.goodList.push({
+                ...item,
+                price:item.goodsPrice
+              })
+              this.skuOptions.push({
+                label: item.skuName,
+                value: item.skuId
+              })
+            });
+          } else {
+            this.$message.warning(res.message);
+          }
+        }).finally(() => {
+          this.confirmLoading = false;
+        })
       // this.auditOption = "1";
       // this.data.note = "";
     },
@@ -170,44 +169,37 @@ export default {
       this.goodList = []
     },
     handleSubmit2() {
-      let that = this;
-      console.log(this.goodList);
-
-      that.confirmLoading = true;
-
-      // if ("2" === this.auditOption && this.data.note.trim() === "") {
-      //   that.$message.warning("请填写拒绝原因！");
-      //   that.confirmLoading = false;
-      //   return false;
-      // } else {
-      //   this.data.status = this.auditOption;
-      //   this.data.note = this.data.note.trim();
-      //   //发送请求
-      //   let httpUrl = "/shoeCouponExchangeThird/update";
-      //   httpAction(httpUrl, this.data, "put").then((res) => {
-      //     if (res.success) {
-      //       that.$message.success(res.message);
-      //       this.handleCancel2();
-      //       that.$emit('ok');
-      //     } else {
-      //       that.$message.warning(res.message);
-      //     }
-      //   }).finally(() => {
-      //     that.confirmLoading = false;
-      //   })
-      // }
-    },
-    getGoodList() {
-      getAction('/shoes/shoeGoods/list',{
-        pageSize: 100
-      }).then((res) => {
+      let keys = ['goodsId','skuId']
+      let idx = this.goodList.length - 1
+      if(idx > -1 && keys.every(key => this.goodList[idx][key])) {
+        // 保存 
+        //发送请求
+        this.confirmLoading = true;
+        let httpUrl = "/shoes/shoeCustomerGoods/save";
+        httpAction(httpUrl, this.goodList, "post").then((res) => {
           if (res.success) {
             this.$message.success(res.message);
-            this.goodOptions = res.result.records.map(good => ({
-              label:good.title,
+            this.handleCancel2();
+            this.$emit('ok');
+          } else {
+            this.$message.warning(res.message);
+          }
+        }).finally(() => {
+          this.confirmLoading = false;
+        })
+      } else {
+        this.$message.warning('请先填写完整再保存！')
+      }
+    },
+    getGoodList() {
+      getAction('/shoes/shoeCustomerGoods/list').then((res) => {
+          if (res.success) {
+            this.$message.success(res.message);
+            this.goodOptions = res.result.map(good => ({
+              label:good.goodsName,
               value:good.goodsId,
-              skuTable:good.skuTable.map(sku  => ({
-                label:sku.skuTitle,
+              skuTable:good.skuList.map(sku  => ({
+                label:sku.skuName,
                 value:sku.skuId
               }))
             }))

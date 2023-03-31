@@ -9,6 +9,7 @@
     :filter-option="false"
     @search="handleSearch"
     :mode="mode"
+    :disabled="disabled"
   >
     <div slot="dropdownRender" slot-scope="menu">
       <a-spin :spinning="spinning" class="my-spin" @mousedown="e => e.preventDefault()" >
@@ -38,7 +39,6 @@ export default {
 
   props: {
     // 下拉框总数据
-
     list: {
       type: Array,
       require: true
@@ -91,6 +91,10 @@ export default {
     mode: {
       type: String,
       default: 'default' // 'default' | 'multiple' | 'tags' | 'combobox'
+    },
+    disabled:{
+      type: Boolean,
+      default: false
     }
   },
 
