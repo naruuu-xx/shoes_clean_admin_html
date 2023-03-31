@@ -8,8 +8,6 @@
     showSearch
     :filter-option="false"
     @search="handleSearch"
-    :mode="mode"
-    :disabled="disabled"
   >
     <div slot="dropdownRender" slot-scope="menu">
       <a-spin :spinning="spinning" class="my-spin" @mousedown="e => e.preventDefault()" >
@@ -39,6 +37,7 @@ export default {
 
   props: {
     // 下拉框总数据
+
     list: {
       type: Array,
       require: true
@@ -69,7 +68,7 @@ export default {
 
     // 默认值
     value: {
-      type: [String,Number,Array],
+      type: String,
       default: ''
     },
     // 请求地址
@@ -84,15 +83,6 @@ export default {
     },
     // 是否可以清除
     allowClear: {
-      type: Boolean,
-      default: false
-    },
-    // 默认模式
-    mode: {
-      type: String,
-      default: 'default' // 'default' | 'multiple' | 'tags' | 'combobox'
-    },
-    disabled:{
       type: Boolean,
       default: false
     }
@@ -154,12 +144,20 @@ export default {
     },
 
     // 选择下拉框时进行父传子
-    chooseOption(value) {
-      this.$emit('input', value)
-      this.$emit('change', value)
+    chooseOption(item) {
+      let obj={}
+      for (let i = 0; i <this.selectList.length; i++) {
+        if (item==this.selectList[i].value){
+          obj=this.selectList[i];
+          break;
+        }
+      }
+      this.$emit('input', item)
+      this.$emit('change', obj)
     },
 
     handleSearch(value) {
+      this.value = value
       debounce(() => {
         this.page = 1
         this.getList(value)
