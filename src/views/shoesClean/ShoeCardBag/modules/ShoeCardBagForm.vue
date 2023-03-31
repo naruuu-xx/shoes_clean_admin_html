@@ -40,9 +40,7 @@
 
             <a-col :span="24">
               <a-form-model-item label="活动时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="startAndEndTime">
-<!--                <a-range-picker format="YYYY-MM-DD HH:mm" v-model="model.startAndEndTime" :disabled="editDisabled"/>-->
-                <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="model.startAndEndTime"/>
-              </a-form-model-item>
+               <a-range-picker format="YYYY-MM-DD HH:mm:ss" :show-time="{ format: 'HH:mm:ss', minuteStep: 5 }" v-model="model.startAndEndTime" :disabled="editDisabled"/>              </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
@@ -102,13 +100,10 @@
 <script>
 
 import { httpAction, getAction } from '@/api/manage';
-import JDateTimeDIY from "./JDateTimeDIY";
+import moment from 'moment'
 
 export default {
   name: 'ShoeCardBagForm',
-  components: {
-    JDateTimeDIY
-  },
   data () {
     return {
       confirmLoading: false,
@@ -219,7 +214,7 @@ export default {
     },
     edit (record) {
       this.model = Object.assign({}, record);
-      this.model.startAndEndTime = [this.model.startTime, this.model.endTime];
+      this.model.startAndEndTime = [this.model.startTime,this.model.endTime];
       //隐藏下拉列表,操作
       this.columns = this.columns.filter(col => col.dataIndex !== "couponId");
       this.columns = this.columns.filter(col => col.dataIndex !== "operation");
@@ -228,7 +223,6 @@ export default {
     submitForm () {
       const that = this;
       // 触发表单验证
-      console.log(77,that.model.startAndEndTime)
       this.$refs.form.validate(valid => {
         if (valid && that.cardCouponListCheck()) {
           let httpurl = '';
@@ -236,8 +230,8 @@ export default {
             httpurl = that.url.edit;
           }else{
             httpurl = that.url.add;
-            that.model.startTime = that.model.startAndEndTime[0]+':00';
-            that.model.endTime = that.model.startAndEndTime[1]+':00';
+            that.model.startTime = moment(that.model.startAndEndTime[0]).format('YYYY-MM-DD HH:mm:ss');
+            that.model.endTime = moment(that.model.startAndEndTime[1]).format('YYYY-MM-DD HH:mm:ss');
           }
           httpAction(httpurl, this.model,"post").then((res)=>{
             if(res.success){
