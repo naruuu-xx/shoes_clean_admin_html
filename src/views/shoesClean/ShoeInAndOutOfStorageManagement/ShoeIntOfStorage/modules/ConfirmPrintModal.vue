@@ -42,6 +42,21 @@
           </a-form-model-item>
         </a-col>
       </a-row>
+      <a-row>
+        <a-col :span="24">
+          <a-form-model-item label="品牌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="brandId">
+
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="data.brandId"
+                :url='`/shoeBrand/list`'
+              >
+              </XfSelect>
+          </a-form-model-item>
+        </a-col>
+      </a-row>
     </a-spin>
   </j-modal>
 </template>
@@ -49,12 +64,16 @@
 <script>
 
 import {downFile, httpAction, postAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
 
 export default {
   name: "ConfirmPrintModal",
-  components: {},
+  components: {
+    XfSelect
+  },
   data() {
     return {
+      weekList:[],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 2 },
@@ -66,6 +85,7 @@ export default {
       visible: false,
       title: '',
       bagCode: "",
+
       data: {},
       imageList: [],
       showImageModal: false,
@@ -80,6 +100,14 @@ export default {
   created() {
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: +item.brandId
+      }));
+    },
+    checkedSelect(val) {
+    },
     show(record) {
       this.visible = true;
 
@@ -96,21 +124,24 @@ export default {
     },
     handleInOfStorage(){
       this.confirmLoading = true;
-
-      //处理入库
-      this.loadingBtn = true;
-      postAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data).then((res) => {
-        if (res.code !== 200) {
-          this.$message.warning(res.message);
-        } else {
-          //打印水洗唛
-          this.downWaterMark(res.result);
-          this.visible = false;
-        }
-      }).finally(res => {
-        this.loadingBtn = false;
-        this.confirmLoading = false;
-      })
+      if (this.data.brandId==null||this.data.brandId==''){
+        this.$message.warning("请选择品牌");
+      }else {
+        //处理入库
+        this.loadingBtn = true;
+        postAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data).then((res) => {
+          if (res.code !== 200) {
+            this.$message.warning(res.message);
+          } else {
+            //打印水洗唛
+            this.downWaterMark(res.result);
+            this.visible = false;
+          }
+        }).finally(res => {
+          this.loadingBtn = false;
+          this.confirmLoading = false;
+        })
+      }
     },
     downWaterMark(no) {
       let data = {

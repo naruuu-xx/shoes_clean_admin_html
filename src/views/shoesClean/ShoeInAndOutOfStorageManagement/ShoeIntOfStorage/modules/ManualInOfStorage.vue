@@ -56,6 +56,21 @@
           </a-row>
           <a-row>
             <a-col :span="24">
+              <a-form-model-item label="品牌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="brandId">
+
+                <XfSelect
+                  :list="weekList"
+                  @change="checkedSelect"
+                  @changeList="changeSelect"
+                  v-model="model.brandId"
+                  :url='`/shoeBrand/list`'
+                >
+                </XfSelect>
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="24">
               <a-col :span="6"></a-col>
               <a-col :span="6">
                 <a-button type="primary" @click="handleSubmit">确认</a-button>
@@ -74,10 +89,11 @@
 
 <script>
 import {downFile, httpAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
 
 export default {
   name: "ManualInOfStorage",
-  components: {},
+  components: {XfSelect},
   props: {
     //表单禁用
     disabled: {
@@ -88,6 +104,7 @@ export default {
   },
   data() {
     return {
+      weekList:[],
       visible: false,
       confirmLoading: false,
       model: {},
@@ -115,6 +132,9 @@ export default {
         noteAddress: [
           { required: true, message: '请输入地址!' }
         ],
+        brandId: [
+          { required: true, message: '请输入品牌!' }
+        ],
         name: [
           {required: true, message: '请输入姓名!'},
         ],
@@ -132,6 +152,14 @@ export default {
   created() {
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: +item.brandId
+      }));
+    },
+    checkedSelect(val) {
+    },
     show() {
       this.visible = true;
       this.model = {};
