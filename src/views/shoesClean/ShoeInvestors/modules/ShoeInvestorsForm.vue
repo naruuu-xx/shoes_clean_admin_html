@@ -45,6 +45,7 @@
                 @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="model.userId"
+                :disabled="(!(model.investorsId === null || model.investorsId === ''))"
                 :url='`/shoes/shoeUser/getUserListBytype?type=investors`'
               >
               </XfSelect>

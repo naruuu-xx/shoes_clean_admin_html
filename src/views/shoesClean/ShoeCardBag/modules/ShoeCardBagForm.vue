@@ -40,8 +40,8 @@
 
             <a-col :span="24">
               <a-form-model-item label="活动时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="startAndEndTime">
-                <a-range-picker format="YYYY-MM-DD HH:mm" v-model="model.startAndEndTime" :disabled="editDisabled"/>
-<!--                <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="model.startAndEndTime"/>-->
+<!--                <a-range-picker format="YYYY-MM-DD HH:mm" v-model="model.startAndEndTime" :disabled="editDisabled"/>-->
+                <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="model.startAndEndTime"/>
               </a-form-model-item>
             </a-col>
 
@@ -102,10 +102,13 @@
 <script>
 
 import { httpAction, getAction } from '@/api/manage';
-// import JDateTimeDIY from "@/views/shoesClean/shoeCoupon/modules/JDateTimeDIY";
+import JDateTimeDIY from "./JDateTimeDIY";
 
 export default {
   name: 'ShoeCardBagForm',
+  components: {
+    JDateTimeDIY
+  },
   data () {
     return {
       confirmLoading: false,
