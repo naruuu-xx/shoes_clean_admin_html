@@ -44,7 +44,7 @@
                 :list="weekList"
                 @change="checkedSelect"
                 @changeList="changeSelect"
-                v-model="brandId"
+                v-model="item.brandId"
                 :url='`/shoeBrand/list`'
               >
               </XfSelect>
@@ -101,7 +101,7 @@ export default {
     changeSelect(data) {
       this.weekList = data.records.map(item => ({
         label: item.name,
-        value: item.brandId
+        value: +item.brandId
       }));
     },
     checkedSelect(val) {
@@ -136,7 +136,7 @@ export default {
       this.visible = false;
     },
     handleOk(){
-      let dataList = this.dataList.map(({orderId, selectedNote, sortNum}) => ({orderId, selectedNote, sortNum}))
+      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId}) => ({orderId, selectedNote, sortNum,brandId}))
       this.handleInOfStorage(dataList);
     },
     handleInOfStorage(dataList){
