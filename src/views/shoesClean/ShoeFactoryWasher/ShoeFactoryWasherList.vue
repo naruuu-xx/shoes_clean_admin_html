@@ -104,6 +104,16 @@
             align:"center",
             dataIndex: 'num'
           },
+          {
+            title:'本月洗鞋数',
+            align:"center",
+            dataIndex: 'monthNum'
+          },
+          {
+            title:'上月洗鞋数',
+            align:"center",
+            dataIndex: 'lastMonthNum'
+          },
 
           {
             title:'启用',
