@@ -33,6 +33,7 @@
                 @changeList="changeSelect"
                 v-model="selectOption"
                 :url='`/shoes/shoeUser/getCouponOrCardBag?type=${type}`'
+                style="width: 100%;"
               >
               </XfSelect>
           </a-form-model-item>
