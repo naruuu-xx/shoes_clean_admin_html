@@ -52,6 +52,7 @@
                 @changeList="changeSelect"
                 v-model="data.couponId"
                 :url='`/shoes/shoeUser/getCouponOrCardBag?type=0`'
+                style="width: 80%;"
               >
               </XfSelect>
             </div>

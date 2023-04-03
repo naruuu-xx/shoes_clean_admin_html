@@ -10,22 +10,22 @@ let immediateTimeout = null
  * @return null
  */
 function debounce(func, wait = 2000, immediate = true) {
-    // 清除定时器
-    if (timeout !== null) clearTimeout(timeout)
-    if (immediateTimeout !== null) clearTimeout(immediateTimeout)
-    // 立即执行，此类情况一般用不到
-    if (immediate) {
-        const callNow = !immediateTimeout
-        immediateTimeout = setTimeout(() => {
-            immediateTimeout = null
-        }, wait)
-        if (callNow) typeof func === 'function' && func()
-    } else {
-        // 设置定时器，当最后一次操作后，immediateTimeout不会再被清除，所以在延时wait毫秒后执行func回调方法
-        timeout = setTimeout(() => {
-            typeof func === 'function' && func()
-        }, wait)
-    }
+  // 清除定时器
+  if (timeout !== null) clearTimeout(timeout)
+  if (immediateTimeout !== null) clearTimeout(immediateTimeout)
+  // 立即执行，此类情况一般用不到
+  if (immediate) {
+    const callNow = !immediateTimeout
+    immediateTimeout = setTimeout(() => {
+      immediateTimeout = null
+    }, wait)
+    if (callNow) typeof func === 'function' && func()
+  } else {
+    // 设置定时器，当最后一次操作后，immediateTimeout不会再被清除，所以在延时wait毫秒后执行func回调方法
+    timeout = setTimeout(() => {
+      typeof func === 'function' && func()
+    }, wait)
+  }
 }
 
 export default debounce
