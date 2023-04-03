@@ -475,12 +475,21 @@ export default {
           }else{
             let paths = _this.pathElems(geometry);
             _this.model.paths =JSON.stringify(paths)
+            _this.$refs.form.validateField(['paths'])
             this.$forceUpdate();
           }
 
           //设置为编辑模式
           mapEditor.setActionMode(TMap.tools.constants.EDITOR_ACTION.INTERACT);
         }
+      });
+
+      // 监听修改事件
+      mapEditor.on('adjust_complete', (geometry) => {
+        let paths = _this.pathElems(geometry);
+        _this.model.paths =JSON.stringify(paths)
+        _this.$refs.form.validateField(['paths'])
+        this.$forceUpdate();
       });
     },
 

@@ -576,6 +576,7 @@ export default {
           }else{
             let paths = _this.pathElems(geometry);
             _this.model.paths =JSON.stringify(paths)
+            _this.$refs.form.validateField(['paths'])
             this.$forceUpdate();
           }
 
@@ -583,6 +584,15 @@ export default {
           mapEditor.setActionMode(TMap.tools.constants.EDITOR_ACTION.INTERACT);
         }
       });
+
+      // 监听修改事件
+      mapEditor.on('adjust_complete', (geometry) => {
+        let paths = _this.pathElems(geometry);
+        _this.model.paths =JSON.stringify(paths)
+        _this.$refs.form.validateField(['paths'])
+        this.$forceUpdate();
+      });
+
     },
 
     //格式化返回的经纬度
