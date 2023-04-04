@@ -111,7 +111,8 @@ export default {
       selectVlaue: undefined,
       total: 0,
       page: 1,
-      spinning: false
+      spinning: false,
+      searchValue: ''
     }
   },
 
@@ -160,13 +161,14 @@ export default {
     },
 
     handleSearch(value) {
+      this.searchValue = value
       debounce(() => {
         this.page = 1
         this.getList(value)
       },1000,false)
     },
     // 获取数据
-    getList(val = '') {
+    getList(val = this.searchValue) {
       this.spinning = true
       let form = {
         pageNo: this.page,
