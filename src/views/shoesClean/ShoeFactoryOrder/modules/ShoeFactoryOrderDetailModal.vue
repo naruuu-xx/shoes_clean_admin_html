@@ -83,6 +83,27 @@
             </a-col>
           </a-row>
         </a-col>
+        <!-- 异常信息部分 -->
+        <a-col :span="12" v-if="orderException != null">
+          <a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-title">异常信息</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">异常原因：{{ orderException.note }}</p></a-col>
+            </a-row>
+            <a-row>
+            <a-col :span="24"><p class="label-content">异常照片</p></a-col>
+            <a-col :span="24">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in exceptionImageList"
+                   :src="item" @click="showImage(item)">
+            </a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">处理方式：{{ dealTypeText }}</p></a-col>
+            </a-row>
+          </a-row>
+        </a-col>
       </a-row>
     </div>
 
@@ -97,6 +118,7 @@
 <script>
 
 import {httpAction} from "../../../../api/manage";
+import {filterDictTextByCache} from "../../../../components/dict/JDictSelectUtil";
 
 export default {
   name: "ShoeFactoryOrderDetailModal",
@@ -112,7 +134,10 @@ export default {
       factoryStatus: "",
       factoryInTime: "",
       factoryOutTime: "",
-      expressagesInfo: {}
+      expressagesInfo: {},
+      exceptionImageList: [],
+      orderException: {},
+      dealTypeText: ""
     }
   },
   created() {
@@ -144,6 +169,16 @@ export default {
       if ('expressage' === this.data.type && 2 === this.data.status) {
         this.getExpressagesInfo(this.data.orderId);
       }
+
+      //请求接口，获取异常信息
+      httpAction("/ShoeOrder/shoeOrder/queryExceptionOrderInfo?orderId=" + record.orderId, null, "get").then((res) => {
+        this.orderException = res.result;
+        let dealType = res.result.dealType;
+        this.exceptionImageList = JSON.parse(res.result.images);
+        this.dealTypeText = filterDictTextByCache('shoe_order_exception_deal_type', dealType);
+        console.log(dealType, 1212121212121);
+        console.log(this.dealTypeText, 4545454545454);
+      })
 
     },
     handleCancel() {
