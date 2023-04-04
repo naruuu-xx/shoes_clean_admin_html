@@ -151,6 +151,16 @@
                 </a-col>
               </a-row>
             </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="绘制说明" :labelCol="labelCol">
+                <div class="ant-row-flex">
+                  绘制：选择添加模式，鼠标左键点击及移动即可绘制图形<br/>
+                  结束绘制：鼠标左键双击即可结束绘制，图形会自动闭合<br/>
+                  编辑：选择编辑模式，选中图形后出现编辑点，拖动编辑点可移动顶点位置，双击编辑点可删除顶点<br/>
+                  删除：选择删除模式，选中图形后按下delete键或点击删除按钮可删除图形
+                </div>
+              </a-form-model-item>
+            </a-col>
           </a-row>
         </div>
       </a-form-model>
@@ -359,16 +369,15 @@ export default {
         zoom: 12, // 设置地图缩放级别
         mapTypeId: qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
       };
-      this.initMapByJQ(24.500646, 118.126990);
+      setTimeout(()=>{   //设置延迟执行
+        this.initMapByJQ(24.500646, 118.12699)
+      },1000);
     },
     edit(record) {
 
-      console.log(record.orderStatus)
       this.disabledStatus = true;
 
       Object.assign(this.model, record, {orderStatusRadio: record.orderStatus + ""});
-      console.log(this.model.orderStatusRadio)
-      console.log(this.model)
       this.model.orgCode = record.orgCode + "";
       //this.model.departName = record.departName;
       this.model.sitemanagerId = record.sitemanagerId;
@@ -395,7 +404,10 @@ export default {
           mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
         };
         this.visible = true;
-        this.initMapByJQ(res.latitude, res.longitude);
+
+        setTimeout(()=>{   //设置延迟执行
+          this.initMapByJQ(res.latitude, res.longitude)
+        },1000);
 
       })
 
