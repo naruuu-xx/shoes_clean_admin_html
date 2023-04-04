@@ -124,7 +124,6 @@ export default {
           skuId:'',
           price: 0.01,
           uuid: this.getUuid(),
-          customerId:1,
           disabled: true
         })
       } else {
@@ -176,7 +175,7 @@ export default {
         //发送请求
         this.confirmLoading = true;
         let httpUrl = "/shoes/shoeCustomerGoods/save";
-        httpAction(httpUrl, this.goodList, "post").then((res) => {
+        httpAction(httpUrl, this.goodList.map(item => ({...item,customerId:this.customerId})), "post").then((res) => {
           if (res.success) {
             this.$message.success(res.message);
             this.handleCancel2();
