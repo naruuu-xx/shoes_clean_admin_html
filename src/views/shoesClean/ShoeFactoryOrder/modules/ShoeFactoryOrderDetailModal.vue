@@ -176,8 +176,6 @@ export default {
         let dealType = res.result.dealType;
         this.exceptionImageList = JSON.parse(res.result.images);
         this.dealTypeText = filterDictTextByCache('shoe_order_exception_deal_type', dealType);
-        console.log(dealType, 1212121212121);
-        console.log(this.dealTypeText, 4545454545454);
       })
 
     },
