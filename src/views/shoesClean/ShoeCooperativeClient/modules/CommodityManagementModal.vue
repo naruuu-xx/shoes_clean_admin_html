@@ -80,7 +80,6 @@ export default {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            fixed:"right",
             width:80,
             scopedSlots: { customRender: 'action' }
           }
@@ -147,7 +146,8 @@ export default {
             res.result.forEach(item => {
               this.goodList.push({
                 ...item,
-                price:item.goodsPrice
+                price:item.goodsPrice,
+                uuid: this.getUuid()
               })
               this.skuOptions.push({
                 label: item.skuName,

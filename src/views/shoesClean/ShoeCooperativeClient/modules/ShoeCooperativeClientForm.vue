@@ -122,7 +122,7 @@ export default {
     reset() {
       this.visible = false
       this.model = {
-        courierType: "",
+        courierType: "expressage",
         customerId: "",
         miniNum: 1,
         miniprogramUserIds: [],

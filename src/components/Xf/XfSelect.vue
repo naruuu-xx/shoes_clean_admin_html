@@ -184,6 +184,10 @@ export default {
       }).finally(() => {
         this.spinning = false
       })
+    },
+    reset() {
+      this.searchValue = ''
+      this.getList()
     }
   }
 }
