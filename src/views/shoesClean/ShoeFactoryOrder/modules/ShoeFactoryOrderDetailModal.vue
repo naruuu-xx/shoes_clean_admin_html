@@ -46,7 +46,7 @@
               <a-col :span="24"><p class="label-content">订单编号：{{ data.no }}</p></a-col>
             </a-row>
             <a-row>
-              <a-col :span="24"><p class="label-content">备注：{{ data.note }}</p></a-col>
+              <a-col :span="24"><p class="label-content">备注：{{ data.note || "————————"}}</p></a-col>
             </a-row>
             <a-row>
               <a-col :span="24"><p class="label-content">订单状态：{{ factoryStatus }}</p></a-col>
@@ -55,7 +55,7 @@
               <a-col :span="24"><p class="label-content">入库时间：{{data.factoryInTime}}</p></a-col>
             </a-row>
             <a-row>
-              <a-col :span="24"><p class="label-content">出库时间：{{data.factoryOutTime}}</p></a-col>
+              <a-col :span="24"><p class="label-content">出库时间：{{data.factoryOutTime || "————————"}}</p></a-col>
             </a-row>
           </a-row>
           <a-row v-if="'expressage' === data.type && 2 === data.status">
@@ -90,10 +90,13 @@
               <a-col :span="24"><p class="label-title">异常信息</p></a-col>
             </a-row>
             <a-row>
+              <a-col :span="24"><p class="label-content">处理状态：{{ dealStatusText }}</p></a-col>
+            </a-row>
+            <a-row>
               <a-col :span="24"><p class="label-content">异常原因：{{ orderException.note }}</p></a-col>
             </a-row>
             <a-row>
-            <a-col :span="24"><p class="label-content">异常照片</p></a-col>
+            <a-col :span="24"><p class="label-content">异常照片：</p></a-col>
             <a-col :span="24">
               <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in exceptionImageList"
                    :src="item" @click="showImage(item)">
@@ -101,6 +104,15 @@
             </a-row>
             <a-row>
               <a-col :span="24"><p class="label-content">处理方式：{{ dealTypeText }}</p></a-col>
+            </a-row>
+            <a-row v-if="orderException.dealType ===1">
+              <a-col :span="24"><p class="label-content">追加金额：{{ orderException.supplyPrice }} 元</p></a-col>
+            </a-row>
+            <a-row v-if="orderException.dealType ===2">
+              <a-col :span="24"><p class="label-content">退款类型：{{ orderException.refundTypeText }}</p></a-col>
+            </a-row>
+            <a-row v-if="orderException.dealType ===2">
+              <a-col :span="24"><p class="label-content">退款金额：{{ orderException.refundPrice }} 元</p></a-col>
             </a-row>
           </a-row>
         </a-col>
@@ -137,7 +149,8 @@ export default {
       expressagesInfo: {},
       exceptionImageList: [],
       orderException: {},
-      dealTypeText: ""
+      dealTypeText: "",
+      dealStatusText: ""
     }
   },
   created() {
@@ -176,6 +189,7 @@ export default {
         let dealType = res.result.dealType;
         this.exceptionImageList = JSON.parse(res.result.images);
         this.dealTypeText = filterDictTextByCache('shoe_order_exception_deal_type', dealType);
+        this.dealStatusText = filterDictTextByCache('shoe_order_exception_status', res.result.status);
       })
 
     },
