@@ -178,14 +178,20 @@ export default {
       this.visible = false;
       this.model = {};
     },
-    handleSubmit(){
+     handleSubmit(){
       const that = this;
 
       let no = this.model.no;
 
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           that.confirmLoading = true;
+
+          let res = await httpAction("/shoeFactoryWasher/getWasher","", "get")
+          if(!res.success){
+            this.$message.warning(res.message)
+            return false;
+          }
 
           httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",that.model, "post").then((res)=> {
             if (res.success) {

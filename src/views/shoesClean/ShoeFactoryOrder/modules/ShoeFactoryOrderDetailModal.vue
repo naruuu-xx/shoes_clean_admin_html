@@ -57,6 +57,12 @@
             <a-row>
               <a-col :span="24"><p class="label-content">出库时间：{{data.factoryOutTime || "————————"}}</p></a-col>
             </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">洗涤人员：{{data.washerName}}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">品牌：{{data.brandName}}</p></a-col>
+            </a-row>
           </a-row>
           <a-row v-if="'expressage' === data.type && 2 === data.status">
             <a-row>

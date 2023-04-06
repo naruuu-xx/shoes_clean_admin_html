@@ -139,13 +139,23 @@ export default {
       let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId}) => ({orderId, selectedNote, sortNum,brandId}))
       this.handleInOfStorage(dataList);
     },
-    handleInOfStorage(dataList){
+    async handleInOfStorage(dataList){
+      if(dataList[0].brandId==null||dataList[0].brandId==''){
+        this.$message.warning("请选择品牌")
+        return;
+      }
+      let res = await httpAction("/shoeFactoryWasher/getWasher","", "get")
+      if(!res.success){
+        this.$message.warning(res.message)
+        return false;
+      }
       this.confirmLoading = true;
       downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
         }
+
         const content = res;
         // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
         // 要不然无法进行打印

@@ -122,11 +122,19 @@ export default {
       this.handleInOfStorage();
 
     },
-    handleInOfStorage(){
+    async handleInOfStorage(){
       this.confirmLoading = true;
       if (this.data.brandId==null||this.data.brandId==''){
         this.$message.warning("请选择品牌");
+        this.confirmLoading = false;
+        return;
       }else {
+        let res = await httpAction("/shoeFactoryWasher/getWasher","", "get")
+        if(!res.success){
+          this.$message.warning(res.message)
+          this.confirmLoading = false;
+          return false;
+        }
         //处理入库
         this.loadingBtn = true;
         postAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data).then((res) => {
