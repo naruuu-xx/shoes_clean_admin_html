@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: your project
+ * @version: 1.0
+ * @Author: yizhimao
+ * @Date: 2023-03-29 14:24:33
+ * @LastEditors: yizhimao
+ * @LastEditTime: 2023-03-29 15:18:16
+-->
 <template>
   <j-modal
     :title="title"
@@ -7,26 +15,27 @@
     @ok="handleOk"
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
+    :destroyOnClose="true"
     cancelText="关闭">
-    <shoe-goods-category-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-goods-category-form>
+    <shoe-cooperative-client-Form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-cooperative-client-Form>
   </j-modal>
 </template>
 
 <script>
 
-  import ShoeGoodsCategoryForm from './ShoeGoodsCategoryForm'
-  import JTreeTable from '@comp/jeecg/JTreeTable.vue'
-  import Vue from 'vue'
+  import ShoeCooperativeClientForm from './ShoeCooperativeClientForm'
   export default {
-    name: 'ShoeGoodsCategoryModal',
+    name: 'ShoeTimecardModal',
     components: {
-      ShoeGoodsCategoryForm,
-      JTreeTable
+      ShoeCooperativeClientForm
+    },
+    created() {
+      console.log(888888888);
     },
     data () {
       return {
         title:'',
-        width:800,
+        width:900,
         visible: false,
         disableSubmit: false
       }
@@ -34,18 +43,15 @@
     methods: {
       add () {
         this.visible=true
-        this.$nextTick(()=>{
-          this.$refs.realForm.add();
-        })
       },
       edit (record) {
-
         this.visible=true
         this.$nextTick(()=>{
           this.$refs.realForm.edit(record);
         })
       },
       close () {
+        this.$refs.realForm.reset()
         this.$emit('close');
         this.visible = false;
       },
@@ -62,3 +68,11 @@
     }
   }
 </script>
+
+<style>
+.scroll {
+  height: 600px;
+  overflow-y: scroll;
+  width: 100%;
+}
+</style>

@@ -63,7 +63,8 @@ export default {
         {number: 19, state: 1},
         {number: 20, state: 1},
         {number: 21, state: 1},
-      ]
+      ],
+      lockerList:[],
     }
   },
   methods: {

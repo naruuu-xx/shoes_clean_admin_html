@@ -83,14 +83,43 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
+              <a-form-model-item label="配送范围"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paths">
+                <a-input v-model="model.paths" placeholder="请设定配送范围" style="width: 100%" id="c-paths" :disabled="true"/>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-model-item label="地图操作" :labelCol="labelCol">
+                <div class="ant-row-flex">
+                  <div>
+                    <button
+                      @click="setActivePattern('marker')"
+                      :class="['ant-btn', activePattern==='marker'?'ant-btn-primary':'']">
+                      <span>设置机柜定位</span>
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      @click="setActivePattern('polygon')"
+                      :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
+                      style="margin: 0 30px 0 30px">
+                      设置配送范围
+                    </button>
+                  </div>
+                  <div v-if="activePattern==='polygon'">
+                    <button class="ant-btn" @click="addPolygon()">添加</button>
+                    <button class="ant-btn" @click="editPolygon()">编辑</button>
+                    <button class="ant-btn" @click="delPolygon()">删除</button>
+                  </div>
+                </div>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24">
               <a-row>
                 <a-col :span="16">
-  <!--                <a-form-model-item label="" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-                    <div id="tencentMapBox" style="width:auto;height:400px;margin-left: 200px;margin-bottom: 30px"></div>
-  <!--                </a-form-model-item>-->
+                    <div id="tencentMapBox" class="map-box"></div>
                 </a-col>
                 <a-col :span="8">
-                  <div id="container-text" style="width:auto;height: 400px;margin-left: 5px; overflow-y:auto;">
+                  <div id="container-text" class="container-text">
                     <div v-model="searchList" v-for="(item, index) in searchList" style="margin-bottom: 10px" v-on:click="selectAddress(item)">
                       <span style="font-size: 14px">{{ index + 1 }}、{{ item.title }}</span><br>
                       <span style="font-size: 12px; color: #7A7B7D">{{ item.address }}</span>
@@ -101,11 +130,16 @@
                 </a-col>
               </a-row>
             </a-col>
-            <!--          <a-col :span="24">-->
-            <!--            <a-form-model-item label="空闲格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="free">-->
-            <!--              <a-input-number v-model="model.free" placeholder="请输入空闲格子数" style="width: 100%" />-->
-            <!--            </a-form-model-item>-->
-            <!--          </a-col>-->
+            <a-col :span="24">
+              <a-form-model-item label="绘制说明" :labelCol="labelCol">
+                <div class="ant-row-flex">
+                  绘制：选择添加模式，鼠标左键点击及移动即可绘制图形<br/>
+                  结束绘制：鼠标左键双击即可结束绘制，图形会自动闭合<br/>
+                  编辑：选择编辑模式，选中图形后出现编辑点，拖动编辑点可移动顶点位置，双击编辑点可删除顶点<br/>
+                  删除：选择删除模式，选中图形后按下delete键或点击删除按钮可删除图形
+                </div>
+              </a-form-model-item>
+            </a-col>
           </a-row>
         </div>
       </a-form-model>
@@ -120,7 +154,7 @@ import {validateDuplicateValue} from '@/utils/util'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
 import $ from 'jquery'
 
-let map, marker, polygon, drawingManager, lngLat, ap;
+let map, marker, polygon, ap,mapEditor;
 
 export default {
   name: 'ShoeLockerForm',
@@ -195,6 +229,7 @@ export default {
           {pattern: /^-?\d+$/, message: '请输入整数!'},
         ],
         orderStatus: [{ required: true, message: '请选择接单状态' }],
+        paths:[{required: true, message: '请设置配送范围'}]
       },
       url: {
         add: "/shoes/shoeLocker/addNew",
@@ -227,6 +262,8 @@ export default {
       areaJson: [],
 
       searchList: [],
+
+      activePattern:'marker', //地图操作模式，marker设置机柜定位，polygon设置配送范围
       //=================
     }
   },
@@ -240,6 +277,10 @@ export default {
     this.modelDefault = JSON.parse(JSON.stringify(this.model));
   },
   mounted() {
+    const script = document.createElement('script')
+    script.type = "text/javascript";
+    script.src = `https://map.qq.com/api/gljs?v=1.exp&key=${this.mapKey}&callback=init&libraries=tools`;
+    document.body.appendChild(script);
   },
   methods: {
     add() {
@@ -255,7 +296,9 @@ export default {
         zoom: 12, // 设置地图缩放级别
         mapTypeId: qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
       };
-      this.initMapByJQ(24.500646, 118.126990);
+      setTimeout(()=>{   //设置延迟执行
+        this.initMapByJQ(24.500646, 118.12699)
+      },1000);
     },
     edit(record) {
       this.model = Object.assign({}, record);
@@ -268,7 +311,9 @@ export default {
           mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
       };
       this.visible = true;
-      this.initMapByJQ(record.latitude, record.longitude);
+      setTimeout(()=>{   //设置延迟执行
+        this.initMapByJQ(record.latitude, record.longitude)
+      },1000);
     },
     submitForm() {
       const that = this;
@@ -307,9 +352,9 @@ export default {
             "type": this.model.type,
             "weight": this.model.weight,
             "orderStatus": this.model.orderStatus,
+            "paths":this.model.paths,
           }
 
-          // console.log(data);
           httpAction(httpurl, data, method).then((res) => {
             if (res.success) {
               that.$message.success(res.message);
@@ -328,29 +373,156 @@ export default {
     getAreaList() {
       httpAction("/shoes/shoeLocker/getAreaList", null, "get").then((res) => {
         let areaList = res.result;
-
         this.areaList = areaList;
       })
     },
     //=====================================================
     //以下是腾讯地图的方法
-    //位置信息在地图上展示
-    //js直接改造的方法
+    //加载地图
     initMapByJQ(lat, lng){
-      let _this = this;
-
       let center = new TMap.LatLng(lat, lng);//设置中心点坐标(厦门sm)
-
       //初始化地图
       this.map = new TMap.Map("tencentMapBox", {
         //pitch: 30, //设置俯仰角度（0~45）
         zoom: 12,//设置地图缩放级别
         center: center //设置地图中心点坐标
       });
+
       //初始化marker图层
+      this.initMarker();
+
+      //初始化几何图形及编辑器
+      this.initGeometry()
+    },
+
+    //初始化几何图形及编辑器
+    initGeometry() {
+      let _this = this;
+
+      let polygon;
+
+      if (_this.model.paths){
+        //初始化数据
+        let simplePath = [];
+        // let pathArr = JSON.parse(_this.paths)
+        let pathArr = JSON.parse(this.model.paths)
+        if (pathArr.length > 0) {
+          pathArr.forEach(item => {
+            simplePath.push(new TMap.LatLng(item.lat, item.lng))
+          })
+        }
+        // 初始化几何图形及编辑器
+        polygon = new TMap.MultiPolygon({
+          map: _this.map,
+          geometries:[{ paths:simplePath }],
+        });
+      }else{
+        polygon = new TMap.MultiPolygon({
+          map: _this.map,
+        });
+      }
+
+      mapEditor = new TMap.tools.GeometryEditor({
+        map:_this.map, // 编辑器绑定的地图对象
+        overlayList: [ // 可编辑图层
+          {
+            overlay: polygon,
+            id: 'polygon',
+            drawingStyleId: 'highlight',
+            selectedStyleId: 'highlight'  //选中样式
+          }
+        ],
+        actionMode: TMap.tools.constants.EDITOR_ACTION.DRAW, // 编辑器的工作模式
+        // activeOverlayId: 'polygon', // 激活图层
+        selectable: true, // 开启点选功能
+        snappable: true // 开启吸附
+      });
+      mapEditor.setActiveOverlay('');
+
+      // 监听绘制结束事件，获取绘制几何图形
+      mapEditor.on('draw_complete', (geometry) => {
+        if (mapEditor.getActiveOverlay().id === 'polygon'){
+          let  polygonObj = mapEditor.getOverlayList();
+
+          //只允许添加一个配送范围
+          if ( polygonObj[0].overlay.geometries.length>1){
+            polygon.remove(geometry.id);
+            alert('只能添加一个配送范围');
+          }else{
+            let paths = _this.pathElems(geometry);
+            _this.model.paths =JSON.stringify(paths)
+            _this.$refs.form.validateField(['paths'])
+            this.$forceUpdate();
+          }
+
+          //设置为编辑模式
+          mapEditor.setActionMode(TMap.tools.constants.EDITOR_ACTION.INTERACT);
+        }
+      });
+
+      // 监听修改事件
+      mapEditor.on('adjust_complete', (geometry) => {
+        let paths = _this.pathElems(geometry);
+        _this.model.paths =JSON.stringify(paths)
+        _this.$refs.form.validateField(['paths'])
+        this.$forceUpdate();
+      });
+    },
+
+    //格式化返回的经纬度
+    pathElems(geometry){
+      var lngLat = [];
+      for (const item of geometry.paths) {
+        const lng = item.getLng();
+        const lat = item.getLat();
+        lngLat.push({
+          lat: lat,
+          lng: lng
+        });
+      }
+      return lngLat;
+    },
+
+    /**
+     * 设置编辑模式
+     * @param type  marker=设置机柜定位，polygon=设置配送范围
+     */
+    setActivePattern(type){
+      this.activePattern = type;
+      if (type==='marker'){
+        mapEditor.setActiveOverlay('');
+      }else{
+        mapEditor.setActiveOverlay(type);
+      }
+    },
+
+    //删除
+    delPolygon(){
+      mapEditor.setActionMode(TMap.tools.constants.EDITOR_ACTION.INTERACT);
+      mapEditor.delete();
+      let  polygonObj = mapEditor.getOverlayList();
+
+      //只允许添加一个配送范围
+      if ( polygonObj[0].overlay.geometries.length===0){
+        this.model.paths ='';
+        this.$forceUpdate();
+      }
+    },
+    //添加
+    addPolygon() {
+      mapEditor.setActionMode(TMap.tools.constants.EDITOR_ACTION.DRAW);
+    },
+    //编辑
+    editPolygon() {
+      mapEditor.setActionMode(TMap.tools.constants.EDITOR_ACTION.INTERACT);
+    },
+
+    //初始化marker图层
+    initMarker(){
+      let _this=this;
       _this.markerLayer = new TMap.MultiMarker({
         id: 'marker-layer',
-        map: this.map
+        map: _this.map
       });
 
       if (this.model.lockerId) {
@@ -362,66 +534,69 @@ export default {
           }
         ])
       }
-
       //绑定点击事件
+      this.selectPoint()
+    },
+
+    //marker图层地址选择事件
+    selectPoint(){
+      let _this = this;
       this.map.on('click', function (evt) {
         //修改标记
-        _this.markerLayer.updateGeometries([
-          {
-            "styleId": "marker",
-            "id": "1",
-            "position": evt.latLng,
-          }
-        ])
-
-        //经纬度赋值给input框
-        var lat = evt.latLng.getLat().toFixed(6);
-        var lng = evt.latLng.getLng().toFixed(6);
-        // $('#c-lng').val(lng);
-        // _this.model.longitude = lng;
-        // $('#c-lat').val(lat);
-        // _this.model.latitude = lat
-        // $('#c-address').val()
-
-        $.ajax({
-          type: "get",
-          async: false,
-          url: "https://apis.map.qq.com/ws/geocoder/v1",
-          data: {
-            location: evt.latLng.getLat() + "," + evt.latLng.getLng(),
-            key: '4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U',
-            get_poi: 1,
-            output: "jsonp"
-          },
-          dataType: "jsonp",
-          //jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-          //jsonpCallback:"?",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-          success: function(res){
-            if (res.status === 0) {
-              let address = res.result !== undefined ? res.result.address : "";
-              let lng = res.result !== undefined ? res.result.location.lng: null;
-              let lat = res.result !== undefined ? res.result.location.lat: null;
-
-              _this.model.address = address;
-              $("#c-address").val(address);
-
-              _this.model.longitude = lng;
-              $('#c-lng').val(lng);
-
-              _this.model.latitude = lat;
-              $('#c-lat').val(lat);
-
-              _this.model.province = res.result.address_component.province !== undefined ? res.result.address_component.province : "";
-              _this.model.city = res.result.address_component.city !== undefined ? res.result.address_component.city : "";
-              _this.model.area = res.result.address_component.district !== undefined ? res.result.address_component.district : "";
+        if (_this.activePattern === 'marker'){
+          _this.markerLayer.updateGeometries([
+            {
+              "styleId": "marker",
+              "id": "1",
+              "position": evt.latLng,
             }
-          },
-          error: function(){
-            //  alert('fail');
-          }
-        })
+          ])
+          //经纬度赋值给input框
+          var lat = evt.latLng.getLat().toFixed(6);
+          var lng = evt.latLng.getLng().toFixed(6);
+
+          $.ajax({
+            type: "get",
+            async: false,
+            url: "https://apis.map.qq.com/ws/geocoder/v1",
+            data: {
+              location: evt.latLng.getLat() + "," + evt.latLng.getLng(),
+              key: '4FPBZ-5YC6F-M2RJN-NBEC4-UQQEV-P2B2U',
+              get_poi: 1,
+              output: "jsonp"
+            },
+            dataType: "jsonp",
+            //jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+            //jsonpCallback:"?",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
+            success: function(res){
+              if (res.status === 0) {
+                let address = res.result !== undefined ? res.result.address : "";
+                let lng = res.result !== undefined ? res.result.location.lng: null;
+                let lat = res.result !== undefined ? res.result.location.lat: null;
+
+                _this.model.address = address;
+                $("#c-address").val(address);
+
+                _this.model.longitude = lng;
+                $('#c-lng').val(lng);
+
+                _this.model.latitude = lat;
+                $('#c-lat').val(lat);
+
+                _this.model.province = res.result.address_component.province !== undefined ? res.result.address_component.province : "";
+                _this.model.city = res.result.address_component.city !== undefined ? res.result.address_component.city : "";
+                _this.model.area = res.result.address_component.district !== undefined ? res.result.address_component.district : "";
+              }
+            },
+            error: function(){
+              //  alert('fail');
+            }
+          })
+        }
       })
     },
+
+    //搜索地址
     onSearch(searchValue){
       let _this = this;
       $.ajax({
@@ -443,6 +618,7 @@ export default {
         }
       })
     },
+    //选择搜索结果
     selectAddress(obj){
       let lat = obj.location.lat;
       let lng = obj.location.lng;
@@ -477,5 +653,17 @@ export default {
   width: 100%;
   height: 660px;
   overflow-y: scroll;
+}
+.map-box{
+  width:auto;
+  height:400px;
+  margin-left: 200px;
+  margin-bottom: 30px;
+}
+.container-text{
+  width:auto;
+  height: 400px;
+  margin-left: 5px;
+  overflow-y:auto;
 }
 </style>

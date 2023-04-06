@@ -9,27 +9,37 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" v-if="!model.distributorId">
-            <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-<!--              <a-input-number v-model="model.userId" placeholder="请输入推广人绑定用户id" style="width: 100%" />-->
+<!--            <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">-->
+<!--&lt;!&ndash;              <a-input-number v-model="model.userId" placeholder="请输入推广人绑定用户id" style="width: 100%" />&ndash;&gt;-->
 
-              <a-select
-                show-search
-                label-in-value
-                :value="value"
-                placeholder="请输入昵称或手机号"
-                style="width: 100%"
-                :filter-option="false"
-                :not-found-content="fetching ? undefined : null"
-                :showArrow="false"
-                @search="fetchUser"
-                @change="handleChange"
+<!--              <a-select-->
+<!--                show-search-->
+<!--                label-in-value-->
+<!--                :value="value"-->
+<!--                placeholder="请输入昵称或手机号"-->
+<!--                style="width: 100%"-->
+<!--                :filter-option="false"-->
+<!--                :not-found-content="fetching ? undefined : null"-->
+<!--                :showArrow="false"-->
+<!--                @search="fetchUser"-->
+<!--                @change="handleChange"-->
+<!--              >-->
+<!--                <a-spin v-if="fetching" slot="notFoundContent" size="small" />-->
+<!--                <a-select-option v-for="item in userList" :key="item.userId">-->
+<!--                  {{ item.wxInfo }}-->
+<!--                </a-select-option>-->
+<!--              </a-select>-->
+
+<!--            </a-form-model-item>-->
+            <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="model.userId"
+                :url='`/shoes/shoeUser/getUserListBytype?type=distributor`'
               >
-                <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-                <a-select-option v-for="item in userList" :key="item.userId">
-                  {{ item.wxInfo }}
-                </a-select-option>
-              </a-select>
-
+              </XfSelect>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" v-if="model.distributorId">
@@ -81,10 +91,12 @@
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
   import debounce from '@/utils/debounce'
+  import XfSelect from "@comp/Xf/XfSelect";
 
   export default {
     name: 'ShoeDistributorForm',
     components: {
+      XfSelect
     },
     props: {
       //表单禁用
@@ -99,6 +111,7 @@
       // this.lastFetchId = 0;
       // this.fetchUser = debounce(this.fetchUser, 800);
       return {
+        weekList:[],
         model:{
          },
         labelCol: {
@@ -159,6 +172,14 @@
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
+      changeSelect(data) {
+        this.weekList = data.records.map(item => ({
+          label: item.nickname+'('+item.phone+')',
+          value: +item.userId
+        }));
+      },
+      checkedSelect(val) {
+      },
       add () {
         this.modelDefault.status = '1';
         this.edit(this.modelDefault);

@@ -8,20 +8,17 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <shoe-goods-category-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-goods-category-form>
+    <shoe-coupon-record-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-coupon-record-form>
   </j-modal>
 </template>
 
 <script>
 
-  import ShoeGoodsCategoryForm from './ShoeGoodsCategoryForm'
-  import JTreeTable from '@comp/jeecg/JTreeTable.vue'
-  import Vue from 'vue'
+  import ShoeCouponRecordForm from './ShoeCouponRecordForm'
   export default {
-    name: 'ShoeGoodsCategoryModal',
+    name: 'ShoeCouponRecordModal',
     components: {
-      ShoeGoodsCategoryForm,
-      JTreeTable
+      ShoeCouponRecordForm
     },
     data () {
       return {
@@ -39,7 +36,6 @@
         })
       },
       edit (record) {
-
         this.visible=true
         this.$nextTick(()=>{
           this.$refs.realForm.edit(record);
