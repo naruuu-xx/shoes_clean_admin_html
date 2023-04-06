@@ -15,7 +15,7 @@
     @ok="handleOk"
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
-    :destroyOnClose="false"
+    :destroyOnClose="true"
     cancelText="关闭">
     <shoe-cooperative-client-Form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></shoe-cooperative-client-Form>
   </j-modal>
