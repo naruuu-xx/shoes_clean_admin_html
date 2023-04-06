@@ -149,7 +149,7 @@ export default {
     }
   },
   methods: {
-    getTime(start=9,end=22) {
+    getTime(start=9,end=18) {
       let leng = end - start
       this.timeOptions = new Array(leng).fill('').map((item,idx) => item = {
         label: `${start+idx}:00-${start+idx+1}:00`,
