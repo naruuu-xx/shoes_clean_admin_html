@@ -113,12 +113,12 @@
             dataIndex: 'miniNum'
           },
           {
-            title:'已下单',
+            title:'已下单(包含退款)',
             align:"center",
             dataIndex: 'orderNum'
           },
           {
-            title:'总下单金额',
+            title:'总下单金额(包含退款)',
             align:"center",
             dataIndex: 'totalPrice'
           },
