@@ -34,23 +34,24 @@
               备注：
               <a-input style="width: 50%" v-model.trim="item.selectedNote" placeholder="请输入备注"/>
             </span>
-<!--            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">-->
-<!--              <a-select-->
-<!--                v-model="item.selectedNote"-->
-<!--                mode="multiple"-->
-<!--                style="width: 100%;"-->
-<!--                placeholder="请选择"-->
-<!--                :options="noteOptions"-->
-<!--                :z-index="2000"-->
-<!--                :ref="`selectedNote${idx}`"-->
-<!--                @blur="selectedNoteBlur('blur',`selectedNote${idx}`)"-->
-<!--                @focus="selectedNoteBlur('focus',`selectedNote${idx}`)"-->
-<!--              >-->
-<!--              </a-select>-->
-<!--              <a-input v-model.trim="item.selectedNote" placeholder="请输入备注"/>-->
-<!--            </a-form-model-item>-->
           </a-col>
         </a-row>
+        <a-row>
+          <a-col :span="24">
+            <span class="content">
+              品牌：
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="item.brandId"
+                :url='`/shoeBrand/list`'
+              >
+              </XfSelect>
+            </span>
+          </a-col>
+        </a-row>
+
         <a-divider v-if="dataList.length > idx + 1 "/>
       </div>
     </div>
@@ -61,10 +62,13 @@
 <script>
 
 import {downFile, httpAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
 
 export default {
   name: "ConfirmPrintModal",
-  components: {},
+  components: {
+    XfSelect
+  },
   data() {
     return {
       labelCol: {
@@ -87,12 +91,21 @@ export default {
       showInOfStoragePrintModal: false,
       noteOptions: [],
       dataList:[],
-      selectedNoteKey: ''
+      selectedNoteKey: '',
+      weekList:[],
     }
   },
   created() {
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: +item.brandId
+      }));
+    },
+    checkedSelect(val) {
+    },
     selectedNoteBlur(type,e) {
       // 后期在优化
       // if(type == 'focus') {
@@ -123,16 +136,40 @@ export default {
       this.visible = false;
     },
     handleOk(){
-      let dataList = this.dataList.map(({orderId, selectedNote, sortNum}) => ({orderId, selectedNote, sortNum}))
+      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId}) => ({orderId, selectedNote, sortNum,brandId}))
       this.handleInOfStorage(dataList);
     },
-    handleInOfStorage(dataList){
+    async handleInOfStorage(dataList) {
+      if (dataList[0].brandId == null || dataList[0].brandId == '') {
+        this.$message.warning("请选择品牌")
+        return;
+      }
+      let res = await httpAction("/shoeFactoryWasher/getWasher", "", "get")
+      if (!res.success) {
+        this.$message.warning(res.message)
+        return false;
+      }
       this.confirmLoading = true;
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
+
+      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
+        if (res.success) {
+          this.$message.success(res.message);
+          this.visible = false;
+          this.form = [];
+          this.$emit('ok');
+          //打印水洗唛
+          this.createWashedMark(res.result);
+        }
+      })
+
+    },
+    createWashedMark(data) {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageCreateWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
         }
+
         const content = res;
         // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
         // 要不然无法进行打印
