@@ -319,6 +319,7 @@ export default {
         longitude: '',
         latitude: '',
         orderStatus: 1,
+        paths:'',
 
       }
       let center = new window.qq.maps.LatLng(24.500646, 118.12699) // 设置地图中心点坐标

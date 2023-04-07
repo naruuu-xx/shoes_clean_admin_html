@@ -289,6 +289,7 @@ export default {
         status: 1,
         type: "real",
         orderStatus: 1,
+        paths: '',
       };
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
