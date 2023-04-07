@@ -139,18 +139,32 @@ export default {
       let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId}) => ({orderId, selectedNote, sortNum,brandId}))
       this.handleInOfStorage(dataList);
     },
-    async handleInOfStorage(dataList){
-      if(dataList[0].brandId==null||dataList[0].brandId==''){
+    async handleInOfStorage(dataList) {
+      if (dataList[0].brandId == null || dataList[0].brandId == '') {
         this.$message.warning("请选择品牌")
         return;
       }
-      let res = await httpAction("/shoeFactoryWasher/getWasher","", "get")
-      if(!res.success){
+      let res = await httpAction("/shoeFactoryWasher/getWasher", "", "get")
+      if (!res.success) {
         this.$message.warning(res.message)
         return false;
       }
       this.confirmLoading = true;
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
+
+      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
+        if (res.success) {
+          this.$message.success(res.message);
+          this.visible = false;
+          this.form = [];
+          this.$emit('ok');
+          //打印水洗唛
+          this.createWashedMark(res.result);
+        }
+      })
+
+    },
+    createWashedMark(data) {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageCreateWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
