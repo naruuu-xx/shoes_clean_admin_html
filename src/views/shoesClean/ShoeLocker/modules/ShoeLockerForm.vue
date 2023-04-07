@@ -253,7 +253,10 @@ export default {
           { required: true, message: '请输入空闲格子数!' },
           { pattern: /^-?\d+$/, message: '请输入整数!' },
         ],
-        paths:[{required: true, message: '请设置配送范围'}]
+        paths:[
+          {required: true, message: '请设置配送范围'},
+          {validator:this.handleIsIn}
+        ],
       },
       url: {
         add: '/shoes/shoeLocker/add',
@@ -305,6 +308,11 @@ export default {
     script.type = "text/javascript";
     script.src = `https://map.qq.com/api/gljs?v=1.exp&key=${this.mapKey}&callback=init&libraries=tools`;
     document.body.appendChild(script);
+
+    const script1 = document.createElement('script')
+    script1.type = "text/javascript";
+    script1.src = `https://map.qq.com/api/gljs?v=1.exp&key=${this.mapKey}&callback=init&libraries=geometry`;
+    document.body.appendChild(script1);
   },
   beforeDestroy() {
     this.destroyMap()
@@ -397,8 +405,7 @@ export default {
               } else {
                 that.$message.warning(res.message)
               }
-            })
-            .finally(() => {
+            }).finally(() => {
               that.confirmLoading = false
             })
           // that.confirmLoading = false;
@@ -492,7 +499,7 @@ export default {
             let paths = _this.pathElems(geometry);
             _this.model.paths =JSON.stringify(paths)
             _this.$refs.form.validateField(['paths'])
-            this.$forceUpdate();
+            _this.$forceUpdate();
           }
 
           //设置为编辑模式
@@ -507,6 +514,32 @@ export default {
         _this.$refs.form.validateField(['paths'])
         this.$forceUpdate();
       });
+    },
+
+    /**
+     * 判断机柜位置是否在配送范围内
+     */
+    isIn(){
+      let latLngArr = this.model.paths;
+      let lat =this.model.latitude;
+      let lng = this.model.longitude;
+      let pos= new TMap.LatLng(lat, lng);
+      latLngArr = JSON.parse(latLngArr);
+      let paths = [];
+      latLngArr.forEach(item => {
+        paths.push(new TMap.LatLng(item.lat, item.lng))
+      })
+      // 判断点是否在多边形内
+      return TMap.geometry.isPointInPolygon(pos, paths)
+    },
+
+    handleIsIn(rule,value,callback){
+        let flag = this.isIn();
+        if(!flag){
+          callback(new Error('机柜必须在配送范围内'))
+        }else{
+          callback()
+        }
     },
 
     //格式化返回的经纬度
