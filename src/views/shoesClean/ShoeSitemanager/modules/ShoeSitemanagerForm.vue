@@ -362,6 +362,7 @@ export default {
         longitude:"",
         latitude:"",
         orderStatusRadio: "1",
+        paths: "",
       };
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
@@ -438,7 +439,6 @@ export default {
     },
     submitForm() {
       const that = this;
-      console.log("------------------",this.model)
       // 触发表单验证
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -481,8 +481,6 @@ export default {
             "orderStatus":this.model.orderStatusRadio,
             "paths":this.model.paths,
           }
-
-          console.log(data)
 
           httpAction(httpurl, data, method).then((res) => {
             if (res.success) {
