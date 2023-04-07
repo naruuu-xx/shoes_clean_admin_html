@@ -26,32 +26,19 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24" v-if="!model.sitemanagerId">
+            <a-col :span="24" >
               <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-                <a-select
-                  show-search
-                  label-in-value
-                  :value="value"
-                  placeholder="请输入昵称或手机号"
-                  style="width: 100%"
-                  :filter-option="false"
-                  :not-found-content="fetching ? undefined : null"
-                  :showArrow="false"
-                  @search="fetchUser"
-                  @change="handleChange"
+                <XfSelect
+                  :list="weekList"
+                  @change="checkedSelect"
+                  @changeList="changeSelect"
+                  v-model="model.userId"
+                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
                 >
-                  <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-                  <a-select-option v-for="item in userList" :key="item.userId">
-                    {{ item.wxInfo }}
-                  </a-select-option>
-                </a-select>
+                </XfSelect>
               </a-form-model-item>
             </a-col>
-            <a-col :span="24" v-if="model.sitemanagerId">
-              <a-form-model-item label="推广人绑定用户id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-                <a-input v-model="model.wxInfo" :disabled="true"></a-input>
-              </a-form-model-item>
-            </a-col>
+
 
             <a-col :span="24">
               <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardNo">
@@ -188,13 +175,16 @@ import {validateDuplicateValue} from '@/utils/util'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
 import $ from 'jquery'
 import debounce from '@/utils/debounce'
+import XfSelect from '@/components/Xf/XfSelect'
+
 
 let map, marker, polygon, ap,mapEditor;
 
 export default {
   name: 'ShoeLockerForm',
   components: {
-    AlCascader
+    AlCascader,
+    XfSelect
   },
   props: {
     //表单禁用
@@ -206,6 +196,7 @@ export default {
   },
   data() {
     return {
+      weekList:[],
       model: {
         lockerName:"",
         cardNo:"",
@@ -352,6 +343,14 @@ export default {
     document.body.appendChild(script);
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.nickname+'('+item.phone+')',
+        value: +item.userId
+      }));
+    },
+    checkedSelect(val) {
+    },
     add() {
       // this.edit(this.modelDefault);
       this.disabledStatus = false;
@@ -397,6 +396,9 @@ export default {
         this.model.longitude=res.longitude;
         this.model.userId=res.nickname[0].userId;
         this.model.paths=res.paths;
+
+        this.weekList.push({label:res.nickname[0].nickname+"("+res.nickname[0].phone+")"
+        ,value:res.nickname[0].userId});
 
         let center = new qq.maps.LatLng(res.latitude, res.longitude);// 设置地图中心点坐标
         this.option = {
