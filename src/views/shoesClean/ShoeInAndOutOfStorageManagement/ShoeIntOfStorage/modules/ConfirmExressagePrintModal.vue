@@ -123,6 +123,12 @@ export default {
     // },
     show(record) {
       this.visible = true;
+      httpAction("/shoeFactoryWasher/getWasher","", "get").then((res) =>{
+        if(!res.success){
+          this.$message.warning(res.message)
+
+        }
+      })
       this.dataList = record.map(item => Object.assign({},item,{selectedNote: ""}))
       //获取备注项列表
       httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
@@ -139,16 +145,12 @@ export default {
       let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId}) => ({orderId, selectedNote, sortNum,brandId}))
       this.handleInOfStorage(dataList);
     },
-    async handleInOfStorage(dataList) {
-      if (dataList[0].brandId == null || dataList[0].brandId == '') {
+    handleInOfStorage(dataList){
+      if(dataList[0].brandId==null||dataList[0].brandId==''){
         this.$message.warning("请选择品牌")
         return;
       }
-      let res = await httpAction("/shoeFactoryWasher/getWasher", "", "get")
-      if (!res.success) {
-        this.$message.warning(res.message)
-        return false;
-      }
+
       this.confirmLoading = true;
 
       httpAction("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
