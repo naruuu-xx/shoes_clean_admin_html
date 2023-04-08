@@ -61,8 +61,19 @@
                   <a-textarea v-model="mm.note" placeholder="请输入备注"></a-textarea>
                 </a-form-model-item>
               </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="品牌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="brandId">
+                  <XfSelect
+                    :list="weekList"
+                    @changeList="changeSelect"
+                    v-model="mm.brandId"
+                    :url='`/shoeBrand/list`'
+                  >
+                  </XfSelect>
+                </a-form-model-item>
+              </a-col>
             </a-row>
-            
+
           </a-form-model>
           <a-row>
             <a-col :span="24">
@@ -77,7 +88,7 @@
             </a-col>
           </a-row>
         </div>
-        
+
       </j-form-container>
     </a-spin>
   </j-modal>
@@ -85,10 +96,13 @@
 
 <script>
 import {downFile, httpAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
 
 export default {
   name: "ManualInOfStorage",
-  components: {},
+  components: {
+    XfSelect
+  },
   props: {
     //表单禁用
     disabled: {
@@ -140,9 +154,13 @@ export default {
         ],
         note: [
           {required: false, message: '请输入备注!'},
+        ],
+        brandId : [
+          {required: true, message: '请选择品牌!'},
         ]
       },
-      form:[]
+      form:[],
+      weekList:[],
     }
   },
   computed: {
@@ -153,7 +171,12 @@ export default {
   created() {
   },
   methods: {
-    
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: +item.brandId
+      }));
+    },
     show(data) {
       this.form = data
       this.visible = true;
@@ -184,7 +207,7 @@ export default {
         //   }))
 
           this.confirmLoading = true;
-          
+
           httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",this.form, "post").then((res)=> {
             if (res.success) {
               this.$message.success(res.message);

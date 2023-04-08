@@ -152,7 +152,21 @@ export default {
       }
 
       this.confirmLoading = true;
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
+
+      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/expressageInOfStorage", dataList, "post").then((res) => {
+        if (res.success) {
+          this.$message.success(res.message);
+          this.visible = false;
+          this.form = [];
+          this.$emit('ok');
+          //打印水洗唛
+          this.createWashedMark(res.result);
+        }
+      })
+
+    },
+    createWashedMark(data) {
+      downFile("/ShoeFactoryOrder/shoeFactoryOrder/expressageCreateWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
