@@ -105,30 +105,29 @@ export default {
     },
     handleSubmit2() {
       let that = this;
-      console.log(8888);
-      // that.confirmLoading = true;
+       that.confirmLoading = true;
 
-      // if ("2" === this.auditOption && this.data.note.trim() === "") {
-      //   that.$message.warning("请填写拒绝原因！");
-      //   that.confirmLoading = false;
-      //   return false;
-      // } else {
-      //   this.data.status = this.auditOption;
-      //   this.data.note = this.data.note.trim();
-      //   //发送请求
-      //   let httpUrl = "/shoeCouponExchangeThird/update";
-      //   httpAction(httpUrl, this.data, "put").then((res) => {
-      //     if (res.success) {
-      //       that.$message.success(res.message);
-      //       this.handleCancel2();
-      //       that.$emit('ok');
-      //     } else {
-      //       that.$message.warning(res.message);
-      //     }
-      //   }).finally(() => {
-      //     that.confirmLoading = false;
-      //   })
-      // }
+      if ("2" === this.auditOption && this.data.note.trim() === "") {
+        that.$message.warning("请填写拒绝原因！");
+        that.confirmLoading = false;
+        return false;
+      } else {
+        this.data.status = this.auditOption;
+        this.data.note = this.data.note.trim();
+        //发送请求
+        let httpUrl = "/shoeCouponExchangeThird/update";
+        httpAction(httpUrl, this.data, "put").then((res) => {
+          if (res.success) {
+            that.$message.success(res.message);
+            this.handleCancel2();
+            that.$emit('ok');
+          } else {
+            that.$message.warning(res.message);
+          }
+        }).finally(() => {
+          that.confirmLoading = false;
+        })
+      }
     }
   }
 }
