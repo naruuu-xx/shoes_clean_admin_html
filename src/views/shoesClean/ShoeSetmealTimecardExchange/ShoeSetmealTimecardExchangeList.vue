@@ -93,6 +93,12 @@ export default {
           }
         },
         {
+          title: '订单号',
+          align: "center",
+          dataIndex: 'platformOrderId'
+        },
+
+        {
           title: '套餐名称',
           align: "center",
           dataIndex: 'setmeal'
@@ -101,6 +107,12 @@ export default {
           title: '鞋蜂卡名称',
           align: "center",
           dataIndex: 'name'
+        },
+        {
+          title: '兑换数量',
+          align: "center",
+          dataIndex: 'totalTimecardNum'
+
         },
         {
           title: '是否兑换',
