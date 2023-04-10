@@ -9,48 +9,36 @@
               <a-input placeholder="请输入机柜编码" v-model="queryParam.lockerCode" autocomplete="off"></a-input>
             </a-form-item>
           </a-col>
-          <!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-          <!--            <a-form-item label="机构编码">-->
-          <!--              <a-input placeholder="请输入机构编码" v-model="queryParam.orgCode"></a-input>-->
-          <!--            </a-form-item>-->
-          <!--          </a-col>-->
-          <!--          <template v-if="toggleSearchStatus">-->
-          <!--            <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-          <!--              <a-form-item label="省">-->
-          <!--                <j-area-linkage type="cascader" v-model="queryParam.province" placeholder="请选择省市区"/>-->
-          <!--              </a-form-item>-->
-          <!--            </a-col>-->
-          <!--            <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-          <!--              <a-form-item label="市">-->
-          <!--                <j-area-linkage type="cascader" v-model="queryParam.city" placeholder="请选择省市区"/>-->
-          <!--              </a-form-item>-->
-          <!--            </a-col>-->
-          <!--            <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-          <!--              <a-form-item label="区/县">-->
-          <!--                <j-area-linkage type="cascader" v-model="queryParam.area" placeholder="请选择省市区"/>-->
-          <!--              </a-form-item>-->
-          <!--            </a-col>-->
-          <!--            <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-          <!--              <a-form-item label="添加时间">-->
-          <!--                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择添加时间" v-model="queryParam.createTime"></j-date>-->
-          <!--              </a-form-item>-->
-          <!--            </a-col>-->
-          <!--            <a-col :xl="10" :lg="11" :md="12" :sm="24">-->
-          <!--              <a-form-item label="修改时间">-->
-          <!--                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.updateTime_begin"></j-date>-->
-          <!--                <span class="query-group-split-cust"></span>-->
-          <!--                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.updateTime_end"></j-date>-->
-          <!--              </a-form-item>-->
-          <!--            </a-col>-->
-          <!--          </template>-->
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="机柜名称">
+              <a-input placeholder="请输入机柜名称" v-model="queryParam.name" autocomplete="off"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="机柜状态">
+              <a-select v-model="queryParam.status">
+                <a-select-option v-for="item in statusOptions" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="接单状态">
+              <a-select v-model="queryParam.orderStatus">
+                <a-select-option v-for="item in orderStatusOptions" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="在线状态">
+              <a-select v-model="queryParam.onlineStatus">
+                <a-select-option v-for="item in onlineStatusOptions" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
-              <!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
-              <!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
-              <!--              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -61,18 +49,6 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_locker')">导出</a-button>-->
-      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
-      <!--        <a-button type="primary" icon="import">导入</a-button>-->
-      <!--      </a-upload>-->
-      <!-- 高级查询区域 -->
-      <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
-      <!--      <a-dropdown v-if="selectedRowKeys.length > 0">-->
-      <!--        <a-menu slot="overlay">-->
-      <!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
-      <!--        </a-menu>-->
-      <!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
-      <!--      </a-dropdown>-->
     </div>
 
     <!-- table区域-begin -->
@@ -128,7 +104,7 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
               <a-menu slot="overlay">
                 <a-menu-item>
-                   <a @click="setPercentage(record)" v-has="'percentage:set'">机柜收益</a>
+                   <a @click="setPercentage(record)">机柜收益</a>
                 </a-menu-item>
                 <a-menu-item>
                    <a @click="handleGrid(record)">格子状态</a>
@@ -328,6 +304,9 @@ export default {
       dictOptions: {},
       pcaData: '',
       superFieldList: [],
+      statusOptions: [{"value":"", "name":"全部"}, {"value":"1", "name":"启用"}, {"value":"0", "name":"停用"}],
+      orderStatusOptions: [{"value":"", "name":"全部"}, {"value":"1", "name":"正常接单"}, {"value":"0", "name":"停止接单"}],
+      onlineStatusOptions: [{"value":"", "name":"全部"}, {"value":"1", "name":"在线"}, {"value":"0", "name":"离线"}],
     }
   },
   created() {
@@ -383,20 +362,6 @@ export default {
     setPercentage(record) {
       this.$refs.setPercentage.show(record);
 
-    },
-    openAllDoor(lockerCode) {
-      const that = this;
-      let data = {
-        "devicenum": lockerCode
-      };
-      httpAction("/api/IoT/openAllDoor", data, 'post').then((res) => {
-        let json = JSON.parse(res);
-        if (json.code === 0) {
-          that.$message.success("开门成功")
-        } else {
-          that.$message.warning(json.message);
-        }
-      })
     },
     //================================================================================================================
     // initWebSocket: function () {
