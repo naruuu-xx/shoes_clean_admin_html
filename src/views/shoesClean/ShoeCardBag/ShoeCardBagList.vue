@@ -122,6 +122,11 @@ export default {
           dataIndex: 'surplusNum'
         },
         {
+          title:'用户已领取数量',
+          align:"center",
+          dataIndex: 'receiveNum'
+        },
+        {
           title:'创建时间',
           align:"center",
           dataIndex: 'createTime'
