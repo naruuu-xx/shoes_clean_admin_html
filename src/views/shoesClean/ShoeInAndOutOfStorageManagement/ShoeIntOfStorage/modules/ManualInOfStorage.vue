@@ -150,6 +150,7 @@ export default {
     },
   },
   created() {
+
   },
   methods: {
     changeSelect(data) {
@@ -161,6 +162,12 @@ export default {
     checkedSelect(val) {
     },
     show() {
+      httpAction("/shoeFactoryWasher/getWasher","", "get").then((res) =>{
+      if(!res.success){
+        this.$message.warning(res.message)
+
+      }
+    })
       this.visible = true;
       this.model = {};
 
@@ -183,15 +190,11 @@ export default {
 
       let no = this.model.no;
 
-      this.$refs.form.validate(async valid => {
+      this.$refs.form.validate( valid => {
         if (valid) {
           that.confirmLoading = true;
 
-          let res = await httpAction("/shoeFactoryWasher/getWasher","", "get")
-          if(!res.success){
-            this.$message.warning(res.message)
-            return false;
-          }
+
 
           httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",that.model, "post").then((res)=> {
             if (res.success) {
