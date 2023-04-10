@@ -180,10 +180,16 @@ export default {
           this.page = res.result.current || 1
           this.total = res.result.total || 1
           this.$emit('changeList',res.result)
+        }else {
+          this.$message.warning(res.message);
         }
       }).finally(() => {
         this.spinning = false
       })
+    },
+    reset() {
+      this.searchValue = ''
+      this.getList()
     }
   }
 }
