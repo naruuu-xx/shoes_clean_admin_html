@@ -161,7 +161,7 @@
         disableSubmit:false,
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
-          password: [{required: true,pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
+          password: [{required: true,pattern:/^.{6,16}$/,message: '请输入6到16位任意字符!'},
             {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{required: true, message: '请重新输入登录密码!',},
             { validator: this.compareToFirstPassword,}],

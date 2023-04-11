@@ -93,11 +93,10 @@ export default {
       }
 
       httpAction('/api/newIoT/openDoorByDevicenum', data, 'post').then((res) => {
-        let json = JSON.parse(res)
-        if (json.code === 0) {
+        if (res.code === 0) {
           that.$message.success('开门成功')
         } else {
-          that.$message.warning(json.message)
+          that.$message.warning(res.message)
         }
       })
     },
