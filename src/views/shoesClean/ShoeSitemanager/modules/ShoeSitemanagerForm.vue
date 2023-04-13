@@ -361,13 +361,17 @@ export default {
     edit(record) {
 
       this.disabledStatus = true;
-
-      Object.assign(this.model, record, {orderStatusRadio: record.orderStatus + ""});
+      let usersId = record.usersId.map(item => +item.userId)
+      Object.assign(this.model, record, {orderStatusRadio: record.orderStatus + "", usersId});
       console.log(this.model.orderStatusRadio)
       console.log(this.model)
       this.model.orgCode = record.orgCode + "";
       this.model.sitemanagerId = record.sitemanagerId;
 
+      record.usersId.forEach(item => {
+
+        this.weekList.push({value: +item.userId, label: `${item.nickName}(${item.phone})`});
+      })
 
       httpAction("/shoes/shoeLocker/getEdit?id="+record.sitemanagerId, "", "get").then((res)=> {
         this.model.lockerName = res.name;
@@ -380,6 +384,7 @@ export default {
         this.model.latitude=res.latitude;
         this.model.longitude=res.longitude;
         this.model.userId=+res.nickname[0].userId;
+
         this.weekList1.push({value: +res.nickname[0].userId, label: `${res.nickname[0].nickname}(${res.nickname[0].phone})`});
 
         if (res.isSelf === 1){
