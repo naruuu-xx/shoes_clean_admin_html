@@ -42,30 +42,15 @@
             </a-col>
 
             <a-col :span="24" >
-              <a-form-model-item label="公众号接收人" :labelCol="labelCol"
-                                 :wrapperCol="wrapperCol" prop="userId">
-                <a-select
-                  v-model="model.userId"
-                  show-search
-                  label-in-value
-                  placeholder="请输入昵称或手机号"
+              <a-form-model-item label="公众号接收人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+                <xf-select
                   style="width: 100%"
-                  :filter-option="false"
-                  :not-found-content="fetching ? undefined : null"
-                  :showArrow="false"
-                  @search="fetchUser"
-                  @change="handleChange"
+                  :list="weekList1"
+                  @changeList="changeSelect1"
+                  v-model="model.userId"
+                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
                 >
-                  <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-                  <a-select-option v-for="item in userList" :key="item.userId">
-                    {{ item.name }}
-                  </a-select-option>
-
-                </a-select>
-
-
-
-
+                </xf-select>
               </a-form-model-item>
             </a-col>
 
@@ -328,6 +313,7 @@ export default {
       showOrderType: true,
 
       weekList:[],
+      weekList1:[],
       //=================
     }
   },
@@ -393,8 +379,8 @@ export default {
         this.model.address=res.address;
         this.model.latitude=res.latitude;
         this.model.longitude=res.longitude;
-        this.model.userId=res.nickname[0].userId;
-        // this.userList.push({id: res.nickname[0].userId, name: res.nickname[0].nickname, phone: res.nickname[0].phone});
+        this.model.userId=+res.nickname[0].userId;
+        this.weekList1.push({value: +res.nickname[0].userId, label: `${res.nickname[0].nickname}(${res.nickname[0].phone})`});
 
         if (res.isSelf === 1){
           this.model.selectedOrderType.push("self");
@@ -441,6 +427,12 @@ export default {
     },
     changeSelect(data) {
       this.weekList = data.records.map(item => ({
+        label: `${item.nickname}(${item.phone})`,
+        value: +item.userId
+      }));
+    },
+    changeSelect1(data) {
+      this.weekList1 = data.records.map(item => ({
         label: `${item.nickname}(${item.phone})`,
         value: +item.userId
       }));
