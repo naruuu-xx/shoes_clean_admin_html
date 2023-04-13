@@ -27,29 +27,27 @@
             </a-col>
 
             <a-col :span="24">
-              <a-form-model-item label="公众号消息接收人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usersId">
+              <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usersId">
                 <xf-select
                   style="width: 100%"
                   :list="weekList"
                   @changeList="changeSelect"
+                  @change="checkedSelect"
                   mode="multiple"
                   v-model="model.usersId"
                   :url='`/shoes/shoeUser/getUserListBytype?type=site`'
                 >
-                  <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-                  <a-select-option v-for="item in userList" :key="item.userId">
-                    {{ item.wxInfo }}
-                  </a-select-option>
                 </xf-select>
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24" v-if="!model.sitemanagerId">
-              <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+            <a-col :span="24" >
+              <a-form-model-item label="公众号接收人" :labelCol="labelCol"
+                                 :wrapperCol="wrapperCol" prop="userId">
                 <a-select
+                  v-model="model.userId"
                   show-search
                   label-in-value
-                  :value="value"
                   placeholder="请输入昵称或手机号"
                   style="width: 100%"
                   :filter-option="false"
@@ -60,14 +58,14 @@
                 >
                   <a-spin v-if="fetching" slot="notFoundContent" size="small" />
                   <a-select-option v-for="item in userList" :key="item.userId">
-                    {{ item.wxInfo }}
+                    {{ item.name }}
                   </a-select-option>
+
                 </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :span="24" v-if="model.sitemanagerId">
-              <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-                <a-input v-model="model.wxInfo" :disabled="true"></a-input>
+
+
+
+
               </a-form-model-item>
             </a-col>
 
@@ -173,8 +171,7 @@
 
 <script>
 
-import {httpAction, getAction} from '@/api/manage'
-import {validateDuplicateValue} from '@/utils/util'
+import { httpAction } from '@/api/manage'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
 import $ from 'jquery'
 import debounce from '@/utils/debounce'
@@ -213,11 +210,14 @@ export default {
         name:"",
         phone:"",
         orderStatusRadio:"",
+        selectedOrderType:[],
       },
       disabledStatus: false,
       departName: '',
 
       shoeUserList: [],
+      selectedUser: [],
+
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -340,6 +340,8 @@ export default {
     this.getDepartName();
     //备份model原始值address
     this.modelDefault = JSON.parse(JSON.stringify(this.model));
+    console.log("usersId")
+    console.log(this.model.usersId)
   },
   beforeDestroy() {
     this.destroyMap()
@@ -358,7 +360,9 @@ export default {
         longitude:"",
         latitude:"",
         orderStatusRadio: "1",
-        usersId: []
+        userId: '',
+        usersId: [],
+        selectedOrderType: [],
       };
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
@@ -376,7 +380,6 @@ export default {
       console.log(this.model.orderStatusRadio)
       console.log(this.model)
       this.model.orgCode = record.orgCode + "";
-      //this.model.departName = record.departName;
       this.model.sitemanagerId = record.sitemanagerId;
 
 
@@ -391,6 +394,14 @@ export default {
         this.model.latitude=res.latitude;
         this.model.longitude=res.longitude;
         this.model.userId=res.nickname[0].userId;
+        // this.userList.push({id: res.nickname[0].userId, name: res.nickname[0].nickname, phone: res.nickname[0].phone});
+
+        if (res.isSelf === 1){
+          this.model.selectedOrderType.push("self");
+        }
+        if (res.isService === 1){
+          this.model.selectedOrderType.push("service");
+        }
 
         let center = new qq.maps.LatLng(res.latitude, res.longitude);// 设置地图中心点坐标
         this.option = {
@@ -433,6 +444,8 @@ export default {
         label: `${item.nickname}(${item.phone})`,
         value: +item.userId
       }));
+    },
+    checkedSelect(val) {
     },
     submitForm() {
       const that = this;
