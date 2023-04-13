@@ -126,7 +126,18 @@
             align:"center",
             dataIndex: 'type',
           customRender: (text, record) => {
-            return text === 'self' ? '自行存取' : '上门取件'
+              if(text ==='self'){
+                return '自行存取'
+              }
+              else if (text === 'service'){
+                return '上门取件'
+              }
+              else if (text === 'site_self'){
+                return '站点存取'
+              }
+              else if (text === 'site'){
+                return '站点上门'
+              }
           }
           },
           {
