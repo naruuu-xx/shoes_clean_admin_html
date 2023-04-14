@@ -109,16 +109,16 @@ export default {
     checkedSelect(val) {
     },
     show(record) {
-
-      this.visible = true;
-
-      this.data = record;
       httpAction("/shoeFactoryWasher/getWasher","", "get").then((res) =>{
         if(!res.success){
           this.$message.warning(res.message)
 
         }
       })
+      this.visible = true;
+
+      this.data = record;
+
 
     },
     handleCancel(){
