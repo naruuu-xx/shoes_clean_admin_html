@@ -48,7 +48,7 @@
                   :list="weekList1"
                   @changeList="changeSelect1"
                   v-model="model.userId"
-                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
+                  :url='`/shoes/shoeUser/getUserListBytype?type=siteUser`'
                 >
                 </xf-select>
               </a-form-model-item>
