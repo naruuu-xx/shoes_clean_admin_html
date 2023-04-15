@@ -43,6 +43,12 @@
           <a-row>
             <a-col :span="24"><p class="label-content">处理方式：{{ data.dealType }}</p></a-col>
           </a-row>
+          <a-row v-if="this.dealType === 1">
+            <a-col :span="24"><p class="label-content">追加服务项：{{ this.additionalTitle }}</p></a-col>
+          </a-row>
+          <a-row v-if="this.dealType === 1">
+            <a-col :span="24"><p class="label-content">追加费用：{{ this.additionalPrice }}元</p></a-col>
+          </a-row>
           <a-row>
             <a-col :span="24"><p class="label-content">订单状态：{{ data.status }}</p></a-col>
           </a-row>
@@ -94,6 +100,9 @@ export default {
       clickedImage: "",
       factoryInTime: "",
       factoryOutTime: "",
+      dealType: null,
+      additionalTitle: "",
+      additionalPrice: ""
     }
   },
   created() {
@@ -112,13 +121,19 @@ export default {
         this.data.status = "已处理";
       }
 
-      let dealType = this.data.dealType;
-      if (0 === dealType) {
+      this.dealType = this.data.dealType;
+      if (0 === this.dealType) {
         this.data.dealType = "未处理";
-      } else if (1 === dealType) {
+      } else if (1 === this.dealType) {
         this.data.dealType = "增加服务费";
-      } else if (2 === dealType) {
+        httpAction("/ShoeOrder/shoeOrder/querySupplementOrder?orderId="+this.data.orderId,null,"get").then((res) => {
+          this.additionalTitle = res.result.title;
+          this.additionalPrice = res.result.price;
+        })
+      } else if (2 === this.dealType) {
         this.data.dealType = "退回";
+      } else if (3 === this.dealType) {
+        this.data.dealType = "继续洗";
       }
 
       this.exceptionImageList = JSON.parse(record.images);
@@ -130,7 +145,7 @@ export default {
       httpAction("/ShoeOrder/shoeOrder/getShoeOrderLogisticsInfo", queryData, "post").then((res) => {
         this.factoryInTime = res.result.factoryInTime;
         if (res.result.factoryOutTime === null) {
-          this.factoryOutTime = "";
+          this.factoryOutTime = "————————";
         } else {
           this.factoryOutTime = res.result.factoryOutTime;
         }
