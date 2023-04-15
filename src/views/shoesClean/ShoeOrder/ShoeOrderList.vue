@@ -294,7 +294,8 @@ export default {
         {"value": "", "name": "全部"}, {"value": "self", "name": "自提"}, {
           "value": "service",
           "name": "配送"
-        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点"}
+        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点配送"}
+        , {"value": "site_self", "name": "站点自提"}
       ],
       lockerList: [],
     }
