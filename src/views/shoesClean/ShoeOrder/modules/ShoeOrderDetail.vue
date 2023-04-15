@@ -278,7 +278,9 @@ export default {
         this.orderRefund = res.orderRefund
       })
       if (type === 'self') {
-        orderInfo.type = '站点自寄'
+        orderInfo.type = '机柜自提'
+      }else if (type === 'site_self'){
+        orderInfo.type = '站点自提'
       } else if (type === 'service' || type === 'site') {
         orderInfo.type = '上门取件'
         //获取配送信息
