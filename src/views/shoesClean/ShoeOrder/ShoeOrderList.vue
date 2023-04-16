@@ -291,9 +291,9 @@ export default {
         {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {"value": "19", "name": "工厂已寄出"},
       ],
       typeOptionList: [
-        {"value": "", "name": "全部"}, {"value": "self", "name": "自提"}, {
+        {"value": "", "name": "全部"}, {"value": "self", "name": "机柜自提"}, {
           "value": "service",
-          "name": "配送"
+          "name": "机柜配送"
         }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点配送"}
         , {"value": "site_self", "name": "站点自提"}
       ],
