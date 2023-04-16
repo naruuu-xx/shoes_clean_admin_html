@@ -440,6 +440,7 @@ export default {
         this.model.latitude=res.latitude;
         this.model.longitude=res.longitude;
         this.model.userId=+res.nickname[0].userId;
+        this.model.paths=res.paths;
 
         this.weekList1.push({value: +res.nickname[0].userId, label: `${res.nickname[0].nickname}(${res.nickname[0].phone})`});
 
