@@ -136,27 +136,12 @@ export default {
           dataIndex: 'endTime'
         },
         {
-          title: '使用时间',
+          title: '剩余次数',
           align: "center",
-          dataIndex: 'useTime'
+          dataIndex: 'remainNum'
         },
-        {
-          title: '是否停用',
-          align: "center",
-          dataIndex: 'status',
-          customRender: (status) => {
-            if (status === 0) {
-              status = '是'
-            } else status = '否'
-            return status;
-          },
-        },
-        {
-          title: '操作',
-          dataIndex: 'action',
-          align: 'center',
-          scopedSlots: { customRender: 'action' }
-        }
+
+
       ],
     }
   },
