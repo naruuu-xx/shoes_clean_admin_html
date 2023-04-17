@@ -145,6 +145,18 @@ export default {
           }
         },
         {
+          title:'派发类型',
+          align:"center",
+          dataIndex:'type',
+          customRender:function (text) {
+            if(text === 1){
+              return text = '优惠券'
+            }else if(text === 2){
+              return text = '鞋蜂卡'
+            }
+          }
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           align: "center",
