@@ -153,6 +153,8 @@ export default {
               return text = '优惠券'
             }else if(text === 2){
               return text = '鞋蜂卡'
+            }else{
+              return text = ''
             }
           }
         },
