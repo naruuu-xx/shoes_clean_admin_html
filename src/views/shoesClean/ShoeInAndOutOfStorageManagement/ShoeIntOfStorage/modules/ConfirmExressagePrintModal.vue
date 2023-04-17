@@ -126,7 +126,6 @@ export default {
       httpAction("/shoeFactoryWasher/getWasher","", "get").then((res) =>{
         if(!res.success){
           this.$message.warning(res.message)
-
         }
       })
       this.dataList = record.map(item => Object.assign({},item,{selectedNote: ""}))

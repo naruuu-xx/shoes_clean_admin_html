@@ -189,8 +189,8 @@ export default {
       description: 'shoe_order管理页面',
       serviceCode: '',
       selfCode: '',
-      queryParam:{
-        statusList:'',
+      queryParam: {
+        statusList: '',
         finishTimeLeft: '',
         finishTimeRight: '',
         finishTime: [],
@@ -254,11 +254,11 @@ export default {
           dataIndex: 'createTime'
         },
         {
-          title:'订单分类',
-          align:"center",
-          dataIndex:'classify',
-          customRender:(text)=>{
-            return filterDictTextByCache('order_classify',text);
+          title: '订单分类',
+          align: "center",
+          dataIndex: 'classify',
+          customRender: (text) => {
+            return filterDictTextByCache('order_classify', text);
           }
         },
         {
@@ -297,7 +297,7 @@ export default {
       dictOptions: {},
       superFieldList: [],
       statusOptionList: [
-         {"value": "0", "name": "待付款"}, {"value": "1", "name": "已付款"},
+        {"value": "0", "name": "待付款"}, {"value": "1", "name": "已付款"},
         {"value": "2", "name": "配送员已接单（取件）"}, {"value": "3", "name": "配送员已收件"}, {
           "value": "4",
           "name": "已入柜"
@@ -309,17 +309,23 @@ export default {
           "name": "已完成"
         },
         {"value": "14", "name": "退款中"}, {"value": "15", "name": "已退款"}, {"value": "16", "name": "已取消"},
-        {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {"value": "19", "name": "工厂已寄出"},
+        {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {
+          "value": "19",
+          "name": "工厂已寄出"
+        },
       ],
       typeOptionList: [
-        {"value": "", "name": "全部"}, {"value": "self", "name": "自提"}, {
+        {"value": "", "name": "全部"}, {"value": "self", "name": "机柜自提"}, {
           "value": "service",
-          "name": "配送"
-        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点配送"},
-        {"value": "site_self", "name": "站点自提"}
+          "name": "机柜配送"
+        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点配送"}
+        , {"value": "site_self", "name": "站点自提"}
       ],
       classifyList: [
-        {"value": "", "name": "全部"}, {"value": "normal", "name": "常规订单"}, {"value": "customer", "name": "合作客户订单"}
+        {"value": "", "name": "全部"}, {"value": "normal", "name": "常规订单"}, {
+          "value": "customer",
+          "name": "合作客户订单"
+        }
       ],
       lockerList: [],
     }
