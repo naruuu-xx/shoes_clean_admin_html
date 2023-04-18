@@ -189,6 +189,9 @@ export default {
         this.getExpressagesInfo(this.data.orderId);
       }
 
+      if (this.data.factoryOutTime===''||this.data.factoryOutTime===null){
+        this.data.factoryOutTime="————"
+      }
       //请求接口，获取异常信息
       httpAction("/ShoeOrder/shoeOrder/queryExceptionOrderInfo?orderId=" + record.orderId, null, "get").then((res) => {
         this.orderException = res.result;
