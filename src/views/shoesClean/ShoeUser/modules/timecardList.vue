@@ -15,12 +15,6 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
-            <a-form-item label="是否停用">
-              <a-select v-model="queryParam.delFlag" style="width: 120px" :options="delFlagOption">
-              </a-select>
-            </a-form-item>
-          </a-col>
 
 
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
@@ -96,14 +90,19 @@ export default {
         value: ''
       }, {
         label: '可使用',
-        value: 0
+        value: 3
       }, {
         label: '已使用',
         value: 1
       }, {
         label: '已失效',
         value: 2
-      }],
+      },
+        {
+          label: '使用中',
+          value: 0
+        }
+      ],
       delFlagOption: [{
         label: '全部',
         value: ''
