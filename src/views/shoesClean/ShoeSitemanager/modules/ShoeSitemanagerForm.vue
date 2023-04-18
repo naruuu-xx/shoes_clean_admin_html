@@ -26,19 +26,33 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24" >
-              <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
-                <XfSelect
+            <a-col :span="24">
+              <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usersId">
+                <xf-select
+                  style="width: 100%"
                   :list="weekList"
-                  @change="checkedSelect"
                   @changeList="changeSelect"
-                  v-model="model.userId"
+                  @change="checkedSelect"
+                  mode="multiple"
+                  v-model="model.usersId"
                   :url='`/shoes/shoeUser/getUserListBytype?type=site`'
                 >
-                </XfSelect>
+                </xf-select>
               </a-form-model-item>
             </a-col>
 
+            <a-col :span="24" >
+              <a-form-model-item label="公众号接收人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
+                <xf-select
+                  style="width: 100%"
+                  :list="weekList1"
+                  @changeList="changeSelect1"
+                  v-model="model.userId"
+                  :url='`/shoes/shoeUser/getUserListBytype?type=siteUser`'
+                >
+                </xf-select>
+              </a-form-model-item>
+            </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardNo">
@@ -74,10 +88,18 @@
 
             <a-col :span="24">
               <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatusRadio">
-                <a-radio-group v-model:value="model.orderStatusRadio">
+                <a-radio-group v-model:value="model.orderStatusRadio" @change="orderStatusOnChange">
                   <a-radio value="1">是</a-radio>
                   <a-radio value="0">否</a-radio>
                 </a-radio-group>
+              </a-form-model-item>
+            </a-col>
+
+            <a-col :span="24" v-if="showOrderType">
+              <a-form-model-item label="接单类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="selectedOrderType">
+                <a-checkbox-group v-model:value="model.selectedOrderType">
+                  <a-checkbox v-for="item in orderTypeOptions" :value="item.value" :key="item.value">{{ item.name }}</a-checkbox>
+                </a-checkbox-group>
               </a-form-model-item>
             </a-col>
 
@@ -170,8 +192,7 @@
 
 <script>
 
-import {httpAction, getAction} from '@/api/manage'
-import {validateDuplicateValue} from '@/utils/util'
+import { httpAction } from '@/api/manage'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
 import $ from 'jquery'
 import debounce from '@/utils/debounce'
@@ -196,7 +217,6 @@ export default {
   },
   data() {
     return {
-      weekList:[],
       model: {
         lockerName:"",
         cardNo:"",
@@ -208,17 +228,19 @@ export default {
         latitude:"",
         longitude:"",
         userId:"",
+        usersId:[],
         name:"",
         phone:"",
         orderStatusRadio:"",
         paths:'',
-
+        selectedOrderType:[],
       },
       disabledStatus: false,
       departName: '',
-      value:'',
 
       shoeUserList: [],
+      selectedUser: [],
+
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -258,6 +280,9 @@ export default {
           {required: true, message: '请输入开户行地址!'},
         ],
         userId: [
+          {required: true, message: '请选择公众号消息接收人!'},
+        ],
+        usersId: [
           {required: true, message: '请选择绑定小程序用户!'},
         ],
         longitude: [
@@ -283,7 +308,10 @@ export default {
         paths:[
           {required: true, message: '请设置配送范围'},
           {validator:this.handleIsIn}
-        ]
+        ],
+        selectedOrderType: [
+          {required: true, message: '请选择接单类型!'},
+        ],
 
       },
       url: {
@@ -323,6 +351,14 @@ export default {
       lastFetchId: 0,
 
       activePattern:'marker', //地图操作模式，marker设置机柜定位，polygon设置配送范围
+
+
+      orderTypeOptions: [{"value":"self", "name":"自提"}, {"value": "service", "name":"配送"}],
+
+      showOrderType: true,
+
+      weekList:[],
+      weekList1:[],
       //=================
     }
   },
@@ -352,14 +388,6 @@ export default {
     document.body.appendChild(script1);
   },
   methods: {
-    changeSelect(data) {
-      this.weekList = data.records.map(item => ({
-        label: item.nickname+'('+item.phone+')',
-        value: +item.userId
-      }));
-    },
-    checkedSelect(val) {
-    },
     add() {
       // this.edit(this.modelDefault);
       this.disabledStatus = false;
@@ -372,6 +400,9 @@ export default {
         latitude:"",
         orderStatusRadio: "1",
         paths: "",
+        userId: '',
+        usersId: [],
+        selectedOrderType: [],
       };
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
@@ -386,12 +417,17 @@ export default {
     edit(record) {
 
       this.disabledStatus = true;
-
-      Object.assign(this.model, record, {orderStatusRadio: record.orderStatus + ""});
+      let usersId = record.usersId.map(item => +item.userId)
+      Object.assign(this.model, record, {orderStatusRadio: record.orderStatus + "", usersId});
+      console.log(this.model.orderStatusRadio)
+      console.log(this.model)
       this.model.orgCode = record.orgCode + "";
-      //this.model.departName = record.departName;
       this.model.sitemanagerId = record.sitemanagerId;
 
+      record.usersId.forEach(item => {
+
+        this.weekList.push({value: +item.userId, label: `${item.nickName}(${item.phone})`});
+      })
 
       httpAction("/shoes/shoeLocker/getEdit?id="+record.sitemanagerId, "", "get").then((res)=> {
         this.model.lockerName = res.name;
@@ -403,9 +439,17 @@ export default {
         this.model.address=res.address;
         this.model.latitude=res.latitude;
         this.model.longitude=res.longitude;
-        this.model.userId=res.nickname[0].userId;
-        this.weekList.push({label:res.nickname[0].nickname+"("+res.nickname[0].phone+")",value:res.nickname[0].userId});
+        this.model.userId=+res.nickname[0].userId;
         this.model.paths=res.paths;
+
+        this.weekList1.push({value: +res.nickname[0].userId, label: `${res.nickname[0].nickname}(${res.nickname[0].phone})`});
+
+        if (res.isSelf === 1){
+          this.model.selectedOrderType.push("self");
+        }
+        if (res.isService === 1){
+          this.model.selectedOrderType.push("service");
+        }
 
         let center = new qq.maps.LatLng(res.latitude, res.longitude);// 设置地图中心点坐标
         this.option = {
@@ -446,6 +490,20 @@ export default {
         fetching: false,
       });
     },
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: `${item.nickname}(${item.phone})`,
+        value: +item.userId
+      }));
+    },
+    changeSelect1(data) {
+      this.weekList1 = data.records.map(item => ({
+        label: `${item.nickname}(${item.phone})`,
+        value: +item.userId
+      }));
+    },
+    checkedSelect(val) {
+    },
     submitForm() {
       const that = this;
       // 触发表单验证
@@ -462,10 +520,23 @@ export default {
             method = 'put';
           }
 
-          //处理省市区
-          // let province = this.model.province[0];
-          // let city = this.model.province[1];
-          // let area = this.model.province[2];
+          //处理接单状态
+          let selectedOrderTypeArray = this.model.selectedOrderType;
+          let orderStatusRadio = this.model.orderStatusRadio;
+
+          let isSelf = 0;
+
+          let isService = 0;
+          if ("1" === orderStatusRadio) {
+            for (let i = 0; i < selectedOrderTypeArray.length; i++) {
+              let selectedOrderTypeArrayElement = selectedOrderTypeArray[i];
+              if ("self" === selectedOrderTypeArrayElement) {
+                isSelf = 1;
+              } else if ("service" === selectedOrderTypeArrayElement) {
+                isService = 1;
+              }
+            }
+          }
 
           let data = {
             "lockerName": this.model.lockerName,
@@ -474,6 +545,7 @@ export default {
             "status": this.model.statusRadio,
             "phone": this.model.phone,
             "userId": this.model.userId,
+            "usersId": this.model.usersId,
             "cardNo": this.model.cardNo,
             "bank": this.model.bank,
             "openBank": this.model.openBank,
@@ -489,6 +561,8 @@ export default {
             "sitemanagerId": this.model.sitemanagerId,
             "orderStatus":this.model.orderStatusRadio,
             "paths":this.model.paths,
+            "isSelf": isSelf,
+            "isService": isService,
           }
 
           httpAction(httpurl, data, method).then((res) => {
@@ -506,10 +580,21 @@ export default {
 
       })
     },
+    orderStatusOnChange(e) {
+      let selectedValue = e.target.value;
+
+      if ("0" === selectedValue) {
+        this.validatorRules.selectedOrderType[0].required = false;
+        this.showOrderType = false;
+      } else if ("1" === selectedValue) {
+        this.validatorRules.selectedOrderType[0].required = true;
+        this.showOrderType = true;
+      }
+
+    },
     destroyMap() {
       this.map.destroy();
     },
-
     getAreaList() {
       httpAction("/shoes/shoeLocker/getAreaList", null, "get").then((res) => {
         let areaList = res.result;
@@ -520,6 +605,7 @@ export default {
     //=====================================================
     //以下是腾讯地图的方法
     //加载地图
+
     initMapByJQ(lat, lng) {
       let _this = this;
 
@@ -531,7 +617,6 @@ export default {
         zoom: 12,//设置地图缩放级别
         center: center //设置地图中心点坐标
       });
-
       //初始化marker图层
       this.initMarker();
 

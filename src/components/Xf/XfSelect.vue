@@ -95,6 +95,10 @@ export default {
     disabled:{
       type: Boolean,
       default: false
+    },
+    type:{
+      type: String,
+      default: '', // 简化小程序用户搜索的操作 'customer' 合作下单,'distributor' 推广,'investors' 投资人,'site' 站点
     }
   },
 
@@ -112,7 +116,9 @@ export default {
       total: 0,
       page: 1,
       spinning: false,
-      searchValue: ''
+      searchValue: '',
+      typeArr:['customer','distributor','investors','site'],
+      dataList:[]
     }
   },
 
@@ -130,12 +136,19 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    type: {
+      handler(value, oldValue) {
+        if(value) {
+          this.getList()
+        }
+      }
     }
   },
 
   computed: {
     selectList() {
-      return this.list
+      return this.isType ? this.list : this.dataList
     },
 
     maxPage() {
@@ -144,6 +157,10 @@ export default {
 
     nowPage() {
       return this.page
+    },
+
+    isType() {
+      return this.type == '' || !this.typeArr.includes(this.type)
     }
   },
 
@@ -175,11 +192,19 @@ export default {
         pageSize: this.pageSize,
         [this.searchKey]: val
       }
-      getAction(this.url, form).then((res) => {
+      let url = this.isType ? this.url : `/shoes/shoeUser/getUserListBytype?type=${this.type}`
+      getAction(url, form).then((res) => {
         if (res.success) {
           this.page = res.result.current || 1
           this.total = res.result.total || 1
-          this.$emit('changeList',res.result)
+          if(this.isType) {
+            this.$emit('changeList',res.result)
+          } else {
+            this.dataList = res.result.records.map(item => ({
+              label: `${item.nickname}(${item.phone})`,
+              value: +item.userId
+            }));
+          }
         }else {
           this.$message.warning(res.message);
         }

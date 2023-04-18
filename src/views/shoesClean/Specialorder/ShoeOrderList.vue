@@ -69,7 +69,6 @@
           </a-button>
         </a-popconfirm>
 
-        </a-button>
       </a-space>
     </div>
 
@@ -303,14 +302,14 @@
         let form = {
           orderIds: id || this.selectedRowKeys.join(',')
         }
-        
+
         getAction("/shoes/shoeSpecialOrder/orderStatusBatchChange", form).then((res) => {
           if (res.success) {
             this.selectedRowKeys = []
             this.loadData();
           }
         })
-       
+
       },
       onSelectAll(selected, selectedRows, changeRows) {
         if(selected) {

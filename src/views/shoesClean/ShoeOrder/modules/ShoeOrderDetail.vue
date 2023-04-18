@@ -73,11 +73,11 @@
         <a-descriptions-item label="昵称"> {{ data.nickname }} </a-descriptions-item>
         <a-descriptions-item label="绑定手机"> {{ data.wxPhone }} </a-descriptions-item>
         <a-descriptions-item label="订单类型"> {{ data.type }} </a-descriptions-item>
-        <template v-if="'站点自寄' === data.type || '上门取件' === data.type">
+        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type">
           <a-descriptions-item label="用户姓名"> {{ data.name }} </a-descriptions-item>
           <a-descriptions-item label="手机号码"> {{ data.phone }} </a-descriptions-item>
         </template>
-        <template v-if="'上门取件' === data.type">
+        <template v-if="'机柜配送' === data.type">
           <a-descriptions-item label="预定时间"> {{ data.expect }} </a-descriptions-item>
           <a-descriptions-item label="用户地址"> {{ userAddress }} </a-descriptions-item>
           <a-descriptions-item label="门牌号"> {{ door }} </a-descriptions-item>
@@ -278,9 +278,11 @@ export default {
         this.orderRefund = res.orderRefund
       })
       if (type === 'self') {
-        orderInfo.type = '站点自寄'
-      } else if (type === 'service' || type === 'site') {
-        orderInfo.type = '上门取件'
+        orderInfo.type = '机柜自提'
+      }else if (type === 'site_self'){
+        orderInfo.type = '站点自提'
+      } else if (type === 'service' ) {
+        orderInfo.type = '机柜配送'
         //获取配送信息
         getAction('/ShoeOrder/shoeOrder/getCourierInfo', requestData).then((res) => {
           this.userAddress = res.result.address
@@ -290,7 +292,18 @@ export default {
           this.courierNameByAfter = res.result.courierNameByAfter
           this.courierPhoneByAfter = res.result.courierPhoneByAfter
         })
-      } else if (type === 'expressage') {
+      }  else if (type === 'site') {
+        orderInfo.type = '站点配送'
+        //获取配送信息
+        getAction('/ShoeOrder/shoeOrder/getCourierInfo', requestData).then((res) => {
+          this.userAddress = res.result.address
+          this.door = res.result.door
+          this.courierNameByBefore = res.result.courierNameByBefore
+          this.courierPhoneByBefore = res.result.courierPhoneByBefore
+          this.courierNameByAfter = res.result.courierNameByAfter
+          this.courierPhoneByAfter = res.result.courierPhoneByAfter
+        })
+      }else if (type === 'expressage') {
         orderInfo.type = '快递上门'
         //获取配送信息
 
