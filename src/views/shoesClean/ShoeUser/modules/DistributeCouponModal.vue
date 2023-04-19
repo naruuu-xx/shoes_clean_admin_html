@@ -32,12 +32,12 @@
                 @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="selectOption"
-                :url='`/shoes/shoeUser/getCouponOrCardBag?type=${type}`'
+                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=${type}`'
                 style="width: 100%;"
               >
               </XfSelect>
           </a-form-model-item>
-          
+
         </a-col>
       </a-row>
       <a-row type="flex" justify="space-around">
@@ -131,7 +131,7 @@ export default {
         this.note = record.note;
         this.record = record;
       }
-      
+
     },
     handleCancel() {
       this.nickname = "";
@@ -151,7 +151,7 @@ export default {
         this.$message.warning("请输入派发原因！");
         return;
       } else {
-        
+
         let url = ''
         let form = {}
         if(this.userIds) {
