@@ -63,7 +63,8 @@ export default {
         {number: 19, state: 1},
         {number: 20, state: 1},
         {number: 21, state: 1},
-      ]
+      ],
+      lockerList:[],
     }
   },
   methods: {
@@ -114,11 +115,10 @@ export default {
       }
 
       httpAction("/api/IoT/openDoorByDevicenum", data, 'post').then((res)=>{
-        let json = JSON.parse(res);
-        if (json.code === 0) {
+        if (res.code === 0) {
           that.$message.success("开门成功")
         } else {
-          that.$message.warning(json.message);
+          that.$message.warning(res.message);
         }
       })
     }

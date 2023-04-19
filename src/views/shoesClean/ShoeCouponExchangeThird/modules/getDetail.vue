@@ -4,6 +4,7 @@
              :visible="visible"
              switchFullscreen
              @cancel="handleCancel2"
+             @ok="handleSubmit2"
              cancelText="关闭"
              wrapClassName="full-modal">
 
@@ -48,6 +49,10 @@ export default {
     },
     handleCancel2() {
       this.visible = false;
+    },
+    handleSubmit2(){
+      this.visible = false;
+
     },
     getCouponName(couponId){
       httpAction("/shoeCouponExchangeThird/getCouponName?id="+couponId, null, "get").then((res) => {

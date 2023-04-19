@@ -52,6 +52,7 @@
                 @changeList="changeSelect"
                 v-model="data.couponId"
                 :url='`/shoes/shoeUser/getCouponOrCardBag?type=0`'
+                style="width: 80%;"
               >
               </XfSelect>
             </div>
@@ -104,8 +105,7 @@ export default {
     },
     handleSubmit2() {
       let that = this;
-
-      that.confirmLoading = true;
+       that.confirmLoading = true;
 
       if ("2" === this.auditOption && this.data.note.trim() === "") {
         that.$message.warning("请填写拒绝原因！");
