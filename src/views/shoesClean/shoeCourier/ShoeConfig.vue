@@ -2,8 +2,8 @@
   <a-card :bordered="false">
     <div>
       <span>取件范围</span><br/>
-      <span>上门取件范围:<a-input-number placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 150px"
-                                         :min="0" size="small"/>km(以快递柜为中心,半径多少km可取件)</span>
+      <span>用户下单时匹配<a-input-number placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 150px"
+                                         :min="0" size="small"/>km范围内的机柜</span>
     </div>
     <a-divider/>
     <div>
