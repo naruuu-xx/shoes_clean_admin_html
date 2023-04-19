@@ -145,8 +145,11 @@ export default {
     handleSubmit() {
       if (this.selectOption === null || this.selectOption === "") {
         this.$message.warning("请选择优惠券或卡包！");
-      } else if (this.note === null || this.note == "") {
+        return;
+      }
+      if (this.note === null || this.note === "" || this.note ==undefined) {
         this.$message.warning("请输入派发原因！");
+        return;
       } else {
         
         let url = ''
