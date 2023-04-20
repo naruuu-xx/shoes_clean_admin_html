@@ -88,6 +88,8 @@
         <span slot="action" slot-scope="text, record">
           <a v-if="0 === record.status" @click="handleOrder(record)">处理</a>
           <a v-if="1 === record.status || 2 === record.status" @click="handleDetail(record)">查看详情</a>
+          <a-divider v-if="2 === record.status && 1 === record.dealType" type="vertical" />
+          <a v-if="2 === record.status && 1 === record.dealType" @click="handleCreateWashedMark(record)">打印水洗唛</a>
         </span>
 
       </a-table>
@@ -108,6 +110,7 @@
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import ShoeOrderExceptionModal from "./modules/ShoeOrderExceptionModal";
   import ShoeOrderExceptionDetailModal from "./modules/ShoeOrderExceptionDetailModal";
+  import {downFile} from "../../../api/manage";
 
   export default {
     name: 'ShoeOrderExceptionList',
@@ -202,39 +205,6 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        // fieldList.push({type:'int',value:'orderId',text:'订单ID',dictCode:''})
-        // fieldList.push({type:'int',value:'orderPId',text:'父订单ID',dictCode:''})
-        // fieldList.push({type:'string',value:'no',text:'订单编号',dictCode:''})
-        // fieldList.push({type:'int',value:'userId',text:'用户ID',dictCode:''})
-        // fieldList.push({type:'int',value:'goodsId',text:'商品ID',dictCode:''})
-        // fieldList.push({type:'int',value:'skuId',text:'规格ID',dictCode:''})
-        // fieldList.push({type:'string',value:'title',text:'商品名称',dictCode:''})
-        // fieldList.push({type:'string',value:'skuTitle',text:'规格名称',dictCode:''})
-        // fieldList.push({type:'string',value:'image',text:'商品图片',dictCode:''})
-        // fieldList.push({type:'Text',value:'orderImages',text:'洗护前照片',dictCode:''})
-        // fieldList.push({type:'string',value:'note',text:'订单备注',dictCode:''})
-        // fieldList.push({type:'string',value:'expect',text:'期望上门取件时间',dictCode:''})
-        // fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
-        // fieldList.push({type:'string',value:'phone',text:'号码',dictCode:''})
-        // fieldList.push({type:'int',value:'totalPrice',text:'总金额',dictCode:''})
-        // fieldList.push({type:'int',value:'price',text:'应付金额',dictCode:''})
-        // fieldList.push({type:'int',value:'actualPrice',text:'实付金额',dictCode:''})
-        // fieldList.push({type:'int',value:'goodsPrice',text:'商品金额',dictCode:''})
-        // fieldList.push({type:'int',value:'courierPrice',text:'配送费用',dictCode:''})
-        // fieldList.push({type:'int',value:'couponPrice',text:'优惠抵扣金额',dictCode:''})
-        // fieldList.push({type:'string',value:'status',text:'订单状态：0=待付款，1=洗护中，2=待取件，3=已完成，4=已取消，5=退款中，6=已退款，7=异常',dictCode:''})
-        // fieldList.push({type:'int',value:'beforeLockerId',text:'机柜ID（下单）',dictCode:''})
-        // fieldList.push({type:'int',value:'beforeGridNo',text:'机柜格子编号（下单）',dictCode:''})
-        // fieldList.push({type:'int',value:'afterLockerId',text:'机柜ID（配送）',dictCode:''})
-        // fieldList.push({type:'int',value:'afterGridNo',text:'机柜格子编号（配送）',dictCode:''})
-        // fieldList.push({type:'string',value:'orgCode',text:'工厂编码',dictCode:''})
-        // fieldList.push({type:'string',value:'bagCode',text:'袋子编码',dictCode:''})
-        // fieldList.push({type:'int',value:'hasException',text:'异常历史:0=无,1=有',dictCode:''})
-        // fieldList.push({type:'string',value:'type',text:'订单类型:self=站点自寄,service=上门取件',dictCode:''})
-        // fieldList.push({type:'string',value:'code',text:'自提取件码',dictCode:''})
-        // fieldList.push({type:'datetime',value:'cancelTime',text:'取消时间'})
-        // fieldList.push({type:'datetime',value:'payTime',text:'付款时间'})
-        // fieldList.push({type:'datetime',value:'finishTime',text:'完成时间'})
         this.superFieldList = fieldList
       },
       handleOrder(record){
@@ -242,6 +212,46 @@
       },
       handleDetail(record){
         this.$refs.shoeOrderExceptionDetailModal.show(record);
+      },
+      handleCreateWashedMark(record){
+        let data = {
+          "no": record.no
+        }
+
+        downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+          if (!res) {
+            this.$message.warning(res.message)
+            return
+          }
+          const content = res;
+          // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
+          // 要不然无法进行打印
+          const blob = new Blob([content], { type: 'application/pdf' });
+          //=========================================================
+          var date = (new Date()).getTime();
+          var ifr = document.createElement('iframe');
+          ifr.style.frameborder = 'no';
+          ifr.style.display = 'none';
+          ifr.style.pageBreakBefore = 'always';
+          ifr.setAttribute('download', 'printPdf' + date + '.pdf');
+          ifr.setAttribute('id', 'printPdf' + date + '.pdf');
+          ifr.src = window.URL.createObjectURL(blob);
+          document.body.appendChild(ifr);
+
+          this.doPrint('printPdf' + date + '.pdf')
+          window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
+          //=========================================================
+          // this.$message.success("入库成功");
+          this.confirmLoading = false;
+        })
+      },
+      // 打印
+      doPrint(val) {
+        var ordonnance = document.getElementById(val).contentWindow;
+        setTimeout(() => {
+          // window.print()
+          ordonnance.print();
+        }, 0)
       }
     }
   }
