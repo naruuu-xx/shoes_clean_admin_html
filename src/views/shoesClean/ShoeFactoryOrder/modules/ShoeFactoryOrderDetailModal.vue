@@ -151,6 +151,10 @@ export default {
         this.getExpressagesInfo(this.data.orderId);
       }
 
+      if (this.data.factoryOutTime===''||this.data.factoryOutTime===null){
+        this.data.factoryOutTime="————"
+      }
+
     },
     handleCancel() {
       this.visible = false;
