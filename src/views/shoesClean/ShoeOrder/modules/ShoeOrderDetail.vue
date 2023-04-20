@@ -25,11 +25,12 @@
 
       <a-descriptions title="订单信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="订单编号"> {{ data.no }}</a-descriptions-item>
+        <a-descriptions-item label="支付交易号"> {{ data.outTradeNo }}</a-descriptions-item>
         <a-descriptions-item label="订单金额(元)">
           {{(data.goodsPrice + data.additionalPrice + data.originalCourierPrice).toFixed(2)}}
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
-        <a-descriptions-item :label="'上门取件' === data.type ? '配送费(元)' : '运费(元)'">
+        <a-descriptions-item :label="('机柜配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
           {{ data.originalCourierPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
@@ -45,7 +46,7 @@
         <a-descriptions-item label="机柜名称-格子数" v-if=" '快递上门' !== data.type && statusInt >= 9 && statusInt <= 13">
           {{ data.lockerName }}-{{ data.afterGridNo }}
         </a-descriptions-item>
-        <template v-if="'上门取件' === data.type">
+        <template v-if="'机柜配送' === data.type || '站点配送' === data.type">
           <a-descriptions-item label="配送员(取鞋)">
             <template v-if="courierNameByBefore !== '无'">
               {{ courierNameByBefore }}({{ courierPhoneByBefore }})
