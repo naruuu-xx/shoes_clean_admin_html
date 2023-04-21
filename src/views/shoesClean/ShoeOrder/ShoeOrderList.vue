@@ -29,7 +29,7 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单类型">
               <a-select   v-model="queryParam.type">
                 <a-select-option v-for="item in typeOptionList" :value="item.value" :key="item.value" >
@@ -39,7 +39,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单分类">
               <a-select v-model="queryParam.classify">
                 <a-select-option v-for="item in classifyList" :value="item.value" :key="item.value" >
@@ -201,11 +201,6 @@ export default {
           title: '订单编号',
           align: "center",
           dataIndex: 'no'
-        },
-        {
-          title: '支付交易单号',
-          align: "center",
-          dataIndex: 'outTradeNo'
         },
         {
           title: '商品名称',
