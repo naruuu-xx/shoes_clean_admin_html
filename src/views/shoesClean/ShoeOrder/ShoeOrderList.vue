@@ -39,6 +39,23 @@
               </a-select>
             </a-form-item>
           </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item  label="优惠券">
+              <XfSelect
+                :list="weekList"
+                ref="xfSelect"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="queryParam.couponId"
+                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
+                style="width: 100%;"
+              >
+              </XfSelect>
+            </a-form-item>
+
+          </a-col>
+
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单分类">
               <a-select v-model="queryParam.classify">
@@ -63,7 +80,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="searchReset1"icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -174,6 +191,7 @@ import ShoeRefundDetail from "./modules/ShoeRefundDetail";
 import {httpAction} from "@api/manage";
 import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
 import moment from 'moment/moment'
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
   name: 'ShoeOrderList',
@@ -183,9 +201,11 @@ export default {
     ShoeOrderModal,
     ShoeOrderDetail,
     ShoeRefundDetail,
+    XfSelect
   },
   data() {
     return {
+      weekList:[],
       description: 'shoe_order管理页面',
       serviceCode: '',
       selfCode: '',
@@ -361,6 +381,10 @@ export default {
         }
       })
     },
+    searchReset1(){
+      this.searchReset();
+      this.$refs.xfSelect.reset()
+    },
     getServiceCode(record) {
       //this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
       httpAction("ShoeOrder/shoeOrder/getServiceCode?orderId=" + record.orderId, null, "get").then((res) => {
@@ -368,6 +392,15 @@ export default {
           this.serviceCode = res.result;
         }
       })
+    },
+
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: item.id
+      }));
+    },
+    checkedSelect(val) {
     },
     getSuperFieldList() {
       let fieldList = [];
