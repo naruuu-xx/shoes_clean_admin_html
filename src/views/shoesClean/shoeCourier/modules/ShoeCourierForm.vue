@@ -105,6 +105,7 @@
            phone: [
               { required: true, message: '请输入 手机号!'},
               { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
+              { validator: this.validateCheckPhone},
            ],
            idcard: [
               { required: false, message: '请输入 身份证!'},
@@ -158,6 +159,27 @@
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
+      validateCheckPhone(rule, value, callback) {
+        let phone = value
+        if(phone.length == 11) {
+          getAction('/shoeCourier/shoeCourier/checkPhone',{
+            type: this.model.courierId ? 2 : 1,
+            phone
+          }).then(res => {
+            if(res.success) {
+              if(res.result.errMsg) {
+                callback(res.result.errMsg);
+              } else {
+                callback();
+              }
+            } else {
+              callback("接口出错,请联系管理员!");
+            }
+          })
+        } else {
+          callback("手机号码格式不正确!");
+        }
+      },
       validateIdCard(rule, value, callback) {
         if(!value || new RegExp(/^([1-6][1-9]|50)\d{4}(18|19|20)\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/
         ).test(value) || new RegExp(/^([1-6][1-9]|50)\d{4}\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\d{3}$/).test(value)){
