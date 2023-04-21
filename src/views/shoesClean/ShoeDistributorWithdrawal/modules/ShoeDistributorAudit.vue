@@ -12,6 +12,8 @@
 
     <h2>申请人：{{ name }}</h2>
     <h2>提现金额：{{ amount }}</h2>
+    <h2>实际到账金额：{{realwithdrawal}}</h2>
+    <h2>手续费率：{{withdrawalRatio*100}}%</h2>
 
     <!--      <a-form-model-item label="审核" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">-->
     <!--        <j-dict-select-tag type="radio" v-model="model.status"  dictCode="shoe_courier_status" placeholder="请选择登录状态" />-->
@@ -53,6 +55,8 @@ export default {
       model: {
         status: 0
       },
+      withdrawalRatio:'',
+      realwithdrawal:''
 
     }
   },
@@ -87,6 +91,8 @@ export default {
       this.id = record.distributorWithdrawalId;
       this.name = record.name;
       this.amount = record.amount;
+      this.withdrawalRatio = parseFloat(res.result.withdrawalRatio || 0);
+      this.realwithdrawal = res.result.realwithdrawal;
     }
   }
 

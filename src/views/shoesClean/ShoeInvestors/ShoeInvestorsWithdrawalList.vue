@@ -110,6 +110,19 @@ export default {
           dataIndex: 'amount'
         },
         {
+          title: '实际到账金额',
+          align: "center",
+          dataIndex: 'realwithdrawal'
+        },
+        {
+          title: '手续费率',
+          align: "center",
+          dataIndex: 'withdrawalRatio',
+          customRender: (text) => {
+            return `${parseFloat((text || 0) * 100).toFixed(2)}%`
+          },
+        },
+        {
           title: '申请时间',
           align: "center",
           dataIndex: 'createTime'

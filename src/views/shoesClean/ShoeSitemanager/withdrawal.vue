@@ -55,7 +55,6 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
-
         <span slot="action" slot-scope="text, record">
           <a @click="showDetail(record)" v-has="'Withdrawal:sitemanager:Detail'">详情</a>
 
@@ -112,6 +111,19 @@ name: "ShoeInvestorsWithdrawalList",
           title: '提现金额',
           align: "center",
           dataIndex: 'amount'
+        },
+        {
+          title: '实际到账金额',
+          align: "center",
+          dataIndex: 'realwithdrawal'
+        },
+        {
+          title: '手续费率',
+          align: "center",
+          dataIndex: 'withdrawalRatio',
+          customRender: (text) => {
+            return `${parseFloat((text || 0) * 100).toFixed(2)}%`
+          },
         },
         {
           title: '申请时间',
