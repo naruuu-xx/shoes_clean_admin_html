@@ -39,6 +39,22 @@
               </a-select>
             </a-form-item>
           </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item  label="优惠券">
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="queryParam.couponId"
+                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
+                style="width: 100%;"
+              >
+              </XfSelect>
+            </a-form-item>
+
+          </a-col>
+
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单分类">
               <a-select v-model="queryParam.classify">
@@ -174,6 +190,7 @@ import ShoeRefundDetail from "./modules/ShoeRefundDetail";
 import {httpAction} from "@api/manage";
 import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
 import moment from 'moment/moment'
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
   name: 'ShoeOrderList',
@@ -183,9 +200,11 @@ export default {
     ShoeOrderModal,
     ShoeOrderDetail,
     ShoeRefundDetail,
+    XfSelect
   },
   data() {
     return {
+      weekList:[],
       description: 'shoe_order管理页面',
       serviceCode: '',
       selfCode: '',
@@ -368,6 +387,14 @@ export default {
           this.serviceCode = res.result;
         }
       })
+    },
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: item.id
+      }));
+    },
+    checkedSelect(val) {
     },
     getSuperFieldList() {
       let fieldList = [];
