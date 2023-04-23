@@ -80,7 +80,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset1"icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -324,7 +324,13 @@ export default {
           "name": "已完成"
         },
         {"value": "14", "name": "退款中"}, {"value": "15", "name": "已退款"}, {"value": "16", "name": "已取消"},
-        {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {"value": "19", "name": "工厂已寄出"},
+        {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {
+          "value": "19",
+          "name": "工厂已寄出"
+        },{
+        "value": "20",
+          "name": "送站点"
+        }
       ],
       typeOptionList: [
         {"value": "", "name": "全部"}, {"value": "self", "name": "机柜自提"}, {
