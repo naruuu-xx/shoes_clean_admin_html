@@ -91,8 +91,8 @@ export default {
       this.id = record.distributorWithdrawalId;
       this.name = record.name;
       this.amount = record.amount;
-      this.withdrawalRatio = parseFloat(res.result.withdrawalRatio || 0);
-      this.realwithdrawal = res.result.realwithdrawal;
+      this.withdrawalRatio = parseFloat(record.withdrawalRatio || 0);
+      this.realwithdrawal = record.realwithdrawal;
     }
   }
 
