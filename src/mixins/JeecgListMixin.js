@@ -55,7 +55,7 @@ export const JeecgListMixin = {
   },
   created() {
     this.initialQueryParam = {...this.queryParam}
-    Object.assign(this.queryParam,this.$route.query)
+    Object.assign(this.queryParam,this.$route.query,this.$route.params)
       if(!this.disableMixinCreated){
         console.log(' -- mixin created -- ')
         this.loadData();
@@ -89,6 +89,10 @@ export const JeecgListMixin = {
       this.loading = true;
       if(this.$route.params.id){
         Object.assign(params,{id:this.$route.params.id})
+      }
+      // 设置过滤转换的字段
+      if(this.setQueryParams) {
+        Object.assign(params,this.setQueryParams())
       }
 
       getAction(this.url.list, params).then((res) => {
