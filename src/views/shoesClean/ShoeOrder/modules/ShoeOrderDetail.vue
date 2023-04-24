@@ -61,13 +61,7 @@
           </a-descriptions-item>
         </template>
         <a-descriptions-item label="袋子码"> {{ data.bagCode || "——" }} </a-descriptions-item>
-        <a-descriptions-item label="物流人员(取鞋)">
-          <template v-if="logisticsNameByBefore !== '无' || logisticsNameByBefore !== ' '">
-            {{ logisticsNameByBefore }}({{ logisticsPhoneByBefore }})
-          </template>
-          <template v-else>——</template>
-        </a-descriptions-item>
-        <a-descriptions-item label="物流人员(存鞋)">
+        <a-descriptions-item label="物流人员(工厂取鞋)">
           <template v-if="logisticsNameByAfter !== '无' || logisticsNameByAfter !== ' ' ">
             {{ logisticsNameByAfter }}({{ logisticsPhoneByAfter }})
           </template>
