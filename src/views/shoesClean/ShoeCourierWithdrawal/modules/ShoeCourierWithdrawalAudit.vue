@@ -21,6 +21,16 @@
         </a-row>
         <a-row>
           <a-col :span="24">
+            <div class="content-font">实际到账金额：{{data.realwithdrawal}}</div>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24">
+            <div class="content-font">手续费率：{{(data.withdrawalRatio || 0)*100}}%</div>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24">
             <div class="content-font">审核&nbsp;&nbsp;&nbsp;
               <a-radio-group v-model:value="auditOption">
                 <a-radio value="1">同意</a-radio>
