@@ -25,7 +25,7 @@
                   <!--          </a-col>-->
                   <a-col :span="24">
                     <a-form-model-item label="机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
-                      <a-input v-model="model.lockerCode" placeholder="请输入机柜编码" autocomplete="off"></a-input>
+                      <a-input v-model="model.lockerCode" placeholder="请输入机柜编码" autocomplete="off" :disabled="true"></a-input>
                     </a-form-model-item>
                   </a-col>
                   <a-col :span="24">
@@ -47,6 +47,11 @@
                     <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
                       <a-input-number v-model="model.weight" placeholder="请输入权重" autocomplete="off"></a-input-number>（权重值越高，排序越靠前）
                     </a-form-model-item>
+                  </a-col>
+                  <a-col :span="24">
+                  <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
+                    <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off" suffix="%"></a-input>
+                  </a-form-model-item>
                   </a-col>
                   <a-col :span="24">
                     <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
@@ -252,6 +257,10 @@ export default {
           {pattern: /^-?\d+$/, message: '请输入整数!'},
         ],
         orderStatus: [{ required: true, message: '请选择接单状态' }],
+        percentage: [
+          { required: true, message: '请输入1-100之间的整数!'},
+          { pattern: /^([1-9][0-9]{0,1}|100)$/, message: '请输入1-100之间的整数!'},
+        ],
         paths:[
           {required: true, message: '请设置配送范围'},
           {validator:this.handleIsIn}
@@ -259,7 +268,7 @@ export default {
       },
       url: {
         add: "/shoes/shoeLocker/addNew",
-        edit: "/shoes/shoeLocker/editNew",
+        edit: "/shoes/shoeLocker/moveNew",
         queryById: "/shoes/shoeLocker/queryById"
       },
       areaList: [],
@@ -334,19 +343,30 @@ export default {
       },1000);
     },
     edit(record) {
-      this.model = Object.assign({}, record);
-      this.model.orgCode = record.orgCode + "";
-      this.model.departName = record.departName;
-      let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
-      this.option = {
-          center: center,// 设置地图中心点坐标
-          zoom: 16, // 设置地图缩放级别
-          mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
-      };
-      this.visible = true;
-      setTimeout(()=>{   //设置延迟执行
-        this.initMapByJQ(record.latitude, record.longitude)
-      },1000);
+      httpAction("/shoes/shoeLocker/canMove?lockerId="+record.lockerId, null, "get").then((res) => {
+        if (res.success) {
+          this.model = Object.assign({}, record);
+          this.model.orgCode = record.orgCode + "";
+          this.model.departName = record.departName;
+          this.model.orderStatus = 1;
+          this.model.Status = 1;
+          this.model.percentage = record.percentage*100;
+          let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
+          this.option = {
+            center: center,// 设置地图中心点坐标
+            zoom: 16, // 设置地图缩放级别
+            mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
+          };
+          this.visible = true;
+          setTimeout(()=>{   //设置延迟执行
+            this.initMapByJQ(record.latitude, record.longitude)
+          },1000);
+        } else {
+          this.$message.warning(res.message);
+        }
+      })
+
+
     },
     submitForm() {
       const that = this;
@@ -386,14 +406,17 @@ export default {
             "weight": this.model.weight,
             "orderStatus": this.model.orderStatus,
             "paths":this.model.paths,
+            "percentage":this.model.percentage/100,
           }
 
           httpAction(httpurl, data, method).then((res) => {
             if (res.success) {
               that.$message.success(res.message);
               that.$emit('ok');
+              that.visible = false;
             } else {
               that.$message.warning(res.message);
+              that.visible = false;
             }
           }).finally(() => {
             that.confirmLoading = false;
@@ -410,18 +433,7 @@ export default {
       })
     },
     handleOk () {
-      this.confirmLoading = true
-      httpAction('/shoes/shoeLocker/setLocationImages', this.form, 'post').then((res) => {
-        if (res.success) {
-          this.$message.success(res.message);
-          this.$emit('ok');
-          this.visible = false;
-        } else {
-          this.$message.warning(res.message);
-        }
-      }).finally(() => {
-        this.confirmLoading = false;
-      })
+      this.submitForm();
     },
     submitCallback(){
       this.$emit('ok');

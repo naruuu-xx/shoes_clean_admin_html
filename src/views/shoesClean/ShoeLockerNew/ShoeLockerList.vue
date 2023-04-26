@@ -285,6 +285,19 @@ export default {
             return filterDictTextByCache('shoe_locker_order_status', text);
           },
         },
+        {
+          title:'迁移状态',
+          align:"center",
+          dataIndex: 'transferStatus',
+          customRender: (text) => {
+            if (text=="1"){
+              text = "已迁移"
+            }else if(text=="0"){
+              text ="正常"
+            }
+            return text;
+          },
+        },
         // {
         //   title:'添加时间',
         //   align:"center",
