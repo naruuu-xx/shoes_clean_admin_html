@@ -40,11 +40,17 @@
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
         <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
-        <a-descriptions-item label="机柜名称-格子数" v-if=" '快递上门' !== data.type && statusInt > 0 && statusInt < 5">
+        <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt > 0 && statusInt < 5">
           {{ data.lockerName }}-{{ data.beforeGridNo }}
         </a-descriptions-item>
-        <a-descriptions-item label="机柜名称-格子数" v-if=" '快递上门' !== data.type && statusInt >= 9 && statusInt <= 13">
+        <a-descriptions-item label="服务点名称" v-if=" ( '站点自提' === data.type || '站点配送' === data.type ) && statusInt > 0 && statusInt < 5">
+          {{ data.lockerName }}
+        </a-descriptions-item>
+        <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt >= 9 && statusInt <= 13">
           {{ data.lockerName }}-{{ data.afterGridNo }}
+        </a-descriptions-item>
+        <a-descriptions-item label="服务点名称" v-if=" ( '站点自提' === data.type || '站点配送' === data.type ) && statusInt >= 9 && statusInt <= 13">
+          {{ data.lockerName }}
         </a-descriptions-item>
         <template v-if="'机柜配送' === data.type || '站点配送' === data.type">
           <a-descriptions-item label="配送员(取鞋)">
