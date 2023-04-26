@@ -251,9 +251,18 @@ export default {
           dataIndex: 'wxPhone'
         },
         {
-          title: "机柜名称",
+          title: "机柜/服务点名称",
           align: "center",
-          dataIndex: 'lockerName'
+          dataIndex: 'lockerName',
+          customRender: (name, record) => {
+            return (
+              <a-tooltip title={name} style="width: 100px;" class="tableCell">
+                <div>
+                  { name }
+                </div>
+              </a-tooltip>
+            )
+          }
         },
         {
           title: '实付金额（元）',
@@ -456,10 +465,29 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="less">
 @import '~@assets/less/common.less';
 
 .textCode {
   font-size: 20px;
+}
+.tableCell{
+  white-space: nowrap;
+  /* 然后然溢出的部分文字隐藏 */
+  overflow: hidden;
+  /* 文字溢出显示用省略号。  */
+  text-overflow: ellipsis;
+  zoom: 1;
+  &::before,
+  &::after {
+    display: table;
+    content: ' ';
+  }
+  &::after {
+    clear: both;
+  height: 0;
+  font-size: 0;
+  visibility: hidden;
+ }
 }
 </style>
