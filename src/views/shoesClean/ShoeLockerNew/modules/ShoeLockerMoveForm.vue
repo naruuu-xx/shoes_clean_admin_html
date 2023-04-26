@@ -349,7 +349,7 @@ export default {
           this.model.orgCode = record.orgCode + "";
           this.model.departName = record.departName;
           this.model.orderStatus = 1;
-          this.model.Status = 1;
+          this.model.status = 1;
           this.model.percentage = record.percentage*100;
           let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
           this.option = {
@@ -406,6 +406,7 @@ export default {
             "weight": this.model.weight,
             "orderStatus": this.model.orderStatus,
             "paths":this.model.paths,
+            "supplierType":this.model.supplierType,
             "percentage":this.model.percentage/100,
           }
 
