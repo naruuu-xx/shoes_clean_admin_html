@@ -37,7 +37,7 @@ export default {
   name: "shoeLockerGridModal",
   data () {
     return {
-      title: '快递柜格子展示',
+      title: '机柜格子展示',
       width: 600,
       visible: false,
       devicenum: "",
