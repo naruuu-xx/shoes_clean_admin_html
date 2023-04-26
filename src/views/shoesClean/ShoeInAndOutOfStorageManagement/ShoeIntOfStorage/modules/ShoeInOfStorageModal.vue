@@ -23,6 +23,9 @@
         <a-divider />
         <a-row v-show="shoeOrderInfo">
           <a-row>
+            <XfPhotograph></XfPhotograph>
+          </a-row>
+          <a-row>
             <a-col :span="18">
               <span class="content">订单编号：{{data.no}}</span>
             </a-col>
@@ -133,9 +136,11 @@
 import {downFile, httpAction, postAction} from "../../../../../api/manage";
 import ConfirmPrintModal from "./ConfirmPrintModal";
 
+import XfPhotograph from "@comp/Xf/XfPhotograph";
+
 export default {
   name: "ShoeInOfStorageModal",
-  components: {ConfirmPrintModal},
+  components: {ConfirmPrintModal,XfPhotograph},
   data() {
     return {
       visible: false,
