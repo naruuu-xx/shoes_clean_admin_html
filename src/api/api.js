@@ -105,6 +105,9 @@ export const transitRESTful = {
 const changeLogisticsPassword =  (params)=>putAction("/shoes/shoeLogistics/changePassword",params);
 const changeCourierPassword =  (params)=>putAction("/shoeCourier/shoeCourier/changePassword",params);
 
+// 上传图片
+const uploadImg = (params) => postAction('/sys/oss/file/upload',params);
+
 export {
   addRole,
   editRole,
@@ -162,7 +165,8 @@ export {
   getUserNoticeInfo,
   getDictItemsFromCache,
   changeLogisticsPassword,
-  changeCourierPassword
+  changeCourierPassword,
+  uploadImg
 }
 
 

@@ -80,6 +80,7 @@
           </a-row>
         </a-col>
         <!-- 右半部分 -->
+        <!-- 上半部分 -->
         <a-col :span="12">
           <a-row>
             <a-col :span="24"><p class="label-title">订单照片</p></a-col>
@@ -122,6 +123,16 @@
             </a-row>
           </a-row>
         </a-col>
+        <!-- 下半部分 -->
+        <a-col :span="12">
+          <a-row>
+            <a-col :span="24"><p class="label-title">入库照片</p></a-col>
+            <a-col :span="24">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in factoryInImages"
+                   :src="item" @click="showImage(item)">
+            </a-col>
+          </a-row>
+        </a-col>
       </a-row>
     </div>
 
@@ -147,6 +158,7 @@ export default {
       title: '订单详情',
       data: {},
       imageList: [],
+      factoryInImages: [],
       showImageModal: false,
       clickedImage: "",
       factoryStatus: "",
@@ -201,11 +213,14 @@ export default {
         this.dealStatusText = filterDictTextByCache('shoe_order_exception_status', res.result.status);
       })
 
+      this.factoryInImages = this.data.factoryInImages;
+
     },
     handleCancel() {
       this.visible = false;
       this.data = {};
       this.imageList = [];
+      this.factoryInImages = [];
       this.factoryStatus = "";
     },
     showImage(item) {

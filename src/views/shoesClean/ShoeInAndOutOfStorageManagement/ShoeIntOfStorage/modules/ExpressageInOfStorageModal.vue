@@ -20,68 +20,85 @@
             <a-row><a-button @click="emptyKuaidiNum" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
           </a-col>
         </a-row>
-        <a-divider />
-        <a-row v-show="shoeOrderInfo">
-          <div v-for="(item,idx) in dataList" :key="idx">
-          <a-row>
-            <a-col :span="18">
-              <span class="content">订单编号：{{item.no}}</span>
-            </a-col>
-            <a-col :span="2"></a-col>
-            <a-col :span="4" v-if="idx == 0">
-              <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
-            </a-col>
-          </a-row>
-          <a-row style="margin-bottom: 30px">
-            <a-col :span="6">
-              <span class="content">商品名：{{item.title}}</span>
-            </a-col>
-            <a-col :span="18">
-              <span class="content">商品规格：{{item.skuTitle}}</span>
-            </a-col>
-          </a-row>
-          <a-row style="margin-bottom: 30px">
-            <a-col :span="24">
-              <span class="content">附加项：{{item.name}}</span>
-            </a-col>
-          </a-row>
-          <a-row style="margin-bottom: 30px">
-            <a-col :span="8">
-              <span class="content">姓名：{{item.userName}}</span>
-            </a-col>
-            <a-col :span="8">
-              <span class="content">电话：{{item.userPhone}}</span>
-            </a-col>
-          </a-row>
-          <a-row style="margin-bottom: 30px">
-            <a-col :span="24">
-              <span class="content">地址（用户寄）：{{item.userAddressSend}}</span>
-            </a-col>
-          </a-row>
-          <a-row style="margin-bottom: 30px">
-            <a-col :span="24">
-              <span class="content">地址（用户收）：{{item.userAddressReceive}}</span>
-            </a-col>
-          </a-row>
-          <a-row style="margin-bottom: 30px">
-            <a-col :span="12">
-              <span class="content">订单类型：{{item.orderType}}</span>
-            </a-col>
-          </a-row>
-          <!--          <a-row style="margin-bottom: 30px">-->
-          <!--            <a-col :span="24">-->
-          <!--              <span class="content">用户备注：{{data.note}}</span>-->
-          <!--            </a-col>-->
-          <!--          </a-row>-->
-          <a-row>
-            <a-col :span="24">
-              <p class="content">照片：</p>
-              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="image in item.imageList"
-                   :src="image" @click="showImage(image)">
-            </a-col>
-          </a-row>
-          </div>
+        <a-row style="margin-top: 12px;" v-if="shoeOrderInfo">
+          <a-col :span="18">
+            <div class="tab">
+              <a-radio-group v-model="tabValue" button-style="solid">
+                <a-radio-button :value="item.value" v-for="(item, index) in tabs" :key="index">
+                  {{item.label}}
+                </a-radio-button>
+              </a-radio-group>
+            </div>
+          </a-col>
+          <a-col :span="2"></a-col>
+          <a-col :span="4">
+            <a-button @click="shoeInOfStorageModal" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
+          </a-col>
         </a-row>
+        <a-row v-if="shoeOrderInfo">
+          <XfPhotograph ref="photograph" :photographImg="dataList[tabValue].factoryInImages"></XfPhotograph>
+        </a-row>
+        <a-divider />
+        <div class="list">
+          <a-row v-show="shoeOrderInfo">
+            <div v-for="(item,idx) in dataList" :key="idx">
+            <a-row>
+              <a-col :span="18">
+                <span class="content">订单编号：{{item.no}}</span>
+              </a-col>
+            </a-row>
+            <a-row style="margin-bottom: 30px">
+              <a-col :span="6">
+                <span class="content">商品名：{{item.title}}</span>
+              </a-col>
+              <a-col :span="18">
+                <span class="content">商品规格：{{item.skuTitle}}</span>
+              </a-col>
+            </a-row>
+            <a-row style="margin-bottom: 30px">
+              <a-col :span="24">
+                <span class="content">附加项：{{item.name}}</span>
+              </a-col>
+            </a-row>
+            <a-row style="margin-bottom: 30px">
+              <a-col :span="8">
+                <span class="content">姓名：{{item.userName}}</span>
+              </a-col>
+              <a-col :span="8">
+                <span class="content">电话：{{item.userPhone}}</span>
+              </a-col>
+            </a-row>
+            <a-row style="margin-bottom: 30px">
+              <a-col :span="24">
+                <span class="content">地址（用户寄）：{{item.userAddressSend}}</span>
+              </a-col>
+            </a-row>
+            <a-row style="margin-bottom: 30px">
+              <a-col :span="24">
+                <span class="content">地址（用户收）：{{item.userAddressReceive}}</span>
+              </a-col>
+            </a-row>
+            <a-row style="margin-bottom: 30px">
+              <a-col :span="12">
+                <span class="content">订单类型：{{item.orderType}}</span>
+              </a-col>
+            </a-row>
+            <!--          <a-row style="margin-bottom: 30px">-->
+            <!--            <a-col :span="24">-->
+            <!--              <span class="content">用户备注：{{data.note}}</span>-->
+            <!--            </a-col>-->
+            <!--          </a-row>-->
+            <a-row>
+              <a-col :span="24">
+                <p class="content">照片：</p>
+                <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="image in item.imageList"
+                     :src="image" @click="showImage(image)">
+              </a-col>
+            </a-row>
+            </div>
+          </a-row>
+        </div>
+        
       </div>
     </a-spin>
 
@@ -105,10 +122,11 @@ import {downFile, httpAction} from "../../../../../api/manage";
 import ConfirmExpressagePrintModal from "./ConfirmExressagePrintModal";
 import PlatformConfirmModal from "./PlatformConfirmModal";
 import ManualInOfStorageMultiple from './ManualInOfStorageMultiple'
+import XfPhotograph from "@comp/Xf/XfPhotograph";
 
 export default {
   name: "ShoeInOfStorageModal",
-  components: {ConfirmExpressagePrintModal, PlatformConfirmModal,ManualInOfStorageMultiple},
+  components: {ConfirmExpressagePrintModal, PlatformConfirmModal,ManualInOfStorageMultiple,XfPhotograph},
   data() {
     return {
       visible: false,
@@ -123,9 +141,26 @@ export default {
       showInOfStoragePrintModal: false,
       selectedNote: [],
       noteOptions: [],
+      tabValue: 0
     }
   },
   created() {
+  },
+  computed:{
+    tabs() {
+      return this.dataList.map((item,idx) => ({
+        label: `鞋子${idx+1}`,
+        value: idx
+      }))
+    }
+  },
+  watch:{
+    tabValue: {
+      handler(val,oldValue) {
+        let imgs = this.$refs.photograph.imgs
+        this.dataList[oldValue].factoryInImages = imgs
+      },
+    },
   },
   methods: {
     show(record) {
@@ -181,7 +216,8 @@ export default {
             } else {
               this.dataList = res.result.map(item => {
                 let imageList = JSON.parse(item.orderImages)
-                return Object.assign({},item,{imageList})
+                let factoryInImages = []
+                return Object.assign({},item,{imageList,factoryInImages})
               })
               this.shoeOrderInfo = true;
               //清空输入框并重新聚焦
@@ -208,7 +244,22 @@ export default {
     },
     shoeInOfStorageModal() {
       // this.showInOfStoragePrintModal = true;
-      this.$refs.confirmExpressagePrintModal.show(this.dataList);
+      this.dataList[this.tabValue].factoryInImages = this.$refs.photograph.imgs
+      let data = this.dataList.map(async (item,idx) => {
+        let factoryInImages = await this.$refs.photograph.uploadImgs(item.factoryInImages)
+        return {
+          ...item,
+          factoryInImages
+        }
+          
+      });
+      Promise.all(data).then(res => {
+        this.$refs.confirmExpressagePrintModal.show(res);
+      }).catch(err => {
+        reject(err)
+      })
+      
+      
     },
     handleInOfStorage(){
       this.confirmLoading = true;
@@ -255,6 +306,19 @@ export default {
 </script>
 
 <style scoped lang="less">
+  .tab {
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+  .tab /deep/ .ant-radio-group {
+    overflow-x: scroll;
+    display: flex;
+  }
+  .list {
+    max-height: 340px;
+    overflow-y: scroll;
+  }
 .content {
   font-size: 20px;
   color: #000000;
