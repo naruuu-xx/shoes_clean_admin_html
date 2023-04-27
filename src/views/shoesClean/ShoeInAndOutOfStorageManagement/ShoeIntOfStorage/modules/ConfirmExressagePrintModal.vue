@@ -141,7 +141,7 @@ export default {
       this.visible = false;
     },
     handleOk(){
-      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId}) => ({orderId, selectedNote, sortNum,brandId}))
+      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId,factoryInImages}) => ({orderId, selectedNote, sortNum,brandId,factoryInImages}))
       this.handleInOfStorage(dataList);
     },
     handleInOfStorage(dataList){
