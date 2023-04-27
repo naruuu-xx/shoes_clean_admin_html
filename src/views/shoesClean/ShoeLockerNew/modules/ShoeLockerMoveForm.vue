@@ -345,12 +345,15 @@ export default {
     edit(record) {
       httpAction("/shoes/shoeLocker/canMove?lockerId="+record.lockerId, null, "get").then((res) => {
         if (res.success) {
-          this.model = Object.assign({}, record);
+          //this.model = Object.assign({}, record);
           this.model.orgCode = record.orgCode + "";
           this.model.departName = record.departName;
+          this.model.lockerCode = record.lockerCode;
+          this.model.lockerId = record.lockerId;
+          this.model.num = record.num;
           this.model.orderStatus = 1;
           this.model.status = 1;
-          this.model.percentage = record.percentage*100;
+         // this.model.percentage = (record.percentage*100).toFixed(0);
           let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
           this.option = {
             center: center,// 设置地图中心点坐标
