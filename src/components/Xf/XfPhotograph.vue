@@ -18,6 +18,12 @@ export default {
     Photograph,
     XfImgs
   },
+  props:{
+    photographImg: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
       img:'',
@@ -31,9 +37,15 @@ export default {
   watch:{
     imgs:{
       handler(val) {
-      this.images = this.imgs.map(({image}) => image)
+        this.images = this.imgs.map(({image}) => image)
+      },
+      deep:true
     },
-    deep:true
+    photographImg: {
+      handler(val) {
+        this.imgs = val.map(obj => Object.assign({},obj))
+      },
+      deep:true
     }
   },
   computed:{
@@ -44,17 +56,11 @@ export default {
       this.imgs.splice(idx,1)
     },
     submit() {
-      this.uploadImgs(this.imgs).then(res => {
-					return res
-				}).catch(err => {
-          console.log(888,err);
-				})
+      return this.uploadImgs(this.imgs)
     },
     uploadImgs(files) {
       return new Promise((resolve, reject) => {
-        const imgs = files.map((item,idx) => {
-          uploadImg(item.file);
-				}).filter(item => item)
+        const imgs = files.map((item,idx) => uploadImg(item.file)).filter(item => item)
 				Promise.all(imgs).then(res => {
 					resolve(res.map(item => item.result))
 				}).catch(err => {

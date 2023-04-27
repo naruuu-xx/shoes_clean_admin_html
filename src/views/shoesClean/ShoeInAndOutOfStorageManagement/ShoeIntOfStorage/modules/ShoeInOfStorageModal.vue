@@ -23,7 +23,7 @@
         <a-divider />
         <a-row v-show="shoeOrderInfo">
           <a-row>
-            <XfPhotograph></XfPhotograph>
+            <XfPhotograph ref="photograph"></XfPhotograph>
           </a-row>
           <a-row>
             <a-col :span="18">
@@ -236,8 +236,11 @@ export default {
       this.showInOfStoragePrintModal = false;
     },
     shoeInOfStorageModal() {
+      this.$refs.photograph.submit().then(factoryInImages => {
+        this.$refs.confirmPrintModal.show(Object.assign({},this.data,{factoryInImages}));
+      })
       // this.showInOfStoragePrintModal = true;
-      this.$refs.confirmPrintModal.show(this.data);
+      
     },
   }
 }
