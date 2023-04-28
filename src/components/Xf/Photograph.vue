@@ -26,11 +26,20 @@ export default {
   },
   mounted() {
     this.getCompetence()
+    window.addEventListener('keydown',this.onkeydown)
   },
   destroyed() {
     this.stopNavigator()
   },
   methods: {
+    onkeydown(e) {
+      if(e.keyCode==32){  
+        this.setImage()
+      }
+    },
+    removeKeydown() {
+      window.removeEventListener('keydown', this.onkeydown)
+    },
     handleAvatarSuccess(res, file) {
       this.$emit('refreshDataList', res.data.url)
     },

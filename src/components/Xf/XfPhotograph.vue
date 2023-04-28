@@ -1,7 +1,7 @@
 <template>
   <div class="photograph">
     <div style="margin-right: 34px;">
-      <a-button @click="previewVisible = true">拍照</a-button>
+      <a-button @click="previewVisible = true" type="primary">拍照</a-button>
     </div>
     <xfImgs :images="images" @close="close" @onClick="onClickOut"></xfImgs>
     <!-- :closable="false" -->
@@ -93,6 +93,7 @@ export default {
     },
     handleCancel() {
       this.previewVisible = false
+      this.$refs.TakePhotos.removeKeydown()
     },
     close(idx) {
       this.imgs.splice(idx,1)
