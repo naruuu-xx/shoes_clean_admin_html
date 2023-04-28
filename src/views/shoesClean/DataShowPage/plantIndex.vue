@@ -25,13 +25,21 @@
       </a-col>
     </a-row>
 
-    <a-row>
-      <div class="status">
-        <div class="status-box" v-for="(status, idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(status)">
-          <div class="status-box-name">{{ status.name }}</div>
-          <div class="status-box-value">{{ status.num }}</div>
+    <a-row :gutter="24">
+      <a-col :sm="24" :md="24" :xl="24" :style="{ marginBottom: '24px' }">
+        <div class="box">
+          <div class="box-title">工厂鞋数</div>
+          <div class="box-main">
+            <div class="box-item-i" v-for="(item,idx) in dataObj.quantityOfSale" :key="idx">
+              <!-- <img class="box-item-i-img"></img> -->
+              <div class="box-item-i-main">
+                <div class="box-item-i-main-title">{{ item.name }}</div>
+                <div class="box-item-i-main-value">{{ item.num }}</div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </a-col>
     </a-row>
 
     <a-row>
