@@ -361,6 +361,8 @@ export default {
           this.model.lockerCode = record.lockerCode;
           this.model.lockerId = record.lockerId;
           this.model.num = record.num;
+          this.model.supplierType = record.supplierType;
+
           this.model.orderStatus = 1;
           this.model.status = 1;
           // this.model.percentage = (record.percentage*100).toFixed(0);
