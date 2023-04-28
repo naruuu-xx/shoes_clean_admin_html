@@ -3,7 +3,7 @@
     <div style="margin-right: 34px;">
       <a-button @click="previewVisible = true">拍照</a-button>
     </div>
-    <xfImgs :images="images" @close="close" @onClick="onClick"></xfImgs>
+    <xfImgs :images="images" @close="close" @onClick="onClickOut"></xfImgs>
     <!-- :closable="false" -->
     <j-modal
     isNoTitle
@@ -27,11 +27,9 @@
       <img alt="example" style="width: 100%" :src="previewImage"/>
     </a-modal>
   </j-modal>
-    <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel()">
-      <div>
-        
-      </div>
-    </a-modal> -->
+  <a-modal :visible="outImgVisible" :footer="null" @cancel="handleImgCancel()" width="1000px">
+      <img alt="example" style="width: 100%" :src="previewImage"/>
+  </a-modal>
   </div>
 
 
@@ -61,6 +59,7 @@ export default {
       images:[],
       previewVisible: false,
       imgVisible:false,
+      outImgVisible: false,
       previewImage:''
     }
   },
@@ -90,6 +89,7 @@ export default {
     },
     handleImgCancel() {
       this.imgVisible = false
+      this.outImgVisible = false
     },
     handleCancel() {
       this.previewVisible = false
@@ -100,6 +100,11 @@ export default {
     onClick(idx) {
       this.previewImage = this.images[idx]
       this.imgVisible = true
+    },
+    onClickOut(idx) {
+      console.log(777);
+      this.previewImage = this.images[idx]
+      this.outImgVisible = true
     },
     submit() {
       return this.uploadImgs(this.imgs)

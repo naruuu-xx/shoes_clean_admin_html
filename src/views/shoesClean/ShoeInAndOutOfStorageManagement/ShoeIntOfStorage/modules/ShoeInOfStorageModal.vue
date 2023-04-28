@@ -239,10 +239,14 @@ export default {
       this.showInOfStoragePrintModal = false;
     },
     shoeInOfStorageModal() {
+      this.confirmLoading = true
       this.$refs.photograph.submit().then(Images => {
         this.factoryInImages = Images
         let factoryInImages = Images.map(item => item.file)
         this.$refs.confirmPrintModal.show(Object.assign({},this.data,{factoryInImages}));
+        
+      }).finally(() => {
+        this.confirmLoading = false
       })
       // this.showInOfStoragePrintModal = true;
       
