@@ -155,7 +155,7 @@ export default {
       showInOfStoragePrintModal: false,
       selectedNote: [],
       noteOptions: [],
-      loadingBtn: false,
+      loadingBtn: false
     }
   },
   created() {
@@ -214,6 +214,7 @@ export default {
             this.data = res.result
             this.imageList = JSON.parse(res.result.orderImages);
             this.shoeOrderInfo = true;
+            this.$refs.photograph.imgs = []
             //清空输入框并重新聚焦
             this.bagCode = "";
             this.selectedNote = [];
