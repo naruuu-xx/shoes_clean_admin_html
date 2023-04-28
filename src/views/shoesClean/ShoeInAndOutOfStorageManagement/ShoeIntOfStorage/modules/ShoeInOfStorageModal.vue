@@ -21,6 +21,7 @@
           </a-col>
         </a-row>
         <a-divider />
+        
         <a-row v-show="shoeOrderInfo">
           <a-row>
             <XfPhotograph ref="photograph"></XfPhotograph>

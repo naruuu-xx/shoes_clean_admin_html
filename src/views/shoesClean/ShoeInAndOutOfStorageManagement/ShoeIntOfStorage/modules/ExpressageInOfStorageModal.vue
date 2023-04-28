@@ -243,10 +243,12 @@ export default {
       this.showInOfStoragePrintModal = false;
     },
     shoeInOfStorageModal() {
+      this.confirmLoading = true
       // this.showInOfStoragePrintModal = true;
       this.dataList[this.tabValue].factoryInImages = this.$refs.photograph.imgs
       let data = this.dataList.map(async (item,idx) => {
         let factoryInImages = await this.$refs.photograph.uploadImgs(item.factoryInImages)
+        console.log(2222,factoryInImages);
         return {
           ...item,
           factoryInImages
@@ -254,9 +256,12 @@ export default {
           
       });
       Promise.all(data).then(res => {
+        console.log(7777777,res);
+        this.dataList = res
         this.$refs.confirmExpressagePrintModal.show(res);
+        this.confirmLoading = false
       }).catch(err => {
-        reject(err)
+        this.confirmLoading = false
       })
       
       
