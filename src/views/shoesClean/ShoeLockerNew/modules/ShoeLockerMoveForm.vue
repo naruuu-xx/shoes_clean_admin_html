@@ -1,174 +1,181 @@
-
 <template>
 
-      <j-modal
-        :title="title"
-        :width="width"
-        :visible="visible"
-        switchFullscreen
-        @ok="handleOk"
-        :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
-        @cancel="handleCancel"
-        cancelText="关闭">
+  <j-modal
+    :title="title"
+    :width="width"
+    :visible="visible"
+    switchFullscreen
+    @ok="handleOk"
+    :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
+    @cancel="handleCancel"
+    cancelText="关闭">
 
-        <a-spin :spinning="confirmLoading">
-          <j-form-container :disabled="formDisabled">
-            <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
-              <div class="diyDiv">
+    <a-spin :spinning="confirmLoading">
+      <j-form-container :disabled="formDisabled">
+        <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
+          <div class="diyDiv">
+            <a-row>
+              <!--          <a-col :span="24">-->
+              <!--            <a-form-model-item label="区域" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode">-->
+              <!--              <a-select v-model="model.orgCode" style="width: 100%">-->
+              <!--                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" :key="item.orgCode.toString()" >{{ item.departName }}</a-select-option>-->
+              <!--              </a-select>-->
+              <!--            </a-form-model-item>-->
+              <!--          </a-col>-->
+              <a-col :span="24">
+                <a-form-model-item label="机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
+                  <a-input v-model="model.lockerCode" placeholder="请输入机柜编码" autocomplete="off"
+                           :disabled="true"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="机柜名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+                  <a-input v-model="model.name" placeholder="请输入机柜名称" autocomplete="off"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num"
+                                   v-if="model.lockerId !== null && model.lockerId !== '' && model.lockerId !== undefined">
+                  <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 10%" autocomplete="off"
+                                  :disabled="true"/>
+                </a-form-model-item>
+              </a-col>
+              <!--            <a-col :span="24">-->
+              <!--              <a-form-model-item label="机柜类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">-->
+              <!--                <j-dict-select-tag type="radio" v-model="model.type" dictCode="shoe_locker_type" placeholder="请选择机柜类型"/>-->
+              <!--              </a-form-model-item>-->
+              <!--            </a-col>-->
+              <a-col :span="24">
+                <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
+                  <a-input-number v-model="model.weight" placeholder="请输入权重" autocomplete="off"></a-input-number>
+                  （权重值越高，排序越靠前）
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
+                  <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off"
+                           suffix="%"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
+                  <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status"
+                                     placeholder="请选择状态"/>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
+                  <j-dict-select-tag
+                    type="radio"
+                    v-model="model.orderStatus"
+                    dictCode="shoe_locker_order_status"
+                  />
+                </a-form-model-item>
+              </a-col>
+              <!--          <a-col :span="24">-->
+              <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
+              <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
+              <!--              <al-cascader v-model="model.province" level="3" data-type="name"/>-->
+              <!--            </a-form-model-item>-->
+              <!--          </a-col>-->
+              <!--          <a-col :span="24">-->
+              <!--            <a-form-model-item label="市" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="city">-->
+              <!--             <j-area-linkage type="cascader" v-model="model.city" placeholder="请输入省市区"  />-->
+              <!--            </a-form-model-item>-->
+              <!--          </a-col>-->
+              <!--          <a-col :span="24">-->
+              <!--            <a-form-model-item label="区/县" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="area">-->
+              <!--             <j-area-linkage type="cascader" v-model="model.area" placeholder="请输入省市区"  />-->
+              <!--            </a-form-model-item>-->
+              <!--          </a-col>-->
+              <a-col :span="24">
+                <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
+                  <!--              <a-input v-model="model.address" placeholder="请输入详细地址" id="c-address" :change="addressOnchange()"></a-input>-->
+                  <a-input-search v-model="model.address" placeholder="请输入详细地址" id="c-address" enter-button
+                                  @search="onSearch(model.address)" autocomplete="off"></a-input-search>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="longitude">
+                  <a-input-number v-model="model.longitude" placeholder="请输入经度" style="width: 100%" id="c-lng"
+                                  :disabled="false"/>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="latitude">
+                  <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat"
+                                  :disabled="false"/>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="配送范围" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paths">
+                  <a-input v-model="model.paths" placeholder="请设定配送范围" style="width: 100%" id="c-paths"
+                           :disabled="true"/>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="地图操作" :labelCol="labelCol">
+                  <div class="ant-row-flex">
+                    <div>
+                      <button
+                        @click="setActivePattern('marker')"
+                        :class="['ant-btn', activePattern==='marker'?'ant-btn-primary':'']">
+                        <span>设置机柜定位</span>
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        @click="setActivePattern('polygon')"
+                        :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
+                        style="margin: 0 30px 0 30px">
+                        设置配送范围
+                      </button>
+                    </div>
+                    <div v-if="activePattern==='polygon'">
+                      <button class="ant-btn" @click="addPolygon()">添加</button>
+                      <button class="ant-btn" @click="editPolygon()">编辑</button>
+                      <button class="ant-btn" @click="delPolygon()">删除</button>
+                    </div>
+                  </div>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
                 <a-row>
-                  <!--          <a-col :span="24">-->
-                  <!--            <a-form-model-item label="区域" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode">-->
-                  <!--              <a-select v-model="model.orgCode" style="width: 100%">-->
-                  <!--                <a-select-option v-for="item in areaList" :value="item.orgCode.toString()" :key="item.orgCode.toString()" >{{ item.departName }}</a-select-option>-->
-                  <!--              </a-select>-->
-                  <!--            </a-form-model-item>-->
-                  <!--          </a-col>-->
-                  <a-col :span="24">
-                    <a-form-model-item label="机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCode">
-                      <a-input v-model="model.lockerCode" placeholder="请输入机柜编码" autocomplete="off" :disabled="true"></a-input>
-                    </a-form-model-item>
+                  <a-col :span="16">
+                    <div id="tencentMapBox" class="map-box"></div>
                   </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="机柜名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-                      <a-input v-model="model.name" placeholder="请输入机柜名称" autocomplete="off"></a-input>
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="格子数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num" v-if="model.lockerId !== null && model.lockerId !== '' && model.lockerId !== undefined">
-                      <a-input-number v-model="model.num" placeholder="请输入格子数" style="width: 10%"  autocomplete="off" :disabled="true"/>
-                    </a-form-model-item>
-                  </a-col>
-                  <!--            <a-col :span="24">-->
-                  <!--              <a-form-model-item label="机柜类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">-->
-                  <!--                <j-dict-select-tag type="radio" v-model="model.type" dictCode="shoe_locker_type" placeholder="请选择机柜类型"/>-->
-                  <!--              </a-form-model-item>-->
-                  <!--            </a-col>-->
-                  <a-col :span="24">
-                    <a-form-model-item label="权重" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weight">
-                      <a-input-number v-model="model.weight" placeholder="请输入权重" autocomplete="off"></a-input-number>（权重值越高，排序越靠前）
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                  <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
-                    <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off" suffix="%"></a-input>
-                  </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-                      <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status" placeholder="请选择状态"/>
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="是否接单" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderStatus">
-                      <j-dict-select-tag
-                        type="radio"
-                        v-model="model.orderStatus"
-                        dictCode="shoe_locker_order_status"
-                      />
-                    </a-form-model-item>
-                  </a-col>
-                  <!--          <a-col :span="24">-->
-                  <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
-                  <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
-                  <!--              <al-cascader v-model="model.province" level="3" data-type="name"/>-->
-                  <!--            </a-form-model-item>-->
-                  <!--          </a-col>-->
-                  <!--          <a-col :span="24">-->
-                  <!--            <a-form-model-item label="市" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="city">-->
-                  <!--             <j-area-linkage type="cascader" v-model="model.city" placeholder="请输入省市区"  />-->
-                  <!--            </a-form-model-item>-->
-                  <!--          </a-col>-->
-                  <!--          <a-col :span="24">-->
-                  <!--            <a-form-model-item label="区/县" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="area">-->
-                  <!--             <j-area-linkage type="cascader" v-model="model.area" placeholder="请输入省市区"  />-->
-                  <!--            </a-form-model-item>-->
-                  <!--          </a-col>-->
-                  <a-col :span="24">
-                    <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
-                      <!--              <a-input v-model="model.address" placeholder="请输入详细地址" id="c-address" :change="addressOnchange()"></a-input>-->
-                      <a-input-search v-model="model.address" placeholder="请输入详细地址" id="c-address" enter-button @search="onSearch(model.address)" autocomplete="off"></a-input-search>
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="经度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="longitude">
-                      <a-input-number v-model="model.longitude" placeholder="请输入经度" style="width: 100%" id="c-lng" :disabled="false"/>
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="latitude">
-                      <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat" :disabled="false"/>
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="配送范围"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paths">
-                      <a-input v-model="model.paths" placeholder="请设定配送范围" style="width: 100%" id="c-paths" :disabled="true"/>
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="地图操作" :labelCol="labelCol">
-                      <div class="ant-row-flex">
-                        <div>
-                          <button
-                            @click="setActivePattern('marker')"
-                            :class="['ant-btn', activePattern==='marker'?'ant-btn-primary':'']">
-                            <span>设置机柜定位</span>
-                          </button>
-                        </div>
-                        <div>
-                          <button
-                            @click="setActivePattern('polygon')"
-                            :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
-                            style="margin: 0 30px 0 30px">
-                            设置配送范围
-                          </button>
-                        </div>
-                        <div v-if="activePattern==='polygon'">
-                          <button class="ant-btn" @click="addPolygon()">添加</button>
-                          <button class="ant-btn" @click="editPolygon()">编辑</button>
-                          <button class="ant-btn" @click="delPolygon()">删除</button>
-                        </div>
+                  <a-col :span="8">
+                    <div id="container-text" class="container-text">
+                      <div v-model="searchList" v-for="(item, index) in searchList" style="margin-bottom: 10px"
+                           v-on:click="selectAddress(item)">
+                        <span style="font-size: 14px">{{ index + 1 }}、{{ item.title }}</span><br>
+                        <span style="font-size: 12px; color: #7A7B7D">{{ item.address }}</span>
+                        <span style="display: none">{{ item.location.lat }}</span>
+                        <span style="display: none">{{ item.location.lng }}</span>
                       </div>
-                    </a-form-model-item>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-row>
-                      <a-col :span="16">
-                        <div id="tencentMapBox" class="map-box"></div>
-                      </a-col>
-                      <a-col :span="8">
-                        <div id="container-text" class="container-text">
-                          <div v-model="searchList" v-for="(item, index) in searchList" style="margin-bottom: 10px" v-on:click="selectAddress(item)">
-                            <span style="font-size: 14px">{{ index + 1 }}、{{ item.title }}</span><br>
-                            <span style="font-size: 12px; color: #7A7B7D">{{ item.address }}</span>
-                            <span style="display: none">{{ item.location.lat }}</span>
-                            <span style="display: none">{{ item.location.lng }}</span>
-                          </div>
-                        </div>
-                      </a-col>
-                    </a-row>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form-model-item label="绘制说明" :labelCol="labelCol">
-                      <div class="ant-row-flex">
-                        绘制：选择添加模式，鼠标左键点击及移动即可绘制图形<br/>
-                        结束绘制：鼠标左键双击即可结束绘制，图形会自动闭合<br/>
-                        编辑：选择编辑模式，选中图形后出现编辑点，拖动编辑点可移动顶点位置，双击编辑点可删除顶点<br/>
-                        删除：选择删除模式，选中图形后按下delete键或点击删除按钮可删除图形
-                      </div>
-                    </a-form-model-item>
+                    </div>
                   </a-col>
                 </a-row>
-              </div>
-            </a-form-model>
-          </j-form-container>
-        </a-spin>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="绘制说明" :labelCol="labelCol">
+                  <div class="ant-row-flex">
+                    绘制：选择添加模式，鼠标左键点击及移动即可绘制图形<br/>
+                    结束绘制：鼠标左键双击即可结束绘制，图形会自动闭合<br/>
+                    编辑：选择编辑模式，选中图形后出现编辑点，拖动编辑点可移动顶点位置，双击编辑点可删除顶点<br/>
+                    删除：选择删除模式，选中图形后按下delete键或点击删除按钮可删除图形
+                  </div>
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </div>
+        </a-form-model>
+      </j-form-container>
+    </a-spin>
 
-      </j-modal>
+  </j-modal>
 
-  </template>
-
-
-
+</template>
 
 
 <script>
@@ -178,7 +185,7 @@ import {validateDuplicateValue} from '@/utils/util'
 import AlCascader from '@views/shoesClean/ShoeLocker/modules/al-cascader'
 import $ from 'jquery'
 
-let map, marker, polygon, ap,mapEditor;
+let map, marker, polygon, ap, mapEditor;
 
 export default {
   name: 'ShoeLockerForm',
@@ -195,8 +202,8 @@ export default {
   },
   data() {
     return {
-      title:'',
-      width:1000,
+      title: '',
+      width: 1000,
       visible: false,
       disableSubmit: false,
       model: {},
@@ -256,14 +263,14 @@ export default {
           {required: true, message: '请输入空闲格子数!'},
           {pattern: /^-?\d+$/, message: '请输入整数!'},
         ],
-        orderStatus: [{ required: true, message: '请选择接单状态' }],
+        orderStatus: [{required: true, message: '请选择接单状态'}],
         percentage: [
-          { required: true, message: '请输入1-100之间的整数!'},
-          { pattern: /^([1-9][0-9]{0,1}|100)$/, message: '请输入1-100之间的整数!'},
+          {required: true, message: '请输入1-100之间的整数!'},
+          {pattern: /^([1-9][0-9]{0,1}|100)$/, message: '请输入1-100之间的整数!'},
         ],
-        paths:[
+        paths: [
           {required: true, message: '请设置配送范围'},
-          {validator:this.handleIsIn}
+          {validator: this.handleIsIn}
         ]
       },
       url: {
@@ -298,7 +305,7 @@ export default {
 
       searchList: [],
 
-      activePattern:'marker', //地图操作模式，marker设置机柜定位，polygon设置配送范围
+      activePattern: 'marker', //地图操作模式，marker设置机柜定位，polygon设置配送范围
       //=================
     }
   },
@@ -338,14 +345,17 @@ export default {
         zoom: 12, // 设置地图缩放级别
         mapTypeId: qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
       };
-      setTimeout(()=>{   //设置延迟执行
+      setTimeout(() => {   //设置延迟执行
         this.initMapByJQ(24.500646, 118.12699)
-      },1000);
+      }, 1000);
     },
     edit(record) {
-      httpAction("/shoes/shoeLocker/canMove?lockerId="+record.lockerId, null, "get").then((res) => {
+      httpAction("/shoes/shoeLocker/canMove?lockerId=" + record.lockerId, null, "get").then((res) => {
         if (res.success) {
           //this.model = Object.assign({}, record);
+          this.model.paths = '';
+          this.model.longitude = '';
+          this.model.latitude = '';
           this.model.orgCode = record.orgCode + "";
           this.model.departName = record.departName;
           this.model.lockerCode = record.lockerCode;
@@ -353,7 +363,7 @@ export default {
           this.model.num = record.num;
           this.model.orderStatus = 1;
           this.model.status = 1;
-         // this.model.percentage = (record.percentage*100).toFixed(0);
+          // this.model.percentage = (record.percentage*100).toFixed(0);
           let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
           this.option = {
             center: center,// 设置地图中心点坐标
@@ -361,9 +371,9 @@ export default {
             mapTypeId: window.qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
           };
           this.visible = true;
-          setTimeout(()=>{   //设置延迟执行
+          setTimeout(() => {   //设置延迟执行
             this.initMapByJQ(record.latitude, record.longitude)
-          },1000);
+          }, 1000);
         } else {
           this.$message.warning(res.message);
         }
@@ -408,9 +418,9 @@ export default {
             "type": this.model.type,
             "weight": this.model.weight,
             "orderStatus": this.model.orderStatus,
-            "paths":this.model.paths,
-            "supplierType":this.model.supplierType,
-            "percentage":this.model.percentage/100,
+            "paths": this.model.paths,
+            "supplierType": this.model.supplierType,
+            "percentage": this.model.percentage / 100,
           }
 
           httpAction(httpurl, data, method).then((res) => {
@@ -436,21 +446,21 @@ export default {
         this.areaList = areaList;
       })
     },
-    handleOk () {
+    handleOk() {
       this.submitForm();
     },
-    submitCallback(){
+    submitCallback() {
       this.$emit('ok');
       this.visible = false;
     },
-    handleCancel () {
+    handleCancel() {
       this.visible = false;
       this.close()
     },
     //=====================================================
     //以下是腾讯地图的方法
     //加载地图
-    initMapByJQ(lat, lng){
+    initMapByJQ(lat, lng) {
       let center = new TMap.LatLng(lat, lng);//设置中心点坐标(厦门sm)
       //初始化地图
       this.map = new TMap.Map("tencentMapBox", {
@@ -472,7 +482,7 @@ export default {
 
       let polygon;
 
-      if (_this.model.paths){
+      if (_this.model.paths) {
         //初始化数据
         let simplePath = [];
         // let pathArr = JSON.parse(_this.paths)
@@ -485,16 +495,16 @@ export default {
         // 初始化几何图形及编辑器
         polygon = new TMap.MultiPolygon({
           map: _this.map,
-          geometries:[{ paths:simplePath }],
+          geometries: [{paths: simplePath}],
         });
-      }else{
+      } else {
         polygon = new TMap.MultiPolygon({
           map: _this.map,
         });
       }
 
       mapEditor = new TMap.tools.GeometryEditor({
-        map:_this.map, // 编辑器绑定的地图对象
+        map: _this.map, // 编辑器绑定的地图对象
         overlayList: [ // 可编辑图层
           {
             overlay: polygon,
@@ -512,16 +522,16 @@ export default {
 
       // 监听绘制结束事件，获取绘制几何图形
       mapEditor.on('draw_complete', (geometry) => {
-        if (mapEditor.getActiveOverlay().id === 'polygon'){
-          let  polygonObj = mapEditor.getOverlayList();
+        if (mapEditor.getActiveOverlay().id === 'polygon') {
+          let polygonObj = mapEditor.getOverlayList();
 
           //只允许添加一个配送范围
-          if ( polygonObj[0].overlay.geometries.length>1){
+          if (polygonObj[0].overlay.geometries.length > 1) {
             polygon.remove(geometry.id);
             alert('只能添加一个配送范围');
-          }else{
+          } else {
             let paths = _this.pathElems(geometry);
-            _this.model.paths =JSON.stringify(paths)
+            _this.model.paths = JSON.stringify(paths)
             _this.$refs.form.validateField(['paths'])
             this.$forceUpdate();
           }
@@ -534,7 +544,7 @@ export default {
       // 监听修改事件
       mapEditor.on('adjust_complete', (geometry) => {
         let paths = _this.pathElems(geometry);
-        _this.model.paths =JSON.stringify(paths)
+        _this.model.paths = JSON.stringify(paths)
         _this.$refs.form.validateField(['paths'])
         this.$forceUpdate();
       });
@@ -544,11 +554,11 @@ export default {
     /**
      * 判断机柜位置是否在配送范围内
      */
-    isIn(){
+    isIn() {
       let latLngArr = this.model.paths;
-      let lat =this.model.latitude;
+      let lat = this.model.latitude;
       let lng = this.model.longitude;
-      let pos= new TMap.LatLng(lat, lng);
+      let pos = new TMap.LatLng(lat, lng);
       latLngArr = JSON.parse(latLngArr);
       let paths = [];
       latLngArr.forEach(item => {
@@ -558,17 +568,17 @@ export default {
       return TMap.geometry.isPointInPolygon(pos, paths)
     },
 
-    handleIsIn(rule,value,callback){
+    handleIsIn(rule, value, callback) {
       let flag = this.isIn();
-      if(!flag){
+      if (!flag) {
         callback(new Error('机柜必须在配送范围内'))
-      }else{
+      } else {
         callback()
       }
     },
 
     //格式化返回的经纬度
-    pathElems(geometry){
+    pathElems(geometry) {
       var lngLat = [];
       for (const item of geometry.paths) {
         const lng = item.getLng();
@@ -585,24 +595,24 @@ export default {
      * 设置编辑模式
      * @param type  marker=设置机柜定位，polygon=设置配送范围
      */
-    setActivePattern(type){
+    setActivePattern(type) {
       this.activePattern = type;
-      if (type==='marker'){
+      if (type === 'marker') {
         mapEditor.setActiveOverlay('');
-      }else{
+      } else {
         mapEditor.setActiveOverlay(type);
       }
     },
 
     //删除
-    delPolygon(){
+    delPolygon() {
       mapEditor.setActionMode(TMap.tools.constants.EDITOR_ACTION.INTERACT);
       mapEditor.delete();
-      let  polygonObj = mapEditor.getOverlayList();
+      let polygonObj = mapEditor.getOverlayList();
 
       //只允许添加一个配送范围
-      if ( polygonObj[0].overlay.geometries.length===0){
-        this.model.paths ='';
+      if (polygonObj[0].overlay.geometries.length === 0) {
+        this.model.paths = '';
         this.$forceUpdate();
       }
     },
@@ -616,8 +626,8 @@ export default {
     },
 
     //初始化marker图层
-    initMarker(){
-      let _this=this;
+    initMarker() {
+      let _this = this;
       _this.markerLayer = new TMap.MultiMarker({
         id: 'marker-layer',
         map: _this.map
@@ -637,11 +647,11 @@ export default {
     },
 
     //marker图层地址选择事件
-    selectPoint(){
+    selectPoint() {
       let _this = this;
       this.map.on('click', function (evt) {
         //修改标记
-        if (_this.activePattern === 'marker'){
+        if (_this.activePattern === 'marker') {
           _this.markerLayer.updateGeometries([
             {
               "styleId": "marker",
@@ -666,11 +676,11 @@ export default {
             dataType: "jsonp",
             //jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
             //jsonpCallback:"?",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-            success: function(res){
+            success: function (res) {
               if (res.status === 0) {
                 let address = res.result !== undefined ? res.result.address : "";
-                let lng = res.result !== undefined ? res.result.location.lng: null;
-                let lat = res.result !== undefined ? res.result.location.lat: null;
+                let lng = res.result !== undefined ? res.result.location.lng : null;
+                let lat = res.result !== undefined ? res.result.location.lat : null;
 
                 _this.model.address = address;
                 $("#c-address").val(address);
@@ -686,7 +696,7 @@ export default {
                 _this.model.area = res.result.address_component.district !== undefined ? res.result.address_component.district : "";
               }
             },
-            error: function(){
+            error: function () {
               //  alert('fail');
             }
           })
@@ -695,7 +705,7 @@ export default {
     },
 
     //搜索地址
-    onSearch(searchValue){
+    onSearch(searchValue) {
       let _this = this;
       $.ajax({
         url: 'https://apis.map.qq.com/ws/place/v1/search',
@@ -717,7 +727,7 @@ export default {
       })
     },
     //选择搜索结果
-    selectAddress(obj){
+    selectAddress(obj) {
       let lat = obj.location.lat;
       let lng = obj.location.lng;
 
@@ -747,21 +757,23 @@ export default {
 }
 </script>
 <style>
-.diyDiv{
+.diyDiv {
   width: 100%;
   height: 660px;
   overflow-y: scroll;
 }
-.map-box{
-  width:auto;
-  height:400px;
+
+.map-box {
+  width: auto;
+  height: 400px;
   margin-left: 200px;
   margin-bottom: 30px;
 }
-.container-text{
-  width:auto;
+
+.container-text {
+  width: auto;
   height: 400px;
   margin-left: 5px;
-  overflow-y:auto;
+  overflow-y: auto;
 }
 </style>
