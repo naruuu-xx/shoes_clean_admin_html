@@ -122,7 +122,7 @@
             <div class="table-main-cell-status">{{ item.title }}</div>
             <div class="table-main-cell-des">
               {{ item.msg }}
-              <a v-if="item.status == 1" @click="showShoeImages(orderImagesList)" style="margin-left: 10px; text-decoration: underline">查看鞋子照片</a>
+              <a v-if="item.status == 0" @click="showShoeImages(orderImagesList)" style="margin-left: 10px; text-decoration: underline">查看鞋子照片</a>
               <a v-if="item.status == 6" @click="showShoeImages(factoryInImages)" style="margin-left: 10px; text-decoration: underline">查看入库照片</a>
             </div>
           </div>
