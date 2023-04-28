@@ -80,14 +80,6 @@ export default {
       },
       deep:true
     },
-    images:{
-      handler(val) {
-        // this.images = this.imgs.map(({image}) => image)
-        console.log(9898,val);
-        // this.$forceUpdate()
-      },
-      deep:true
-    },
   },
   computed:{
     
@@ -116,14 +108,12 @@ export default {
       return new Promise((resolve, reject) => {
         const imgs = files.map((item,idx) => {
           let isFile = item.file instanceof FormData  // 说明没上传,是个文件
-          console.log(777,isFile);
           return isFile ? uploadImg(item.file) : Promise.resolve({result:item.file})
         })
 				Promise.all(imgs).then((res,idx) => {
-          console.log(888,res);
 					resolve(res.map(item => ({
             file: item.result,
-            iamge: item.result
+            image: item.result
           })))
 				}).catch(err => {
           reject(err)

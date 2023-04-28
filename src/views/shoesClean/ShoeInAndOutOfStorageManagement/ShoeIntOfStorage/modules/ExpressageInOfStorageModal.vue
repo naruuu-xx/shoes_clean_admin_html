@@ -248,7 +248,6 @@ export default {
       this.dataList[this.tabValue].factoryInImages = this.$refs.photograph.imgs
       let data = this.dataList.map(async (item,idx) => {
         let factoryInImages = await this.$refs.photograph.uploadImgs(item.factoryInImages)
-        console.log(2222,factoryInImages);
         return {
           ...item,
           factoryInImages
@@ -256,11 +255,17 @@ export default {
           
       });
       Promise.all(data).then(res => {
-        console.log(7777777,res);
         this.dataList = res
-        this.$refs.confirmExpressagePrintModal.show(res);
+        console.log(222,res);
+        let d = this.dataList.map(item => ({
+          ...item,
+          factoryInImages: item.factoryInImages.map(t => t.file)
+        }))
+        console.log('ddd',d);
+        this.$refs.confirmExpressagePrintModal.show(d);
         this.confirmLoading = false
       }).catch(err => {
+        console.log(55,err);
         this.confirmLoading = false
       })
       

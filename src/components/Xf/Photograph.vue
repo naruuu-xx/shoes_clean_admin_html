@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-let width = 100
+let width = 1000
 let rato = 1080 / 1920
 
 

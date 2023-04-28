@@ -64,7 +64,7 @@ export default {
     row-gap: 20px;
     column-gap: 30px;
     overflow-y: auto;
-    height: 220px;
+    max-height: 220px;
   }
 .img {
   position: relative;
