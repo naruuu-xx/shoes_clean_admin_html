@@ -82,21 +82,20 @@ export default {
         this.width = this.lockerList.length * 560
       } else if (25 === usableNum) {
         let cabinetNum = usableNum + 3 // 需要加屏幕三个格子
-        console.log(cabinetNum, 456465465465465465465)
         let arr = Array(cabinetNum)
           .fill(0)
           .map((item, idx) => {
             let num = idx + 1 // 让编号从1开始
-            if (num < 9) {
-              // 前八个格子正常
+            if (num < 8) {
+              // 前七个格子正常
               return num
             } else {
-              if (num == 9 || num == 10 || num == 11) {
+              if (num == 8 || num == 9 || num == 10) {
                 // 这个是屏幕
                 return -1
               }
-              // 因为屏幕占三个 所以需要加一
-              return idx + 1;
+              // 因为屏幕占三个，但是需要从7开始，不用断
+              return idx - 2;
             }
           })
         this.lockerList = this.chunk(arr, 28).map((item) => this.chunk(item, 7))
