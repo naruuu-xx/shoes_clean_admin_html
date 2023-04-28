@@ -9,11 +9,15 @@
   </div>
 </template>
 <script>
+let width = 1000
+let rato = 1080 / 1920
+
+
 export default {
   data() {
     return {
-      videoWidth: 382,
-      videoHeight: 220,
+      videoWidth: width,
+      videoHeight: width * rato,
       imgSrc: '',
       thisCancas: null,
       thisContext: null,

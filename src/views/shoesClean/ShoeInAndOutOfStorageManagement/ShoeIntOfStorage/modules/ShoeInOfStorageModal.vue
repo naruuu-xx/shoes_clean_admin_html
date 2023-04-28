@@ -21,9 +21,10 @@
           </a-col>
         </a-row>
         <a-divider />
+        
         <a-row v-show="shoeOrderInfo">
           <a-row>
-            <XfPhotograph ref="photograph"></XfPhotograph>
+            <XfPhotograph ref="photograph" :photographImg="factoryInImages"></XfPhotograph>
           </a-row>
           <a-row>
             <a-col :span="18">
@@ -155,7 +156,8 @@ export default {
       showInOfStoragePrintModal: false,
       selectedNote: [],
       noteOptions: [],
-      loadingBtn: false
+      loadingBtn: false,
+      factoryInImages:[]
     }
   },
   created() {
@@ -237,7 +239,9 @@ export default {
       this.showInOfStoragePrintModal = false;
     },
     shoeInOfStorageModal() {
-      this.$refs.photograph.submit().then(factoryInImages => {
+      this.$refs.photograph.submit().then(Images => {
+        this.factoryInImages = Images
+        let factoryInImages = Images.map(item => item.file)
         this.$refs.confirmPrintModal.show(Object.assign({},this.data,{factoryInImages}));
       })
       // this.showInOfStoragePrintModal = true;

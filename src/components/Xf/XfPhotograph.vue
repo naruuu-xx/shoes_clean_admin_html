@@ -1,10 +1,40 @@
 <template>
   <div class="photograph">
     <div style="margin-right: 34px;">
-      <Photograph ref="TakePhotos" @refreshDataList="refreshDataList"></Photograph>
+      <a-button @click="previewVisible = true">拍照</a-button>
     </div>
-    <xfImgs :images="images" @close="close"></xfImgs>
+    <xfImgs :images="images" @close="close" @onClick="onClick"></xfImgs>
+    <!-- :closable="false" -->
+    <j-modal
+    isNoTitle
+   
+    :maskClosable="false"
+    :width="1200"
+    :visible="previewVisible"
+    @cancel="handleCancel"
+    :footer="null"
+    cancelText="关闭">
+    <div class="top">
+      <div class="back" @click="handleCancel">
+        <a-icon type="left" />
+        <span>返回</span>
+      </div>
+      <!-- <a-button type="primary" @click="onSubmit">提交</a-button> -->
+    </div>
+    <Photograph ref="TakePhotos" @refreshDataList="refreshDataList"></Photograph>
+    <xfImgs :images="images" @close="close" @onClick="onClick"></xfImgs>
+    <a-modal :visible="imgVisible" :footer="null" @cancel="handleImgCancel()" width="1000px">
+      <img alt="example" style="width: 100%" :src="previewImage"/>
+    </a-modal>
+  </j-modal>
+    <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel()">
+      <div>
+        
+      </div>
+    </a-modal> -->
   </div>
+
+
 </template>
 
 <script>
@@ -28,7 +58,10 @@ export default {
     return {
       img:'',
       imgs:[],
-      images:[]
+      images:[],
+      previewVisible: false,
+      imgVisible:false,
+      previewImage:''
     }
   },
   created() {
@@ -46,23 +79,42 @@ export default {
         this.imgs = val.map(obj => Object.assign({},obj))
       },
       deep:true
-    }
+    },
   },
   computed:{
     
   },
   methods: {
+    onSubmit() {
+      
+    },
+    handleImgCancel() {
+      this.imgVisible = false
+    },
+    handleCancel() {
+      this.previewVisible = false
+    },
     close(idx) {
       this.imgs.splice(idx,1)
+    },
+    onClick(idx) {
+      this.previewImage = this.images[idx]
+      this.imgVisible = true
     },
     submit() {
       return this.uploadImgs(this.imgs)
     },
     uploadImgs(files) {
       return new Promise((resolve, reject) => {
-        const imgs = files.map((item,idx) => uploadImg(item.file)).filter(item => item)
-				Promise.all(imgs).then(res => {
-					resolve(res.map(item => item.result))
+        const imgs = files.map((item,idx) => {
+          let isFile = item.file instanceof FormData  // 说明没上传,是个文件
+          return isFile ? uploadImg(item.file) : Promise.resolve({result:item.file})
+        })
+				Promise.all(imgs).then((res,idx) => {
+					resolve(res.map(item => ({
+            file: item.result,
+            image: item.result
+          })))
 				}).catch(err => {
           reject(err)
 				})
@@ -76,6 +128,19 @@ export default {
 </script>
 
 <style scoped lang="less">
+.back {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  cursor: pointer;
+  
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
 
 .photograph {
   display: flex;

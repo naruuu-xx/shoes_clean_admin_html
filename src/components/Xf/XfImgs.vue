@@ -1,14 +1,12 @@
 <template>
   <div class="imgs">
     <div class="img" v-for="(url,idx) in images" :key="idx" @click="onClick('onClick',idx)">
-      <img v-if="images.length" :src="url" alt="" srcset="" :style="{width: `${width}px`,height: `${height}px`}">
+      <img :src="url" alt="" srcset="" :style="{width: `${width}px`,height: `${height}px`}">
       <div class="img-close" @click.stop="onClick('close',idx)">
         <a-icon type="close" style="color: #fff"/>
       </div>
     </div>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel()">
-      <img alt="example" style="width: 100%" :src="previewImage"/>
-    </a-modal>
+    
   </div>
 </template>
 
@@ -39,10 +37,6 @@ export default {
     }
   },
 
-  watch:{
-
-  },
-
   computed: {
     
   },
@@ -52,11 +46,11 @@ export default {
       this.previewVisible = false;
     },
     onClick(type,idx) {
-      if(type == 'onClick') {
-        this.previewImage = this.images[idx]
-        this.previewVisible = true
-        return
-      }
+      // if(type == 'onClick') {
+      //   this.previewImage = this.images[idx]
+      //   this.previewVisible = true
+      //   return
+      // }
       this.$emit(type,idx)
     }
   }
@@ -67,16 +61,16 @@ export default {
   .imgs {
     display: flex;
     flex-wrap: wrap;
+    row-gap: 20px;
+    column-gap: 30px;
     overflow-y: auto;
-    height: 220px;
+    max-height: 220px;
   }
 .img {
   position: relative;
   margin-right: 10px;
   margin-top: 10px;
-  &:nth-child(-n+3) {
-    margin-top: 0;
-  }
+
   &-close {
     position: absolute;
     top: 0;
