@@ -306,7 +306,7 @@ export default {
           {required: true, message: '请输入区/县!'},
         ],
         paths:[
-          {required: true, message: '请设置配送范围'},
+          // {required: true, message: '请设置配送范围'},
           {validator:this.handleIsIn}
         ],
         selectedOrderType: [
@@ -718,11 +718,20 @@ export default {
     },
 
     handleIsIn(rule,value,callback){
-      let flag = this.isIn();
-      if(!flag){
-        callback(new Error('机柜必须在配送范围内'))
-      }else{
+      if(this.model.selectedOrderType.indexOf("service")===-1){
         callback()
+      }else{
+        //选择配送
+        if (value===''){
+          callback(new Error('请设置配送范围'))
+        }else{
+          let flag = this.isIn();
+          if(!flag){
+            callback(new Error('机柜必须在配送范围内'))
+          }else{
+            callback()
+          }
+        }
       }
     },
 
