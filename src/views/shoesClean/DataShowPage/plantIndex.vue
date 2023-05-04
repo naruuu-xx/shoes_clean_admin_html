@@ -106,39 +106,24 @@
             </a-spin>
           </a-col>
         </a-row>
-        <a-row :gutter="24">
-          <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24" v-for="(ranking,idx) in rankingList" :key="idx">
-            <div>
-              <div class="rankings">
-                <div class="rankings-title">{{ranking.name}}{{ barQuery.type.name }}排行</div>
-                <a-spin :spinning="spinning">
-                  <div class="rankings-main">
-                    <div class="rankings-main-cell" v-for="(good, idx) in ranking.list" :key="idx">
-                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                      <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
-                    </div>
-                    <a-empty v-if="!ranking.list.length"/>
-                  </div>
-                </a-spin>
-              </div>
-            </div>
-          </a-col>
-        </a-row>
       </div>
     </a-card>
+    <BrandStatistics></BrandStatistics>
   </div>
 </template>
 
 <script>
 import Bar from './components/Bar'
 import Pie from './components/Pie'
+import BrandStatistics from './components/BrandStatistics'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
 export default {
   name: 'ShoeAnalysis',
   components: {
     Bar,
-    Pie
+    Pie,
+    BrandStatistics
   },
   data() {
     return {
@@ -271,6 +256,7 @@ export default {
     this.getIndexDown()
   },
   methods: {
+    
     onChangeDate(date, dateString) {
       console.log(date, dateString);
     },
@@ -361,6 +347,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
 main {
   color: #333;
 }
@@ -373,6 +360,8 @@ main {
   &-main {
     display: flex;
     padding: 18px 0;
+    // min-width: 500px;
+    overflow-x: scroll;
   }
   &-item {
     flex: 1;
@@ -403,6 +392,8 @@ main {
   }
   &-item-i {
     flex: 1;
+    flex-shrink: 0;
+    min-width: 170px;
     border-right: #ddd solid 1px;
     display: flex;
     align-content: center;
@@ -500,34 +491,6 @@ main {
   color: #3b98ff !important;
 }
 
-.rankings {
-  padding: 0 32px;
-  margin-top: 20px;
-  background-color: #fff;
-  min-height: 334px;
-  color: #333;
-  border-right: 1px solid #e3e3e3;
-  &-title {
-    margin-bottom: 12px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 900;
-  }
-  &-main {
-    &-cell {
-      display: flex;
-      justify-content: space-between;
-      margin: 16px 0;
-      font-size: 16px;
-      &-name {
-        padding-right: 40px;
-      }
-      &-value {
-      }
-    }
-  }
-}
-
 .tab {
   display: flex;
   justify-content: space-between;
@@ -565,8 +528,18 @@ main {
 }
 
 .tabbar {
+  // min-width: 500px;
+  overflow-x: scroll;
   display: flex;
+  &::after {
+    content: '';
+    height: 54px;
+    display: block;
+    background-color: #F5F5F5;
+    flex: 1;
+  }
   &-item {
+    flex-shrink: 0;
     border-bottom: 1px solid #e3e3e3;
     &:first-child{
       
@@ -578,9 +551,6 @@ main {
         padding-left: 20px;
       }
       
-    }
-    &:last-child {
-      flex: 1;
     }
     &-title {
       background: #F5F5F5;

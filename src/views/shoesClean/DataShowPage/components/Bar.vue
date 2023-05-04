@@ -1,6 +1,6 @@
 <template>
   <div :style="{ padding: '0 0 32px 0' }">
-    <h4 :style="{ paddingBottom: '20px' }" class="title">{{ title }}</h4>
+    <h4 class="title">{{ title }}</h4>
     <v-chart :forceFit="true" :height="height" :data="dataSource" :scale="scale" :padding="padding">
       <v-tooltip/>
       <v-axis/>
@@ -56,6 +56,7 @@
 <style lang="less" scoped>
 .title {
   border-bottom: 1px solid #e3e3e3;
+  padding: 19px 0;
   padding-left: 20px;
 }
 </style>
