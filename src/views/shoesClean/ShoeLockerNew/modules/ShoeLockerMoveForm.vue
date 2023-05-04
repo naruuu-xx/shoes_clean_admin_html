@@ -214,7 +214,8 @@ export default {
         area: "",
         address: "",
         longitude: "",
-        latitude: ""
+        latitude: "",
+        paths: ""
       },
       labelCol: {
         xs: {span: 24},
@@ -234,6 +235,9 @@ export default {
         ],
         orgCode: [
           {required: true, message: '请选择区域!'},
+        ],
+        name:[
+          {required: true, message: '请选择机柜名称'},
         ],
         type: [
           {required: true, message: '请选择机柜类型'},
