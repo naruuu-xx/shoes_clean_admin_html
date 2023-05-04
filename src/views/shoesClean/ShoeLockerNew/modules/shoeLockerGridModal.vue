@@ -140,7 +140,7 @@ export default {
         if (res.code === 0) {
           that.$message.success('开门成功')
         } else {
-          that.$message.warning(res.message)
+          that.$message.warning(res.msg)
         }
       })
     },
