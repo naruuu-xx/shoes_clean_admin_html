@@ -30,37 +30,12 @@
         <div class="box">
           <div class="box-title">工厂鞋数</div>
           <div class="box-main">
-            <div class="box-item-i" v-for="(item,idx) in dataObj.quantityOfSale" :key="idx">
-              <!-- <img class="box-item-i-img"></img> -->
+            <div class="box-item-i" v-for="(item,idx) in factoryShoes" :key="idx">
+              <img class="box-item-i-img" :src="item.icon"></img>
               <div class="box-item-i-main">
                 <div class="box-item-i-main-title">{{ item.name }}</div>
-                <div class="box-item-i-main-value">{{ item.num }}</div>
+                <div class="box-item-i-main-value" :style="{color:item.color}">{{ item.num }}</div>
               </div>
-            </div>
-          </div>
-        </div>
-      </a-col>
-    </a-row>
-
-    <a-row>
-      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="withdraw">
-          <div class="withdraw-title">提现待审核</div>
-          <div class="withdraw-main">
-            <div class="withdraw-main-item" @click="onClickw('0',item)" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
-              <div class="withdraw-main-item-name">{{ item.name }}</div>
-              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
-            </div>
-          </div>
-        </div>
-      </a-col>
-      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="withdraw">
-          <div class="withdraw-title">提现待确认</div>
-          <div class="withdraw-main">
-            <div class="withdraw-main-item" @click="onClickw('1',item)" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
-              <div class="withdraw-main-item-name">{{ item.name }}</div>
-              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
             </div>
           </div>
         </div>
@@ -70,44 +45,65 @@
     <a-card :loading="loading" :bordered="false" :body-style="{ padding: '0' }">
       <div class="salesCard">
         <div class="tab">
-          <div class="tab-left">
-            <div
-              class="tab-left-item"
-              :class="{ active: type.value == barQuery.type.value }"
-              v-for="(type, idx) in typeList"
-              :key="idx"
-              @click="onTab('type', type)"
-            >
-              {{ type.name }}
-            </div>
+          <div class="tab-left title">
+            入库鞋数
           </div>
           <div class="tab-right">
-            <div
-              class="tab-right-item"
+            <div class="tab-right-main">
+              <div
+              class="tab-right-main-item"
               :class="{ active: type.value == barQuery.time.value }"
               v-for="(type, idx) in timeList"
               :key="idx"
               @click="onTab('time', type)"
-            >
-              {{ type.name }}
+              >
+                {{ type.name }}
+              </div>
             </div>
+            <a-range-picker @change="onChangeDate" />
+            
           </div>
         </div>
         <a-row>
-          <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
+          <div class="tabbar">
+            <div class="tabbar-item" v-for="(item,idx) in incomingShoes" :key="idx">
+              <div class="tabbar-item-title">{{ item.name }}</div>
+              <div class="tabbar-item-value">{{ item.num }}</div>
+            </div>
+          </div>
+        </a-row>
+        <div class="title">
+          出库鞋数
+        </div>
+        <a-row>
+          <div class="tabbar">
+            <div class="tabbar-item" v-for="(item,idx) in incomingShoes" :key="idx">
+              <div class="tabbar-item-title">{{ item.name }}</div>
+              <div class="tabbar-item-value">{{ item.num }}</div>
+            </div>
+          </div>
+        </a-row>
+        <a-row>
+          <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <bar
                 :title="`${barQuery.time.name}${barQuery.type.name}排行`"
                 :dataSource="barData"
                 :yaxisText="barQuery.type.name"
+                color="#48CAF0"
               />
             </a-spin>
 
           </a-col>
-          <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
-            <div style="padding-top: 20px;">
-              <Pie :height="300" :dataSource="pieData"/>
-            </div>
+          <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
+            <a-spin :spinning="spinning">
+              <bar
+                :title="`${barQuery.time.name}${barQuery.type.name}排行`"
+                :dataSource="barData"
+                :yaxisText="barQuery.type.name"
+                color="#FFBB00"
+              />
+            </a-spin>
           </a-col>
         </a-row>
         <a-row :gutter="24">
@@ -134,7 +130,7 @@
 </template>
 
 <script>
-import Bar from '@/components/chart/Bar'
+import Bar from './components/Bar'
 import Pie from './components/Pie'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
@@ -180,6 +176,10 @@ export default {
           value: 'day',
         },
         {
+          name: '昨日',
+          value: 'yesterday',
+        },
+        {
           name: '本月',
           value: 'month',
         },
@@ -188,7 +188,7 @@ export default {
           value: 'lastMonth',
         },
         {
-          name: '本年',
+          name: '全年',
           value: 'year',
         },
       ],
@@ -207,6 +207,60 @@ export default {
         { item: '自提', count: 0 },
         { item: '快递', count: 0 },
         { item: '站点', count: 0 }
+      ],
+      factoryShoes:[
+        {
+          name:'总鞋数',
+          icon:require('@/assets/data-shoe.png'),
+          color:'#39C9C9',
+          num:'102'
+        },
+        {
+          name:'机柜',
+          icon:require('@/assets/data-cabinet.png'),
+          color:'#FFB673',
+          num:'102'
+        },
+        {
+          name:'站点',
+          icon:require('@/assets/data-site.png'),
+          color:'#FC456C',
+          num:'102'
+        },
+        {
+          name:'快递',
+          icon:require('@/assets/data-express.png'),
+          color:'#48CAF0',
+          num:'102'
+        },
+        {
+          name:'其他',
+          icon:require('@/assets/data-else.png'),
+          color:'#21C3BC',
+          num:'102'
+        },
+      ],
+      incomingShoes:[
+        {
+          name:'总鞋数',
+          num: 164
+        },
+        {
+          name:'机柜',
+          num: 164
+        },
+        {
+          name:'站点',
+          num: 164
+        },
+        {
+          name:'快递',
+          num: 164
+        },
+        {
+          name:'候鸟',
+          num: 164
+        },
       ]
     }
   },
@@ -217,9 +271,8 @@ export default {
     this.getIndexDown()
   },
   methods: {
-    // 点击订单状态
-    onClickOrder(val) {
-      this.$router.push({ name: 'order-list', params: { status: [val.status+'']}})
+    onChangeDate(date, dateString) {
+      console.log(date, dateString);
     },
     // 点击
     onClickw(status,val) {
@@ -348,6 +401,49 @@ main {
       font-size: 10px;
     }
   }
+  &-item-i {
+    flex: 1;
+    border-right: #ddd solid 1px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    &-img {
+      width: 90px;
+      height: 90px;
+    }
+    &-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      &-value {
+        font-size: 30px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #39C9C9;
+        line-height: 38px;
+      }
+    }
+    &:last-child {
+      border-right-width: 0px;
+    }
+    &-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(0,0,0,0.65);
+      line-height: 22px;
+    }
+    &-value {
+      font-size: 30px;
+      font-weight: 400;
+      color: rgba(0,0,0,0.85);
+      line-height: 38px;
+    }
+    &-foot {
+      font-size: 10px;
+    }
+  }
 }
 
 .status {
@@ -401,7 +497,7 @@ main {
 }
 
 .active {
-  color: #3b98ff;
+  color: #3b98ff !important;
 }
 
 .rankings {
@@ -435,7 +531,6 @@ main {
 .tab {
   display: flex;
   justify-content: space-between;
-  padding: 10px 24px;
   border-bottom: 1px solid #e3e3e3;
   &-left {
     display: flex;
@@ -446,9 +541,57 @@ main {
   }
   &-right {
     display: flex;
-    &-item {
-      padding: 0 24px;
-      cursor: pointer;
+    align-items: center;
+    padding-right: 20px;
+    &-main {
+      display: flex;
+      &-item {
+        font-size: 14px;
+        color: rgba(0,0,0,0.65);
+        line-height: 20px;
+        padding: 0 12px;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.title {
+  padding:18px 0 18px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  line-height: 16px;
+}
+
+.tabbar {
+  display: flex;
+  &-item {
+    border-bottom: 1px solid #e3e3e3;
+    &:first-child{
+      
+      .tabbar-item-title {
+        color: #397AFF !important;
+        padding-left: 20px;
+      }
+      .tabbar-item-value {
+        padding-left: 20px;
+      }
+      
+    }
+    &:last-child {
+      flex: 1;
+    }
+    &-title {
+      background: #F5F5F5;
+      padding: 16px 0;
+      padding-right: 90px;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 22px;
+    }
+    &-value {
+      padding: 12px 0;
     }
   }
 }
