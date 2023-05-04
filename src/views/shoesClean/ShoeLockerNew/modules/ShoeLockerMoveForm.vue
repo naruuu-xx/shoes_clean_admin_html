@@ -206,7 +206,17 @@ export default {
       width: 1000,
       visible: false,
       disableSubmit: false,
-      model: {},
+      model: {
+        orderStatus:1,
+        status:1,
+        province: "",
+        city: "",
+        area: "",
+        address: "",
+        longitude: "",
+        latitude: "",
+        paths: ""
+      },
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -225,6 +235,9 @@ export default {
         ],
         orgCode: [
           {required: true, message: '请选择区域!'},
+        ],
+        name:[
+          {required: true, message: '请选择机柜名称'},
         ],
         type: [
           {required: true, message: '请选择机柜类型'},
@@ -457,7 +470,6 @@ export default {
     },
     handleCancel() {
       this.visible = false;
-      this.close()
     },
     //=====================================================
     //以下是腾讯地图的方法
@@ -696,6 +708,7 @@ export default {
                 _this.model.province = res.result.address_component.province !== undefined ? res.result.address_component.province : "";
                 _this.model.city = res.result.address_component.city !== undefined ? res.result.address_component.city : "";
                 _this.model.area = res.result.address_component.district !== undefined ? res.result.address_component.district : "";
+                _this.$refs.form.validateField(['address','longitude','latitude','province','city','area'])
               }
             },
             error: function () {
