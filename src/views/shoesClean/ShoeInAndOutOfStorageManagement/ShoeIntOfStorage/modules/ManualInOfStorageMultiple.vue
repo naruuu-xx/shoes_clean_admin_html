@@ -10,7 +10,7 @@
     <a-spin :spinning="confirmLoading">
       <j-form-container :disabled="formDisabled">
         <div slot="detail">
-          <a-row>
+          <a-row v-if="form.length" style="margin-bottom: 10px;">
             <div class="tab">
               <a-radio-group v-model="tabValue" button-style="solid">
                 <a-radio-button :value="item.value" v-for="(item, index) in tabs" :key="index">
@@ -18,7 +18,7 @@
                 </a-radio-button>
               </a-radio-group>
             </div>
-          <XfPhotograph ref="photograph" :photographImg="form[tabValue].factoryInImages"></XfPhotograph>
+            <XfPhotograph ref="photograph" :photographImg="form[tabValue].factoryInImages"></XfPhotograph>
           </a-row>
           <a-form-model :ref="`form${idx}`" :model="mm" :rules="validatorRules" v-for="(mm,idx) in form" :key="idx">
             <a-row>
@@ -250,16 +250,16 @@ export default {
               ...item,
               factoryInImages: item.factoryInImages.map(t => t.file)
             }))
-            httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",d, "post").then((res)=> {
-              if (res.success) {
-                this.$message.success(res.message);
+            httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",d, "post").then((ress)=> {
+              if (ress.success) {
+                this.$message.success(ress.message);
                 this.visible = false;
                 this.form = [];
                 this.$emit('ok');
                 //打印水洗唛
-                this.createWashedMark(res.result);
+                this.createWashedMark(ress.result);
               } else {
-                this.$message.warning(res.message);
+                this.$message.warning(ress.message);
               }
             }).finally(() => {
               this.confirmLoading = false;
