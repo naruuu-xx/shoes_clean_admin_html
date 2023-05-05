@@ -9,7 +9,7 @@
     <a-spin :spinning="confirmLoading">
       <j-form-container :disabled="formDisabled">
         <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
-          <a-row>
+          <a-row style="margin-left: 36px;">
             <XfPhotograph ref="photograph" :photographImg="factoryInImages"></XfPhotograph>
           </a-row>
           <a-row>
