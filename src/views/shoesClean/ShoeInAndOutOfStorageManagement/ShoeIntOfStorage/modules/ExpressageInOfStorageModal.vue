@@ -256,16 +256,13 @@ export default {
       });
       Promise.all(data).then(res => {
         this.dataList = res
-        console.log(222,res);
         let d = this.dataList.map(item => ({
           ...item,
           factoryInImages: item.factoryInImages.map(t => t.file)
         }))
-        console.log('ddd',d);
         this.$refs.confirmExpressagePrintModal.show(d);
         this.confirmLoading = false
       }).catch(err => {
-        console.log(55,err);
         this.confirmLoading = false
       })
       

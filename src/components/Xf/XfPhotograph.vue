@@ -22,7 +22,7 @@
       <!-- <a-button type="primary" @click="onSubmit">提交</a-button> -->
     </div>
     <Photograph ref="TakePhotos" @refreshDataList="refreshDataList"></Photograph>
-    <xfImgs :images="images" @close="close" @onClick="onClick"></xfImgs>
+    <xfImgs :images="images" @close="close" @onClick="onClick" style="margin-top: 12px;"></xfImgs>
     <a-modal :visible="imgVisible" :footer="null" @cancel="handleImgCancel()" width="1000px">
       <img alt="example" style="width: 100%" :src="previewImage"/>
     </a-modal>
