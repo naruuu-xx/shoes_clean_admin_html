@@ -1,4 +1,5 @@
 <template>
+
   <j-modal
     title="手工录单"
     :width="600"
@@ -9,6 +10,16 @@
     <a-spin :spinning="confirmLoading">
       <j-form-container :disabled="formDisabled">
         <div slot="detail">
+          <a-row>
+            <div class="tab">
+              <a-radio-group v-model="tabValue" button-style="solid">
+                <a-radio-button :value="item.value" v-for="(item, index) in tabs" :key="index">
+                  {{item.label}}
+                </a-radio-button>
+              </a-radio-group>
+            </div>
+          <XfPhotograph ref="photograph" :photographImg="form[tabValue].factoryInImages"></XfPhotograph>
+          </a-row>
           <a-form-model :ref="`form${idx}`" :model="mm" :rules="validatorRules" v-for="(mm,idx) in form" :key="idx">
             <a-row>
               <a-col :span="24">第{{idx+1}}双鞋</a-col>
@@ -97,11 +108,13 @@
 <script>
 import {downFile, httpAction} from "../../../../../api/manage";
 import XfSelect from "@comp/Xf/XfSelect";
+import XfPhotograph from "@comp/Xf/XfPhotograph";
 
 export default {
   name: "ManualInOfStorage",
   components: {
-    XfSelect
+    XfSelect,
+    XfPhotograph
   },
   props: {
     //表单禁用
@@ -161,11 +174,26 @@ export default {
       },
       form:[],
       weekList:[],
+      tabValue: 0
     }
   },
   computed: {
     formDisabled() {
       return this.disabled
+    },
+    tabs() {
+      return this.form.map((item,idx) => ({
+        label: `鞋子${idx+1}`,
+        value: idx
+      }))
+    }
+  },
+  watch:{
+    tabValue: {
+      handler(val,oldValue) {
+        let imgs = this.$refs.photograph.imgs
+        this.form[oldValue].factoryInImages = imgs
+      },
     },
   },
   created() {
@@ -178,7 +206,7 @@ export default {
       }));
     },
     show(data) {
-      this.form = data
+      this.form = data.map(item => ({...item,factoryInImages: []}))
       this.visible = true;
     },
     handleCancel() {
@@ -207,21 +235,40 @@ export default {
         //   }))
 
           this.confirmLoading = true;
-
-          httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",this.form, "post").then((res)=> {
-            if (res.success) {
-              this.$message.success(res.message);
-              this.visible = false;
-              this.form = [];
-              this.$emit('ok');
-              //打印水洗唛
-              this.createWashedMark(res.result);
-            } else {
-              this.$message.warning(res.message);
+          this.form[this.tabValue].factoryInImages = this.$refs.photograph.imgs
+          let data = this.form.map(async (item,idx) => {
+            let factoryInImages = await this.$refs.photograph.uploadImgs(item.factoryInImages)
+            return {
+              ...item,
+              factoryInImages
             }
-          }).finally(() => {
-            this.confirmLoading = false;
+              
+          });
+          Promise.all(data).then(res => {
+            this.form = res
+            let d = this.form.map(item => ({
+              ...item,
+              factoryInImages: item.factoryInImages.map(t => t.file)
+            }))
+            httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",d, "post").then((res)=> {
+              if (res.success) {
+                this.$message.success(res.message);
+                this.visible = false;
+                this.form = [];
+                this.$emit('ok');
+                //打印水洗唛
+                this.createWashedMark(res.result);
+              } else {
+                this.$message.warning(res.message);
+              }
+            }).finally(() => {
+              this.confirmLoading = false;
+            })
+          }).catch(err => {
+            this.confirmLoading = false
           })
+
+          
       }).catch(err => {
         console.log(555,err);
       })
@@ -264,6 +311,14 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+.tab {
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+  .tab /deep/ .ant-radio-group {
+    overflow-x: scroll;
+    display: flex;
+  }
 </style>
