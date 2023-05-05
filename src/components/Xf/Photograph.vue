@@ -10,7 +10,7 @@
 </template>
 <script>
 let width = 1000
-let rato = 1080 / 1920
+let rato = 210 / 280
 
 
 export default {
@@ -26,11 +26,20 @@ export default {
   },
   mounted() {
     this.getCompetence()
+    window.addEventListener('keydown',this.onkeydown)
   },
   destroyed() {
     this.stopNavigator()
   },
   methods: {
+    onkeydown(e) {
+      if(e.keyCode==32){  
+        this.setImage()
+      }
+    },
+    removeKeydown() {
+      window.removeEventListener('keydown', this.onkeydown)
+    },
     handleAvatarSuccess(res, file) {
       this.$emit('refreshDataList', res.data.url)
     },
@@ -151,6 +160,8 @@ export default {
   }
 }
 .camera_outer {
+  display: flex;
+  justify-content: center;
   position: relative;
   overflow: hidden;
   //background: url("../../assets/img/user_0608_04.png") no-repeat center;
@@ -159,10 +170,10 @@ export default {
   video,
   canvas,
   .tx_img {
-    -moz-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    transform: scaleX(-1);
+    // -moz-transform: scaleX(-1);
+    // -webkit-transform: scaleX(-1);
+    // -o-transform: scaleX(-1);
+    // transform: scaleX(-1);
   }
 
   .btn_camera {

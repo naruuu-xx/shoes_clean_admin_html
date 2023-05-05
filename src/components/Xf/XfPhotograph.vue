@@ -1,7 +1,7 @@
 <template>
   <div class="photograph">
     <div style="margin-right: 34px;">
-      <a-button @click="previewVisible = true">拍照</a-button>
+      <a-button @click="previewVisible = true" type="primary">拍照</a-button>
     </div>
     <xfImgs :images="images" @close="close" @onClick="onClickOut"></xfImgs>
     <!-- :closable="false" -->
@@ -22,7 +22,7 @@
       <!-- <a-button type="primary" @click="onSubmit">提交</a-button> -->
     </div>
     <Photograph ref="TakePhotos" @refreshDataList="refreshDataList"></Photograph>
-    <xfImgs :images="images" @close="close" @onClick="onClick"></xfImgs>
+    <xfImgs :images="images" @close="close" @onClick="onClick" style="margin-top: 12px;"></xfImgs>
     <a-modal :visible="imgVisible" :footer="null" @cancel="handleImgCancel()" width="1000px">
       <img alt="example" style="width: 100%" :src="previewImage"/>
     </a-modal>
@@ -93,6 +93,7 @@ export default {
     },
     handleCancel() {
       this.previewVisible = false
+      this.$refs.TakePhotos.removeKeydown()
     },
     close(idx) {
       this.imgs.splice(idx,1)
