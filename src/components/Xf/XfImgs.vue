@@ -11,6 +11,8 @@
 </template>
 
 <script>
+let rato = 210 / 280
+let width = 180
 export default {
   name: 'XfImgs',
 
@@ -22,11 +24,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 180
+      default: width
     },
     height: {
       type: Number,
-      default: 110
+      default: width * rato
     }
   },
 
@@ -62,14 +64,14 @@ export default {
     display: flex;
     flex-wrap: wrap;
     row-gap: 20px;
-    column-gap: 30px;
+    column-gap: 20px;
     overflow-y: auto;
     max-height: 220px;
   }
 .img {
   position: relative;
-  margin-right: 10px;
-  margin-top: 10px;
+  // margin-right: 10px;
+  // margin-top: 10px;
 
   &-close {
     position: absolute;
