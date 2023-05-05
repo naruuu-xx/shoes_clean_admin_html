@@ -282,7 +282,7 @@ export default {
             list:res.lockerRankingList || []
           },
           {
-            name:'站点',
+            name:'站点配送',
             list:res.siteRankingList || []
           },
           {
