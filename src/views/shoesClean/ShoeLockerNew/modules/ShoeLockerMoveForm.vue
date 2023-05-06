@@ -31,6 +31,7 @@
               <a-col :span="24">
                 <a-form-model-item label="机柜名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
                   <a-input v-model="model.name" placeholder="请输入机柜名称" autocomplete="off"></a-input>
+                  如果机柜发生较大的变动，请使用机柜迁移功能，请勿直接修改机柜名称跟地址，防止出现数据混乱！
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
