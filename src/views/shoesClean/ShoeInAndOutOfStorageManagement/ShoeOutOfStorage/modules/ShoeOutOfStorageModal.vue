@@ -127,8 +127,19 @@ export default {
       this.showImageModal = false;
       this.clickedImage = "";
     },
-    handleOutOfStorage() {
+    queryOutOfStorageInfo() {
+      if (this.no === "" || this.no === null || this.no === undefined) {
+        this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
+      } else {
+        let data = {
+          "no": this.no
+        }
 
+
+
+      }
+    },
+    handleOutOfStorage() {
       //处理出库
       if (this.no === "" || this.no === null || this.no === undefined) {
         this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
