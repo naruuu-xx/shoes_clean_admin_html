@@ -443,9 +443,17 @@ export default {
               that.$message.success(res.message);
               that.$emit('ok');
               that.visible = false;
+              that.model.name="";
+              that.model.weight="";
+              that.model.percentage="";
+              that.model.address="";
             } else {
               that.$message.warning(res.message);
               that.visible = false;
+              that.model.name="";
+              that.model.weight="";
+              that.model.percentage="";
+              that.model.address="";
             }
           }).finally(() => {
             that.confirmLoading = false;
