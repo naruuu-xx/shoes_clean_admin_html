@@ -110,7 +110,9 @@
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import ShoeOrderExceptionModal from "./modules/ShoeOrderExceptionModal";
   import ShoeOrderExceptionDetailModal from "./modules/ShoeOrderExceptionDetailModal";
-  import {downFile} from "../../../api/manage";
+  import {downFile, httpAction} from "../../../api/manage";
+  import { getLodop } from '@/utils/LodopFuncs';
+  let Lodop;
 
   export default {
     name: 'ShoeOrderExceptionList',
@@ -218,41 +220,82 @@
           "no": record.no
         }
 
-        downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByInForException", data, "post").then((res) => {
           if (!res) {
             this.$message.warning(res.message)
             return
           }
-          const content = res;
+
+          const file = res;
           // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
           // 要不然无法进行打印
-          const blob = new Blob([content], { type: 'application/pdf' });
-          //=========================================================
-          var date = (new Date()).getTime();
-          var ifr = document.createElement('iframe');
-          ifr.style.frameborder = 'no';
-          ifr.style.display = 'none';
-          ifr.style.pageBreakBefore = 'always';
-          ifr.setAttribute('download', 'printPdf' + date + '.pdf');
-          ifr.setAttribute('id', 'printPdf' + date + '.pdf');
-          ifr.src = window.URL.createObjectURL(blob);
-          document.body.appendChild(ifr);
+          // const blob = new Blob([file], { type: 'application/pdf' });
 
-          this.doPrint('printPdf' + date + '.pdf')
-          window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
-          //=========================================================
-          // this.$message.success("入库成功");
-          this.confirmLoading = false;
+          // this.getBase64(blob).then(res=>{
+          //   console.log(res);
+          //   // res = res.replace("data:application/pdf;base64,", "");
+          // });
+
+          this.printPic(file, "水洗唛")
+
         })
       },
-      // 打印
-      doPrint(val) {
-        var ordonnance = document.getElementById(val).contentWindow;
-        setTimeout(() => {
-          // window.print()
-          ordonnance.print();
-        }, 0)
-      }
+      getBase64(file) {
+        return new Promise((resolve, reject) => {
+          let reader = new FileReader();
+          let fileResult = "";
+          reader.readAsDataURL(file);
+          //开始转
+          reader.onload = function() {
+            fileResult = reader.result;
+          };
+          //转 失败
+          reader.onerror = function(error) {
+            reject(error);
+          };
+          //转 结束  咱就 resolve 出去
+          reader.onloadend = function() {
+            resolve(fileResult);
+          };
+        });
+      },
+      /**
+       *
+       * @param file base64
+       * @param printerName 打印机名称
+       */
+      printPic(file,printerName){
+        LODOP = getLodop() // 获取LODOP对象的主过程
+        LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
+        if (LODOP != false) {
+          // LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","");
+          let timestamp = parseInt(new Date().getTime() / 1000 + '');
+          LODOP.PRINT_INIT("异常订单补款补打水洗棉" + timestamp);
+          LODOP.SET_PRINTER_INDEX(printerName);
+          LODOP.SET_PRINT_PAGESIZE(1, "111mm", "20mm", "");
+          LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
+
+          LODOP.PRINT()// 直接打印
+          // LODOP.PREVIEW() // 打印预览
+        }
+      },
+      /**
+       * 根据打印机名称获取该打印机在系统中的序号
+       * @param {Object} LODOP
+       * @param printName
+       */
+      getPrinterIndex(LODOP, printName) {
+        let num = LODOP.GET_PRINTER_COUNT();
+        let index = 0;
+        for (let i = 0; i < num; i++) {
+          let name = LODOP.GET_PRINTER_NAME(i);
+          if (printName === name) {
+            index = i;
+            break;
+          }
+        }
+        return index;
+      },
     }
   }
 </script>
