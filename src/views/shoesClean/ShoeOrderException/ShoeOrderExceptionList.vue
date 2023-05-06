@@ -35,7 +35,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
 <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>
+      <!-- <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button> -->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
@@ -51,10 +51,6 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
 
       <a-table
         ref="table"
@@ -66,7 +62,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -93,6 +88,8 @@
         <span slot="action" slot-scope="text, record">
           <a v-if="0 === record.status" @click="handleOrder(record)">处理</a>
           <a v-if="1 === record.status || 2 === record.status" @click="handleDetail(record)">查看详情</a>
+          <a-divider v-if="2 === record.status && 1 === record.dealType" type="vertical" />
+          <a v-if="2 === record.status && 1 === record.dealType" @click="handleCreateWashedMark(record)">打印水洗唛</a>
         </span>
 
       </a-table>
@@ -113,6 +110,9 @@
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import ShoeOrderExceptionModal from "./modules/ShoeOrderExceptionModal";
   import ShoeOrderExceptionDetailModal from "./modules/ShoeOrderExceptionDetailModal";
+  import {downFile, httpAction} from "../../../api/manage";
+  import { getLodop } from '@/utils/LodopFuncs';
+  let Lodop;
 
   export default {
     name: 'ShoeOrderExceptionList',
@@ -207,39 +207,6 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        // fieldList.push({type:'int',value:'orderId',text:'订单ID',dictCode:''})
-        // fieldList.push({type:'int',value:'orderPId',text:'父订单ID',dictCode:''})
-        // fieldList.push({type:'string',value:'no',text:'订单编号',dictCode:''})
-        // fieldList.push({type:'int',value:'userId',text:'用户ID',dictCode:''})
-        // fieldList.push({type:'int',value:'goodsId',text:'商品ID',dictCode:''})
-        // fieldList.push({type:'int',value:'skuId',text:'规格ID',dictCode:''})
-        // fieldList.push({type:'string',value:'title',text:'商品名称',dictCode:''})
-        // fieldList.push({type:'string',value:'skuTitle',text:'规格名称',dictCode:''})
-        // fieldList.push({type:'string',value:'image',text:'商品图片',dictCode:''})
-        // fieldList.push({type:'Text',value:'orderImages',text:'洗护前照片',dictCode:''})
-        // fieldList.push({type:'string',value:'note',text:'订单备注',dictCode:''})
-        // fieldList.push({type:'string',value:'expect',text:'期望上门取件时间',dictCode:''})
-        // fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
-        // fieldList.push({type:'string',value:'phone',text:'号码',dictCode:''})
-        // fieldList.push({type:'int',value:'totalPrice',text:'总金额',dictCode:''})
-        // fieldList.push({type:'int',value:'price',text:'应付金额',dictCode:''})
-        // fieldList.push({type:'int',value:'actualPrice',text:'实付金额',dictCode:''})
-        // fieldList.push({type:'int',value:'goodsPrice',text:'商品金额',dictCode:''})
-        // fieldList.push({type:'int',value:'courierPrice',text:'配送费用',dictCode:''})
-        // fieldList.push({type:'int',value:'couponPrice',text:'优惠抵扣金额',dictCode:''})
-        // fieldList.push({type:'string',value:'status',text:'订单状态：0=待付款，1=洗护中，2=待取件，3=已完成，4=已取消，5=退款中，6=已退款，7=异常',dictCode:''})
-        // fieldList.push({type:'int',value:'beforeLockerId',text:'机柜ID（下单）',dictCode:''})
-        // fieldList.push({type:'int',value:'beforeGridNo',text:'机柜格子编号（下单）',dictCode:''})
-        // fieldList.push({type:'int',value:'afterLockerId',text:'机柜ID（配送）',dictCode:''})
-        // fieldList.push({type:'int',value:'afterGridNo',text:'机柜格子编号（配送）',dictCode:''})
-        // fieldList.push({type:'string',value:'orgCode',text:'工厂编码',dictCode:''})
-        // fieldList.push({type:'string',value:'bagCode',text:'袋子编码',dictCode:''})
-        // fieldList.push({type:'int',value:'hasException',text:'异常历史:0=无,1=有',dictCode:''})
-        // fieldList.push({type:'string',value:'type',text:'订单类型:self=站点自寄,service=上门取件',dictCode:''})
-        // fieldList.push({type:'string',value:'code',text:'自提取件码',dictCode:''})
-        // fieldList.push({type:'datetime',value:'cancelTime',text:'取消时间'})
-        // fieldList.push({type:'datetime',value:'payTime',text:'付款时间'})
-        // fieldList.push({type:'datetime',value:'finishTime',text:'完成时间'})
         this.superFieldList = fieldList
       },
       handleOrder(record){
@@ -247,7 +214,88 @@
       },
       handleDetail(record){
         this.$refs.shoeOrderExceptionDetailModal.show(record);
-      }
+      },
+      handleCreateWashedMark(record){
+        let data = {
+          "no": record.no
+        }
+
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByInForException", data, "post").then((res) => {
+          if (!res) {
+            this.$message.warning(res.message)
+            return
+          }
+
+          const file = res;
+          // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
+          // 要不然无法进行打印
+          // const blob = new Blob([file], { type: 'application/pdf' });
+
+          // this.getBase64(blob).then(res=>{
+          //   console.log(res);
+          //   // res = res.replace("data:application/pdf;base64,", "");
+          // });
+
+          this.printPic(file, "水洗唛")
+
+        })
+      },
+      getBase64(file) {
+        return new Promise((resolve, reject) => {
+          let reader = new FileReader();
+          let fileResult = "";
+          reader.readAsDataURL(file);
+          //开始转
+          reader.onload = function() {
+            fileResult = reader.result;
+          };
+          //转 失败
+          reader.onerror = function(error) {
+            reject(error);
+          };
+          //转 结束  咱就 resolve 出去
+          reader.onloadend = function() {
+            resolve(fileResult);
+          };
+        });
+      },
+      /**
+       *
+       * @param file base64
+       * @param printerName 打印机名称
+       */
+      printPic(file,printerName){
+        LODOP = getLodop() // 获取LODOP对象的主过程
+        LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
+        if (LODOP != false) {
+          // LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","");
+          let timestamp = parseInt(new Date().getTime() / 1000 + '');
+          LODOP.PRINT_INIT("异常订单补款补打水洗棉" + timestamp);
+          LODOP.SET_PRINTER_INDEX(printerName);
+          LODOP.SET_PRINT_PAGESIZE(1, "111mm", "20mm", "");
+          LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
+
+          LODOP.PRINT()// 直接打印
+          // LODOP.PREVIEW() // 打印预览
+        }
+      },
+      /**
+       * 根据打印机名称获取该打印机在系统中的序号
+       * @param {Object} LODOP
+       * @param printName
+       */
+      getPrinterIndex(LODOP, printName) {
+        let num = LODOP.GET_PRINTER_COUNT();
+        let index = 0;
+        for (let i = 0; i < num; i++) {
+          let name = LODOP.GET_PRINTER_NAME(i);
+          if (printName === name) {
+            index = i;
+            break;
+          }
+        }
+        return index;
+      },
     }
   }
 </script>
