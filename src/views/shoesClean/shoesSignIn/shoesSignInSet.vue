@@ -6,7 +6,7 @@
       <a-col :xs="24" :sm="24" :md="18">
         <a-space>
           <a-button type="primary">确定</a-button>
-          <a-button>重置</a-button>
+          <a-button @click="onReset">重置</a-button>
         </a-space>
       </a-col>
     </a-row>
@@ -32,14 +32,14 @@
     <a-row>
       <a-space>
         <span>特殊天数设置:</span>
-        <a-button @click="onAddSpecialDay" type="primary">新增</a-button>
+        <a-button @click="onAddSpecialDay" type="primary" :disabled="addSpecialDayDisabled">新增</a-button>
       </a-space>
     </a-row>
 
     <a-row v-for="(specialDay,idx) in specialDays" :key="idx">
       <div class="specialDays">
         <div class="specialDays-top" :data-idx="`(${idx+1})`">
-          第<a-input-number @blur="specialDayBlur(idx)" v-model="specialDays[idx].day" placeholder="请输入天数" @change="v => specialDays[idx].day = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />天
+          第<a-input-number @blur="specialDayBlur(idx,specialDays[idx].day)" v-model="specialDays[idx].day" placeholder="请输入天数" @change="v => specialDays[idx].day = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />天
           <a-space style="margin-left: 24px;">
             <a-button @click="onAddCoupon(idx)" type="primary" :disabled="specialDays[idx].day == '' || (!!specialDays[idx].coupons.length && specialDays[idx].coupons.some(coupon => coupon.id == ''))">新增</a-button>
             <a-button @click="onDelSpecialDay(idx)" type="danger">删除</a-button>
@@ -51,16 +51,17 @@
         <div class="specialDays-table">
           <a-table bordered :columns="columns" :data-source="specialDays[idx].coupons" :pagination="false" rowKey="uuid">
             <div slot="type" slot-scope="text, record, tableIdx">
-              <a-select v-model="specialDays[idx].coupons[tableIdx].type"  style="width: 240px" :options="typeOptions" @change="changeType($event,idx)">
+              <a-select v-model="specialDays[idx].coupons[tableIdx].type"  style="width: 240px" :options="typeOptions" @change="changeType(idx,tableIdx)">
               </a-select>
             </div>
             <div slot="id" slot-scope="text, record, tableIdx">
               <XfSelect
-                :list="weekList"
-                @change="checkedSelect"
+                :additionalData="{idx,tableIdx}"
+                :list="specialDays[idx].coupons[tableIdx].weekList"
+                @change="checkedSelect($event,idx,tableIdx,record.type)"
                 @changeList="changeSelect"
                 v-model="specialDays[idx].coupons[tableIdx].id"
-                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
+                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=${specialDays[idx].coupons[tableIdx].type}`'
                 style="width: 80%;"
               >
               </XfSelect>
@@ -133,11 +134,11 @@ export default {
       typeOptions:[
         {
           label:'优惠券',
-          value:'1'
+          value:'0'
         },
         {
           label:'卡包',
-          value:'0'
+          value:'1'
         }
       ],
       weekList:[],
@@ -147,7 +148,11 @@ export default {
 
   },
   computed: {
-
+    addSpecialDayDisabled() {
+      return this.period == '' || !!this.specialDays.length && this.specialDays.some(specialDay => {
+        return specialDay.day == '' || (!specialDay.coupons.length || specialDay.coupons.some(coupon => coupon.id == ''))
+      })
+    }
   },
   watch: {
     period: {
@@ -155,31 +160,46 @@ export default {
 
       }
     },
+    specialDays:{
+      handler(val) {
+        // console.log(99999,val);
+      },
+      immediate:true,
+      deep:true
+    }
   },
   methods: {
     getUuid() {
       return Math.random().toString(16).substring(2)
     },
-    checkedSelect(val) {
+    checkedSelect(val,idx,tableIdx,type) {
+      let coupons = [...this.specialDays[idx].coupons]
+      coupons.splice(tableIdx,1)
+      if(coupons.filter(coupon => coupon.type == type).findIndex(item => item.id == val) != -1) {
+        this.$message.error('当前特殊天数有选中重复的优惠券或者卡包!')
+        setTimeout(()=>{
+          this.specialDays[idx].coupons[tableIdx].id = ''
+        },0)
+      }
     },
-    changeSelect(data) {
-      this.weekList = data.records.map(item => ({
+    changeSelect(data,additionalData) {
+      this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].weekList = data.records.map(item => ({
         label: item.name,
         value: +item.id
       }));
     },
-    changeType(val,idx) {
-      console.log('changeType',val,idx);
+    changeType(idx,tableIdx) {
+      this.specialDays[idx].coupons[tableIdx].id = ''
     },
     // 添加优惠券或者卡包
     onAddCoupon(idx) {
       this.specialDays[idx].coupons.push(
         {
-          type:'0', // 卡包
-          name:'卡包名称',
+          type:'0', // 优惠券
           id:'',
           uuid:this.getUuid(),
           num:1, // 数量
+          weekList:[]
         }
       )
     },
@@ -188,8 +208,16 @@ export default {
       this.specialDays[idx].coupons.splice(tableIdx, 1)
     },
     // 
-    specialDayBlur(idx) {
-      console.log(333,idx);
+    specialDayBlur(idx,val) {
+      let specialDays = [...this.specialDays]
+      specialDays.splice(idx,1)
+      let findIndex = specialDays.findIndex(item => item.day == val)
+      if(val <= this.period && (specialDays.length ? findIndex == -1 : true)) {
+
+      } else {
+        this.$message.error('输入的天数大于最大天数或者已有重复的!')
+        this.specialDays[idx].day = ''
+      }
     },
     // 删除特殊天数
     onDelSpecialDay(idx) {
@@ -223,6 +251,13 @@ export default {
       })
       this.integralList2 = this.chunk(this.integralList, 7)
     },
+    // 点击重置
+    onReset() {
+      this.period = ''
+      this.integralList = []
+      this.integralList2 = []
+      this.specialDays = []
+    },
     chunk(array, size) {
       let result = []
       let x = 0
@@ -237,9 +272,26 @@ export default {
 
     },
     onSave() {
-      console.log('specialDays',this.specialDays);
+      for (let index = 0; index < this.specialDays.length; index++) {
+        const specialDay = this.specialDays[index];
+        const day = specialDay.day
+        const coupons = specialDay.coupons
+        if(day == '') {
+          return this.$message.error('有特殊天时间未填写!')
+        }
+        if(coupons.some(coupon => coupon.id == '')) {
+          return this.$message.error('有优惠券或者卡包没选择!')
+        }
+
+      }
+      this.specialDays.forEach((item,idx) => {
+        let coupons = item.coupons.map(({id,num,type}) => ({
+          id,num,type
+        }))
+        this.integralList[item.day-1].coupons = coupons
+        this.integralList[item.day-1].describe = item.describe
+      })
       console.log('integralList',this.integralList);
-      console.log('integralList2',this.integralList2);
     },
     toChineseNum
   }
