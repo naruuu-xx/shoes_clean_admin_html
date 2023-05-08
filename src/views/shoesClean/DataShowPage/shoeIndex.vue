@@ -77,6 +77,7 @@
             >
               {{ type.name }}
             </div>
+            <a-range-picker @change="onChangeDate" />
           </div>
         </div>
         <a-row>
@@ -155,13 +156,15 @@
 <script>
 import Bar from '@/components/chart/Bar'
 import Pie from './components/Pie'
+import BrandStatistics from './components/BrandStatistics'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
 export default {
   name: 'ShoeAnalysis',
   components: {
     Bar,
-    Pie
+    Pie,
+    BrandStatistics
   },
   data() {
     return {
@@ -266,6 +269,9 @@ export default {
     this.getIndexDown()
   },
   methods: {
+    onChangeDate() {
+
+    },
     // 点击订单状态
     onClickOrder(val) {
       this.$router.push({ name: 'order-list', params: { status: [val.status+'']}})
@@ -492,6 +498,7 @@ main {
   &-left {
     display: flex;
     &-item {
+      line-height: 28px;
       padding: 0 24px;
       cursor: pointer;
     }
