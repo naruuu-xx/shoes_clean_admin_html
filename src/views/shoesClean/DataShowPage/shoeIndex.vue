@@ -77,7 +77,7 @@
             >
               {{ type.name }}
             </div>
-            <a-range-picker @change="onChangeDate" />
+            <a-range-picker @change="onChangeDate" v-model="pickTime" />
           </div>
         </div>
         <a-row>
@@ -150,6 +150,7 @@
         </a-row>
       </div>
     </a-card>
+    <BrandStatistics></BrandStatistics>
   </div>
 </template>
 
@@ -260,6 +261,9 @@ export default {
         { item: '邀请进入', count: 1 },
         { item: '分销', count: 1 },
       ],
+      startTime:'',
+      endTime:'',
+      pickTime: null
     }
   },
   created() {
@@ -269,8 +273,9 @@ export default {
     this.getIndexDown()
   },
   methods: {
-    onChangeDate() {
-
+    onChangeDate(date,dateString) {
+      this.startTime = dateString[0]
+      this.endTime = dateString[1]
     },
     // 点击订单状态
     onClickOrder(val) {
@@ -296,6 +301,9 @@ export default {
     // 点击tab
     onTab(type, value) {
       this.barQuery[type] = value
+      if(type == 'time') {
+        this.pickTime = null
+      }
       this.getIndexDown()
     },
     initLogInfo() {
@@ -498,7 +506,6 @@ main {
   &-left {
     display: flex;
     &-item {
-      line-height: 28px;
       padding: 0 24px;
       cursor: pointer;
     }
@@ -506,6 +513,7 @@ main {
   &-right {
     display: flex;
     &-item {
+      line-height: 28px;
       padding: 0 24px;
       cursor: pointer;
     }
