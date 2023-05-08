@@ -65,6 +65,8 @@
 
 import {downFile, httpAction, postAction} from "../../../../../api/manage";
 import XfSelect from "@comp/Xf/XfSelect";
+import { getLodop } from '@/utils/LodopFuncs';
+let Lodop;
 
 export default {
   name: "ConfirmPrintModal",
@@ -156,41 +158,37 @@ export default {
         "no": no
       }
 
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
+      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
         }
-        const content = res;
-        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
-        // 要不然无法进行打印
-        const blob = new Blob([content], { type: 'application/pdf' });
-        //=========================================================
-        var date = (new Date()).getTime();
-        var ifr = document.createElement('iframe');
-        ifr.style.frameborder = 'no';
-        ifr.style.display = 'none';
-        ifr.style.pageBreakBefore = 'always';
-        ifr.setAttribute('download', 'printPdf' + date + '.pdf');
-        ifr.setAttribute('id', 'printPdf' + date + '.pdf');
-        ifr.src = window.URL.createObjectURL(blob);
-        document.body.appendChild(ifr);
+        const file = res;
+        this.printPic(file, "水洗唛")
 
-        this.doPrint('printPdf' + date + '.pdf')
-        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
-        //=========================================================
-        // this.$message.success("入库成功");
         this.confirmLoading = false;
       })
     },
-    // 打印
-    doPrint(val) {
-      var ordonnance = document.getElementById(val).contentWindow;
-      setTimeout(() => {
-        // window.print()
-        ordonnance.print();
-      }, 0)
-    }
+    /**
+     *
+     * @param file base64
+     * @param printerName 打印机名称
+     */
+    printPic(file,printerName){
+      LODOP = getLodop() // 获取LODOP对象的主过程
+      LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
+      if (LODOP != false) {
+        // LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","");
+        let timestamp = parseInt(new Date().getTime() / 1000 + '');
+        LODOP.PRINT_INIT("入库打印水洗唛" + timestamp);
+        LODOP.SET_PRINTER_INDEX(printerName);
+        LODOP.SET_PRINT_PAGESIZE(1, "111mm", "20mm", "");
+        LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
+
+        LODOP.PRINT()// 直接打印
+        // LODOP.PREVIEW() // 打印预览
+      }
+    },
   }
 }
 </script>
