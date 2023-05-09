@@ -112,6 +112,9 @@
                 <a-menu-item>
                    <a @click="sceneGraph(record)">位置图</a>
                 </a-menu-item>
+                <a-menu-item v-has="'lockerNew:move'">
+                   <a @click="move(record)">迁移</a>
+                </a-menu-item>
               </a-menu>
           </a-dropdown>
 
@@ -137,6 +140,7 @@
     <shoe-locker-grid-modal ref="gridModal"></shoe-locker-grid-modal>
     <set-percentage ref="setPercentage" @ok="modalFormOk"></set-percentage>
     <shoe-locker-img-modal ref="imgModal" @ok="modalFormOk"></shoe-locker-img-modal>
+    <shoe-locker-move-form ref="moveForm" @ok="modalFormOk"></shoe-locker-move-form>
   </a-card>
 </template>
 
@@ -154,6 +158,7 @@ import {httpAction} from "../../../api/manage";
 import {mapGetters} from 'vuex';
 import store from '@/store/'
 import SetPercentage from "@views/shoesClean/shoeCourier/modules/SetPercentage";
+import ShoeLockerMoveForm from "@views/shoesClean/ShoeLockerNew/modules/ShoeLockerMoveForm";
 
 export default {
   name: 'ShoeLockerList',
@@ -162,7 +167,8 @@ export default {
     ShoeLockerModal,
     shoeLockerGridModal,
     SetPercentage,
-    ShoeLockerImgModal
+    ShoeLockerImgModal,
+    ShoeLockerMoveForm
   },
   data() {
     return {
@@ -279,6 +285,19 @@ export default {
             return filterDictTextByCache('shoe_locker_order_status', text);
           },
         },
+        {
+          title:'迁移状态',
+          align:"center",
+          dataIndex: 'transferStatus',
+          customRender: (text) => {
+            if (text=="1"){
+              text = "已迁移"
+            }else if(text=="0"){
+              text ="正常"
+            }
+            return text;
+          },
+        },
         // {
         //   title:'添加时间',
         //   align:"center",
@@ -332,6 +351,9 @@ export default {
     ...mapGetters(["userInfo"]),
     getPcaText(code) {
       return this.pcaData.getText(code);
+    },
+    move(record) {
+      this.$refs.moveForm.edit(record);
     },
     initDictConfig() {
     },
