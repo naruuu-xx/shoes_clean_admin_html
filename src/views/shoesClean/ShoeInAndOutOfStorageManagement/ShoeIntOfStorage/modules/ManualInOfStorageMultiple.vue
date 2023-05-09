@@ -7,7 +7,7 @@
     @cancel="handleCancel"
     :footer="null"
     wrapClassName="full-modal">
-    <a-spin :spinning="confirmLoading">
+    <a-spin :spinning="confirmLoading" size="large" tip="图片正在上传中，请耐心等待......">
       <j-form-container :disabled="formDisabled">
         <div slot="detail">
           <a-row v-if="form.length" style="margin-bottom: 10px;">
@@ -312,6 +312,9 @@ export default {
 </script>
 
 <style scoped lang="less">
+/deep/ .ant-spin-text{
+  font-size: 40px;
+}
 .tab {
     height: 50px;
     display: flex;
