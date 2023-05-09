@@ -111,6 +111,17 @@ export default {
       return this.uploadImgs(this.imgs)
     },
     uploadImgs(files) {
+      // let cc = files.map(item => item.file)
+      // let fileName = new FormData()
+      // let mm = cc.forEach(element => {
+      //   fileName.append('fileName', element)
+      // });
+      // console.log(88888,cc,fileName);
+      // uploadImg(fileName).then((result) => {
+      //   console.log(99999,result);
+      // }).catch((err) => {
+      //   console.log(9898989,err);
+      // });
       return new Promise((resolve, reject) => {
         const imgs = files.map((item,idx) => {
           let isFile = item.file instanceof FormData  // 说明没上传,是个文件
