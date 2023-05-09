@@ -243,6 +243,11 @@
             dataIndex: 'useNum'
           },
           {
+            title:'创建人',
+            align:"center",
+            dataIndex: 'createName'
+          },
+          {
             title:'状态',
             align:"center",
             dataIndex: 'status',
