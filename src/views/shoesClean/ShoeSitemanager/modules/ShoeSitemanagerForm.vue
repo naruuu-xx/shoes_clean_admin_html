@@ -53,6 +53,24 @@
                 </xf-select>
               </a-form-model-item>
             </a-col>
+            <a-col :span="24">
+              <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
+                <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off" suffix="%"></a-input>
+              </a-form-model-item>
+            </a-col>
+
+            <a-col :span="24">
+              <a-form-model-item label=" 配送费设置" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+                同一订单第一双鞋配送费
+                <a-input-number placeholder="输入配送费" style="width: 80px" v-model="model.freight" :min="0"
+                                size="small"/>
+                元，每增加一双鞋增加
+                <a-input-number placeholder="输入配送费" style="width: 80px" v-model="model.freightIncrease" :min="0"
+                                size="small"/>
+                元。
+
+              </a-form-model-item>
+            </a-col>
 
             <a-col :span="24">
               <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cardNo">
@@ -269,6 +287,10 @@ export default {
         ],
         cardNo: [
           {required: true, message: '请输入银行卡号!'},
+        ],
+        percentage: [
+          { required: true, message: '请输入1-100之间的整数!'},
+          { pattern: /^([1-9][0-9]{0,1}|100)$/, message: '请输入1-100之间的整数!'},
         ],
         cardName: [
           {required: true, message: '请输入持卡人!'},
@@ -560,6 +582,9 @@ export default {
             "type": this.model.type,
             "sitemanagerId": this.model.sitemanagerId,
             "orderStatus":this.model.orderStatusRadio,
+            "percentage":this.model.percentage,
+            "freight":this.model.freight*100,
+            "freightIncrease":this.model.freightIncrease*100,
             "paths":this.model.paths,
             "isSelf": isSelf,
             "isService": isService,

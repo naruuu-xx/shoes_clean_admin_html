@@ -80,7 +80,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="searchReset1" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -215,6 +215,7 @@ export default {
         finishTime: [],
         status:[]
       },
+
       // 表头
       columns: [
         {
@@ -251,9 +252,18 @@ export default {
           dataIndex: 'wxPhone'
         },
         {
-          title: "机柜名称",
+          title: "机柜/服务点名称",
           align: "center",
-          dataIndex: 'lockerName'
+          dataIndex: 'lockerName',
+          customRender: (name, record) => {
+            return (
+              <a-tooltip title={name} style="width: 100px;" class="tableCell">
+                <div>
+                  { name }
+                </div>
+              </a-tooltip>
+            )
+          }
         },
         {
           title: '实付金额（元）',
@@ -269,11 +279,11 @@ export default {
           dataIndex: 'createTime'
         },
         {
-          title:'订单分类',
-          align:"center",
-          dataIndex:'classify',
-          customRender:(text)=>{
-            return filterDictTextByCache('order_classify',text);
+          title: '订单分类',
+          align: "center",
+          dataIndex: 'classify',
+          customRender: (text) => {
+            return filterDictTextByCache('order_classify', text);
           }
         },
         {
@@ -312,7 +322,7 @@ export default {
       dictOptions: {},
       superFieldList: [],
       statusOptionList: [
-         {"value": "0", "name": "待付款"}, {"value": "1", "name": "已付款"},
+        {"value": "0", "name": "待付款"}, {"value": "1", "name": "已付款"},
         {"value": "2", "name": "配送员已接单（取件）"}, {"value": "3", "name": "配送员已收件"}, {
           "value": "4",
           "name": "已入柜"
@@ -336,11 +346,14 @@ export default {
         {"value": "", "name": "全部"}, {"value": "self", "name": "机柜自提"}, {
           "value": "service",
           "name": "机柜配送"
-        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点配送"},
-        {"value": "site_self", "name": "站点自提"}
+        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点配送"}
+        , {"value": "site_self", "name": "站点自提"}
       ],
       classifyList: [
-        {"value": "", "name": "全部"}, {"value": "normal", "name": "常规订单"}, {"value": "customer", "name": "合作客户订单"}
+        {"value": "", "name": "全部"}, {"value": "normal", "name": "常规订单"}, {
+          "value": "customer",
+          "name": "合作客户订单"
+        }
       ],
       lockerList: [],
     }
@@ -462,10 +475,29 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="less">
 @import '~@assets/less/common.less';
 
 .textCode {
   font-size: 20px;
+}
+.tableCell{
+  white-space: nowrap;
+  /* 然后然溢出的部分文字隐藏 */
+  overflow: hidden;
+  /* 文字溢出显示用省略号。  */
+  text-overflow: ellipsis;
+  zoom: 1;
+  &::before,
+  &::after {
+    display: table;
+    content: ' ';
+  }
+  &::after {
+    clear: both;
+  height: 0;
+  font-size: 0;
+  visibility: hidden;
+ }
 }
 </style>
