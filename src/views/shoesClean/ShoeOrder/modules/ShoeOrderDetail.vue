@@ -61,6 +61,12 @@
           </a-descriptions-item>
         </template>
         <a-descriptions-item label="袋子码"> {{ data.bagCode || "——" }} </a-descriptions-item>
+        <a-descriptions-item label="物流人员(工厂取鞋)">
+          <template v-if="logisticsNameByAfter !== '无' || logisticsNameByAfter !== ' ' ">
+            {{ logisticsNameByAfter }}({{ logisticsPhoneByAfter }})
+          </template>
+          <template v-else>——</template>
+        </a-descriptions-item>
       </a-descriptions>
 
       <a-descriptions v-if="orderRefund" title="退款信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
@@ -239,6 +245,10 @@ export default {
       courierPhoneByBefore: '',
       courierNameByAfter: '',
       courierPhoneByAfter: '',
+      logisticsNameByBefore:'',
+      logisticsPhoneByBefore:'',
+      logisticsNameByAfter:'',
+      logisticsPhoneByAfter:'',
       recManName: '',
       recManMobile: '',
       recManPrintAddr: '',
@@ -280,6 +290,12 @@ export default {
         this.orderRefund = res.orderRefund
         this.factoryInImages = res.factoryInImages;
       })
+      getAction("/ShoeOrder/shoeOrder/getLogisticsInfo", requestData).then((res) => {
+        this.logisticsNameByBefore = res.result.logisticsNameByBefore
+        this.logisticsPhoneByBefore = res.result.logisticsPhoneByBefore
+        this.logisticsNameByAfter = res.result.logisticsNameByAfter
+        this.logisticsPhoneByAfter = res.result.logisticsPhoneByAfter
+      })
       if (type === 'self') {
         orderInfo.type = '机柜自提'
       }else if (type === 'site_self'){
@@ -294,6 +310,7 @@ export default {
           this.courierPhoneByBefore = res.result.courierPhoneByBefore
           this.courierNameByAfter = res.result.courierNameByAfter
           this.courierPhoneByAfter = res.result.courierPhoneByAfter
+          this.logisticsNameByBefore = res.result.logisticsNameByBefore
         })
       }  else if (type === 'site') {
         orderInfo.type = '站点配送'
@@ -407,6 +424,10 @@ export default {
       this.courierPhoneByBefore = ''
       this.courierNameByAfter = ''
       this.courierPhoneByAfter = ''
+      this.logisticsNameByBefore = ''
+      this.logisticsPhoneByBefore = ''
+      this.logisticsNameByAfter = ''
+      this.logisticsPhoneByAfter = ''
       this.recManName = ''
       this.recManMobile = ''
       this.recManPrintAddr = ''
