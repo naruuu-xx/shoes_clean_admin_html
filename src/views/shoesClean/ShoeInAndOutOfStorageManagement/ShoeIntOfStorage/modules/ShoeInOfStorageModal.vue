@@ -8,7 +8,7 @@
     cancelText="关闭"
     :footer="null"
     :fullscreen = "false">
-    <a-spin :spinning="confirmLoading">
+    <a-spin :spinning="confirmLoading" size="large" tip="图片正在上传中，请耐心等待......">
       <div style="margin-left: 20px">
         <a-row>
           <a-col :span="18">
@@ -256,6 +256,9 @@ export default {
 </script>
 
 <style scoped lang="less">
+/deep/ .ant-spin-text{
+  font-size: 40px;
+}
 .content {
   font-size: 20px;
   color: #000000;
