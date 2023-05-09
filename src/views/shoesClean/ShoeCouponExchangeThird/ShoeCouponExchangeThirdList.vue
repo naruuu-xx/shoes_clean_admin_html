@@ -15,6 +15,11 @@
               <a-input placeholder="请输入申请人名称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="兑换码">
+              <a-input placeholder="请输入兑换码" v-model="queryParam.code"></a-input>
+            </a-form-item>
+          </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 状态">
               <!--              <a-input placeholder="请输入 申请人" v-model="queryParam.name" autocomplete="off"></a-input>-->
