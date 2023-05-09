@@ -112,7 +112,7 @@
                 <a-menu-item>
                    <a @click="sceneGraph(record)">位置图</a>
                 </a-menu-item>
-                <a-menu-item>
+                <a-menu-item v-has="'lockerNew:move'">
                    <a @click="move(record)">迁移</a>
                 </a-menu-item>
               </a-menu>
