@@ -9,6 +9,9 @@
     <a-spin :spinning="confirmLoading">
       <j-form-container :disabled="formDisabled">
         <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
+          <a-row style="margin-left: 36px;">
+            <XfPhotograph ref="photograph" :photographImg="factoryInImages"></XfPhotograph>
+          </a-row>
           <a-row>
             <a-col :span="24">
               <a-form-model-item label="订单编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="no">
@@ -90,10 +93,11 @@
 <script>
 import {downFile, httpAction} from "../../../../../api/manage";
 import XfSelect from "@comp/Xf/XfSelect";
+import XfPhotograph from "@comp/Xf/XfPhotograph";
 
 export default {
   name: "ManualInOfStorage",
-  components: {XfSelect},
+  components: {XfSelect,XfPhotograph},
   props: {
     //表单禁用
     disabled: {
@@ -142,6 +146,7 @@ export default {
           {required: false, message: '请输入备注!'},
         ]
       },
+      factoryInImages:[]
     }
   },
   computed: {
@@ -192,22 +197,30 @@ export default {
             this.$message.warning(res.message)
             return false;
           }
+          this.$refs.photograph.submit().then(Images => {
+            this.factoryInImages = Images
+            let factoryInImages = Images.map(item => item.file)
+            httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",Object.assign({},that.model,{factoryInImages}), "post").then((res)=> {
+              if (res.success) {
+                that.$message.success(res.message);
+                this.visible = false;
+                this.model = {};
+                this.$emit('ok');
 
-          httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",that.model, "post").then((res)=> {
-            if (res.success) {
-              that.$message.success(res.message);
-              this.visible = false;
-              this.model = {};
-              this.$emit('ok');
-
-              //打印水洗唛
-              this.createWashedMark(no);
-            } else {
-              that.$message.warning(res.message);
-            }
+                //打印水洗唛
+                this.createWashedMark(no);
+              } else {
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+            })
+            
           }).finally(() => {
-            that.confirmLoading = false;
+            this.confirmLoading = false
           })
+
+          
         }
       })
     },

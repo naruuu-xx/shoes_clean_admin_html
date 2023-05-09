@@ -127,10 +127,9 @@
             <div class="table-main-cell-time">{{ item.time }}</div>
             <div class="table-main-cell-status">{{ item.title }}</div>
             <div class="table-main-cell-des">
-              {{ item.msg
-              }}<a v-if="item.status == 1" @click="showShoeImages" style="margin-left: 10px; text-decoration: underline"
-                >查看鞋子照片</a
-              >
+              {{ item.msg }}
+              <a v-if="item.status == 0" @click="showShoeImages(orderImagesList)" style="margin-left: 10px; text-decoration: underline">查看鞋子照片</a>
+              <a v-if="item.status == 6" @click="showShoeImages(factoryInImages)" style="margin-left: 10px; text-decoration: underline">查看入库照片</a>
             </div>
           </div>
         </div>
@@ -153,7 +152,7 @@
       <img
         alt="example"
         style="width: 20%; margin: 20px"
-        v-for="item in orderImagesList"
+        v-for="item in imagesList"
         :src="item"
         @click="showShoeImage(item)"
       />
@@ -224,7 +223,8 @@ export default {
       visible: false,
       title: '订单详情',
       data: {},
-      orderImagesList: '',
+      imagesList: [],
+      orderImagesList: [],
       previewVisible: false,
       previewImage: '',
       logisticsInfo: {},
@@ -257,7 +257,8 @@ export default {
       sendManPrintAddr: '',
       logisticsDetails: '',
       orderRefund: null,
-      OrderDetail:{}
+      OrderDetail:{},
+      factoryInImages: []
     }
   },
   created() {},
@@ -287,6 +288,7 @@ export default {
         orderInfo.timecardName = res.timecardName
         this.logisticsDetails = res.logisticsDetailList
         this.orderRefund = res.orderRefund
+        this.factoryInImages = res.factoryInImages;
       })
       getAction("/ShoeOrder/shoeOrder/getLogisticsInfo", requestData).then((res) => {
         this.logisticsNameByBefore = res.result.logisticsNameByBefore
@@ -409,7 +411,7 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.orderImagesList = []
+      this.imagesList = []
       this.data = {}
       this.afterDeliveryInfo = {}
       this.logisticsInfo = {}
@@ -443,7 +445,8 @@ export default {
       this.previewVisible = false
       this.previewImage = ''
     },
-    showShoeImages() {
+    showShoeImages(imagesList) {
+      this.imagesList = imagesList;
       this.showShoeImagesModel = true
     },
     handleShowShoeImagesModelCancel() {

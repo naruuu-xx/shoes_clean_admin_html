@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: your project
+ * @version: 1.0
+ * @Author: yizhimao
+ * @Date: 2023-02-08 15:07:07
+ * @LastEditors: yizhimao
+ * @LastEditTime: 2023-04-21 15:28:22
+-->
 <template>
   <j-modal
     :title="title"
@@ -10,6 +18,8 @@
   >
     <h2>申请人：{{name}}</h2>
     <h2>提现金额：{{amount}}</h2>
+    <h2>实际到账金额：{{realwithdrawal}}</h2>
+    <h2>手续费率：{{withdrawalRatio*100}}%</h2>
     <h2>申请时间：{{createTime}}</h2>
     <h2>银行卡号：{{cardNo}}</h2>
     <h2>持卡人：{{cardName}}</h2>
@@ -48,7 +58,8 @@ export default {
       bank:'',
       openBank:'',
       status:'',
-
+      withdrawalRatio:'',
+      realwithdrawal:''
     }
   },
   methods: {
@@ -67,6 +78,8 @@ export default {
           this.cardName=res.result.cardName;
           this.bank=res.result.bank;
           this.openBank=res.result.openBank;
+          this.withdrawalRatio=parseFloat(res.result.withdrawalRatio || 0);
+          this.realwithdrawal=res.result.realwithdrawal;
 
           if (res.result.status==0){
             this.status='审核中'

@@ -216,7 +216,7 @@ export default {
   methods: {
     // 点击订单状态
     onClickOrder(val) {
-      this.$router.push(`/order/list?status=${val.status}`)
+      this.$router.push({ name: 'order-list', params: { status: [val.status+'']}})
     },
     // 点击
     onClickw(status,val) {
@@ -282,7 +282,7 @@ export default {
             list:res.lockerRankingList || []
           },
           {
-            name:'站点',
+            name:'站点配送',
             list:res.siteRankingList || []
           },
           {

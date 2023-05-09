@@ -37,7 +37,7 @@ export default {
   name: "shoeLockerGridModal",
   data () {
     return {
-      title: '快递柜格子展示',
+      title: '机柜格子展示',
       width: 600,
       visible: false,
       devicenum: "",
@@ -118,7 +118,7 @@ export default {
         if (res.code === 0) {
           that.$message.success("开门成功")
         } else {
-          that.$message.warning(res.message);
+          that.$message.warning(res.msg);
         }
       })
     }

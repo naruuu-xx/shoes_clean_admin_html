@@ -209,11 +209,11 @@ export default {
       description: 'shoe_order管理页面',
       serviceCode: '',
       selfCode: '',
-      queryParam:{
-        statusList:'',
+      queryParam: {
         finishTimeLeft: '',
         finishTimeRight: '',
         finishTime: [],
+        status:[]
       },
       // 表头
       columns: [
@@ -364,12 +364,6 @@ export default {
       },
       // immediate: true
     },
-    'queryParam.status':{
-      handler(newV){
-        newV = newV.toString();
-        this.queryParam.statusList = newV;
-      }
-    }
   },
   computed: {
     importExcelUrl: function () {
@@ -377,6 +371,11 @@ export default {
     },
   },
   methods: {
+    setQueryParams() {
+      return {
+        statusList: this.queryParam.status.toString()
+      }
+    },
     initDictConfig() {
     },
     getSelfCode(record) {
