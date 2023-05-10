@@ -5,7 +5,7 @@
         <div class="box">
           <div class="box-title">入库统计</div>
           <div class="box-main">
-            <div class="box-item" v-for="(item,idx) in dataObj.quantityOfSale" :key="idx">
+            <div class="box-item" v-for="(item,idx) in warehousingStatistics" :key="idx">
               <div class="box-item-title">{{ item.name }}</div>
               <div class="box-item-value">{{ item.num }}</div>
             </div>
@@ -16,7 +16,7 @@
         <div class="box">
           <div class="box-title">出库统计</div>
           <div class="box-main">
-            <div class="box-item" v-for="(item,idx) in dataObj.orderForm" :key="idx">
+            <div class="box-item" v-for="(item,idx) in outboundStatistics" :key="idx">
               <div class="box-item-title">{{ item.name }}</div>
               <div class="box-item-value">{{ item.num }}</div>
             </div>
@@ -49,26 +49,15 @@
             入库鞋数
           </div>
           <div class="tab-right">
-            <div class="tab-right-main">
-              <div
-              class="tab-right-main-item"
-              :class="{ active: type.value == barQuery.time.value }"
-              v-for="(type, idx) in timeList"
-              :key="idx"
-              @click="onTab('time', type)"
-              >
-                {{ type.name }}
-              </div>
-            </div>
-            <a-range-picker @change="onChangeDate" />
+            <xf-date-filter @change="changeFilterDate"></xf-date-filter>
             
           </div>
         </div>
         <a-row>
           <div class="tabbar">
-            <div class="tabbar-item" v-for="(item,idx) in incomingShoes" :key="idx">
-              <div class="tabbar-item-title">{{ item.name }}</div>
-              <div class="tabbar-item-value">{{ item.num }}</div>
+            <div class="tabbar-item" v-for="(item,idx) in inOfStorageCount" :key="idx">
+              <div class="tabbar-item-title">{{ item.platformName }}</div>
+              <div class="tabbar-item-value">{{ item.count }}</div>
             </div>
           </div>
         </a-row>
@@ -77,9 +66,9 @@
         </div>
         <a-row>
           <div class="tabbar">
-            <div class="tabbar-item" v-for="(item,idx) in incomingShoes" :key="idx">
-              <div class="tabbar-item-title">{{ item.name }}</div>
-              <div class="tabbar-item-value">{{ item.num }}</div>
+            <div class="tabbar-item" v-for="(item,idx) in outOfStorageCount" :key="idx">
+              <div class="tabbar-item-title">{{ item.platformName }}</div>
+              <div class="tabbar-item-value">{{ item.count }}</div>
             </div>
           </div>
         </a-row>
@@ -116,22 +105,21 @@
 import Bar from './components/Bar'
 import Pie from './components/Pie'
 import BrandStatistics from './components/BrandStatistics'
-import { getLoginfo, getVisitInfo } from '@/api/api'
+import xfDateFilter from './components/xfDateFilter'
 import { getAction } from '@/api/manage'
 export default {
   name: 'ShoeAnalysis',
   components: {
     Bar,
     Pie,
-    BrandStatistics
+    BrandStatistics,
+    xfDateFilter
   },
   data() {
     return {
-      loading: true,
+      loading: false,
       center: null,
       barData:[],
-      loginfo: {},
-      visitFields: ['ip', 'visit'],
       visitInfo: [],
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
       rankingList:[], // 排行的列表
@@ -145,47 +133,6 @@ export default {
           value: 'day',
         },
       },
-      typeList: [
-        {
-          name: '订单数',
-          value: 'order',
-        },
-        {
-          name: '销售额',
-          value: 'sale',
-        },
-      ],
-      timeList: [
-        {
-          name: '今日',
-          value: 'day',
-        },
-        {
-          name: '昨日',
-          value: 'yesterday',
-        },
-        {
-          name: '本月',
-          value: 'month',
-        },
-        {
-          name: '上月',
-          value: 'lastMonth',
-        },
-        {
-          name: '全年',
-          value: 'year',
-        },
-      ],
-      dataObj: {
-        // 销售量
-        quantityOfSale: [], // 订单量
-        orderForm: [], // 用户数
-        numberOfUsers: [], // 状态列表
-        statuslist: [], //
-        withdrawCheckPending: [], // 提现待审核
-        withdrawToBeConfirmed: [], // 提现待确认
-      },
       spinning: false,
       pieData:[
         { item: '配送', count: 0 },
@@ -198,67 +145,79 @@ export default {
           name:'总鞋数',
           icon:require('@/assets/data-shoe.png'),
           color:'#39C9C9',
-          num:'102'
+          num:0
         },
         {
           name:'机柜',
           icon:require('@/assets/data-cabinet.png'),
           color:'#FFB673',
-          num:'102'
+          num:0
         },
         {
           name:'站点',
           icon:require('@/assets/data-site.png'),
           color:'#FC456C',
-          num:'102'
+          num:0
         },
         {
           name:'快递',
           icon:require('@/assets/data-express.png'),
           color:'#48CAF0',
-          num:'102'
+          num:0
         },
         {
           name:'其他',
           icon:require('@/assets/data-else.png'),
           color:'#21C3BC',
-          num:'102'
+          num:0
         },
       ],
-      incomingShoes:[
+      // 入库统计
+      warehousingStatistics:[
         {
-          name:'总鞋数',
-          num: 164
+          name:'总入库数(单)',
+          num:0
         },
         {
-          name:'机柜',
-          num: 164
+          name:'本月入库数(单)',
+          num:0
         },
         {
-          name:'站点',
-          num: 164
+          name:'今日入库数(单)',
+          num:0
+        },
+      ],
+      // 出库统计
+      outboundStatistics:[
+        {
+          name:'总出库数(单)',
+          num:0
         },
         {
-          name:'快递',
-          num: 164
+          name:'本月出库数(单)',
+          num:0
         },
         {
-          name:'候鸟',
-          num: 164
+          name:'今日出库数(单)',
+          num:0
         },
-      ]
+      ],
+      inOfStorageCount:[
+
+      ],
+      outOfStorageCount:[
+
+      ],
     }
   },
   created() {
-
-    // this.initLogInfo()
-    this.getIndexUp()
-    this.getIndexDown()
+    // this.factoryIndexUp()
+    // this.getIndexDown()
   },
   methods: {
     
-    onChangeDate(date, dateString) {
-      console.log(date, dateString);
+    changeFilterDate(val) {
+      console.log(4444,val);
     },
     // 点击
     onClickw(status,val) {
@@ -277,64 +236,32 @@ export default {
       }
       this.$router.push(`${url}?status=${status}`)
     },
-    // 点击tab
-    onTab(type, value) {
-      this.barQuery[type] = value
-      this.getIndexDown()
-    },
-    initLogInfo() {
-      getLoginfo(null).then((res) => {
-        if (res.success) {
-          Object.keys(res.result).forEach((key) => {
-            res.result[key] = res.result[key] + ''
-          })
-          this.loginfo = res.result
-        }
-      })
-      getVisitInfo().then((res) => {
-        if (res.success) {
-          this.visitInfo = res.result
-        }
-      })
-    },
     //
-    getIndexUp() {
-      getAction('/indexUp').then((res) => {
-        this.dataObj = res
+    factoryIndexUp() {
+      getAction('/factoryIndexUp').then((res) => {
+        this.warehousingStatistics[0].num = res.totalInOfStorage
+        this.warehousingStatistics[1].num = res.monthInOfStorage
+        this.warehousingStatistics[2].num = res.todayInOfStorage
+        this.outboundStatistics[0].num = res.totalOutOfStorage
+        this.outboundStatistics[1].num = res.monthOutOfStorage
+        this.outboundStatistics[2].num = res.todayOutOfStorage
+        this.factoryShoes[0].num = res.totalRetention
+        this.factoryShoes[1].num = res.lockerRetention
+        this.factoryShoes[2].num = res.siteRetention
+        this.factoryShoes[3].num = res.expressageRetention
+        this.factoryShoes[4].num = res.otherRetention
       })
     },
-    getIndexDown() {
-      let type = this.barQuery.type.value
-      let time = this.barQuery.time.value
-      let form = {
-        type,
-        time
-      }
+    getIndexDown(form) {
       this.spinning = true
-      getAction('/indexDown',form).then((res) => {
+      getAction('/factoryIndexDown',form).then((res) => {
         if(res.success == false) return
-        this.barData = res.barData
-        this.rankingList = [
-          {
-            name:'商品',
-            list:res.goodRankingList || []
-          },
-          {
-            name:'机柜',
-            list:res.lockerRankingList || []
-          },
-          {
-            name:'站点',
-            list:res.siteRankingList || []
-          },
-          {
-            name:'站点自提',
-            list:res.siteSelfRankingList || []
-          },
-        ]
-        this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
-          item,count: parseFloat(num)
-        }))
+        this.inOfStorageCount = res.inOfStorageCount
+        this.outOfStorageCount = res.outOfStorageCount
+        // this.barData = res.barData
+        // this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
+        //   item,count: parseFloat(num)
+        // }))
 
       }).finally(s => {
         this.spinning = false
