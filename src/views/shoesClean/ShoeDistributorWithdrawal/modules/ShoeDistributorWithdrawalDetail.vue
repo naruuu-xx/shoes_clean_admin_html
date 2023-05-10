@@ -10,6 +10,8 @@
   >
     <h2>申请人：{{name}}</h2>
     <h2>提现金额：{{amount}}</h2>
+    <h2>实际到账金额：{{realwithdrawal}}</h2>
+    <h2>手续费率：{{withdrawalRatio*100}}%</h2>
     <h2>申请时间：{{createTime}}</h2>
     <h2>银行卡号：{{cardNo}}</h2>
     <h2>持卡人：{{cardName}}</h2>
@@ -48,6 +50,8 @@ export default {
       bank:'',
       openBank:'',
       status:'',
+      withdrawalRatio:'',
+      realwithdrawal:''
     }
   },
   methods: {
@@ -64,6 +68,8 @@ export default {
       this.bank=record.bank;
       this.openBank=record.openBank;
       this.status=record.status;
+      this.withdrawalRatio=parseFloat(record.withdrawalRatio || 0);
+      this.realwithdrawal=record.realwithdrawal;
     }
   }
 

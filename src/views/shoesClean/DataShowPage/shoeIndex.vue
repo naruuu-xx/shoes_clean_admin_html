@@ -67,17 +67,6 @@
     <a-card :loading="loading" :bordered="false" :body-style="{ padding: '0' }">
       <div class="salesCard">
         <div class="tab">
-          <div class="tab-left">
-            <div
-              class="tab-left-item"
-              :class="{ active: type.value == barQuery.type.value }"
-              v-for="(type, idx) in typeList"
-              :key="idx"
-              @click="onTab('type', type)"
-            >
-              {{ type.name }}
-            </div>
-          </div>
           <div class="tab-right">
             <div
               class="tab-right-item"
@@ -85,6 +74,38 @@
               v-for="(type, idx) in timeList"
               :key="idx"
               @click="onTab('time', type)"
+            >
+              {{ type.name }}
+            </div>
+            <a-range-picker @change="onChangeDate" v-model="pickTime" />
+          </div>
+        </div>
+        <a-row>
+          <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
+            <a-spin :spinning="spinning">
+              <bar
+                title="平台新增用户"
+                :dataSource="barUserData"
+                yaxisText="用户数"
+              />
+            </a-spin>
+          </a-col>
+          <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
+            <a-spin :spinning="spinning">
+              <div style="padding-top: 20px;">
+                <Pie :height="300" :dataSource="pieUserData"/>
+              </div>
+            </a-spin>
+          </a-col>
+        </a-row>
+        <div class="tab">
+          <div class="tab-left">
+            <div
+              class="tab-left-item"
+              :class="{ active: type.value == barQuery.type.value }"
+              v-for="(type, idx) in typeList"
+              :key="idx"
+              @click="onTab('type', type)"
             >
               {{ type.name }}
             </div>
@@ -102,9 +123,11 @@
 
           </a-col>
           <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
-            <div style="padding-top: 20px;">
-              <Pie :height="300" :dataSource="pieData"/>
-            </div>
+            <a-spin :spinning="spinning">
+              <div style="padding-top: 20px;">
+                <Pie :height="300" :dataSource="pieData"/>
+              </div>
+            </a-spin>
           </a-col>
         </a-row>
         <a-row :gutter="24">
@@ -127,19 +150,22 @@
         </a-row>
       </div>
     </a-card>
+    <BrandStatistics></BrandStatistics>
   </div>
 </template>
 
 <script>
 import Bar from '@/components/chart/Bar'
 import Pie from './components/Pie'
+import BrandStatistics from './components/BrandStatistics'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
 export default {
   name: 'ShoeAnalysis',
   components: {
     Bar,
-    Pie
+    Pie,
+    BrandStatistics
   },
   data() {
     return {
@@ -204,7 +230,40 @@ export default {
         { item: '自提', count: 0 },
         { item: '快递', count: 0 },
         { item: '站点', count: 0 }
-      ]
+      ],
+      barUserData:[
+        {
+          x:'0点',
+          y:0
+        },
+        {
+          x:'1点',
+          y:1
+        },
+        {
+          x:'2点',
+          y:2
+        },
+        {
+          x:'3点',
+          y:3
+        },
+        {
+          x:'4点',
+          y:4
+        },
+      ],
+      pieUserData:[
+        { item: '自主访问', count: 1 },
+        { item: '公众号', count: 1 },
+        { item: '洁小兔', count: 1 },
+        { item: '帮邦行', count: 1 },
+        { item: '邀请进入', count: 1 },
+        { item: '分销', count: 1 },
+      ],
+      startTime:'',
+      endTime:'',
+      pickTime: null
     }
   },
   created() {
@@ -214,6 +273,10 @@ export default {
     this.getIndexDown()
   },
   methods: {
+    onChangeDate(date,dateString) {
+      this.startTime = dateString[0]
+      this.endTime = dateString[1]
+    },
     // 点击订单状态
     onClickOrder(val) {
       this.$router.push({ name: 'order-list', params: { status: [val.status+'']}})
@@ -238,6 +301,9 @@ export default {
     // 点击tab
     onTab(type, value) {
       this.barQuery[type] = value
+      if(type == 'time') {
+        this.pickTime = null
+      }
       this.getIndexDown()
     },
     initLogInfo() {
@@ -282,7 +348,7 @@ export default {
             list:res.lockerRankingList || []
           },
           {
-            name:'站点',
+            name:'站点配送',
             list:res.siteRankingList || []
           },
           {
@@ -310,31 +376,37 @@ main {
 }
 .box {
   display: flex;
-  justify-content: space-around;
   background-color: #fff;
   padding: 20px 0;
   position: relative;
-  &::before,
-  &::after {
-    position: absolute;
-    display: block;
-    content: '';
-    height: calc(100% - 40px);
-    background-color: #d6d6d6;
-    width: 1px;
-  }
-  &::before {
-    left: 33.33%;
-  }
-  &::after {
-    left: 66.66%;
-  }
+  // &::before,
+  // &::after {
+  //   position: absolute;
+  //   display: block;
+  //   content: '';
+  //   height: calc(100% - 40px);
+  //   background-color: #d6d6d6;
+  //   width: 1px;
+  // }
+  // &::before {
+  //   left: 33.33%;
+  // }
+  // &::after {
+  //   left: 66.66%;
+  // }
   &-item {
+    flex: 1;
+    text-align: center;
+    border-right: solid 1px #d6d6d6;
+    &:last-child {
+      border-right-color: transparent;
+    }
     &-title {
       font-size: 12px;
       color: #a0a0a0;
     }
     &-value {
+      
       font-weight: 500;
       font-size: 26px;
     }
@@ -441,6 +513,7 @@ main {
   &-right {
     display: flex;
     &-item {
+      line-height: 28px;
       padding: 0 24px;
       cursor: pointer;
     }

@@ -14,6 +14,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="卡面按钮字体颜色" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="color">
+              <a-input v-model = "model.color" placeholder="例如：#FFFFFF"></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="商品选择" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="goodList" required>
               <a-button type="primary" @click="onAddGood">新增</a-button>
             </a-form-model-item>
@@ -228,6 +233,7 @@ export default {
       validatorRules: {
         timecardId: [{required: true, message: '请输入次卡ID!'}],
         name: [{required: true, message: '请输入次卡名称!'}],
+        color:[{required: true, message: '请输入卡面按钮字体颜色!'}],
         image: [{required: true, message: '请输入图片!'}],
         num: [{required: true, message: '请输入可洗鞋数!'}],
         expireDay: [{required: true, message: '请输入有效天数!'}],
