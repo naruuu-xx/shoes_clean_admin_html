@@ -61,10 +61,12 @@ export default {
   props:{
     timeList: {
       type:Array,
+      // today=今日；yesterday=昨日；thisMonth=本月；lastMonth=上月；thisYear=本年；
+      // day=今日；yesterday=昨日；month=本月；lastMonth=上月；year=本年；
       default:() =>([
         {
           name: '今日',
-          value: 'day',
+          value: 'today',
         },
         {
           name: '昨日',
@@ -72,7 +74,7 @@ export default {
         },
         {
           name: '本月',
-          value: 'month',
+          value: 'thisMonth',
         },
         {
           name: '上月',
@@ -80,14 +82,14 @@ export default {
         },
         {
           name: '全年',
-          value: 'year',
+          value: 'thisYear',
         },
       ])
     },
   },
   data() {
     return {
-      dateType:'day', // 时间类型
+      dateType:'today', // 时间类型
       dayOptions:[
         {
           label:'日',
@@ -176,7 +178,7 @@ export default {
       this.$emit('change', {
         dateType: this.dateType,
         startTime: this.startTime ? dayjs(this.startTime).format(this.selectTypeObj.format) : '',
-        endTime: this.endTim ? dayjs(this.endTime).format(this.selectTypeObj.format) : '',
+        endTime: this.endTime ? dayjs(this.endTime).format(this.selectTypeObj.format) : '',
         selectType: this.selectType
       })
     },
@@ -187,7 +189,7 @@ export default {
       }
       const endValue = this.endTime;
       if (endValue !== '') {
-        return dayjs(startValue).isBefore(dayjs(endValue).subtract(90, 'day')) || dayjs(startValue).isAfter(dayjs(endValue))
+        return dayjs(startValue).isBefore(dayjs(endValue).subtract(31, 'day')) || dayjs(startValue).isAfter(dayjs(endValue))
       } else {
         return null
       }
@@ -199,7 +201,7 @@ export default {
       }
       const startValue = this.startTime;
       if (startValue !== '') {
-        return dayjs(endValue).isAfter(dayjs(startValue).add(90, 'day')) ||  dayjs(endValue).isBefore(dayjs(startValue))
+        return dayjs(endValue).isAfter(dayjs(startValue).add(31, 'day')) ||  dayjs(endValue).isBefore(dayjs(startValue))
       } else {
         return null
       }

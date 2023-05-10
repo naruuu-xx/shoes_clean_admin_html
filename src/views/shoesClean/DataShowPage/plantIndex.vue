@@ -76,9 +76,9 @@
           <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <bar
-                :title="`${barQuery.time.name}${barQuery.type.name}排行`"
-                :dataSource="barData"
-                :yaxisText="barQuery.type.name"
+                title="`入库数柱状图"
+                :dataSource="inHistogram"
+                yaxisText="入库数"
                 color="#48CAF0"
               />
             </a-spin>
@@ -87,9 +87,9 @@
           <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <bar
-                :title="`${barQuery.time.name}${barQuery.type.name}排行`"
-                :dataSource="barData"
-                :yaxisText="barQuery.type.name"
+                title="出库数柱状图"
+                :dataSource="outHistogram"
+                yaxisText="出库数"
                 color="#FFBB00"
               />
             </a-spin>
@@ -119,7 +119,8 @@ export default {
     return {
       loading: false,
       center: null,
-      barData:[],
+      inHistogram:[],
+      outHistogram:[],
       visitInfo: [],
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
       rankingList:[], // 排行的列表
@@ -211,13 +212,19 @@ export default {
     }
   },
   created() {
-    // this.factoryIndexUp()
-    // this.getIndexDown()
+    this.factoryIndexUp()
+    this.getIndexDown({
+        dateType: 'today',
+        startTime: '',
+        endTime: '',
+        selectType: 'day'
+      })
   },
   methods: {
     
     changeFilterDate(val) {
       console.log(4444,val);
+      this.getIndexDown(val)
     },
     // 点击
     onClickw(status,val) {
@@ -238,27 +245,30 @@ export default {
     },
     //
     factoryIndexUp() {
-      getAction('/factoryIndexUp').then((res) => {
-        this.warehousingStatistics[0].num = res.totalInOfStorage
-        this.warehousingStatistics[1].num = res.monthInOfStorage
-        this.warehousingStatistics[2].num = res.todayInOfStorage
-        this.outboundStatistics[0].num = res.totalOutOfStorage
-        this.outboundStatistics[1].num = res.monthOutOfStorage
-        this.outboundStatistics[2].num = res.todayOutOfStorage
-        this.factoryShoes[0].num = res.totalRetention
-        this.factoryShoes[1].num = res.lockerRetention
-        this.factoryShoes[2].num = res.siteRetention
-        this.factoryShoes[3].num = res.expressageRetention
-        this.factoryShoes[4].num = res.otherRetention
+      getAction('/factoryIndexUp').then(({success,result}) => {
+        if(success) {
+          this.warehousingStatistics[0].num = result.totalInOfStorage
+          this.warehousingStatistics[1].num = result.monthInOfStorage
+          this.warehousingStatistics[2].num = result.todayInOfStorage
+          this.outboundStatistics[0].num = result.totalOutOfStorage
+          this.outboundStatistics[1].num = result.monthOutOfStorage
+          this.outboundStatistics[2].num = result.todayOutOfStorage
+          this.factoryShoes[0].num = result.totalRetention
+          this.factoryShoes[1].num = result.lockerRetention
+          this.factoryShoes[2].num = result.siteRetention
+          this.factoryShoes[3].num = result.expressageRetention
+          this.factoryShoes[4].num = result.otherRetention
+        }
       })
     },
     getIndexDown(form) {
       this.spinning = true
       getAction('/factoryIndexDown',form).then((res) => {
         if(res.success == false) return
-        this.inOfStorageCount = res.inOfStorageCount
-        this.outOfStorageCount = res.outOfStorageCount
-        // this.barData = res.barData
+        this.inOfStorageCount = res.result.inOfStorageCount
+        this.outOfStorageCount = res.result.outOfStorageCount
+        this.inHistogram = res.result.inHistogram || []
+        this.outHistogram = res.result.outHistogram || []
         // this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
         //   item,count: parseFloat(num)
         // }))

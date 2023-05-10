@@ -1,6 +1,6 @@
 <template>
-  <div :style="{ padding: '0 0 32px 0' }">
-    <h4 class="title">{{ title }}</h4>
+  <div :style="{ paddingBottom: paddingBottom }">
+    <h4 class="title" v-if="title">{{ title }}</h4>
     <v-chart :forceFit="true" :height="height" :data="dataSource" :scale="scale" :padding="padding">
       <v-tooltip/>
       <v-axis/>
@@ -34,6 +34,10 @@
       color: {
         type: String,
         default: '#389fff'
+      },
+      paddingBottom:{
+        type: String,
+        default: '32px'
       }
     },
     data() {

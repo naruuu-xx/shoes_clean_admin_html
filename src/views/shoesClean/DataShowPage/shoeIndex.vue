@@ -30,16 +30,28 @@
       </a-col>
     </a-row>
 
-    <a-row>
+    <!-- <a-row>
       <div class="status">
         <div class="status-box" v-for="(status, idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(status)">
           <div class="status-box-name">{{ status.name }}</div>
           <div class="status-box-value">{{ status.num }}</div>
         </div>
       </div>
+    </a-row> -->
+
+    <div class="title">
+      出库鞋数
+    </div>
+    <a-row>
+      <div class="tabbar">
+        <div class="tabbar-item" v-for="(item,idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(item)">
+          <div class="tabbar-item-title">{{ item.name }}</div>
+          <div class="tabbar-item-value">{{ item.num }}</div>
+        </div>
+      </div>
     </a-row>
 
-    <a-row>
+    <a-row :gutter="24">
       <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
         <div class="withdraw">
           <div class="withdraw-title">提现待审核</div>
@@ -67,38 +79,36 @@
     <a-card :loading="loading" :bordered="false" :body-style="{ padding: '0' }">
       <div class="salesCard">
         <div class="tab">
+          <div class="title" style="border-bottom-color: transparent;padding: 0;line-height: 32px">
+            平台新增用户
+          </div>
           <div class="tab-right">
-            <div
-              class="tab-right-item"
-              :class="{ active: type.value == barQuery.time.value }"
-              v-for="(type, idx) in timeList"
-              :key="idx"
-              @click="onTab('time', type)"
-            >
-              {{ type.name }}
-            </div>
-            <a-range-picker @change="onChangeDate" v-model="pickTime" />
+            <xf-date-filter @change="changeFilterDate"></xf-date-filter>
           </div>
         </div>
         <a-row>
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
-              <bar
-                title="平台新增用户"
-                :dataSource="barUserData"
-                yaxisText="用户数"
-              />
+              <div class="bar">
+                <bar
+                  title=""
+                  :dataSource="barUserData"
+                  yaxisText="用户数"
+                  color="#fcdc5b"
+                  paddingBottom="0"
+                />
+              </div>
             </a-spin>
           </a-col>
           <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div style="padding-top: 20px;">
-                <Pie :height="300" :dataSource="pieUserData"/>
+                <Pie :height="268" :dataSource="pieUserData"/>
               </div>
             </a-spin>
           </a-col>
         </a-row>
-        <div class="tab">
+        <div class="tab" style="border-top: 1px solid #DDDDDD;border-bottom: 1px solid #DDDDDD;">
           <div class="tab-left">
             <div
               class="tab-left-item"
@@ -114,22 +124,25 @@
         <a-row>
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
-              <bar
-                :title="`${barQuery.time.name}${barQuery.type.name}排行`"
-                :dataSource="barData"
-                :yaxisText="barQuery.type.name"
-              />
+              <div class="bar">
+                <bar
+                  :dataSource="barData"
+                  :yaxisText="barQuery.type.name"
+                  paddingBottom="0"
+                />
+              </div>
             </a-spin>
 
           </a-col>
           <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div style="padding-top: 20px;">
-                <Pie :height="300" :dataSource="pieData"/>
+                <Pie :height="268" :dataSource="pieData"/>
               </div>
             </a-spin>
           </a-col>
         </a-row>
+        <a-divider />
         <a-row :gutter="24">
           <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24" v-for="(ranking,idx) in rankingList" :key="idx">
             <div>
@@ -155,17 +168,19 @@
 </template>
 
 <script>
-import Bar from '@/components/chart/Bar'
+import Bar from './components/Bar'
 import Pie from './components/Pie'
 import BrandStatistics from './components/BrandStatistics'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
+import xfDateFilter from './components/xfDateFilter'
 export default {
   name: 'ShoeAnalysis',
   components: {
     Bar,
     Pie,
-    BrandStatistics
+    BrandStatistics,
+    xfDateFilter
   },
   data() {
     return {
@@ -273,6 +288,9 @@ export default {
     this.getIndexDown()
   },
   methods: {
+    changeFilterDate(val) {
+      console.log(4444,val);
+    },
     onChangeDate(date,dateString) {
       this.startTime = dateString[0]
       this.endTime = dateString[1]
@@ -371,6 +389,57 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.bar {
+  padding-top: 40px;
+}
+.title {
+  padding:18px 0 18px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  line-height: 16px;
+  background: #fff;
+  border-bottom: 1px solid #DDDDDD;
+}
+
+.tabbar {
+  // min-width: 500px;
+  overflow-x: scroll;
+  display: flex;
+  background: #fff;
+  &::after {
+    content: '';
+    height: 54px;
+    display: block;
+    background-color: #F5F5F5;
+    flex: 1;
+  }
+  &-item {
+    flex-shrink: 0;
+    border-bottom: 1px solid #e3e3e3;
+    &:first-child{
+      .tabbar-item-title {
+        padding-left: 20px;
+      }
+      .tabbar-item-value {
+        padding-left: 20px;
+      }
+      
+    }
+    &-title {
+      background: #F5F5F5;
+      padding: 16px 0;
+      padding-right: 90px;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 22px;
+    }
+    &-value {
+      padding: 12px 0;
+    }
+  }
+}
+
 main {
   color: #333;
 }
@@ -379,6 +448,7 @@ main {
   background-color: #fff;
   padding: 20px 0;
   position: relative;
+  overflow-x: scroll;
   // &::before,
   // &::after {
   //   position: absolute;
@@ -398,6 +468,7 @@ main {
     flex: 1;
     text-align: center;
     border-right: solid 1px #d6d6d6;
+    min-width: 150px;
     &:last-child {
       border-right-color: transparent;
     }
@@ -441,26 +512,40 @@ main {
 .withdraw {
   background-color: #fff;
   &-title {
-    padding-top: 8px;
+    padding: 16px 20px;
     font-weight: 600;
     font-size: 14px;
-    margin-top: 8px;
+    margin-top: 20px;
+    border-bottom: 1px solid #DDDDDD;
   }
   &-main {
     display: flex;
     justify-content: center;
     min-width: 300px;
     &-item {
-      padding: 0 24px;
+      margin: 16px 0;
+      flex: 1;
       text-align: center;
+      border-right: solid 1px #d6d6d6;
+      // min-width: 150px;
+      &:last-child {
+        border-right-color: transparent;
+      }
       &-name {
-        font-size: 16px;
-        color: #a0a0a0;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(0,0,0,0.65);
+        line-height: 22px;
       }
       &-value {
-        padding: 8px 0;
-        font-weight: 500;
+        padding-top: 4px;
         font-size: 26px;
+        font-size: 30px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(0,0,0,0.85);
+        line-height: 38px;
       }
     }
   }
@@ -468,6 +553,12 @@ main {
 
 .active {
   color: #3b98ff;
+  &::before {
+    width: 100% !important;
+    height: 2px;
+    background-color: #3b98ff !important;
+    bottom: -11px;
+  }
 }
 
 .rankings {
@@ -506,8 +597,18 @@ main {
   &-left {
     display: flex;
     &-item {
-      padding: 0 24px;
+      margin: 0 24px;
       cursor: pointer;
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 0;
+        background-color: transparent;
+        bottom: -11px;
+        transition: width 0.3s;
+      }
     }
   }
   &-right {
