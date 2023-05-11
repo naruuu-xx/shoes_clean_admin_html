@@ -184,15 +184,26 @@
             align:"center",
             dataIndex: 'phone'
           },
+
           {
-            title:'推荐人昵称',
+            title:'用户来源',
+            align:"center",
+            dataIndex: 'source'
+          },
+          {
+            title:'渠道',
+            align:"center",
+            dataIndex: 'channel'
+          },
+          {
+            title:'推荐人',
             align:"center",
             dataIndex: 'referrer'
           },
           {
-            title:'渠道来源',
+            title:'推广人',
             align:"center",
-            dataIndex: 'channel'
+            dataIndex: 'distributorName'
           },
           {
             title:'注册时间',
