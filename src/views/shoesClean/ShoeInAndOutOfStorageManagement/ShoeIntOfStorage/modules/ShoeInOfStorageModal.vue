@@ -8,7 +8,7 @@
     cancelText="关闭"
     :footer="null"
     :fullscreen = "false">
-    <a-spin :spinning="confirmLoading">
+    <a-spin :spinning="confirmLoading" size="large" tip="图片正在上传中，请耐心等待......">
       <div style="margin-left: 20px">
         <a-row>
           <a-col :span="18">
@@ -21,7 +21,11 @@
           </a-col>
         </a-row>
         <a-divider />
+        
         <a-row v-show="shoeOrderInfo">
+          <a-row>
+            <XfPhotograph ref="photograph" :photographImg="factoryInImages"></XfPhotograph>
+          </a-row>
           <a-row>
             <a-col :span="18">
               <span class="content">订单编号：{{data.no}}</span>
@@ -133,9 +137,11 @@
 import {downFile, httpAction, postAction} from "../../../../../api/manage";
 import ConfirmPrintModal from "./ConfirmPrintModal";
 
+import XfPhotograph from "@comp/Xf/XfPhotograph";
+
 export default {
   name: "ShoeInOfStorageModal",
-  components: {ConfirmPrintModal},
+  components: {ConfirmPrintModal,XfPhotograph},
   data() {
     return {
       visible: false,
@@ -151,6 +157,7 @@ export default {
       selectedNote: [],
       noteOptions: [],
       loadingBtn: false,
+      factoryInImages:[]
     }
   },
   created() {
@@ -209,6 +216,7 @@ export default {
             this.data = res.result
             this.imageList = JSON.parse(res.result.orderImages);
             this.shoeOrderInfo = true;
+            this.$refs.photograph.imgs = []
             //清空输入框并重新聚焦
             this.bagCode = "";
             this.selectedNote = [];
@@ -231,14 +239,26 @@ export default {
       this.showInOfStoragePrintModal = false;
     },
     shoeInOfStorageModal() {
+      this.confirmLoading = true
+      this.$refs.photograph.submit().then(Images => {
+        this.factoryInImages = Images
+        let factoryInImages = Images.map(item => item.file)
+        this.$refs.confirmPrintModal.show(Object.assign({},this.data,{factoryInImages}));
+        
+      }).finally(() => {
+        this.confirmLoading = false
+      })
       // this.showInOfStoragePrintModal = true;
-      this.$refs.confirmPrintModal.show(this.data);
+      
     },
   }
 }
 </script>
 
 <style scoped lang="less">
+/deep/ .ant-spin-text{
+  font-size: 40px;
+}
 .content {
   font-size: 20px;
   color: #000000;

@@ -6,9 +6,12 @@
     @cancel="handleCancel"
     :footer="null"
     wrapClassName="full-modal">
-    <a-spin :spinning="confirmLoading">
+    <a-spin :spinning="confirmLoading" size="large" tip="图片正在上传中，请耐心等待......">
       <j-form-container :disabled="formDisabled">
         <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
+          <a-row style="margin-left: 36px;">
+            <XfPhotograph ref="photograph" :photographImg="factoryInImages"></XfPhotograph>
+          </a-row>
           <a-row>
             <a-col :span="24">
               <a-form-model-item label="订单编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="no">
@@ -56,6 +59,21 @@
           </a-row>
           <a-row>
             <a-col :span="24">
+              <a-form-model-item label="品牌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="brandId">
+
+                <XfSelect
+                  :list="weekList"
+                  @change="checkedSelect"
+                  @changeList="changeSelect"
+                  v-model="model.brandId"
+                  :url='`/shoeBrand/list`'
+                >
+                </XfSelect>
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="24">
               <a-col :span="6"></a-col>
               <a-col :span="6">
                 <a-button type="primary" @click="handleSubmit">确认</a-button>
@@ -74,10 +92,12 @@
 
 <script>
 import {downFile, httpAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
+import XfPhotograph from "@comp/Xf/XfPhotograph";
 
 export default {
   name: "ManualInOfStorage",
-  components: {},
+  components: {XfSelect,XfPhotograph},
   props: {
     //表单禁用
     disabled: {
@@ -88,6 +108,7 @@ export default {
   },
   data() {
     return {
+      weekList:[],
       visible: false,
       confirmLoading: false,
       model: {},
@@ -115,6 +136,9 @@ export default {
         noteAddress: [
           { required: true, message: '请输入地址!' }
         ],
+        brandId: [
+          { required: true, message: '请输入品牌!' }
+        ],
         name: [
           {required: true, message: '请输入姓名!'},
         ],
@@ -122,6 +146,7 @@ export default {
           {required: false, message: '请输入备注!'},
         ]
       },
+      factoryInImages:[]
     }
   },
   computed: {
@@ -132,6 +157,14 @@ export default {
   created() {
   },
   methods: {
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: +item.brandId
+      }));
+    },
+    checkedSelect(val) {
+    },
     show() {
       this.visible = true;
       this.model = {};
@@ -150,30 +183,44 @@ export default {
       this.visible = false;
       this.model = {};
     },
-    handleSubmit(){
+     handleSubmit(){
       const that = this;
 
       let no = this.model.no;
 
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           that.confirmLoading = true;
 
-          httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",that.model, "post").then((res)=> {
-            if (res.success) {
-              that.$message.success(res.message);
-              this.visible = false;
-              this.model = {};
-              this.$emit('ok');
+          let res = await httpAction("/shoeFactoryWasher/getWasher","", "get")
+          if(!res.success){
+            this.$message.warning(res.message)
+            return false;
+          }
+          this.$refs.photograph.submit().then(Images => {
+            this.factoryInImages = Images
+            let factoryInImages = Images.map(item => item.file)
+            httpAction("/ShoeFactoryOrder/shoeFactoryOrder/manualInOfStorage",Object.assign({},that.model,{factoryInImages}), "post").then((res)=> {
+              if (res.success) {
+                that.$message.success(res.message);
+                this.visible = false;
+                this.model = {};
+                this.$emit('ok');
 
-              //打印水洗唛
-              this.createWashedMark(no);
-            } else {
-              that.$message.warning(res.message);
-            }
+                //打印水洗唛
+                this.createWashedMark(no);
+              } else {
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+            })
+            
           }).finally(() => {
-            that.confirmLoading = false;
+            this.confirmLoading = false
           })
+
+          
         }
       })
     },
@@ -218,6 +265,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+/deep/ .ant-spin-text{
+  font-size: 40px;
+}
 
 </style>

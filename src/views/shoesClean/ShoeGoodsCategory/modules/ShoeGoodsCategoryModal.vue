@@ -55,7 +55,6 @@
       submitCallback(){
         this.$emit('ok');
         this.visible = false;
-        this.$router.go(0);
       },
       handleCancel () {
         this.close()

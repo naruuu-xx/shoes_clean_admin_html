@@ -36,7 +36,7 @@ export default {
   name: 'shoeLockerGridModal',
   data() {
     return {
-      title: '快递柜格子展示',
+      title: '机柜格子展示',
       width: 600,
       visible: false,
       devicenum: '',
@@ -59,25 +59,69 @@ export default {
     show(record) {
       this.devicenum = record.lockerCode
       // 后期接口拿柜子数量
-      let cabinetNum = record.num + 2 // 需要加屏幕两个格子
-      let arr = Array(cabinetNum)
-        .fill(0)
-        .map((item, idx) => {
-          let num = idx + 1 // 让编号从1开始
-          if (num < 10) {
-            // 前九个格子正常
-            return num
-          } else {
-            if (num == 10 || num == 11) {
-              // 这个是屏幕
-              return -1
+      let usableNum = record.num;
+      if (46 === usableNum) {
+        let cabinetNum = usableNum + 2 // 需要加屏幕两个格子
+        let arr = Array(cabinetNum)
+          .fill(0)
+          .map((item, idx) => {
+            let num = idx + 1 // 让编号从1开始
+            if (num < 10) {
+              // 前九个格子正常
+              return num
+            } else {
+              if (num == 10 || num == 11) {
+                // 这个是屏幕
+                return -1
+              }
+              // 因为屏幕占两个 所以不需要加一
+              return idx
             }
-            // 因为屏幕占两个 所以不需要加一
-            return idx
-          }
-        })
-      this.lockerList = this.chunk(arr, 24).map((item) => this.chunk(item, 8))
-      this.width = this.lockerList.length * 560
+          })
+        this.lockerList = this.chunk(arr, 24).map((item) => this.chunk(item, 8))
+        this.width = this.lockerList.length * 560
+      } else if (25 === usableNum) {
+        let cabinetNum = usableNum + 3 // 需要加屏幕三个格子
+        let arr = Array(cabinetNum)
+          .fill(0)
+          .map((item, idx) => {
+            let num = idx + 1 // 让编号从1开始
+            if (num < 8) {
+              // 前七个格子正常
+              return num
+            } else {
+              if (num == 8 || num == 9 || num == 10) {
+                // 这个是屏幕
+                return -1
+              }
+              // 因为屏幕占三个，但是需要从7开始，不用断
+              return idx - 2;
+            }
+          })
+        this.lockerList = this.chunk(arr, 28).map((item) => this.chunk(item, 7))
+        this.width = this.lockerList.length * 760
+      } else if (63 === usableNum) {
+        let cabinetNum = usableNum + 1 // 需要加屏幕一个格子
+        let arr = Array(cabinetNum)
+          .fill(0)
+          .map((item, idx) => {
+            let num = idx + 1 // 让编号从1开始
+            if (num < 11) {
+              // 前十个格子正常
+              return num
+            } else {
+              if (num == 11) {
+                // 这个是屏幕
+                return -1
+              }
+              // 因为屏幕占一个 所以需要加一
+              return idx + 1
+            }
+          })
+        this.lockerList = this.chunk(arr, 32).map((item) => this.chunk(item, 8))
+        this.width = this.lockerList.length * 760
+      }
+
       this.visible = true
     },
     handleCancel() {
@@ -93,11 +137,10 @@ export default {
       }
 
       httpAction('/api/newIoT/openDoorByDevicenum', data, 'post').then((res) => {
-        let json = JSON.parse(res)
-        if (json.code === 0) {
+        if (res.code === 0) {
           that.$message.success('开门成功')
         } else {
-          that.$message.warning(json.message)
+          that.$message.warning(res.msg)
         }
       })
     },

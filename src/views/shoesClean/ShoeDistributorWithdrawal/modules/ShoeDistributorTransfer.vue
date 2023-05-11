@@ -12,6 +12,8 @@
 
     <h2>申请人：{{name}}</h2>
     <h2>提现金额：{{amount}}</h2>
+    <h2>实际到账金额：{{realwithdrawal}}</h2>
+    <h2>手续费率：{{withdrawalRatio*100}}%</h2>
     <h2>银行卡号：{{cardNo}}</h2>
     <h2>持卡人：{{cardNo}}</h2>
     <h2>开户行：{{bank}}</h2>
@@ -46,6 +48,8 @@ export default {
       title: '提现详情',
       width: 600,
       amount: '',
+      realwithdrawal: '',
+      withdrawalRatio: '',
       name: '',
       id: '',
       cardNo:'',
@@ -90,6 +94,8 @@ export default {
           this.cardName=record.cardName;
           this.bank=record.bank;
           this.openBank=record.openBank;
+      this.realwithdrawal=record.realwithdrawal;
+      this.withdrawalRatio=record.withdrawalRatio;
     }
   }
 

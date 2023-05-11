@@ -8,23 +8,25 @@
     showSearch
     :filter-option="false"
     @search="handleSearch"
+    :mode="mode"
+    :disabled="disabled"
   >
     <div slot="dropdownRender" slot-scope="menu">
       <a-spin :spinning="spinning" class="my-spin" @mousedown="e => e.preventDefault()" >
-      <v-nodes :vnodes="menu" />
+        <v-nodes :vnodes="menu" />
 
-      <a-divider style="margin: 4px 0" />
+        <a-divider style="margin: 4px 0" />
 
-      <div class="footer">
-        <a-button @mousedown="e => e.preventDefault()" @click="changePage(-1)" type="primary" size="small" :disabled="spinning || page == 1">上一页</a-button>
-        <div v-if="total && pageSize && page">{{ nowPage }}/{{ maxPage }}</div>
-        <a-button @mousedown="e => e.preventDefault()" @click="changePage(1)" type="primary" size="small" :disabled="spinning || page == maxPage">下一页</a-button>
-      </div>
+        <div class="footer">
+          <a-button @mousedown="e => e.preventDefault()" @click="changePage(-1)" type="primary" size="small" :disabled="spinning || page == 1">上一页</a-button>
+          <div v-if="total && pageSize && page">{{ nowPage }}/{{ maxPage }}</div>
+          <a-button @mousedown="e => e.preventDefault()" @click="changePage(1)" type="primary" size="small" :disabled="spinning || page == maxPage">下一页</a-button>
+        </div>
       </a-spin>
     </div>
 
     <a-select-option v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]"
-      >{{ item[labelKey] }}
+    >{{ item[labelKey] }}
     </a-select-option>
   </a-select>
 </template>
@@ -37,7 +39,6 @@ export default {
 
   props: {
     // 下拉框总数据
-
     list: {
       type: Array,
       require: true
@@ -68,7 +69,7 @@ export default {
 
     // 默认值
     value: {
-      type: String,
+      type: [String,Number,Array],
       default: ''
     },
     // 请求地址
@@ -85,6 +86,19 @@ export default {
     allowClear: {
       type: Boolean,
       default: false
+    },
+    // 默认模式
+    mode: {
+      type: String,
+      default: 'default' // 'default' | 'multiple' | 'tags' | 'combobox'
+    },
+    disabled:{
+      type: Boolean,
+      default: false
+    },
+    type:{
+      type: String,
+      default: '', // 简化小程序用户搜索的操作 'customer' 合作下单,'distributor' 推广,'investors' 投资人,'site' 站点
     }
   },
 
@@ -101,7 +115,10 @@ export default {
       selectVlaue: undefined,
       total: 0,
       page: 1,
-      spinning: false
+      spinning: false,
+      searchValue: '',
+      typeArr:['customer','distributor','investors','site'],
+      dataList:[]
     }
   },
 
@@ -114,17 +131,24 @@ export default {
       immediate: true
     },
     value: {
-				handler(value, oldValue) {
-					this.selectVlaue = value
-				},
-				deep: true,
-				immediate: true
-			}
+      handler(value, oldValue) {
+        this.selectVlaue = value
+      },
+      deep: true,
+      immediate: true
+    },
+    type: {
+      handler(value, oldValue) {
+        if(value) {
+          this.getList()
+        }
+      }
+    }
   },
 
   computed: {
     selectList() {
-      return this.list
+      return this.isType ? this.list : this.dataList
     },
 
     maxPage() {
@@ -133,6 +157,10 @@ export default {
 
     nowPage() {
       return this.page
+    },
+
+    isType() {
+      return this.type == '' || !this.typeArr.includes(this.type)
     }
   },
 
@@ -150,38 +178,52 @@ export default {
     },
 
     handleSearch(value) {
-      this.value = value
+      this.searchValue = value
       debounce(() => {
         this.page = 1
         this.getList(value)
       },1000,false)
     },
     // 获取数据
-    getList(val = '') {
+    getList(val = this.searchValue) {
       this.spinning = true
       let form = {
         pageNo: this.page,
         pageSize: this.pageSize,
         [this.searchKey]: val
       }
-      getAction(this.url, form).then((res) => {
+      let url = this.isType ? this.url : `/shoes/shoeUser/getUserListBytype?type=${this.type}`
+      getAction(url, form).then((res) => {
         if (res.success) {
           this.page = res.result.current || 1
           this.total = res.result.total || 1
-          this.$emit('changeList',res.result)
+          if(this.isType) {
+            this.$emit('changeList',res.result)
+          } else {
+            this.dataList = res.result.records.map(item => ({
+              label: `${item.nickname}(${item.phone})`,
+              value: +item.userId
+            }));
+          }
+        }else {
+          this.$message.warning(res.message);
         }
       }).finally(() => {
         this.spinning = false
       })
+    },
+    reset() {
+      this.searchValue = ''
+      this.getList()
     }
   }
 }
 </script>
 
 <style scoped lang="less">
-  .width195 {
-    width: 195px;
-  }
+.width195 {
+  width: 195px;
+}
 .footer {
   position: relative;
 
@@ -190,7 +232,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 5px 5px 10px;
-  
+
 }
 .my-spin {
   /* position: absolute;

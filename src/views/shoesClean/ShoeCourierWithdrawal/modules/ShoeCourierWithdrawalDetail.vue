@@ -20,6 +20,16 @@
       </a-row>
       <a-row>
         <a-col :span="24">
+          <div class="content-font">实际到账金额：{{data.realwithdrawal}}</div>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
+          <div class="content-font">手续费率：{{(data.withdrawalRatio || 0)*100}}%</div>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
           <div class="content-font">申请时间：{{data.createTime}}</div>
         </a-col>
       </a-row>

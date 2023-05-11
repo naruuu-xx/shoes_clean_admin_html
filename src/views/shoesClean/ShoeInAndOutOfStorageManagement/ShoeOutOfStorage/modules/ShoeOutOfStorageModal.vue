@@ -12,14 +12,14 @@
       <a-row>
         <a-col :span="18">
           <a-input style="height: 120px" v-model.trim="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码"
-                   @pressEnter="handleOutOfStorage" ref="autoInput"/>
+                   @pressEnter="queryOutOfStorageInfo" ref="autoInput"/>
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
           <a-row>
-            <a-button @click="handleOutOfStorage" :loading="loadingBtn"
+            <a-button @click="queryOutOfStorageInfo" :loading="loadingBtn"
                       style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span
-              style="font-size: 22px;">出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库</span></a-button>
+              style="font-size: 22px;">确&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认</span></a-button>
           </a-row>
           <a-row>
             <a-button @click="emptyNo" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span
@@ -29,9 +29,13 @@
       </a-row>
       <a-divider/>
       <a-row v-show="shoeOrderInfo">
-        <a-row style="margin-bottom: 30px">
-          <a-col :span="24">
+        <a-row style="margin-bottom: 10px">
+          <a-col :span="18">
             <span class="content">订单编号：{{ data.no }}</span>
+          </a-col>
+          <a-col :span="2"></a-col>
+          <a-col :span="4">
+            <a-button @click="handleOutOfStorage" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;" :loading="loadingBtn">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
           </a-col>
         </a-row>
         <a-row style="margin-bottom: 30px">
@@ -46,8 +50,15 @@
         </a-row>
         <a-row>
           <a-col :span="24">
-            <p class="content">照片：</p>
+            <p class="content">订单照片：</p>
             <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
+                 :src="item" @click="showImage(item)">
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24">
+            <p class="content">入库照片：</p>
+            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in factoryInImages"
                  :src="item" @click="showImage(item)">
           </a-col>
         </a-row>
@@ -90,8 +101,8 @@ export default {
       shoeOrderInfo: false,
       clickedImage: "",
       resData: {},
-      loadingBtn: false
-
+      loadingBtn: false,
+      factoryInImages: []
     }
   },
   created() {
@@ -127,14 +138,45 @@ export default {
       this.showImageModal = false;
       this.clickedImage = "";
     },
-    handleOutOfStorage() {
-
-      //处理出库
+    queryOutOfStorageInfo() {
       if (this.no === "" || this.no === null || this.no === undefined) {
         this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
       } else {
         let data = {
           "no": this.no
+        }
+        this.loadingBtn = true
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/queryShoeOutOfStorageInfo", data, "post").then((res) => {
+          if (res.code === 200) {
+            this.data = {
+              "no": res.result.no,
+              "note": res.result.note,
+              "title": res.result.title,
+              "skuTitle": res.result.skuTitle
+            }
+            this.imageList = JSON.parse(res.result.orderImages);
+            this.factoryInImages = res.result.factoryInImages;
+            this.shoeOrderInfo = true;
+            //清空输入框并重新聚焦
+            this.no = "";
+            this.$nextTick(() => {
+              this.$refs.autoInput.focus();
+            })
+          } else {
+            this.$message.warning(res.message);
+          }
+        }).finally(res => {
+          this.loadingBtn = false
+        })
+      }
+    },
+    handleOutOfStorage() {
+      //处理出库
+      if (this.data.no === "" || this.data.no === null || this.data.no === undefined) {
+        this.$message.warning("请扫码水洗唛编码或者手动输入水洗唛编码");
+      } else {
+        let data = {
+          "no": this.data.no
         }
         this.loadingBtn = true
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {

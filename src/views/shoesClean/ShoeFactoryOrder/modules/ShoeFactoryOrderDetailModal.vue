@@ -57,6 +57,12 @@
             <a-row>
               <a-col :span="24"><p class="label-content">出库时间：{{data.factoryOutTime || "————————"}}</p></a-col>
             </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">洗涤人员：{{data.washerName}}</p></a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="24"><p class="label-content">品牌：{{data.brandName}}</p></a-col>
+            </a-row>
           </a-row>
           <a-row v-if="'expressage' === data.type && 2 === data.status">
             <a-row>
@@ -74,6 +80,7 @@
           </a-row>
         </a-col>
         <!-- 右半部分 -->
+        <!-- 上半部分 -->
         <a-col :span="12">
           <a-row>
             <a-col :span="24"><p class="label-title">订单照片</p></a-col>
@@ -116,6 +123,16 @@
             </a-row>
           </a-row>
         </a-col>
+        <!-- 下半部分 -->
+        <a-col :span="12">
+          <a-row>
+            <a-col :span="24"><p class="label-title">入库照片</p></a-col>
+            <a-col :span="24">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in factoryInImages"
+                   :src="item" @click="showImage(item)">
+            </a-col>
+          </a-row>
+        </a-col>
       </a-row>
     </div>
 
@@ -141,6 +158,7 @@ export default {
       title: '订单详情',
       data: {},
       imageList: [],
+      factoryInImages: [],
       showImageModal: false,
       clickedImage: "",
       factoryStatus: "",
@@ -192,11 +210,18 @@ export default {
         this.dealStatusText = filterDictTextByCache('shoe_order_exception_status', res.result.status);
       })
 
+      if (this.data.factoryOutTime===''||this.data.factoryOutTime===null){
+        this.data.factoryOutTime="————"
+      }
+
+      this.factoryInImages = this.data.factoryInImages;
+
     },
     handleCancel() {
       this.visible = false;
       this.data = {};
       this.imageList = [];
+      this.factoryInImages = [];
       this.factoryStatus = "";
     },
     showImage(item) {

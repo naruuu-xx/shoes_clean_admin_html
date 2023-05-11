@@ -21,20 +21,53 @@
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单状态">
-              <a-select v-model="queryParam.status">
+              <a-select mode="multiple" v-model="queryParam.status" >
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
                 </a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单类型">
-              <a-select v-model="queryParam.type">
-                <a-select-option v-for="item in typeOptionList" :value="item.value" :key="item.value">
+              <a-select   v-model="queryParam.type">
+                <a-select-option v-for="item in typeOptionList" :value="item.value" :key="item.value" >
+                  {{ item.name }}
+                </a-select-option>
+
+              </a-select>
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item  label="优惠券">
+              <XfSelect
+                :list="weekList"
+                ref="xfSelect"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="queryParam.couponId"
+                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
+                style="width: 100%;"
+              >
+              </XfSelect>
+            </a-form-item>
+
+          </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="订单分类">
+              <a-select v-model="queryParam.classify">
+                <a-select-option v-for="item in classifyList" :value="item.value" :key="item.value" >
                   {{ item.name }}
                 </a-select-option>
               </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="订单时间">
+              <a-range-picker v-model="queryParam.finishTime" />
             </a-form-item>
           </a-col>
           <!--          <a-col :xl="4" :lg="7" :md="8" :sm="24">-->
@@ -61,18 +94,7 @@
       <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">
         导出选中订单
       </a-button>
-      <!--      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')">导出全部订单</a-button>-->
-      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="i mportExcelUrl" @change="handleImportExcel">-->
-      <!--        <a-button type="primary" icon="import">导入</a-button>-->
-      <!--      </a-upload>-->
-      <!-- 高级查询区域 -->
-      <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
-      <!--      <a-dropdown v-if="selectedRowKeys.length > 0">-->
-      <!--        <a-menu slot="overlay">-->
-      <!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
-      <!--        </a-menu>-->
-      <!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
-      <!--      </a-dropdown>-->
+
     </div>
 
     <!-- table区域-begin -->
@@ -168,6 +190,8 @@ import ShoeOrderDetail from "./modules/ShoeOrderDetail";
 import ShoeRefundDetail from "./modules/ShoeRefundDetail";
 import {httpAction} from "@api/manage";
 import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
+import moment from 'moment/moment'
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
   name: 'ShoeOrderList',
@@ -177,14 +201,19 @@ export default {
     ShoeOrderModal,
     ShoeOrderDetail,
     ShoeRefundDetail,
+    XfSelect
   },
   data() {
     return {
+      weekList:[],
       description: 'shoe_order管理页面',
       serviceCode: '',
       selfCode: '',
-      queryParam:{
-        status:''
+      queryParam: {
+        finishTimeLeft: '',
+        finishTimeRight: '',
+        finishTime: [],
+        status:[]
       },
       // 表头
       columns: [
@@ -240,6 +269,14 @@ export default {
           dataIndex: 'createTime'
         },
         {
+          title:'订单分类',
+          align:"center",
+          dataIndex:'classify',
+          customRender:(text)=>{
+            return filterDictTextByCache('order_classify',text);
+          }
+        },
+        {
           title: '订单状态',
           align: "center",
           dataIndex: 'status',
@@ -262,10 +299,9 @@ export default {
           fixed: "right",
           width: 147,
           scopedSlots: {customRender: 'action'}
-        }
+        },
       ],
       url: {
-        // list: "/ShoeOrder/shoeOrder/list",
         list: "/ShoeOrder/shoeOrder/queryList",
         delete: "/ShoeOrder/shoeOrder/delete",
         deleteBatch: "/ShoeOrder/shoeOrder/deleteBatch",
@@ -276,7 +312,7 @@ export default {
       dictOptions: {},
       superFieldList: [],
       statusOptionList: [
-        {"value": "", "name": "全部"}, {"value": "0", "name": "待付款"}, {"value": "1", "name": "已付款"},
+         {"value": "0", "name": "待付款"}, {"value": "1", "name": "已付款"},
         {"value": "2", "name": "配送员已接单（取件）"}, {"value": "3", "name": "配送员已收件"}, {
           "value": "4",
           "name": "已入柜"
@@ -288,13 +324,23 @@ export default {
           "name": "已完成"
         },
         {"value": "14", "name": "退款中"}, {"value": "15", "name": "已退款"}, {"value": "16", "name": "已取消"},
-        {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {"value": "19", "name": "工厂已寄出"},
+        {"value": "17", "name": "用户已寄出"}, {"value": "18", "name": "已出库未寄出"}, {
+          "value": "19",
+          "name": "工厂已寄出"
+        },{
+        "value": "20",
+          "name": "送站点"
+        }
       ],
       typeOptionList: [
-        {"value": "", "name": "全部"}, {"value": "self", "name": "自提"}, {
+        {"value": "", "name": "全部"}, {"value": "self", "name": "机柜自提"}, {
           "value": "service",
-          "name": "配送"
-        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点"}
+          "name": "机柜配送"
+        }, {"value": "expressage", "name": "快递"}, {"value": "site", "name": "站点配送"},
+        {"value": "site_self", "name": "站点自提"}
+      ],
+      classifyList: [
+        {"value": "", "name": "全部"}, {"value": "normal", "name": "常规订单"}, {"value": "customer", "name": "合作客户订单"}
       ],
       lockerList: [],
     }
@@ -302,6 +348,22 @@ export default {
   created() {
     this.getSuperFieldList();
     //获取机柜列表，放入下拉框
+
+  },
+  watch: {
+    'queryParam.finishTime': {
+      handler(newV) {
+        if (newV.length) {
+          let [finishTimeLeft, finishTimeright] = newV.map(item => moment(item).format('YYYY-MM-DD'))
+          this.queryParam.finishTimeLeft = finishTimeLeft
+          this.queryParam.finishTimeright = finishTimeright
+        } else {
+          this.queryParam.finishTimeLeft = ""
+          this.queryParam.finishTimeright = ""
+        }
+      },
+      // immediate: true
+    },
   },
   computed: {
     importExcelUrl: function () {
@@ -309,6 +371,11 @@ export default {
     },
   },
   methods: {
+    setQueryParams() {
+      return {
+        statusList: this.queryParam.status.toString()
+      }
+    },
     initDictConfig() {
     },
     getSelfCode(record) {
@@ -319,6 +386,10 @@ export default {
         }
       })
     },
+    searchReset1(){
+      this.searchReset();
+      this.$refs.xfSelect.reset()
+    },
     getServiceCode(record) {
       //this.url.list = "/shoes/shoeInvestors/InvestorsList?id="+investorsId,
       httpAction("ShoeOrder/shoeOrder/getServiceCode?orderId=" + record.orderId, null, "get").then((res) => {
@@ -326,6 +397,15 @@ export default {
           this.serviceCode = res.result;
         }
       })
+    },
+
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: item.id
+      }));
+    },
+    checkedSelect(val) {
     },
     getSuperFieldList() {
       let fieldList = [];

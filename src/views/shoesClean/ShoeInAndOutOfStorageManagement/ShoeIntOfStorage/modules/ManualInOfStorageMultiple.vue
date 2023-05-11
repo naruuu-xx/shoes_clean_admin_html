@@ -1,4 +1,5 @@
 <template>
+
   <j-modal
     title="手工录单"
     :width="600"
@@ -6,9 +7,19 @@
     @cancel="handleCancel"
     :footer="null"
     wrapClassName="full-modal">
-    <a-spin :spinning="confirmLoading">
+    <a-spin :spinning="confirmLoading" size="large" tip="图片正在上传中，请耐心等待......">
       <j-form-container :disabled="formDisabled">
         <div slot="detail">
+          <a-row v-if="form.length" style="margin-bottom: 10px;">
+            <div class="tab">
+              <a-radio-group v-model="tabValue" button-style="solid">
+                <a-radio-button :value="item.value" v-for="(item, index) in tabs" :key="index">
+                  {{item.label}}
+                </a-radio-button>
+              </a-radio-group>
+            </div>
+            <XfPhotograph ref="photograph" :photographImg="form[tabValue].factoryInImages"></XfPhotograph>
+          </a-row>
           <a-form-model :ref="`form${idx}`" :model="mm" :rules="validatorRules" v-for="(mm,idx) in form" :key="idx">
             <a-row>
               <a-col :span="24">第{{idx+1}}双鞋</a-col>
@@ -61,8 +72,19 @@
                   <a-textarea v-model="mm.note" placeholder="请输入备注"></a-textarea>
                 </a-form-model-item>
               </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="品牌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="brandId">
+                  <XfSelect
+                    :list="weekList"
+                    @changeList="changeSelect"
+                    v-model="mm.brandId"
+                    :url='`/shoeBrand/list`'
+                  >
+                  </XfSelect>
+                </a-form-model-item>
+              </a-col>
             </a-row>
-            
+
           </a-form-model>
           <a-row>
             <a-col :span="24">
@@ -77,7 +99,7 @@
             </a-col>
           </a-row>
         </div>
-        
+
       </j-form-container>
     </a-spin>
   </j-modal>
@@ -85,10 +107,15 @@
 
 <script>
 import {downFile, httpAction} from "../../../../../api/manage";
+import XfSelect from "@comp/Xf/XfSelect";
+import XfPhotograph from "@comp/Xf/XfPhotograph";
 
 export default {
   name: "ManualInOfStorage",
-  components: {},
+  components: {
+    XfSelect,
+    XfPhotograph
+  },
   props: {
     //表单禁用
     disabled: {
@@ -140,22 +167,46 @@ export default {
         ],
         note: [
           {required: false, message: '请输入备注!'},
+        ],
+        brandId : [
+          {required: true, message: '请选择品牌!'},
         ]
       },
-      form:[]
+      form:[],
+      weekList:[],
+      tabValue: 0
     }
   },
   computed: {
     formDisabled() {
       return this.disabled
     },
+    tabs() {
+      return this.form.map((item,idx) => ({
+        label: `鞋子${idx+1}`,
+        value: idx
+      }))
+    }
+  },
+  watch:{
+    tabValue: {
+      handler(val,oldValue) {
+        let imgs = this.$refs.photograph.imgs
+        this.form[oldValue].factoryInImages = imgs
+      },
+    },
   },
   created() {
   },
   methods: {
-    
+    changeSelect(data) {
+      this.weekList = data.records.map(item => ({
+        label: item.name,
+        value: +item.brandId
+      }));
+    },
     show(data) {
-      this.form = data
+      this.form = data.map(item => ({...item,factoryInImages: []}))
       this.visible = true;
     },
     handleCancel() {
@@ -184,21 +235,40 @@ export default {
         //   }))
 
           this.confirmLoading = true;
-          
-          httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",this.form, "post").then((res)=> {
-            if (res.success) {
-              this.$message.success(res.message);
-              this.visible = false;
-              this.form = [];
-              this.$emit('ok');
-              //打印水洗唛
-              this.createWashedMark(res.result);
-            } else {
-              this.$message.warning(res.message);
+          this.form[this.tabValue].factoryInImages = this.$refs.photograph.imgs
+          let data = this.form.map(async (item,idx) => {
+            let factoryInImages = await this.$refs.photograph.uploadImgs(item.factoryInImages)
+            return {
+              ...item,
+              factoryInImages
             }
-          }).finally(() => {
-            this.confirmLoading = false;
+              
+          });
+          Promise.all(data).then(res => {
+            this.form = res
+            let d = this.form.map(item => ({
+              ...item,
+              factoryInImages: item.factoryInImages.map(t => t.file)
+            }))
+            httpAction("/ShoeFactoryOrder/shoeFactoryOrder/batchManualInOfStorage",d, "post").then((ress)=> {
+              if (ress.success) {
+                this.$message.success(ress.message);
+                this.visible = false;
+                this.form = [];
+                this.$emit('ok');
+                //打印水洗唛
+                this.createWashedMark(ress.result);
+              } else {
+                this.$message.warning(ress.message);
+              }
+            }).finally(() => {
+              this.confirmLoading = false;
+            })
+          }).catch(err => {
+            this.confirmLoading = false
           })
+
+          
       }).catch(err => {
         console.log(555,err);
       })
@@ -241,6 +311,17 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+/deep/ .ant-spin-text{
+  font-size: 40px;
+}
+.tab {
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+  .tab /deep/ .ant-radio-group {
+    overflow-x: scroll;
+    display: flex;
+  }
 </style>

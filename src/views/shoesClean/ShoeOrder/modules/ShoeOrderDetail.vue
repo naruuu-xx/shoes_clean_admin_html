@@ -25,11 +25,12 @@
 
       <a-descriptions title="订单信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="订单编号"> {{ data.no }}</a-descriptions-item>
+        <a-descriptions-item label="支付交易号"> {{ data.outTradeNo }}</a-descriptions-item>
         <a-descriptions-item label="订单金额(元)">
           {{(data.goodsPrice + data.additionalPrice + data.originalCourierPrice).toFixed(2)}}
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
-        <a-descriptions-item :label="'上门取件' === data.type ? '配送费(元)' : '运费(元)'">
+        <a-descriptions-item :label="('机柜配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
           {{ data.originalCourierPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
@@ -45,7 +46,7 @@
         <a-descriptions-item label="机柜名称-格子数" v-if=" '快递上门' !== data.type && statusInt >= 9 && statusInt <= 13">
           {{ data.lockerName }}-{{ data.afterGridNo }}
         </a-descriptions-item>
-        <template v-if="'上门取件' === data.type">
+        <template v-if="'机柜配送' === data.type || '站点配送' === data.type">
           <a-descriptions-item label="配送员(取鞋)">
             <template v-if="courierNameByBefore !== '无'">
               {{ courierNameByBefore }}({{ courierPhoneByBefore }})
@@ -60,6 +61,12 @@
           </a-descriptions-item>
         </template>
         <a-descriptions-item label="袋子码"> {{ data.bagCode || "——" }} </a-descriptions-item>
+        <a-descriptions-item label="物流人员(工厂取鞋)">
+          <template v-if="logisticsNameByAfter !== '无' || logisticsNameByAfter !== ' ' ">
+            {{ logisticsNameByAfter }}({{ logisticsPhoneByAfter }})
+          </template>
+          <template v-else>——</template>
+        </a-descriptions-item>
       </a-descriptions>
 
       <a-descriptions v-if="orderRefund" title="退款信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
@@ -73,11 +80,11 @@
         <a-descriptions-item label="昵称"> {{ data.nickname }} </a-descriptions-item>
         <a-descriptions-item label="绑定手机"> {{ data.wxPhone }} </a-descriptions-item>
         <a-descriptions-item label="订单类型"> {{ data.type }} </a-descriptions-item>
-        <template v-if="'站点自寄' === data.type || '上门取件' === data.type">
+        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type">
           <a-descriptions-item label="用户姓名"> {{ data.name }} </a-descriptions-item>
           <a-descriptions-item label="手机号码"> {{ data.phone }} </a-descriptions-item>
         </template>
-        <template v-if="'上门取件' === data.type">
+        <template v-if="'机柜配送' === data.type">
           <a-descriptions-item label="预定时间"> {{ data.expect }} </a-descriptions-item>
           <a-descriptions-item label="用户地址"> {{ userAddress }} </a-descriptions-item>
           <a-descriptions-item label="门牌号"> {{ door }} </a-descriptions-item>
@@ -120,10 +127,9 @@
             <div class="table-main-cell-time">{{ item.time }}</div>
             <div class="table-main-cell-status">{{ item.title }}</div>
             <div class="table-main-cell-des">
-              {{ item.msg
-              }}<a v-if="item.status == 1" @click="showShoeImages" style="margin-left: 10px; text-decoration: underline"
-                >查看鞋子照片</a
-              >
+              {{ item.msg }}
+              <a v-if="item.status == 0" @click="showShoeImages(orderImagesList)" style="margin-left: 10px; text-decoration: underline">查看鞋子照片</a>
+              <a v-if="item.status == 6" @click="showShoeImages(factoryInImages)" style="margin-left: 10px; text-decoration: underline">查看入库照片</a>
             </div>
           </div>
         </div>
@@ -146,7 +152,7 @@
       <img
         alt="example"
         style="width: 20%; margin: 20px"
-        v-for="item in orderImagesList"
+        v-for="item in imagesList"
         :src="item"
         @click="showShoeImage(item)"
       />
@@ -217,7 +223,8 @@ export default {
       visible: false,
       title: '订单详情',
       data: {},
-      orderImagesList: '',
+      imagesList: [],
+      orderImagesList: [],
       previewVisible: false,
       previewImage: '',
       logisticsInfo: {},
@@ -238,6 +245,10 @@ export default {
       courierPhoneByBefore: '',
       courierNameByAfter: '',
       courierPhoneByAfter: '',
+      logisticsNameByBefore:'',
+      logisticsPhoneByBefore:'',
+      logisticsNameByAfter:'',
+      logisticsPhoneByAfter:'',
       recManName: '',
       recManMobile: '',
       recManPrintAddr: '',
@@ -246,7 +257,8 @@ export default {
       sendManPrintAddr: '',
       logisticsDetails: '',
       orderRefund: null,
-      OrderDetail:{}
+      OrderDetail:{},
+      factoryInImages: []
     }
   },
   created() {},
@@ -276,11 +288,32 @@ export default {
         orderInfo.timecardName = res.timecardName
         this.logisticsDetails = res.logisticsDetailList
         this.orderRefund = res.orderRefund
+        this.factoryInImages = res.factoryInImages;
+      })
+      getAction("/ShoeOrder/shoeOrder/getLogisticsInfo", requestData).then((res) => {
+        this.logisticsNameByBefore = res.result.logisticsNameByBefore
+        this.logisticsPhoneByBefore = res.result.logisticsPhoneByBefore
+        this.logisticsNameByAfter = res.result.logisticsNameByAfter
+        this.logisticsPhoneByAfter = res.result.logisticsPhoneByAfter
       })
       if (type === 'self') {
-        orderInfo.type = '站点自寄'
-      } else if (type === 'service' || type === 'site') {
-        orderInfo.type = '上门取件'
+        orderInfo.type = '机柜自提'
+      }else if (type === 'site_self'){
+        orderInfo.type = '站点自提'
+      } else if (type === 'service' ) {
+        orderInfo.type = '机柜配送'
+        //获取配送信息
+        getAction('/ShoeOrder/shoeOrder/getCourierInfo', requestData).then((res) => {
+          this.userAddress = res.result.address
+          this.door = res.result.door
+          this.courierNameByBefore = res.result.courierNameByBefore
+          this.courierPhoneByBefore = res.result.courierPhoneByBefore
+          this.courierNameByAfter = res.result.courierNameByAfter
+          this.courierPhoneByAfter = res.result.courierPhoneByAfter
+          this.logisticsNameByBefore = res.result.logisticsNameByBefore
+        })
+      }  else if (type === 'site') {
+        orderInfo.type = '站点配送'
         //获取配送信息
         getAction('/ShoeOrder/shoeOrder/getCourierInfo', requestData).then((res) => {
           this.userAddress = res.result.address
@@ -290,7 +323,7 @@ export default {
           this.courierNameByAfter = res.result.courierNameByAfter
           this.courierPhoneByAfter = res.result.courierPhoneByAfter
         })
-      } else if (type === 'expressage') {
+      }else if (type === 'expressage') {
         orderInfo.type = '快递上门'
         //获取配送信息
 
@@ -378,7 +411,7 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.orderImagesList = []
+      this.imagesList = []
       this.data = {}
       this.afterDeliveryInfo = {}
       this.logisticsInfo = {}
@@ -391,6 +424,10 @@ export default {
       this.courierPhoneByBefore = ''
       this.courierNameByAfter = ''
       this.courierPhoneByAfter = ''
+      this.logisticsNameByBefore = ''
+      this.logisticsPhoneByBefore = ''
+      this.logisticsNameByAfter = ''
+      this.logisticsPhoneByAfter = ''
       this.recManName = ''
       this.recManMobile = ''
       this.recManPrintAddr = ''
@@ -408,7 +445,8 @@ export default {
       this.previewVisible = false
       this.previewImage = ''
     },
-    showShoeImages() {
+    showShoeImages(imagesList) {
+      this.imagesList = imagesList;
       this.showShoeImagesModel = true
     },
     handleShowShoeImagesModelCancel() {

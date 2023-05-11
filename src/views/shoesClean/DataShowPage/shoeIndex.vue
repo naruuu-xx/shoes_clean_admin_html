@@ -108,49 +108,17 @@
           </a-col>
         </a-row>
         <a-row :gutter="24">
-          <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+          <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24" v-for="(ranking,idx) in rankingList" :key="idx">
             <div>
               <div class="rankings">
-                <div class="rankings-title">商品{{ barQuery.type.name }}排行</div>
+                <div class="rankings-title">{{ranking.name}}{{ barQuery.type.name }}排行</div>
                 <a-spin :spinning="spinning">
                   <div class="rankings-main">
-                    <div class="rankings-main-cell" v-for="(good, idx) in goodRankingList" :key="idx">
+                    <div class="rankings-main-cell" v-for="(good, idx) in ranking.list" :key="idx">
                       <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
                       <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
                     </div>
-                    <a-empty v-if="!goodRankingList.length"/>
-                  </div>
-                </a-spin>
-              </div>
-            </div>
-          </a-col>
-          <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-            <div>
-              <div class="rankings">
-                <div class="rankings-title">机柜{{ barQuery.type.name }}排行</div>
-                <a-spin :spinning="spinning">
-                  <div class="rankings-main">
-                    <div class="rankings-main-cell" v-for="(good, idx) in lockerRankingList" :key="idx">
-                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                      <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
-                    </div>
-                    <a-empty v-if="!lockerRankingList.length"/>
-                  </div>
-                </a-spin>
-              </div>
-            </div>
-          </a-col>
-          <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-            <div>
-              <div class="rankings">
-                <div class="rankings-title">站点{{ barQuery.type.name }}排行</div>
-                <a-spin :spinning="spinning">
-                  <div class="rankings-main">
-                    <div class="rankings-main-cell" v-for="(good, idx) in siteRankingList" :key="idx">
-                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
-                      <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
-                    </div>
-                    <a-empty v-if="!siteRankingList.length"/>
+                    <a-empty v-if="!ranking.list.length"/>
                   </div>
                 </a-spin>
               </div>
@@ -182,9 +150,7 @@ export default {
       visitFields: ['ip', 'visit'],
       visitInfo: [],
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
-      goodRankingList: [],
-      lockerRankingList:[],
-      siteRankingList:[],
+      rankingList:[], // 排行的列表
       barQuery: {
         type: {
           name: '订单数',
@@ -250,7 +216,7 @@ export default {
   methods: {
     // 点击订单状态
     onClickOrder(val) {
-      this.$router.push(`/order/list?status=${val.status}`)
+      this.$router.push({ name: 'order-list', params: { status: [val.status+'']}})
     },
     // 点击
     onClickw(status,val) {
@@ -304,15 +270,29 @@ export default {
       }
       this.spinning = true
       getAction('/indexDown',form).then((res) => {
-        console.log(777,res);
         if(res.success == false) return
         this.barData = res.barData
-        this.goodRankingList = res.goodRankingList
-        this.lockerRankingList = res.lockerRankingList
+        this.rankingList = [
+          {
+            name:'商品',
+            list:res.goodRankingList || []
+          },
+          {
+            name:'机柜',
+            list:res.lockerRankingList || []
+          },
+          {
+            name:'站点配送',
+            list:res.siteRankingList || []
+          },
+          {
+            name:'站点自提',
+            list:res.siteSelfRankingList || []
+          },
+        ]
         this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
           item,count: parseFloat(num)
         }))
-        // this.siteRankingList = res.siteRankingList
 
       }).finally(s => {
         this.spinning = false
@@ -419,7 +399,8 @@ main {
 }
 
 .rankings {
-  padding: 20px 32px 0 32px;
+  padding: 0 32px;
+  margin-top: 20px;
   background-color: #fff;
   min-height: 334px;
   color: #333;

@@ -15,6 +15,11 @@
               <a-input placeholder="请输入姓名" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="兑换码">
+              <a-input placeholder="请输入兑换码" v-model="queryParam.code"></a-input>
+            </a-form-item>
+          </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label=" 状态">
               <!--              <a-input placeholder="请输入 申请人" v-model="queryParam.name" autocomplete="off"></a-input>-->
@@ -141,6 +146,20 @@ export default {
               return text = '已同意'
             } else if (text == 2) {
               return text = '已拒绝'
+            }
+          }
+        },
+        {
+          title:'派发类型',
+          align:"center",
+          dataIndex:'type',
+          customRender:function (text) {
+            if(text === 1){
+              return text = '优惠券'
+            }else if(text === 2){
+              return text = '鞋蜂卡'
+            }else{
+              return text = ''
             }
           }
         },

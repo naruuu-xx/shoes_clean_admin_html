@@ -93,7 +93,15 @@
               <a-menu-item>
                 <a @click="getCouponDetail(record)" v-has="'user:couponList'">优惠券列表</a>
               </a-menu-item>
+                            <a-menu-item>
+                              <a @click="getTimecardDetail(record)" v-has="'user:timecardList'">鞋蜂卡列表</a>
+                            </a-menu-item>
             </a-menu>
+<!--            <a-menu slot="overlay">-->
+<!--              <a-menu-item>-->
+<!--                <a @click="getTimecardDetail(record)" v-has="'user:timecardList'">鞋蜂卡列表</a>-->
+<!--              </a-menu-item>-->
+<!--            </a-menu>-->
           </a-dropdown>
         </span>
 
@@ -107,6 +115,7 @@
     <manual-distribute-coupon-modal ref="manualDistributeCouponModal" @submit="manualSubmit"></manual-distribute-coupon-modal>
 
     <coupon-list ref="couponList" ></coupon-list>
+    <timecard-list ref="timecardList"></timecard-list>
   </a-card>
 </template>
 
@@ -119,6 +128,7 @@
   import DistributeCouponModal from "./modules/DistributeCouponModal";
   import ManualDistributeCouponModal from "./modules/ManualDistributeCouponModal";
   import couponList from "@views/shoesClean/ShoeUser/modules/couponList";
+  import timecardList from '@views/shoesClean/ShoeUser/modules/timecardList'
 
   export default {
     name: 'ShoeUserList',
@@ -126,6 +136,7 @@
     components: {
       ShoeUserModal,
       couponList,
+      timecardList,
       DistributeCouponModal,
       ManualDistributeCouponModal
     },
@@ -209,6 +220,9 @@
       },
       getCouponDetail(record){
         this.$refs.couponList.show(record);
+      },
+      getTimecardDetail(record){
+        this.$refs.timecardList.show(record);
       },
       getSuperFieldList(){
         let fieldList=[];

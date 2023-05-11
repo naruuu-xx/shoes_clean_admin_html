@@ -34,6 +34,16 @@
             </div>
           </a-col>
         </a-row>
+        <a-row>
+          <a-col :span="24">
+            <div class="content-font">派发类型
+              <a-radio-group v-model:value="typeOption">
+                <a-radio value="1">优惠券</a-radio>
+                <a-radio value="2">鞋蜂卡</a-radio>
+              </a-radio-group>
+            </div>
+          </a-col>
+        </a-row>
         <a-row v-if="'2' === auditOption">
           <a-col :span="24">
             <div class="content-font">
@@ -42,7 +52,7 @@
             </div>
           </a-col>
         </a-row>
-        <a-row v-if="'1' === auditOption">
+        <a-row v-if="'1' === auditOption && '1' === typeOption ">
           <a-col :span="24">
             <div class="content-font">
               选择优惠券：
@@ -51,7 +61,24 @@
                 @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="data.couponId"
-                :url='`/shoes/shoeUser/getCouponOrCardBag?type=0`'
+                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
+                style="width: 80%;"
+              >
+              </XfSelect>
+            </div>
+          </a-col>
+        </a-row>
+        <a-row v-if="'1' === auditOption && '2' === typeOption">
+          <a-col :span="24">
+            <div class="content-font">
+              选择鞋蜂卡：
+              <XfSelect
+                :list="weekList"
+                @change="checkedSelect"
+                @changeList="changeSelect"
+                v-model="data.timecardId"
+                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=2`'
+                style="width: 80%;"
               >
               </XfSelect>
             </div>
@@ -78,6 +105,7 @@ export default {
       weekList:[],
       data: {},
       auditOption: "1",
+      typeOption: "1",
       confirmLoading: false,
     }
   },
@@ -94,18 +122,19 @@ export default {
       this.visible = true;
       this.data = record;
       this.auditOption = "1";
+      this.typeOption = "1";
       this.data.note = "";
     },
     handleCancel2() {
       this.visible = false;
       this.data = {};
       this.auditOption = "1";
+      this.typeOption = "1";
       this.data.note = "";
     },
     handleSubmit2() {
       let that = this;
-
-      that.confirmLoading = true;
+       that.confirmLoading = true;
 
       if ("2" === this.auditOption && this.data.note.trim() === "") {
         that.$message.warning("请填写拒绝原因！");
@@ -113,6 +142,7 @@ export default {
         return false;
       } else {
         this.data.status = this.auditOption;
+        this.data.type = this.typeOption;
         this.data.note = this.data.note.trim();
         //发送请求
         let httpUrl = "/shoeCouponExchangeThird/update";
