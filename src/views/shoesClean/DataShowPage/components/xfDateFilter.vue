@@ -86,6 +86,10 @@ export default {
         },
       ])
     },
+    defaultDateType:{
+      type:String,
+      default:'today'
+    }
   },
   data() {
     return {
@@ -126,6 +130,14 @@ export default {
   computed: {
   },
   watch: {
+    defaultDateType: {
+        handler(val,oldValue) {
+          this.dateType = val
+        },
+        //立刻执行handler
+        immediate: true,
+        deep: true
+      },
     selectType(val) {
       this.selectTypeObj = this.dayOptions.find(item => item.value == val)
       this.startTime = ''

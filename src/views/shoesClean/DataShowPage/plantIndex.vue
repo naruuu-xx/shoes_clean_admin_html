@@ -97,7 +97,7 @@
         </a-row>
       </div>
     </a-card>
-    <BrandStatistics></BrandStatistics>
+    <BrandStatistics :pieData="pieData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics>
   </div>
 </template>
 
@@ -135,12 +135,7 @@ export default {
         },
       },
       spinning: false,
-      pieData:[
-        { item: '配送', count: 0 },
-        { item: '自提', count: 0 },
-        { item: '快递', count: 0 },
-        { item: '站点', count: 0 }
-      ],
+      pieData:[],
       factoryShoes:[
         {
           name:'总鞋数',
@@ -203,28 +198,25 @@ export default {
           num:0
         },
       ],
-      inOfStorageCount:[
-
-      ],
-      outOfStorageCount:[
-
-      ],
-    }
-  },
-  created() {
-    this.factoryIndexUp()
-    this.getIndexDown({
+      inOfStorageCount:[],
+      outOfStorageCount:[],
+      queryForm:{
         dateType: 'today',
         startTime: '',
         endTime: '',
         selectType: 'day'
-      })
+      }
+    }
+  },
+  created() {
+    this.factoryIndexUp()
+    this.getIndexDown()
   },
   methods: {
     
     changeFilterDate(val) {
-      console.log(4444,val);
-      this.getIndexDown(val)
+      this.queryForm = val
+      this.getIndexDown()
     },
     // 点击
     onClickw(status,val) {
@@ -261,14 +253,15 @@ export default {
         }
       })
     },
-    getIndexDown(form) {
+    getIndexDown() {
       this.spinning = true
-      getAction('/factoryIndexDown',form).then((res) => {
+      getAction('/factoryIndexDown',this.queryForm).then((res) => {
         if(res.success == false) return
         this.inOfStorageCount = res.result.inOfStorageCount
         this.outOfStorageCount = res.result.outOfStorageCount
         this.inHistogram = res.result.inHistogram || []
         this.outHistogram = res.result.outHistogram || []
+        this.pieData = res.result.brandPieChart || []
         // this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
         //   item,count: parseFloat(num)
         // }))

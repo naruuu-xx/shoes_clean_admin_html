@@ -3,36 +3,40 @@
         <div class="title">品牌统计</div>
         <a-row>
           <a-col :xl="18" :lg="24" :md="24" :sm="24" :xs="24" >
-            <div class="st">
-              <div class="statistics" style="display: flex;">
-                <a-row style="width: 100%;">
-                  <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24" v-for="(statistics,index) in chunkData" :key="index">
-              <div class="statistics-box" >
-                <div class="statistics-box-title">
-                  <div class="statistics-box-title-text w30">排名</div>
-                  <div class="statistics-box-title-text w40">鞋子品牌</div>
-                  <div class="statistics-box-title-text w30">鞋子数量</div>
+            <a-spin :spinning="spinning">
+              <div class="st">
+                <div class="statistics" style="display: flex;">
+                  <a-row style="width: 100%;">
+                    <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24" v-for="(statistics,index) in chunkData" :key="index">
+                <div class="statistics-box" >
+                  <div class="statistics-box-title">
+                    <div class="statistics-box-title-text w30">排名</div>
+                    <div class="statistics-box-title-text w40">鞋子品牌</div>
+                    <div class="statistics-box-title-text w30">鞋子数量</div>
+                  </div>
+                  <div class="statistics-box-tb" v-for="(tb,idx) in statistics" :key="idx">
+                    <div class="statistics-box-tb-item w30">{{ tb.ranking }}</div>
+                    <div class="statistics-box-tb-item w40">{{ tb.brand }}</div>
+                    <div class="statistics-box-tb-item w30">{{ tb.count }}</div>
+                  </div>
                 </div>
-                <div class="statistics-box-tb" v-for="(tb,idx) in statistics" :key="idx">
-                  <div class="statistics-box-tb-item w30">{{ idx+1 }}</div>
-                  <div class="statistics-box-tb-item w40">{{ tb.p }}</div>
-                  <div class="statistics-box-tb-item w30">{{ tb.num }}</div>
-                </div>
+              </a-col>
+              </a-row>
               </div>
-            </a-col>
-            </a-row>
-            </div>
-            <div class="pagination">
-              <a-pagination size="small" :total="150" :pageSize="18" v-model="current" @change="changePagination"/>
-            </div>
-            </div>
+              <div class="pagination">
+                <a-pagination size="small" :total="total" :pageSize="pageSize" v-model="pageNo" @change="changePagination"/>
+              </div>
+              </div>
+            </a-spin>
           </a-col>
           <a-col :xl="6" :lg="24" :md="24" :sm="24" :xs="24">
-            <div style="height: 400px;display: flex;align-items: center;border-left: #ddd solid 1px;">
-              <div style="flex:1">
-                <Pie :height="240" :dataSource="pieData"/>
+            <a-spin :spinning="spinningPie">
+              <div style="height: 400px;display: flex;align-items: center;border-left: #ddd solid 1px;">
+                <div style="flex:1">
+                  <Pie :height="300" :dataSource="pieData"/>
+                </div>
               </div>
-            </div>
+            </a-spin>
           </a-col>
         </a-row>
       </a-card>
@@ -40,36 +44,44 @@
 
 <script>
   import Pie from './Pie'
-
+  import { getAction } from '@/api/manage'
   export default {
     components: {
       Pie
     },
     name: 'BrandStatistics',
     props: {
-      dataList:{
-        type: Array,
-        default: () => ([
-            {
-              p:'1',
-              num: 12
-            },
-        ])
-      },
       pieData:{
         type: Array,
-        default: () => ([
-          { item: '配送', count: 0 },
-          { item: '自提', count: 0 },
-          { item: '快递', count: 0 },
-          { item: '站点', count: 0 }
-        ])
+        default: () => ([])
+      },
+      queryForm:{
+        type: Object,
+        default: () => ({})
+      },
+      spinningPie:{
+        type: Boolean,
+        default: false
       },
     },
     data() {
       return {
-        current:1
+        pageSize: 18,
+        pageNo: 1,
+        total:0,
+        dataList:[],
+        spinning:false
       }
+    },
+    watch:{
+      queryForm: {
+        handler(val,oldValue) {
+          this.brandRanking()
+        },
+        //立刻执行handler
+        immediate: true,
+        deep: true
+      },
     },
     computed: {
       chunkData() {
@@ -92,7 +104,24 @@
       },
       changePagination(page, pageSize) {
         console.log(page, pageSize);
+        this.brandRanking()
       },
+      brandRanking() {
+        let form = {
+          ...this.queryForm,
+          pageSize: this.pageSize,
+          pageNo: this.pageNo
+        }
+        this.spinning = true
+        getAction('/brandRanking',form).then(({success,result}) => {
+          if(success) {
+            this.total = result.total
+            this.dataList = result.records
+          }
+        }).finally(res => {
+          this.spinning = false
+        })
+      }
     },
   }
 </script>

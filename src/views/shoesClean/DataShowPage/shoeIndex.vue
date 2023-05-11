@@ -83,7 +83,7 @@
             平台新增用户
           </div>
           <div class="tab-right">
-            <xf-date-filter @change="changeFilterDate"></xf-date-filter>
+            <xf-date-filter @change="changeFilterDate" :timeList="timeList"  defaultDateType="day"></xf-date-filter>
           </div>
         </div>
         <a-row>
@@ -163,7 +163,7 @@
         </a-row>
       </div>
     </a-card>
-    <BrandStatistics></BrandStatistics>
+    <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics>
   </div>
 </template>
 
@@ -240,12 +240,8 @@ export default {
         withdrawToBeConfirmed: [], // 提现待确认
       },
       spinning: false,
-      pieData:[
-        { item: '配送', count: 0 },
-        { item: '自提', count: 0 },
-        { item: '快递', count: 0 },
-        { item: '站点', count: 0 }
-      ],
+      pieData:[],
+      pieBrandData:[],
       barUserData:[
         {
           x:'0点',
@@ -278,7 +274,13 @@ export default {
       ],
       startTime:'',
       endTime:'',
-      pickTime: null
+      pickTime: null,
+      queryForm:{
+        dateType: 'day',
+        startTime: '',
+        endTime: '',
+        selectType: 'day'
+      }
     }
   },
   created() {
@@ -289,7 +291,8 @@ export default {
   },
   methods: {
     changeFilterDate(val) {
-      console.log(4444,val);
+      this.queryForm = val
+      this.getIndexDown()
     },
     onChangeDate(date,dateString) {
       this.startTime = dateString[0]
@@ -319,9 +322,6 @@ export default {
     // 点击tab
     onTab(type, value) {
       this.barQuery[type] = value
-      if(type == 'time') {
-        this.pickTime = null
-      }
       this.getIndexDown()
     },
     initLogInfo() {
@@ -347,7 +347,7 @@ export default {
     },
     getIndexDown() {
       let type = this.barQuery.type.value
-      let time = this.barQuery.time.value
+      let time = this.queryForm.dateType
       let form = {
         type,
         time
@@ -527,7 +527,7 @@ main {
       flex: 1;
       text-align: center;
       border-right: solid 1px #d6d6d6;
-      // min-width: 150px;
+      min-width: 120px;
       &:last-child {
         border-right-color: transparent;
       }
