@@ -30,7 +30,7 @@
           {{(data.goodsPrice + data.additionalPrice + data.originalCourierPrice).toFixed(2)}}
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
-        <a-descriptions-item :label="('机柜配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
+        <a-descriptions-item :label="('配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
           {{ data.originalCourierPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
