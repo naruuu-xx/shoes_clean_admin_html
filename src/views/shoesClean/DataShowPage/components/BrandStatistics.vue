@@ -107,8 +107,15 @@
         this.brandRanking()
       },
       brandRanking() {
+        let menu = {
+          day:'today',
+          month:'thisMonth',
+          year:'thisYear'
+        }
+        let dateType = menu[this.queryForm.dateType] || this.queryForm.dateType
         let form = {
           ...this.queryForm,
+          dateType,
           pageSize: this.pageSize,
           pageNo: this.pageNo
         }

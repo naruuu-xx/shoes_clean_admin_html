@@ -42,38 +42,13 @@
     <div class="title">
       出库鞋数
     </div>
-    <a-row>
+    <a-row style="margin-bottom: 20px;">
       <div class="tabbar">
         <div class="tabbar-item" v-for="(item,idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(item)">
           <div class="tabbar-item-title">{{ item.name }}</div>
           <div class="tabbar-item-value">{{ item.num }}</div>
         </div>
       </div>
-    </a-row>
-
-    <a-row :gutter="24">
-      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="withdraw">
-          <div class="withdraw-title">提现待审核</div>
-          <div class="withdraw-main">
-            <div class="withdraw-main-item" @click="onClickw('0',item)" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
-              <div class="withdraw-main-item-name">{{ item.name }}</div>
-              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
-            </div>
-          </div>
-        </div>
-      </a-col>
-      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="withdraw">
-          <div class="withdraw-title">提现待确认</div>
-          <div class="withdraw-main">
-            <div class="withdraw-main-item" @click="onClickw('1',item)" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
-              <div class="withdraw-main-item-name">{{ item.name }}</div>
-              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
-            </div>
-          </div>
-        </div>
-      </a-col>
     </a-row>
 
     <a-card :loading="loading" :bordered="false" :body-style="{ padding: '0' }">
@@ -151,7 +126,9 @@
                 <a-spin :spinning="spinning">
                   <div class="rankings-main">
                     <div class="rankings-main-cell" v-for="(good, idx) in ranking.list" :key="idx">
-                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                      <a-tooltip :title="good.name">
+                        <div class="rankings-main-cell-name u-line-1">{{ idx + 1 }} {{ good.name }}</div>
+                      </a-tooltip>
                       <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
                     </div>
                     <a-empty v-if="!ranking.list.length"/>
@@ -164,6 +141,30 @@
       </div>
     </a-card>
     <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics>
+    <a-row :gutter="24">
+          <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+            <div class="withdraw">
+              <div class="withdraw-title">提现待审核</div>
+              <div class="withdraw-main">
+                <div class="withdraw-main-item" @click="onClickw('0',item)" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
+                  <div class="withdraw-main-item-name">{{ item.name }}</div>
+                  <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
+                </div>
+              </div>
+            </div>
+          </a-col>
+          <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+            <div class="withdraw">
+              <div class="withdraw-title">提现待确认</div>
+              <div class="withdraw-main">
+                <div class="withdraw-main-item" @click="onClickw('1',item)" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
+                  <div class="withdraw-main-item-name">{{ item.name }}</div>
+                  <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
+                </div>
+              </div>
+            </div>
+          </a-col>
+        </a-row>
   </div>
 </template>
 
@@ -242,36 +243,8 @@ export default {
       spinning: false,
       pieData:[],
       pieBrandData:[],
-      barUserData:[
-        {
-          x:'0点',
-          y:0
-        },
-        {
-          x:'1点',
-          y:1
-        },
-        {
-          x:'2点',
-          y:2
-        },
-        {
-          x:'3点',
-          y:3
-        },
-        {
-          x:'4点',
-          y:4
-        },
-      ],
-      pieUserData:[
-        { item: '自主访问', count: 1 },
-        { item: '公众号', count: 1 },
-        { item: '洁小兔', count: 1 },
-        { item: '帮邦行', count: 1 },
-        { item: '邀请进入', count: 1 },
-        { item: '分销', count: 1 },
-      ],
+      barUserData:[],
+      pieUserData:[],
       startTime:'',
       endTime:'',
       pickTime: null,
@@ -349,6 +322,7 @@ export default {
       let type = this.barQuery.type.value
       let time = this.queryForm.dateType
       let form = {
+        ...this.queryForm,
         type,
         time
       }
@@ -356,6 +330,7 @@ export default {
       getAction('/indexDown',form).then((res) => {
         if(res.success == false) return
         this.barData = res.barData
+        this.barUserData = res.userList
         this.rankingList = [
           {
             name:'商品',
@@ -375,6 +350,9 @@ export default {
           },
         ]
         this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
+          item,count: parseFloat(num)
+        }))
+        this.pieUserData = res.imgDtoUserList.map(({type:item,num}) => ({
           item,count: parseFloat(num)
         }))
 
@@ -436,6 +414,8 @@ export default {
     }
     &-value {
       padding: 12px 0;
+        cursor: pointer;
+        color: #3b98ff;
     }
   }
 }
