@@ -11,8 +11,8 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="姓名">
-              <a-input placeholder="请输入姓名" v-model="queryParam.name"></a-input>
+            <a-form-item label="申请人">
+              <a-input placeholder="请输入申请人名称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
