@@ -1,5 +1,20 @@
 <template>
+
   <a-card :bordered="false">
+    <a-layout-header class="header">
+      <a-menu mode="horizontal" :selected-keys="selectedKeys"
+              @click="handleMenuClick"
+              @keyup.enter.native="searchQuery"
+              @change="handleTableChange"
+              >
+        <a-menu-item key="all">全部</a-menu-item>
+        <a-menu-item key="processing">洗护中</a-menu-item>
+        <a-menu-item key="pending">待取件</a-menu-item>
+        <a-menu-item key="completed">已完成</a-menu-item>
+        <a-menu-item key="refunded">已退款</a-menu-item>
+        <a-menu-item key="canceled">已取消</a-menu-item>
+      </a-menu>
+    </a-layout-header>
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
@@ -16,7 +31,7 @@
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单状态">
-              <a-select mode="multiple" v-model="queryParam.status" >
+              <a-select mode="multiple" v-model="queryParam.status"  :disabled="statusDisable" >
                 <a-select-option v-for="item in statusOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
                 </a-select-option>
@@ -36,7 +51,13 @@
           </a-col>
 
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="订单时间">
+            <a-form-item label="下单时间">
+              <a-range-picker v-model="queryParam.createTime" />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="完成时间">
               <a-range-picker v-model="queryParam.finishTime" />
             </a-form-item>
           </a-col>
@@ -49,7 +70,6 @@
         </a-row>
       </a-form>
     </div>
-    <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
@@ -59,8 +79,6 @@
       <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length === 0">
         导出所有订单
       </a-button>
-
-
     </div>
 
     <!-- table区域-begin -->
@@ -95,15 +113,7 @@
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
-          <a-button
-            v-else
-            :ghost="true"
-            type="primary"
-            icon="download"
-            size="small"
-            @click="downloadFile(text)">
-            下载
-          </a-button>
+
         </template>
 
         <span slot="action" slot-scope="text, record">
@@ -149,6 +159,7 @@ import {httpAction} from "@api/manage";
 import HandleOrderFinishModal from "./modules/HandleOrderFinishModal";
 import moment from 'moment/moment'
 import XfSelect from '@/components/Xf/XfSelect'
+import axios from 'axios'
 
 export default {
   name: 'XitOrderList',
@@ -162,14 +173,20 @@ export default {
   },
   data() {
     return {
+      selectedKeys: ['all'], // 默认选中全部，使用数组类型
+      orderList: [], // 订单列表
       weekList:[],
       description: '工学院订单列表',
       serviceCode: '',
       selfCode: '',
+      statusDisable:false,
       queryParam: {
         finishTimeLeft: '',
         finishTimeRight: '',
         finishTime: [],
+        createTimeLeft: '',
+        createTimeRight: '',
+        createTime: [],
         status:[]
       },
       // 表头
@@ -304,6 +321,9 @@ export default {
       lockerList: [],
     }
   },
+  mounted() {
+    this.fetchOrderList(); // 页面加载时获取订单列表
+  },
   created() {
     this.getSuperFieldList();
     //获取机柜列表，放入下拉框
@@ -323,6 +343,19 @@ export default {
       },
       // immediate: true
     },
+    'queryParam.createTime': {
+      handler(newV) {
+        if (newV.length) {
+          let [createTimeLeft, createTimeRight] = newV.map(item => moment(item).format('YYYY-MM-DD'))
+          this.queryParam.createTimeLeft = createTimeLeft
+          this.queryParam.createTimeRight = createTimeRight
+        } else {
+          this.queryParam.createTimeLeft = ""
+          this.queryParam.createTimeRight = ""
+        }
+      },
+      // immediate: true
+    },
   },
   computed: {
     importExcelUrl: function () {
@@ -330,7 +363,54 @@ export default {
     },
   },
   methods: {
-    setQueryParams() {
+    handleMenuClick({ key }) {
+
+      // 处理导航栏菜单点击事件
+      this.selectedKeys = [key]; // 将选中的菜单项作为数组赋值给selectedKeys
+      this.fetchOrderList(); // 根据菜单点击重新获取相应订单列表
+    },
+    fetchOrderList() {
+      // 根据选中的菜单项获取相应的订单列表
+      let status = []; // 订单状态码
+      switch (this.selectedKeys[0]) { // 选中的菜单项是数组的第一个元素
+        case 'all':
+          // 全部订单，不传递status
+          break;
+        case 'processing':
+          status = '6'; // 洗护中订单
+          break;
+        case 'pending':
+          status = '10'; // 待取件订单
+          break;
+        case 'completed':
+          status = '13'; // 已完成订单
+          break;
+        case 'refunded':
+          status = '15'; // 已退款订单
+          break;
+        case 'canceled':
+          status = '16'; // 已取消订单
+          break;
+      }
+      this.queryParam.status = status;
+      this.statusDisable = ['6', '10','13','15','16'].includes(status);
+      //this.queryParam.statusList = status;
+      this.loadData(1);
+
+      // // 发起请求获取订单列表
+      // const apiUrl = this.url.list + "?statusList=" + status;
+      // // 使用 httpAction 方法发送请求
+      // httpAction(apiUrl, null, "get")
+      //   .then(response => {
+      //     this.dataSource = response.data; // 将获取到的订单列表数据赋值给dataSource
+      //     // this.orderList = response.data; // 将获取到的订单列表数据赋值给orderList
+      //     // console.log(this.orderList)
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   });
+    },
+      setQueryParams() {
       return {
         statusList: this.queryParam.status.toString()
       }
