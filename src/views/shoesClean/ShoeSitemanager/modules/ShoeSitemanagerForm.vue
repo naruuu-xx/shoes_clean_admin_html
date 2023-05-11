@@ -249,6 +249,9 @@ export default {
         usersId:[],
         name:"",
         phone:"",
+        percentage:"",
+        freight:"",
+        freightIncrease:"",
         orderStatusRadio:"",
         paths:'',
         selectedOrderType:[],
@@ -441,10 +444,9 @@ export default {
       this.disabledStatus = true;
       let usersId = record.usersId.map(item => +item.userId)
       Object.assign(this.model, record, {orderStatusRadio: record.orderStatus + "", usersId});
-      console.log(this.model.orderStatusRadio)
-      console.log(this.model)
       this.model.orgCode = record.orgCode + "";
       this.model.sitemanagerId = record.sitemanagerId;
+      this.model.percentage=record.percentage*100;
 
       record.usersId.forEach(item => {
 
