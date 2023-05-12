@@ -31,7 +31,7 @@
           <div class="box-title">工厂鞋数</div>
           <div class="box-main">
             <div class="box-item-i" v-for="(item,idx) in factoryShoes" :key="idx">
-              <img class="box-item-i-img" :src="item.icon"></img>
+              <img class="box-item-i-img" :src="item.icon" />
               <div class="box-item-i-main">
                 <div class="box-item-i-main-title">{{ item.name }}</div>
                 <div class="box-item-i-main-value" :style="{color:item.color}">{{ item.num }}</div>
@@ -75,23 +75,31 @@
         <a-row>
           <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
-              <bar
+              <!-- <bar
+                v-if="inHistogram.length"
                 title="`入库数柱状图"
                 :dataSource="inHistogram"
                 yaxisText="入库数"
                 color="#48CAF0"
-              />
+              /> -->
+              <xfLine title="入库数折线图" v-if="inHistogram.length" :dataSource="inHistogram" alias="入库数" color="#48CAF0"></xfLine>
+              <a-empty v-if="!inHistogram.length"/>
             </a-spin>
 
           </a-col>
           <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
-              <bar
+              <!-- <bar
+                v-if="outHistogram.length"
                 title="出库数柱状图"
                 :dataSource="outHistogram"
                 yaxisText="出库数"
                 color="#FFBB00"
-              />
+              /> -->
+              <xfLine title="出库数折线图" v-if="outHistogram.length" :dataSource="outHistogram" alias="出库数" color="#FFBB00"></xfLine>
+              <div>
+                <a-empty v-if="!outHistogram.length"/>
+              </div>
             </a-spin>
           </a-col>
         </a-row>
@@ -104,6 +112,7 @@
 <script>
 import Bar from './components/Bar'
 import Pie from './components/Pie'
+import xfLine from './components/Line'
 import BrandStatistics from './components/BrandStatistics'
 import xfDateFilter from './components/xfDateFilter'
 import { getAction } from '@/api/manage'
@@ -113,10 +122,14 @@ export default {
     Bar,
     Pie,
     BrandStatistics,
-    xfDateFilter
+    xfDateFilter,
+    xfLine
   },
   data() {
     return {
+     xljgData: [],
+      xljgFields:['y'],
+      aliases:[{field:'y',alias:'入库数'}],
       loading: false,
       center: null,
       inHistogram:[],
@@ -262,9 +275,9 @@ export default {
         this.inHistogram = res.result.inHistogram || []
         this.outHistogram = res.result.outHistogram || []
         this.pieData = res.result.brandPieChart || []
-        // this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
-        //   item,count: parseFloat(num)
-        // }))
+        this.xljgData = res.result.inHistogram.map(({x:type,y}) => ({
+          type,y
+        }))
 
       }).finally(s => {
         this.spinning = false

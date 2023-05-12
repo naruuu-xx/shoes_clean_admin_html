@@ -1,9 +1,9 @@
 <template>
-  <v-chart :forceFit="true" :height="height" :data="data" :scale="scale" :onClick="handleClick">
+  <v-chart :forceFit="true" :height="height" :data="data" :scale="scale" :onClick="handleClick" :padding="padding">
     <v-tooltip :showTitle="false" dataKey="item*percent"/>
     <v-axis/>
-    <v-legend dataKey="item"/>
-    <v-pie position="percent" color="item" :v-style="pieStyle" :label="labelConfig"/>
+    <v-legend dataKey="item" :offsetY="offsetY" v-if="isShowLegend"/>
+    <v-pie position="percent" color="item" :v-style="pieStyle" :label="labelConfig" />
     <v-coord type="theta"/>
   </v-chart>
 </template>
@@ -33,6 +33,18 @@
           { item: '示例四', count: 13 },
           { item: '示例五', count: 9 }
         ]
+      },
+      padding:{
+        type: Array,
+        default: () => (['40', '60', '100', '80'])
+      },
+      isShowLegend: {
+        type: Boolean,
+        default: true
+      },
+      offsetY:{
+        type: Number,
+        default: 40
       }
     },
     data() {
@@ -40,7 +52,7 @@
         scale: [{
           dataKey: 'percent',
           min: 0,
-          formatter: '.0%'
+          formatter: '.2%'
         }],
         pieStyle: {
           stroke: '#fff',
@@ -50,7 +62,7 @@
           formatter: (val, item) => {
             return item.point.item + ': ' + item.point.count
           }
-        }]
+        }],
       }
     },
     computed: {
