@@ -1,13 +1,14 @@
 <template>
   <div>
     <h4 class="title" v-if="title">{{ title }}</h4>
-    <v-chart :force-fit="true" :height="height" :data="dataSource" :scale="scale" :onClick="handleClick">
+    <v-chart v-if="dataSource.length" :force-fit="true" :height="height" :data="dataSource" :scale="scale" :onClick="handleClick">
       <v-tooltip/>
       <v-axis dataKey="y" :label="label"/>
       <!-- <v-legend/> -->
       <v-line position="x*y" :color="color"/>
       <v-point position="x*y" :color="color" :size="4" :v-style="style" :shape="'circle'"/>
     </v-chart>
+    <a-empty v-if="!dataSource.length" style="padding: 20px 0;"/>
   </div>
 </template>
 

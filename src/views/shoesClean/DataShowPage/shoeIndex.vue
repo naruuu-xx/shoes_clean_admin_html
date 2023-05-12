@@ -55,26 +55,17 @@
       <div class="salesCard">
         <div class="tab">
           <div class="title" style="border-bottom-color: transparent;padding: 0;line-height: 32px">
-            平台新增用户
+            <!-- 平台新增用户 -->
           </div>
           <div class="tab-right">
             <xf-date-filter @change="changeFilterDate" :timeList="timeList"  defaultDateType="day"></xf-date-filter>
           </div>
         </div>
-        <a-row>
+        <!-- <a-row>
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div class="bar">
-                <!-- <bar
-                  v-if="barUserData.length"
-                  title=""
-                  :dataSource="barUserData"
-                  yaxisText="用户数"
-                  color="#fcdc5b"
-                  paddingBottom="0"
-                /> -->
-                <xfLine v-if="barUserData.length" :dataSource="barUserData" alias="用户数" color="#fcdc5b"></xfLine>
-                <a-empty v-if="!barUserData.length"/>
+                <xfLine :dataSource="barUserData" alias="用户数" color="#fcdc5b"></xfLine>
               </div>
             </a-spin>
           </a-col>
@@ -86,7 +77,7 @@
               </div>
             </a-spin>
           </a-col>
-        </a-row>
+        </a-row> -->
         <div class="tab" style="border-top: 1px solid #DDDDDD;border-bottom: 1px solid #DDDDDD;">
           <div class="tab-left">
             <div
@@ -104,14 +95,7 @@
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div class="bar">
-                <!-- <bar
-                  :dataSource="barData"
-                  :yaxisText="barQuery.type.name"
-                  paddingBottom="0"
-                  v-if="barData.length"
-                /> -->
-                <xfLine v-if="barData.length" :dataSource="barData" :alias="barQuery.type.name"></xfLine>
-                <a-empty v-if="!barData.length"/>
+                <xfLine :dataSource="barData" :alias="barQuery.type.name"></xfLine>
               </div>
             </a-spin>
 
@@ -148,7 +132,7 @@
         </a-row>
       </div>
     </a-card>
-    <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics>
+    <!-- <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics> -->
     <a-row :gutter="24">
           <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
             <div class="withdraw">
