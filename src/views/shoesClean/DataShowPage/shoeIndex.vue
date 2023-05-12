@@ -30,43 +30,60 @@
       </a-col>
     </a-row>
 
-    <a-row>
+    <!-- <a-row>
       <div class="status">
         <div class="status-box" v-for="(status, idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(status)">
           <div class="status-box-name">{{ status.name }}</div>
           <div class="status-box-value">{{ status.num }}</div>
         </div>
       </div>
-    </a-row>
+    </a-row> -->
 
-    <a-row>
-      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="withdraw">
-          <div class="withdraw-title">提现待审核</div>
-          <div class="withdraw-main">
-            <div class="withdraw-main-item" @click="onClickw('0',item)" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
-              <div class="withdraw-main-item-name">{{ item.name }}</div>
-              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
-            </div>
-          </div>
+    <div class="title">
+      出库鞋数
+    </div>
+    <a-row style="margin-bottom: 20px;">
+      <div class="tabbar">
+        <div class="tabbar-item" v-for="(item,idx) in dataObj.statuslist" :key="idx" @click="onClickOrder(item)">
+          <div class="tabbar-item-title">{{ item.name }}</div>
+          <div class="tabbar-item-value">{{ item.num }}</div>
         </div>
-      </a-col>
-      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="withdraw">
-          <div class="withdraw-title">提现待确认</div>
-          <div class="withdraw-main">
-            <div class="withdraw-main-item" @click="onClickw('1',item)" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
-              <div class="withdraw-main-item-name">{{ item.name }}</div>
-              <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
-            </div>
-          </div>
-        </div>
-      </a-col>
+      </div>
     </a-row>
 
     <a-card :loading="loading" :bordered="false" :body-style="{ padding: '0' }">
       <div class="salesCard">
         <div class="tab">
+          <div class="title" style="border-bottom-color: transparent;padding: 0;line-height: 32px">
+            平台新增用户
+          </div>
+          <div class="tab-right">
+            <xf-date-filter @change="changeFilterDate" :timeList="timeList"  defaultDateType="day"></xf-date-filter>
+          </div>
+        </div>
+        <a-row>
+          <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
+            <a-spin :spinning="spinning">
+              <div class="bar">
+                <bar
+                  title=""
+                  :dataSource="barUserData"
+                  yaxisText="用户数"
+                  color="#fcdc5b"
+                  paddingBottom="0"
+                />
+              </div>
+            </a-spin>
+          </a-col>
+          <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
+            <a-spin :spinning="spinning">
+              <div style="padding-top: 20px;">
+                <Pie :height="268" :dataSource="pieUserData"/>
+              </div>
+            </a-spin>
+          </a-col>
+        </a-row>
+        <div class="tab" style="border-top: 1px solid #DDDDDD;border-bottom: 1px solid #DDDDDD;">
           <div class="tab-left">
             <div
               class="tab-left-item"
@@ -78,35 +95,29 @@
               {{ type.name }}
             </div>
           </div>
-          <div class="tab-right">
-            <div
-              class="tab-right-item"
-              :class="{ active: type.value == barQuery.time.value }"
-              v-for="(type, idx) in timeList"
-              :key="idx"
-              @click="onTab('time', type)"
-            >
-              {{ type.name }}
-            </div>
-          </div>
         </div>
         <a-row>
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
-              <bar
-                :title="`${barQuery.time.name}${barQuery.type.name}排行`"
-                :dataSource="barData"
-                :yaxisText="barQuery.type.name"
-              />
+              <div class="bar">
+                <bar
+                  :dataSource="barData"
+                  :yaxisText="barQuery.type.name"
+                  paddingBottom="0"
+                />
+              </div>
             </a-spin>
 
           </a-col>
           <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
-            <div style="padding-top: 20px;">
-              <Pie :height="300" :dataSource="pieData"/>
-            </div>
+            <a-spin :spinning="spinning">
+              <div style="padding-top: 20px;">
+                <Pie :height="268" :dataSource="pieData"/>
+              </div>
+            </a-spin>
           </a-col>
         </a-row>
+        <a-divider />
         <a-row :gutter="24">
           <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24" v-for="(ranking,idx) in rankingList" :key="idx">
             <div>
@@ -115,7 +126,9 @@
                 <a-spin :spinning="spinning">
                   <div class="rankings-main">
                     <div class="rankings-main-cell" v-for="(good, idx) in ranking.list" :key="idx">
-                      <div class="rankings-main-cell-name">{{ idx + 1 }} {{ good.name }}</div>
+                      <a-tooltip :title="good.name">
+                        <div class="rankings-main-cell-name u-line-1">{{ idx + 1 }} {{ good.name }}</div>
+                      </a-tooltip>
                       <div class="rankings-main-cell-value"> {{barQuery.type.name == '销售额' ? '¥' : ''}}{{ good.num }}</div>
                     </div>
                     <a-empty v-if="!ranking.list.length"/>
@@ -127,19 +140,48 @@
         </a-row>
       </div>
     </a-card>
+    <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics>
+    <a-row :gutter="24">
+          <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+            <div class="withdraw">
+              <div class="withdraw-title">提现待审核</div>
+              <div class="withdraw-main">
+                <div class="withdraw-main-item" @click="onClickw('0',item)" v-for="(item, idx) in dataObj.withdrawCheckPending" :key="idx">
+                  <div class="withdraw-main-item-name">{{ item.name }}</div>
+                  <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
+                </div>
+              </div>
+            </div>
+          </a-col>
+          <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+            <div class="withdraw">
+              <div class="withdraw-title">提现待确认</div>
+              <div class="withdraw-main">
+                <div class="withdraw-main-item" @click="onClickw('1',item)" v-for="(item, idx) in dataObj.withdrawToBeConfirmed" :key="idx">
+                  <div class="withdraw-main-item-name">{{ item.name }}</div>
+                  <div class="withdraw-main-item-value" :style="{color: +item.num > 0 ? '#3b98ff' : '#333'}">{{ item.num }}</div>
+                </div>
+              </div>
+            </div>
+          </a-col>
+        </a-row>
   </div>
 </template>
 
 <script>
-import Bar from '@/components/chart/Bar'
+import Bar from './components/Bar'
 import Pie from './components/Pie'
+import BrandStatistics from './components/BrandStatistics'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
+import xfDateFilter from './components/xfDateFilter'
 export default {
   name: 'ShoeAnalysis',
   components: {
     Bar,
-    Pie
+    Pie,
+    BrandStatistics,
+    xfDateFilter
   },
   data() {
     return {
@@ -199,12 +241,19 @@ export default {
         withdrawToBeConfirmed: [], // 提现待确认
       },
       spinning: false,
-      pieData:[
-        { item: '配送', count: 0 },
-        { item: '自提', count: 0 },
-        { item: '快递', count: 0 },
-        { item: '站点', count: 0 }
-      ]
+      pieData:[],
+      pieBrandData:[],
+      barUserData:[],
+      pieUserData:[],
+      startTime:'',
+      endTime:'',
+      pickTime: null,
+      queryForm:{
+        dateType: 'day',
+        startTime: '',
+        endTime: '',
+        selectType: 'day'
+      }
     }
   },
   created() {
@@ -214,6 +263,14 @@ export default {
     this.getIndexDown()
   },
   methods: {
+    changeFilterDate(val) {
+      this.queryForm = val
+      this.getIndexDown()
+    },
+    onChangeDate(date,dateString) {
+      this.startTime = dateString[0]
+      this.endTime = dateString[1]
+    },
     // 点击订单状态
     onClickOrder(val) {
       this.$router.push({ name: 'order-list', params: { status: [val.status+'']}})
@@ -263,8 +320,9 @@ export default {
     },
     getIndexDown() {
       let type = this.barQuery.type.value
-      let time = this.barQuery.time.value
+      let time = this.queryForm.dateType
       let form = {
+        ...this.queryForm,
         type,
         time
       }
@@ -272,6 +330,7 @@ export default {
       getAction('/indexDown',form).then((res) => {
         if(res.success == false) return
         this.barData = res.barData
+        this.barUserData = res.userList
         this.rankingList = [
           {
             name:'商品',
@@ -293,6 +352,9 @@ export default {
         this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
           item,count: parseFloat(num)
         }))
+        this.pieUserData = res.imgDtoUserList.map(({type:item,num}) => ({
+          item,count: parseFloat(num)
+        }))
 
       }).finally(s => {
         this.spinning = false
@@ -305,36 +367,97 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.bar {
+  padding-top: 40px;
+}
+.title {
+  padding:18px 0 18px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  line-height: 16px;
+  background: #fff;
+  border-bottom: 1px solid #DDDDDD;
+}
+
+.tabbar {
+  // min-width: 500px;
+  overflow-x: scroll;
+  display: flex;
+  background: #fff;
+  &::after {
+    content: '';
+    height: 54px;
+    display: block;
+    background-color: #F5F5F5;
+    flex: 1;
+  }
+  &-item {
+    flex-shrink: 0;
+    border-bottom: 1px solid #e3e3e3;
+    &:first-child{
+      .tabbar-item-title {
+        padding-left: 20px;
+      }
+      .tabbar-item-value {
+        padding-left: 20px;
+      }
+      
+    }
+    &-title {
+      background: #F5F5F5;
+      padding: 16px 0;
+      padding-right: 90px;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 22px;
+    }
+    &-value {
+      padding: 12px 0;
+        cursor: pointer;
+        color: #3b98ff;
+    }
+  }
+}
+
 main {
   color: #333;
 }
 .box {
   display: flex;
-  justify-content: space-around;
   background-color: #fff;
   padding: 20px 0;
   position: relative;
-  &::before,
-  &::after {
-    position: absolute;
-    display: block;
-    content: '';
-    height: calc(100% - 40px);
-    background-color: #d6d6d6;
-    width: 1px;
-  }
-  &::before {
-    left: 33.33%;
-  }
-  &::after {
-    left: 66.66%;
-  }
+  overflow-x: scroll;
+  // &::before,
+  // &::after {
+  //   position: absolute;
+  //   display: block;
+  //   content: '';
+  //   height: calc(100% - 40px);
+  //   background-color: #d6d6d6;
+  //   width: 1px;
+  // }
+  // &::before {
+  //   left: 33.33%;
+  // }
+  // &::after {
+  //   left: 66.66%;
+  // }
   &-item {
+    flex: 1;
+    text-align: center;
+    border-right: solid 1px #d6d6d6;
+    min-width: 150px;
+    &:last-child {
+      border-right-color: transparent;
+    }
     &-title {
       font-size: 12px;
       color: #a0a0a0;
     }
     &-value {
+      
       font-weight: 500;
       font-size: 26px;
     }
@@ -369,26 +492,40 @@ main {
 .withdraw {
   background-color: #fff;
   &-title {
-    padding-top: 8px;
+    padding: 16px 20px;
     font-weight: 600;
     font-size: 14px;
-    margin-top: 8px;
+    margin-top: 20px;
+    border-bottom: 1px solid #DDDDDD;
   }
   &-main {
     display: flex;
     justify-content: center;
     min-width: 300px;
     &-item {
-      padding: 0 24px;
+      margin: 16px 0;
+      flex: 1;
       text-align: center;
+      border-right: solid 1px #d6d6d6;
+      min-width: 120px;
+      &:last-child {
+        border-right-color: transparent;
+      }
       &-name {
-        font-size: 16px;
-        color: #a0a0a0;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(0,0,0,0.65);
+        line-height: 22px;
       }
       &-value {
-        padding: 8px 0;
-        font-weight: 500;
+        padding-top: 4px;
         font-size: 26px;
+        font-size: 30px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(0,0,0,0.85);
+        line-height: 38px;
       }
     }
   }
@@ -396,6 +533,12 @@ main {
 
 .active {
   color: #3b98ff;
+  &::before {
+    width: 100% !important;
+    height: 2px;
+    background-color: #3b98ff !important;
+    bottom: -11px;
+  }
 }
 
 .rankings {
@@ -434,13 +577,24 @@ main {
   &-left {
     display: flex;
     &-item {
-      padding: 0 24px;
+      margin: 0 24px;
       cursor: pointer;
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 0;
+        background-color: transparent;
+        bottom: -11px;
+        transition: width 0.3s;
+      }
     }
   }
   &-right {
     display: flex;
     &-item {
+      line-height: 28px;
       padding: 0 24px;
       cursor: pointer;
     }

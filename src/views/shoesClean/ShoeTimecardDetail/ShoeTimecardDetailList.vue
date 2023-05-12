@@ -20,8 +20,12 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="来源">
-              <a-input placeholder="请输入来源" v-model="queryParam.source"></a-input>
+            <a-form-item label="状态">
+              <a-select v-model="queryParam.source">
+                <a-select-option v-for="item in sourceOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
@@ -158,6 +162,10 @@ export default {
       statusOptionList: [
         {"value": "", "name": "全部"}, {"value": "0", "name": "未使用"}, {"value": "1", "name": "使用中"},
         {"value": "2", "name": "已使用"}
+      ],
+      sourceOptionList: [
+        {"value": "", "name": "全部"}, {"value": "1", "name": "小程序购买"}, {"value": "2", "name": "兑换码兑换"},
+        {"value": "3", "name": "三方平台"},{"value": "4", "name": "他人赠送"},{"value": "5", "name": "团购兑换"}
       ],
     }
   },

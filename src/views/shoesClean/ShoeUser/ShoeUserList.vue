@@ -15,6 +15,19 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-model-item label="渠道来源" >
+              <xf-select
+                style="width: 100%"
+                :list="weekList"
+                @changeList="changeSelect"
+                @change="checkedSelect"
+                v-model="queryParam.promotionId"
+                :url='`/shoes/shoePromotion/list`'
+              >
+              </xf-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -129,6 +142,9 @@
   import ManualDistributeCouponModal from "./modules/ManualDistributeCouponModal";
   import couponList from "@views/shoesClean/ShoeUser/modules/couponList";
   import timecardList from '@views/shoesClean/ShoeUser/modules/timecardList'
+  import {httpAction} from "@api/manage";
+  import XfSelect from "@comp/Xf/XfSelect";
+  import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
 
   export default {
     name: 'ShoeUserList',
@@ -138,10 +154,12 @@
       couponList,
       timecardList,
       DistributeCouponModal,
-      ManualDistributeCouponModal
+      ManualDistributeCouponModal,
+      XfSelect
     },
     data () {
       return {
+        queryParam:{promotionId:""},
         description: 'shoe_user管理页面',
         // 表头
         columns: [
@@ -166,10 +184,67 @@
             align:"center",
             dataIndex: 'phone'
           },
+
           {
-            title:'推荐人昵称',
+            title:'用户来源',
+            align:"center",
+            dataIndex: 'source'
+          },
+          {
+            title:'渠道',
+            align:"center",
+            dataIndex: 'channel'
+          },
+          {
+            title:'推荐人',
             align:"center",
             dataIndex: 'referrer'
+          },
+          {
+            title:'推广人',
+            align:"center",
+            dataIndex: 'distributorName'
+          },
+          {
+            title:'注册时间',
+            align:"center",
+            dataIndex: 'createTime'
+          },
+          {
+            title:'性别',
+            align:"center",
+            dataIndex: 'sex',
+            customRender: (text) => {
+              if (text==1){
+                text='男'
+              }else if (text=2){
+                text = '女'
+              }
+              return text;
+            },
+          },
+          {
+            title:'生日',
+            align:"center",
+            dataIndex: 'birthday'
+          },
+          {
+            title:'所在地区',
+            align:"center",
+            dataIndex: 'location'
+          },
+          {
+            title:'是否关注公众号',
+            align:"center",
+            dataIndex: 'isSubscribe',
+            customRender: (text) => {
+              if (text==1){
+                text='已关注'
+              }else if (text==0){
+                text = '未关注'
+              }
+                return text;
+            },
           },
           {
             title:'总消费金额',
@@ -201,6 +276,7 @@
         },
         dictOptions:{},
         superFieldList:[],
+        weekList: [],
       }
     },
     created() {
@@ -212,6 +288,14 @@
       },
     },
     methods: {
+      changeSelect(data) {
+        this.weekList = data.records.map(item => ({
+          label: item.channel,
+          value: +item.promotionId
+        }));
+      },
+      checkedSelect(val) {
+      },
       // 手动派券提交
       manualSubmit(data) {
         this.$refs.distributeCouponModal.show({},data);
