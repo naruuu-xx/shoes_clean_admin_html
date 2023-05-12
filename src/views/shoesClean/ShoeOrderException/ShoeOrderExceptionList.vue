@@ -22,6 +22,11 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="处理完成时间">
+                <a-range-picker v-model="queryParam.dealFinishTime" />
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -112,6 +117,7 @@
   import ShoeOrderExceptionDetailModal from "./modules/ShoeOrderExceptionDetailModal";
   import {downFile, httpAction} from "../../../api/manage";
   import { getLodop } from '@/utils/LodopFuncs';
+  import moment from 'moment';
   let Lodop;
 
   export default {
@@ -176,6 +182,18 @@
             }
           },
           {
+            title:'处理完成时间',
+            align:"center",
+            dataIndex: 'dealFinishTime',
+            customRender: (text) => {
+              let date = text;
+              if (null === text) {
+                date = "————————"
+              }
+              return date;
+            }
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -203,6 +221,14 @@
       },
     },
     methods: {
+      setQueryParams () {
+        let [startTime, endTime] = this.queryParam.dealFinishTime || ['', ''];
+
+        startTime = startTime ? moment(startTime).format('YYYY-MM-DD') : "";
+        endTime = endTime ? moment(endTime).format('YYYY-MM-DD') : "";
+
+        return {startTime, endTime}
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
