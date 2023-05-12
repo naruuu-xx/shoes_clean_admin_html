@@ -65,20 +65,24 @@
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div class="bar">
-                <bar
+                <!-- <bar
+                  v-if="barUserData.length"
                   title=""
                   :dataSource="barUserData"
                   yaxisText="用户数"
                   color="#fcdc5b"
                   paddingBottom="0"
-                />
+                /> -->
+                <xfLine v-if="barUserData.length" :dataSource="barUserData" alias="用户数" color="#fcdc5b"></xfLine>
+                <a-empty v-if="!barUserData.length"/>
               </div>
             </a-spin>
           </a-col>
           <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div style="padding-top: 20px;">
-                <Pie :height="268" :dataSource="pieUserData"/>
+                <Pie v-if="pieUserData.length" :height="268" :dataSource="pieUserData"/>
+                <a-empty v-if="!pieUserData.length"/>
               </div>
             </a-spin>
           </a-col>
@@ -100,11 +104,14 @@
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div class="bar">
-                <bar
+                <!-- <bar
                   :dataSource="barData"
                   :yaxisText="barQuery.type.name"
                   paddingBottom="0"
-                />
+                  v-if="barData.length"
+                /> -->
+                <xfLine v-if="barData.length" :dataSource="barData" :alias="barQuery.type.name"></xfLine>
+                <a-empty v-if="!barData.length"/>
               </div>
             </a-spin>
 
@@ -112,13 +119,14 @@
           <a-col :xl="8" :lg="10" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div style="padding-top: 20px;">
-                <Pie :height="268" :dataSource="pieData"/>
+                <Pie :height="268" :dataSource="pieData" v-if="pieData.length"/>
+                <a-empty v-if="!pieData.length"/>
               </div>
             </a-spin>
           </a-col>
         </a-row>
         <a-divider />
-        <a-row :gutter="24">
+        <a-row>
           <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24" v-for="(ranking,idx) in rankingList" :key="idx">
             <div>
               <div class="rankings">
@@ -171,6 +179,7 @@
 <script>
 import Bar from './components/Bar'
 import Pie from './components/Pie'
+import xfLine from './components/Line'
 import BrandStatistics from './components/BrandStatistics'
 import { getLoginfo, getVisitInfo } from '@/api/api'
 import { getAction } from '@/api/manage'
@@ -181,7 +190,8 @@ export default {
     Bar,
     Pie,
     BrandStatistics,
-    xfDateFilter
+    xfDateFilter,
+    xfLine
   },
   data() {
     return {
@@ -205,11 +215,11 @@ export default {
       },
       typeList: [
         {
-          name: '订单数',
+          name: '订单数(件)',
           value: 'order',
         },
         {
-          name: '销售额',
+          name: '销售额(元)',
           value: 'sale',
         },
       ],
@@ -542,7 +552,7 @@ main {
 }
 
 .rankings {
-  padding: 0 32px;
+  padding: 0 20px;
   margin-top: 20px;
   background-color: #fff;
   min-height: 334px;

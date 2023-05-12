@@ -8,24 +8,28 @@
                 <div class="statistics" style="display: flex;">
                   <a-row style="width: 100%;">
                     <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24" v-for="(statistics,index) in chunkData" :key="index">
-                <div class="statistics-box" >
-                  <div class="statistics-box-title">
-                    <div class="statistics-box-title-text w30">排名</div>
-                    <div class="statistics-box-title-text w40">鞋子品牌</div>
-                    <div class="statistics-box-title-text w30">鞋子数量</div>
-                  </div>
-                  <div class="statistics-box-tb" v-for="(tb,idx) in statistics" :key="idx">
-                    <div class="statistics-box-tb-item w30">{{ tb.ranking }}</div>
-                    <div class="statistics-box-tb-item w40">{{ tb.brand }}</div>
-                    <div class="statistics-box-tb-item w30">{{ tb.count }}</div>
-                  </div>
+                      <div class="statistics-box" >
+                        <div class="statistics-box-title">
+                          <div class="statistics-box-title-text w30">排名</div>
+                          <div class="statistics-box-title-text w40">鞋子品牌</div>
+                          <div class="statistics-box-title-text w30">鞋子数量</div>
+                        </div>
+                        <div class="statistics-box-tb" v-for="(tb,idx) in statistics" :key="idx">
+                          <div class="statistics-box-tb-item w30">{{ tb.ranking }}</div>
+                          <div class="statistics-box-tb-item w40">{{ tb.brand }}</div>
+                          <div class="statistics-box-tb-item w30">{{ tb.count }}</div>
+                        </div>
+                      </div>
+                    </a-col>
+                    <div v-if="!chunkData.length" style="height: 400px;display: flex;justify-content: center;align-items: center;">
+                      <a-empty/>
+                    </div>
+                    
+                  </a-row>
                 </div>
-              </a-col>
-              </a-row>
-              </div>
-              <div class="pagination">
-                <a-pagination size="small" :total="total" :pageSize="pageSize" v-model="pageNo" @change="changePagination"/>
-              </div>
+                <div class="pagination" v-if="total">
+                  <a-pagination size="small" :total="total" :pageSize="pageSize" v-model="pageNo" @change="changePagination"/>
+                </div>
               </div>
             </a-spin>
           </a-col>
@@ -33,7 +37,8 @@
             <a-spin :spinning="spinningPie">
               <div style="height: 400px;display: flex;align-items: center;border-left: #ddd solid 1px;">
                 <div style="flex:1">
-                  <Pie :height="300" :dataSource="pieData"/>
+                  <Pie v-if="pieData.length" :height="300" :dataSource="pieData" :isShowLegend="false" :padding="['80', '60', '100', '80']"/>
+                  <a-empty v-if="!pieData.length"/>
                 </div>
               </div>
             </a-spin>
