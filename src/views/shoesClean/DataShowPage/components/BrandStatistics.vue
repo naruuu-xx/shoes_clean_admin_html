@@ -37,7 +37,7 @@
             <a-spin :spinning="spinningPie">
               <div style="height: 400px;display: flex;align-items: center;border-left: #ddd solid 1px;">
                 <div style="flex:1">
-                  <Pie v-if="pieData.length" :height="300" :dataSource="pieData" :isShowLegend="false" :padding="['80', '60', '100', '80']"/>
+                  <Pie v-if="pieData.length" :height="300" :dataSource="pieData" :isShowLegend="false" :padding="['60', '40', '60', '60']"/>
                   <a-empty v-if="!pieData.length"/>
                 </div>
               </div>

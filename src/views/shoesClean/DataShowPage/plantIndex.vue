@@ -75,31 +75,13 @@
         <a-row>
           <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
-              <!-- <bar
-                v-if="inHistogram.length"
-                title="`入库数柱状图"
-                :dataSource="inHistogram"
-                yaxisText="入库数"
-                color="#48CAF0"
-              /> -->
-              <xfLine title="入库数折线图" v-if="inHistogram.length" :dataSource="inHistogram" alias="入库数" color="#48CAF0"></xfLine>
-              <a-empty v-if="!inHistogram.length"/>
+              <xfLine title="入库数折线图" :dataSource="inHistogram" alias="入库数" color="#48CAF0"></xfLine>
             </a-spin>
 
           </a-col>
           <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
-              <!-- <bar
-                v-if="outHistogram.length"
-                title="出库数柱状图"
-                :dataSource="outHistogram"
-                yaxisText="出库数"
-                color="#FFBB00"
-              /> -->
-              <xfLine title="出库数折线图" v-if="outHistogram.length" :dataSource="outHistogram" alias="出库数" color="#FFBB00"></xfLine>
-              <div>
-                <a-empty v-if="!outHistogram.length"/>
-              </div>
+              <xfLine title="出库数折线图" :dataSource="outHistogram" alias="出库数" color="#FFBB00"></xfLine>
             </a-spin>
           </a-col>
         </a-row>
