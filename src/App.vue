@@ -41,4 +41,10 @@
   #app {
     height: 100%;
   }
+  .u-line-1 {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
+  }
 </style>
