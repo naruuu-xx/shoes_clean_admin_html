@@ -120,6 +120,15 @@ export default {
           })
         this.lockerList = this.chunk(arr, 32).map((item) => this.chunk(item, 8))
         this.width = this.lockerList.length * 760
+      } else if (16 === usableNum) {
+        let cabinetNum = usableNum + 0 // 不需要加格子
+        let arr = Array(cabinetNum)
+          .fill(0)
+          .map((item, idx) => {
+            return idx + 1 // 让编号从1开始
+          })
+        this.lockerList = this.chunk(arr, 16).map((item) => this.chunk(item, 8))
+        this.width = this.lockerList.length * 560
       }
 
       this.visible = true
