@@ -353,6 +353,9 @@ export default {
         this.pieUserData = res.imgDtoUserList.map(({type:item,num}) => ({
           item,count: parseFloat(num)
         }))
+        this.pieBrandData = res.imgDtoBrandList.map(({type:item,num}) => ({
+          item,count: parseFloat(num)
+        })).sort((a,b) => b.count-a.count)
 
       }).finally(s => {
         this.spinning = false
