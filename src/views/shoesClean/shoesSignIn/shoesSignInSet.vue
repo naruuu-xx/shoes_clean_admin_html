@@ -145,7 +145,19 @@ export default {
     }
   },
   created() {
-
+    this.period = this.getData().length
+    this.integralList = this.getData()
+    this.integralList2 = this.chunk(this.integralList, 7)
+    this.specialDays = this.integralList.filter(item => item.coupons.length).map(item => ({
+      ...item,
+      coupons: item.coupons.map(cou => ({
+        ...cou,
+        uuid:this.getUuid(),
+        weekList:[]
+      })),
+      
+    }))
+    console.log(7777,this.specialDays);
   },
   computed: {
     addSpecialDayDisabled() {
@@ -169,22 +181,46 @@ export default {
     }
   },
   methods: {
-    // getData() {
-    //   return [
-    //     // 每一个对象就是每一天
-    //     {
-    //       coupons:[
-    //         {
-    //           type:'0', // 优惠券0,卡包1
-    //           id:'1', // 优惠券或者卡包的id
-    //           num:1, // 数量
-    //         }
-    //       ],
-    //       describe:'描述',
-    //       integral:12, //积分
-    //     }
-    //   ]
-    // },
+    getData() {
+      return [
+        // 每一个对象就是每一天
+        {
+          day:1,
+          coupons:[
+            {
+              type:'0', // 优惠券0,卡包1
+              id:132, // 优惠券或者卡包的id
+              num:1, // 数量
+            }
+          ],
+          describe:'描述',
+          integral:133, //积分
+        },
+        {
+          day:2,
+          coupons:[],
+          describe:'描述',
+          integral:3, //积分
+        },
+        {
+          day:3,
+          coupons:[
+            {
+              type:'0', // 优惠券0,卡包1
+              id:81, // 优惠券或者卡包的id
+              num:1, // 数量
+            },
+            {
+              type:'1', // 优惠券0,卡包1
+              id:13, // 优惠券或者卡包的id
+              num:2, // 数量
+            },
+          ],
+          describe:'描述',
+          integral:3, //积分
+        },
+      ]
+    },
     getUuid() {
       return Math.random().toString(16).substring(2)
     },
