@@ -61,7 +61,7 @@
             <xf-date-filter @change="changeFilterDate" :timeList="timeList"  defaultDateType="day"></xf-date-filter>
           </div>
         </div>
-        <a-row>
+        <!-- <a-row>
           <a-col :xl="16" :lg="12" :md="24" :sm="24" :xs="24">
             <a-spin :spinning="spinning">
               <div class="bar">
@@ -77,7 +77,7 @@
               </div>
             </a-spin>
           </a-col>
-        </a-row>
+        </a-row> -->
         <div class="tab" style="border-top: 1px solid #DDDDDD;border-bottom: 1px solid #DDDDDD;">
           <div class="tab-left">
             <div
@@ -132,7 +132,7 @@
         </a-row>
       </div>
     </a-card>
-    <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning" type="index"></BrandStatistics>
+    <!-- <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning" type="index"></BrandStatistics> -->
     <a-row :gutter="24">
           <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
             <div class="withdraw">
@@ -212,10 +212,10 @@ export default {
           name: '今日',
           value: 'day',
         },
-        {
-          name: '昨日',
-          value: 'yesterday',
-        },
+        // {
+        //   name: '昨日',
+        //   value: 'yesterday',
+        // },
         {
           name: '本月',
           value: 'month',
