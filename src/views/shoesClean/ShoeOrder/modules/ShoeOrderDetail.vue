@@ -40,11 +40,17 @@
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
         <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
-        <a-descriptions-item label="机柜名称-格子数" v-if=" '快递上门' !== data.type && statusInt > 0 && statusInt < 5">
+        <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt > 0 && statusInt < 5">
           {{ data.lockerName }}-{{ data.beforeGridNo }}
         </a-descriptions-item>
-        <a-descriptions-item label="机柜名称-格子数" v-if=" '快递上门' !== data.type && statusInt >= 9 && statusInt <= 13">
+        <a-descriptions-item label="服务点名称" v-if=" ( '站点自提' === data.type || '站点配送' === data.type ) && statusInt > 0 && statusInt < 5">
+          {{ data.lockerName }}
+        </a-descriptions-item>
+        <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt >= 9 && statusInt <= 13">
           {{ data.lockerName }}-{{ data.afterGridNo }}
+        </a-descriptions-item>
+        <a-descriptions-item label="服务点名称" v-if=" ( '站点自提' === data.type || '站点配送' === data.type ) && statusInt >= 9 && statusInt <= 13">
+          {{ data.lockerName }}
         </a-descriptions-item>
         <template v-if="'机柜配送' === data.type || '站点配送' === data.type">
           <a-descriptions-item label="配送员(取鞋)">
@@ -119,6 +125,40 @@
         </a-descriptions-item>
       </a-descriptions>
 
+      <a-descriptions title="订单照片" layout="vertical" bordered :column="5" size="small" style="margin-bottom: 20px">
+        <a-descriptions-item label="鞋子照片">
+          <img alt="example" style="width: 120px;margin-right: 20px;background: #F6F6F6;" v-for="item in orderImagesList" :src="item" @click="showShoeImage(item)"/>
+        </a-descriptions-item>
+      </a-descriptions>
+
+      <a-descriptions title="异常信息" layout="vertical" bordered :column="5" size="small" style="margin-bottom: 20px" v-if="data.exceptionTime">
+        <a-descriptions-item label="异常原因">
+          <a style="text-decoration: underline" @click="showShoeExceptionInfoModel = true">查看原因</a>
+        </a-descriptions-item>
+        <a-descriptions-item label="处理方式">
+          {{orderExceptionInfo.dealTypeText}}
+        </a-descriptions-item>
+        <template v-if="orderExceptionInfo.dealType == 1">
+          <a-descriptions-item label="服务内容">
+            {{orderExceptionInfo.title}}
+          </a-descriptions-item>
+          <a-descriptions-item label="补缴金额(元)">
+            {{orderExceptionInfo.supplementPrice}}
+          </a-descriptions-item>
+          <a-descriptions-item label="补缴状态">
+            {{orderExceptionInfo.payStatusText}}
+          </a-descriptions-item>
+        </template>
+        <template v-if="orderExceptionInfo.dealType == 2">
+          <a-descriptions-item label="退款金额(元)">
+            {{orderExceptionInfo.refundPrice}}
+          </a-descriptions-item>
+          <a-descriptions-item label="退款状态">
+            {{orderExceptionInfo.refundTypeText}}
+          </a-descriptions-item>
+        </template>
+      </a-descriptions>
+
       <div class="table">
         <div class="table-title">物流信息</div>
         <div class="table-main">
@@ -175,36 +215,14 @@
       :footer="null"
       @cancel="handleShoeExceptionInfoCancel"
     >
-      <!-- 异常照片展示 -->
-      <div style="width: 100%; height: 400px; overflow-y: scroll">
-        <!-- 异常图片展示区 -->
-        <a-row>
-          <a-col :span="24">
-            <p class="shoe-order-exception-detail-title">异常照片</p>
-          </a-col>
-          <a-col :span="24">
-            <img
-              alt="example"
-              style="width: 20%; margin: 20px"
-              v-for="item in orderExceptionImagesList"
-              :src="item"
-              @click="showShoeImage(item)"
-            />
-          </a-col>
-        </a-row>
-
-        <!-- 异常信息展示区 -->
-        <a-row>
-          <a-col :span="24">
-            <p class="shoe-order-exception-detail-title">异常备注</p>
-          </a-col>
-          <a-col :span="24">
-            <p style="font-size: 16px; color: #000000">
-              <b>{{ orderExceptionInfo.note }}</b>
-            </p>
-          </a-col>
-        </a-row>
-      </div>
+    <a-descriptions title="" layout="vertical" bordered :column="1" size="small" style="margin-bottom: 20px">
+      <a-descriptions-item label="异常原因">
+        {{orderExceptionInfo.note}}
+      </a-descriptions-item>
+      <a-descriptions-item label="异常照片">
+        <img alt="example" style="width: 120px;margin-right: 20px;background: #F6F6F6;" v-for="item in orderExceptionInfo.images" :src="item" @click="showShoeImage(item)"/>
+      </a-descriptions-item>
+    </a-descriptions>
     </a-modal>
   </j-modal>
 </template>
@@ -236,7 +254,6 @@ export default {
       refundSuccessTime: '',
       orderExceptionInfo: {},
       showShoeExceptionInfoModel: false,
-      orderExceptionImagesList: [],
       afterDeliveryInfo: {},
       statusInt: 0,
       userAddress: '',
@@ -352,40 +369,14 @@ export default {
       this.data = orderInfo
 
       //如果此订单是异常的状态，要查询此订单的异常情况，如果此订单要”增加服务费“，将再此查询补款记录
-      if (this.data.exceptionTime !== null && this.data.exceptionTime !== '' && this.data.exceptionTime !== undefined) {
+      if (this.data.exceptionTime) {
         let ShoeOrderExceptionData = {
           orderId: this.data.orderId,
         }
-        httpAction('/ShoeOrder/shoeOrder/getShoeOrderException', ShoeOrderExceptionData, 'post').then((res) => {
+        getAction('/ShoeOrder/shoeOrder/getShoeOrderException', ShoeOrderExceptionData).then((res) => {
           this.orderExceptionInfo = res.result
-          if (
-            this.orderExceptionInfo.title === null ||
-            this.orderExceptionInfo.title === '' ||
-            this.orderExceptionInfo.title === undefined
-          ) {
-            this.orderExceptionInfo.title = '无'
-          }
-          if (
-            this.orderExceptionInfo.price === null ||
-            this.orderExceptionInfo.price === '' ||
-            this.orderExceptionInfo.price === undefined
-          ) {
-            this.orderExceptionInfo.price = '0'
-          } else {
-            let price = this.orderExceptionInfo.price
-            this.orderExceptionInfo.price = (price / 100).toFixed(2)
-          }
-          if (
-            this.orderExceptionInfo.payStatus === null ||
-            this.orderExceptionInfo.payStatus === '' ||
-            this.orderExceptionInfo.payStatus === undefined
-          ) {
-            this.orderExceptionInfo.price = '无'
-          }
-
-          //处理图片数组
-          let imagesArray = JSON.parse(this.orderExceptionInfo.images)
-          this.orderExceptionImagesList = imagesArray
+          this.orderExceptionInfo.title = res.result.title || '无'
+          this.orderExceptionInfo.dealTypeText = res.result.status == 0 ? '未处理' : res.result.dealTypeText 
         })
       } else {
         this.orderExceptionInfo = {
@@ -395,7 +386,7 @@ export default {
           dealType: '',
           dealUserId: '',
           dealUsername: '',
-          images: '',
+          images: [],
           note: '',
           orderExceptionId: '',
           orderId: '',
