@@ -33,7 +33,7 @@
           :open="showStartPicker"
           @openChange="openChangeOne($event,'start')"
           @panelChange="panelChangeOne($event,'start')"
-          style="width: 118px;"
+          style="width: 124px;"
         />
         -
         <a-date-picker
@@ -45,7 +45,7 @@
           :open="showEndPicker"
           @openChange="openChangeOne($event,'end')"
           @panelChange="panelChangeOne($event,'end')"
-          style="width: 118px;"
+          style="width: 124px;"
         />
       </div>
     </div>
