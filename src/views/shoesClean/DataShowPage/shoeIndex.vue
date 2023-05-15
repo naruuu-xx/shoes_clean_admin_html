@@ -132,7 +132,7 @@
         </a-row>
       </div>
     </a-card>
-    <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics>
+    <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning" type="index"></BrandStatistics>
     <a-row :gutter="24">
           <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
             <div class="withdraw">
@@ -353,6 +353,9 @@ export default {
         this.pieUserData = res.imgDtoUserList.map(({type:item,num}) => ({
           item,count: parseFloat(num)
         }))
+        this.pieBrandData = res.imgDtoBrandList.map(({type:item,num}) => ({
+          item,count: parseFloat(num)
+        })).sort((a,b) => b.count-a.count)
 
       }).finally(s => {
         this.spinning = false

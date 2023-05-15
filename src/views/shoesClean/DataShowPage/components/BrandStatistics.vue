@@ -68,6 +68,10 @@
         type: Boolean,
         default: false
       },
+      type:{
+        type: String,
+        default: ''
+      }
     },
     data() {
       return {
@@ -81,6 +85,8 @@
     watch:{
       queryForm: {
         handler(val,oldValue) {
+          this.pageNo = 1
+          this.total = 0
           this.brandRanking()
         },
         //立刻执行handler
@@ -122,7 +128,8 @@
           ...this.queryForm,
           dateType,
           pageSize: this.pageSize,
-          pageNo: this.pageNo
+          pageNo: this.pageNo,
+          type:this.type
         }
         this.spinning = true
         getAction('/brandRanking',form).then(({success,result}) => {
