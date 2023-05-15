@@ -99,6 +99,14 @@ export default {
   name: "ShoeOrderExceptionModal",
   components: {},
   data() {
+    let validateAmount = (rule, value, callback) => {
+      console.log(999,value);
+      if (value < 0.01) {
+        callback(new Error('追加金额必须大于等于0.01!'));
+      } else {
+        callback();
+      }
+    };
     return {
       labelCol: {
         xs: {span: 24},
@@ -145,6 +153,7 @@ export default {
         ],
         amount: [
           {required: true, message: '请输追加金额!'},
+          { validator: validateAmount, trigger: ['change','blur'] }
         ],
         refundType: [
           {required: true, message: '请选择退款金额类型!'},
@@ -207,13 +216,6 @@ export default {
       this.serviceTitle = "";
     },
     sendAdditionalOrder() {
-
-      let amount = this.form.amount;
-
-      if (amount < 0.01) {
-        this.$message.error("请输入大于0的数！");
-      }
-
       this.$refs.form.validate(valid => {
         if (valid) {
           httpAction("/ShoeOrder/shoeOrder/handleOrderException", this.form, "post").then((res) => {
