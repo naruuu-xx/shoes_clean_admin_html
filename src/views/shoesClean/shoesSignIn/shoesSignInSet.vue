@@ -169,6 +169,22 @@ export default {
     }
   },
   methods: {
+    // getData() {
+    //   return [
+    //     // 每一个对象就是每一天
+    //     {
+    //       coupons:[
+    //         {
+    //           type:'0', // 优惠券0,卡包1
+    //           id:'1', // 优惠券或者卡包的id
+    //           num:1, // 数量
+    //         }
+    //       ],
+    //       describe:'描述',
+    //       integral:12, //积分
+    //     }
+    //   ]
+    // },
     getUuid() {
       return Math.random().toString(16).substring(2)
     },
