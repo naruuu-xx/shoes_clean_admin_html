@@ -294,6 +294,7 @@ export default {
           return oldArr[idx]
         } else {
           return {
+            day: idx+1,
             integral: 0, // 积分
             describe: '',
             coupons: []
@@ -342,6 +343,7 @@ export default {
         }))
         this.integralList[item.day-1].coupons = coupons
         this.integralList[item.day-1].describe = item.describe
+        this.integralList[item.day-1].day = item.day
       })
       console.log('integralList',this.integralList);
     },
