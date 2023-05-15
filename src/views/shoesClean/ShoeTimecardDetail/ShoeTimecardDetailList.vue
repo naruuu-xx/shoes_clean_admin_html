@@ -20,7 +20,7 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="状态">
+            <a-form-item label="来源">
               <a-select v-model="queryParam.source">
                 <a-select-option v-for="item in sourceOptionList" :value="item.value" :key="item.value">
                   {{ item.name }}
