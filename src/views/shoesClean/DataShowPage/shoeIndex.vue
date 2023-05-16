@@ -212,10 +212,10 @@ export default {
           name: '今日',
           value: 'day',
         },
-        // {
-        //   name: '昨日',
-        //   value: 'yesterday',
-        // },
+        {
+          name: '昨日',
+          value: 'yesterday',
+        },
         {
           name: '本月',
           value: 'month',
