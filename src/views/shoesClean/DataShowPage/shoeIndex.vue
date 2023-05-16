@@ -199,7 +199,7 @@ export default {
       },
       typeList: [
         {
-          name: '订单数(件)',
+          name: '订单数(双)',
           value: 'order',
         },
         {
