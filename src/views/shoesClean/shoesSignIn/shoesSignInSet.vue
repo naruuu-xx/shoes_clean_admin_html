@@ -6,7 +6,6 @@
           @change="v => period = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />天</a-col>
       <a-col :xs="24" :sm="24" :md="18">
         <a-space>
-          <a-button type="primary">确定</a-button>
           <a-button @click="onReset">重置</a-button>
         </a-space>
       </a-col>
@@ -69,7 +68,7 @@
             </div>
             <div slot="num" slot-scope="text, record, tableIdx">
               <a-input-number v-model="specialDays[idx].coupons[tableIdx].num" placeholder="请输入数量"
-                @change="v => specialDays[idx].coupons[tableIdx].num = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="0" />
+                @change="v => specialDays[idx].coupons[tableIdx].num = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />
             </div>
             <span slot="action" slot-scope="text, record,tableIdx">
               <a-button type="link" style="color: #ff4d4f" @click="onDelCoupon(idx,tableIdx)">
@@ -152,19 +151,6 @@ export default {
   },
   created() {
     this.getShoeSign()
-    // this.period = this.getData().length
-    // this.integralList = this.getData()
-    // this.integralList2 = this.chunk(this.integralList, 7)
-    // this.specialDays = this.integralList.filter(item => item.coupons.length).map(item => ({
-    //   ...item,
-    //   coupons: item.coupons.map(cou => ({
-    //     ...cou,
-    //     uuid:this.getUuid(),
-    //     weekList:[]
-    //   })),
-      
-    // }))
-    // console.log(7777,this.specialDays);
   },
   computed: {
     addSpecialDayDisabled() {
@@ -347,7 +333,10 @@ export default {
     },
     // 点击重置
     onReset() {
-      this.getShoeSign()
+      this.period = ''
+      this.integralList = []
+      this.integralList2 = []
+      this.specialDays = []
     },
     chunk(array, size) {
       let result = []
@@ -360,7 +349,7 @@ export default {
       return result
     },
     onCancel() {
-
+      this.$router.go(-1)
     },
     onSave() {
       for (let index = 0; index < this.specialDays.length; index++) {
@@ -383,11 +372,13 @@ export default {
         this.integralList[item.day-1].describe = item.describe
         this.integralList[item.day-1].day = item.day
       })
-      // /
+
+      this.loading = true
       httpAction('shoeSign/updateOrAdd',this.integralList,'post').then(res => {
         if(res.success) {
           this.$message.success(res.message)
         }
+        this.loading = false
       })
     },
     toChineseNum
@@ -406,6 +397,10 @@ table,
 th,
 td {
   border-color: #f5f5f5;
+}
+table {
+  border: solid #f5f5f5;
+  border-width: 1px 1px 1px 1px;
 }
 
 th {
