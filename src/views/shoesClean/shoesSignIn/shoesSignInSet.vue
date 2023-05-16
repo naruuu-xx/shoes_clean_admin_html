@@ -1,4 +1,5 @@
 <template>
+  <a-spin tip="请求中..."  :spinning="loading">
   <a-card :bordered="false">
     <a-row>
       <a-col :xs="24" :sm="24" :md="6">签到周期:<a-input-number @blur="periodBlur" v-model="period" placeholder="请输入签到周期"
@@ -21,8 +22,8 @@
           <tr>
             <td>积分值</td>
             <td v-for="(val, idx) in integral" :key="idx">
-              <a-input-number v-model="integral[idx].integral" placeholder="请输入积分值"
-                @change="v => integral[idx].integral = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="0" />
+              <a-input-number v-model="integral[idx].integra" placeholder="请输入积分值"
+                @change="v => integral[idx].integra = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="0" />
             </td>
           </tr>
         </table>
@@ -81,16 +82,20 @@
     </a-row>
 
     <div class="btns">
-      <a-button @click="onCancel">取消</a-button>
-      <a-button type="primary" @click="onSave">保存</a-button>
+      <a-space>
+        <a-button @click="onCancel">取消</a-button>
+        <a-button type="primary" @click="onSave">保存</a-button>
+      </a-space>
     </div>
   </a-card>
+</a-spin>
 </template>
 
 <script>
 
 import {toChineseNum} from '@/utils/util'
 import XfSelect from '@/components/Xf/XfSelect'
+import {httpAction,getAction} from "@api/manage";
 export default {
   name: 'ShoeCouponList',
   mixins: [],
@@ -99,6 +104,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       period: '',
       integralList2: [],
       integralList:[],
@@ -145,19 +151,20 @@ export default {
     }
   },
   created() {
-    this.period = this.getData().length
-    this.integralList = this.getData()
-    this.integralList2 = this.chunk(this.integralList, 7)
-    this.specialDays = this.integralList.filter(item => item.coupons.length).map(item => ({
-      ...item,
-      coupons: item.coupons.map(cou => ({
-        ...cou,
-        uuid:this.getUuid(),
-        weekList:[]
-      })),
+    this.getShoeSign()
+    // this.period = this.getData().length
+    // this.integralList = this.getData()
+    // this.integralList2 = this.chunk(this.integralList, 7)
+    // this.specialDays = this.integralList.filter(item => item.coupons.length).map(item => ({
+    //   ...item,
+    //   coupons: item.coupons.map(cou => ({
+    //     ...cou,
+    //     uuid:this.getUuid(),
+    //     weekList:[]
+    //   })),
       
-    }))
-    console.log(7777,this.specialDays);
+    // }))
+    // console.log(7777,this.specialDays);
   },
   computed: {
     addSpecialDayDisabled() {
@@ -194,13 +201,13 @@ export default {
             }
           ],
           describe:'描述',
-          integral:133, //积分
+          integra:133, //积分
         },
         {
           day:2,
           coupons:[],
           describe:'描述',
-          integral:3, //积分
+          integra:3, //积分
         },
         {
           day:3,
@@ -217,9 +224,36 @@ export default {
             },
           ],
           describe:'描述',
-          integral:3, //积分
+          integra:3, //积分
         },
       ]
+    },
+    getShoeSign() {
+      this.loading = true
+      // /
+      getAction("shoeSign/show").then((res) => {
+        this.loading = false
+        if(res.success) {
+          this.period = res.result.length
+          this.integralList = res.result
+          this.integralList2 = this.chunk(this.integralList, 7)
+          this.specialDays = this.integralList.filter(item => item.coupons.length).map(item => ({
+            ...item,
+            coupons: item.coupons.map(cou => ({
+              ...cou,
+              id:+cou.id,
+              uuid:this.getUuid(),
+              weekList:[],
+              oldWeekList:[{
+                name: cou.name,
+                id:+cou.id
+              }]
+            })),
+            
+          }))
+        }
+        
+      })
     },
     getUuid() {
       return Math.random().toString(16).substring(2)
@@ -235,10 +269,17 @@ export default {
       }
     },
     changeSelect(data,additionalData) {
-      this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].weekList = data.records.map(item => ({
+      let arr = data.records
+      let oldArr = this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].oldWeekList || []
+      if(oldArr.length) {
+        arr = [...arr.filter(item => item.id != oldArr[0].id),...oldArr]
+        this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].oldWeekList = []
+      }
+      this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].weekList = arr.map(item => ({
         label: item.name,
         value: +item.id
       }));
+      console.log(9090,this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].weekList);
     },
     changeType(idx,tableIdx) {
       this.specialDays[idx].coupons[tableIdx].id = ''
@@ -295,7 +336,7 @@ export default {
         } else {
           return {
             day: idx+1,
-            integral: 0, // 积分
+            integra: 0, // 积分
             describe: '',
             coupons: []
           }
@@ -306,10 +347,7 @@ export default {
     },
     // 点击重置
     onReset() {
-      this.period = ''
-      this.integralList = []
-      this.integralList2 = []
-      this.specialDays = []
+      this.getShoeSign()
     },
     chunk(array, size) {
       let result = []
@@ -345,7 +383,12 @@ export default {
         this.integralList[item.day-1].describe = item.describe
         this.integralList[item.day-1].day = item.day
       })
-      console.log('integralList',this.integralList);
+      // /
+      httpAction('shoeSign/updateOrAdd',this.integralList,'post').then(res => {
+        if(res.success) {
+          this.$message.success(res.message)
+        }
+      })
     },
     toChineseNum
   }
@@ -356,6 +399,7 @@ export default {
 .btns {
   display: flex;
   justify-content: center;
+  margin-top: 20px;
 }
 
 table,
