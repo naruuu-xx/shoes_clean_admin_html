@@ -45,9 +45,9 @@
             <a-button @click="onDelSpecialDay(idx)" type="danger">删除</a-button>
           </a-space>
         </div>
-        <div class="specialDays-sub">
+        <!-- <div class="specialDays-sub">
           <span style="flex-shrink: 0;margin-right: 16px;">描述:</span> <a-input v-model="specialDays[idx].describe"></a-input>
-        </div>
+        </div> -->
         <div class="specialDays-table">
           <a-table bordered :columns="columns" :data-source="specialDays[idx].coupons" :pagination="false" rowKey="uuid">
             <div slot="type" slot-scope="text, record, tableIdx">
@@ -78,6 +78,11 @@
           </a-table>
         </div>
       </div>
+    </a-row>
+
+    <a-row style="margin-top: 20px;">
+      <a-col :xs="24" :sm="24" :md="2">签到规则:</a-col>
+      <a-col :xs="24" :sm="24" :md="22"><JEditor v-model="rule" placeholder="请输入签到规则"></JEditor></a-col>
     </a-row>
 
     <div class="btns">
@@ -147,6 +152,7 @@ export default {
         }
       ],
       weekList:[],
+      rule:''
     }
   },
   created() {
@@ -174,46 +180,6 @@ export default {
     }
   },
   methods: {
-    getData() {
-      return [
-        // 每一个对象就是每一天
-        {
-          day:1,
-          coupons:[
-            {
-              type:'0', // 优惠券0,卡包1
-              id:132, // 优惠券或者卡包的id
-              num:1, // 数量
-            }
-          ],
-          describe:'描述',
-          integra:133, //积分
-        },
-        {
-          day:2,
-          coupons:[],
-          describe:'描述',
-          integra:3, //积分
-        },
-        {
-          day:3,
-          coupons:[
-            {
-              type:'0', // 优惠券0,卡包1
-              id:81, // 优惠券或者卡包的id
-              num:1, // 数量
-            },
-            {
-              type:'1', // 优惠券0,卡包1
-              id:13, // 优惠券或者卡包的id
-              num:2, // 数量
-            },
-          ],
-          describe:'描述',
-          integra:3, //积分
-        },
-      ]
-    },
     getShoeSign() {
       this.loading = true
       // /
@@ -307,7 +273,7 @@ export default {
       this.specialDays.push(
         {
           day:'', // 天数
-          describe:'',
+          // describe:'',
           coupons:[]
         }
       )
@@ -323,7 +289,7 @@ export default {
           return {
             day: idx+1,
             integra: 0, // 积分
-            describe: '',
+            // describe: '',
             coupons: []
           }
         }
@@ -369,11 +335,12 @@ export default {
           id,num,type
         }))
         this.integralList[item.day-1].coupons = coupons
-        this.integralList[item.day-1].describe = item.describe
+        // this.integralList[item.day-1].describe = item.describe
         this.integralList[item.day-1].day = item.day
       })
 
       this.loading = true
+      console.log(88,this.rule);
       httpAction('shoeSign/updateOrAdd',this.integralList,'post').then(res => {
         if(res.success) {
           this.$message.success(res.message)
