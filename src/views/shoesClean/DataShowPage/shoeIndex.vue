@@ -55,7 +55,7 @@
       <div class="salesCard">
         <div class="tab">
           <div class="title" style="border-bottom-color: transparent;padding: 0;line-height: 32px">
-            <!-- 平台新增用户 -->
+            平台新增用户
           </div>
           <div class="tab-right">
             <xf-date-filter @change="changeFilterDate" :timeList="timeList"  defaultDateType="day"></xf-date-filter>
@@ -212,10 +212,10 @@ export default {
           name: '今日',
           value: 'day',
         },
-        {
-          name: '昨日',
-          value: 'yesterday',
-        },
+        // {
+        //   name: '昨日',
+        //   value: 'yesterday',
+        // },
         {
           name: '本月',
           value: 'month',
