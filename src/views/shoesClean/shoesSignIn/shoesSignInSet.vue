@@ -206,6 +206,12 @@ export default {
         }
         
       })
+      getAction("/shoeSign/getSignRule").then((res) => {
+        if(res.success) {
+          this.rule = res.result
+        }
+        
+      })
     },
     getUuid() {
       return Math.random().toString(16).substring(2)
@@ -340,8 +346,15 @@ export default {
       })
 
       this.loading = true
-      console.log(88,this.rule);
       httpAction('shoeSign/updateOrAdd',this.integralList,'post').then(res => {
+        if(res.success) {
+          this.$message.success(res.message)
+        } else {
+          this.$message.error(res.message)
+        }
+        this.loading = false
+      })
+      httpAction('shoeSign/signRule',{rule:this.rule},'put').then(res => {
         if(res.success) {
           this.$message.success(res.message)
         }
