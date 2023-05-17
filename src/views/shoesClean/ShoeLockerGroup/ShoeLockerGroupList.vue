@@ -5,8 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="鞋蜂卡名称">
-              <a-input placeholder="请输入鞋蜂卡名称" v-model="queryParam.name"></a-input>
+            <a-form-item label="分组名称">
+              <a-input placeholder="请输入分组名称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -23,84 +23,74 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+
     </div>
 
     <!-- table区域-begin -->
     <div>
+
       <a-table
         ref="table"
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="timecardId"
+        rowKey="id"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
+
+
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
+
           <a-divider type="vertical" />
-          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.timecardId)">
-            <a>删除</a>
-          </a-popconfirm>
+
+
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.lockerGroupId)">
+                  <a>删除</a>
+                </a-popconfirm>
+
         </span>
 
       </a-table>
     </div>
 
-    <shoe-timecard-modal ref="modalForm" @ok="modalFormOk"></shoe-timecard-modal>
+    <shoe-locker-group-modal ref="modalForm" @ok="modalFormOk"></shoe-locker-group-modal>
   </a-card>
 </template>
 
 <script>
 
-  import '@assets/less/TableExpand.less'
+  import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import ShoeTimecardModal from './modules/ShoeTimecardModal'
-  import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
+  import ShoeLockerGroupModal from './modules/ShoeLockerGroupModal'
 
   export default {
-    name: 'ShoeTimecardList',
+    name: 'ShoeLockerGroupList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeTimecardModal
+      ShoeLockerGroupModal
     },
     data () {
       return {
-        description: 'shoe_timecard管理页面',
+        description: 'shoe_locker_group管理页面',
         // 表头
         columns: [
           {
-            title:'鞋蜂卡名称',
+            title:'分组名称',
             align:"center",
             dataIndex: 'name'
           },
           {
-            title:'领取人数',
+            title:'权重',
             align:"center",
-            dataIndex: 'sale'
-          },
-          {
-            title:'是否售卖',
-            align:"center",
-            dataIndex: 'isShow',
-            customRender: (text) => {
-              return filterDictTextByCache('shoe_timecard_isShow', text);
-            },
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'addUserName'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'weight'
           },
           {
             title: '操作',
@@ -112,14 +102,16 @@
           }
         ],
         url: {
-          list: "/shoeTimecard/list",
-          delete: "/shoeTimecard/delete",
+          list: "/shoeLockerGroup/list",
+          delete: "/shoeLockerGroup/delete",
+
         },
         dictOptions:{},
+        superFieldList:[],
       }
     },
     created() {
-
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
@@ -129,6 +121,13 @@
     methods: {
       initDictConfig(){
       },
+      getSuperFieldList(){
+        let fieldList=[];
+        fieldList.push({type:'int',value:'lockerGroupId',text:'机柜分组ID',dictCode:''})
+        fieldList.push({type:'string',value:'name',text:'分组名称',dictCode:''})
+        fieldList.push({type:'int',value:'weight',text:'权重',dictCode:''})
+        this.superFieldList = fieldList
+      }
     }
   }
 </script>
