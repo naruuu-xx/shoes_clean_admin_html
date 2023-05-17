@@ -284,6 +284,12 @@ export default {
         case '配送员':
           url = '/courierWithdrawal/list'
           break;
+        case '站长':
+          url = '/shoesClean/ShoeSitemanager/withdrawal'
+          break;
+        case '推广人':
+          url = '/ShoeDistributorWithdrawal'
+          break;
 
         default:
           break;
@@ -408,7 +414,7 @@ export default {
     &-title {
       background: #F5F5F5;
       padding: 16px 0;
-      padding-right: 90px;
+      padding-right: 40px;
       font-size: 16px;
       font-weight: 500;
       line-height: 22px;
