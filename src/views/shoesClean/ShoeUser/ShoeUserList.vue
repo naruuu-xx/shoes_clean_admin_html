@@ -361,6 +361,10 @@ export default {
         label: item.channel,
         value: +item.promotionId
       }));
+      this.weekList.unshift({
+        label: '全部',
+        value:''
+      })
     },
     searchReset2(){
       this.createTime='';
