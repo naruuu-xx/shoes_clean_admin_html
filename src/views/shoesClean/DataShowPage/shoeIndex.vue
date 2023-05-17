@@ -284,6 +284,12 @@ export default {
         case '配送员':
           url = '/courierWithdrawal/list'
           break;
+        case '站长':
+          url = '/shoesClean/ShoeSitemanager/withdrawal'
+          break;
+        case '推广人':
+          url = '/ShoeDistributorWithdrawal'
+          break;
 
         default:
           break;
