@@ -115,6 +115,10 @@ export default {
           name: '洁小兔',
           id: 1,
         },
+        {
+          name: '鞋蜂惊洗',
+          id: 2,
+        }
       ],
       timecardList: []
     }
