@@ -49,7 +49,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="couponId"
+        rowKey="id"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -84,6 +84,8 @@
           <a v-if="record.eventName=='拉新活动'" @click="couponSelect(record.id, record.couponId)">优惠券设置</a>
           <a-divider v-if="record.eventName=='拉新活动'" type="vertical" />
           <a v-if="record.eventName=='拉新活动'" @click="queryEventDetail">查看详情</a>
+
+          <router-link v-if="record.eventName=='签到'" :to="{ path: '/marketing/signIn'}">设置</router-link>
 
         </span>
 
