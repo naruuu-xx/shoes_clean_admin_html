@@ -97,11 +97,6 @@
                               <a @click="getTimecardDetail(record)" v-has="'user:timecardList'">鞋蜂卡列表</a>
                             </a-menu-item>
             </a-menu>
-<!--            <a-menu slot="overlay">-->
-<!--              <a-menu-item>-->
-<!--                <a @click="getTimecardDetail(record)" v-has="'user:timecardList'">鞋蜂卡列表</a>-->
-<!--              </a-menu-item>-->
-<!--            </a-menu>-->
           </a-dropdown>
         </span>
 
