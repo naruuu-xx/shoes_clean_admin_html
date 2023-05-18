@@ -54,8 +54,8 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
-                <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off" suffix="%"></a-input>
+              <a-form-model-item label="站点收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
+                <a-input v-model="model.percentage" placeholder="请输入0-100的整数" autocomplete="off" suffix="%"></a-input>
               </a-form-model-item>
             </a-col>
 
@@ -293,7 +293,7 @@ export default {
         ],
         percentage: [
           { required: true, message: '请输入1-100之间的整数!'},
-          { pattern: /^([1-9][0-9]{0,1}|100)$/, message: '请输入1-100之间的整数!'},
+          { pattern: /^([0-9][0-9]{0,1}|100)$/, message: '请输入1-100之间的整数!'},
         ],
         cardName: [
           {required: true, message: '请输入持卡人!'},
