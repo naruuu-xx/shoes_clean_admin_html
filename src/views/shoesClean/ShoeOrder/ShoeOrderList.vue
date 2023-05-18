@@ -340,6 +340,9 @@ export default {
         },{
         "value": "20",
           "name": "送站点"
+        },{
+        "value":"25",
+          "name":"待入库"
         }
       ],
       typeOptionList: [
