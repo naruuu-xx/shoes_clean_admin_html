@@ -113,6 +113,7 @@
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
+
               <a-menu-item v-if="record.num>0">
 
 <!--                   <a @click="changeToMyTeam(record)">团队</a>-->
