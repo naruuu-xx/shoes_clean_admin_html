@@ -480,7 +480,7 @@ main {
     &-title {
       background: #F5F5F5;
       padding: 16px 0;
-      padding-right: 90px;
+      padding-right: 40px;
       font-size: 16px;
       font-weight: 500;
       line-height: 22px;
