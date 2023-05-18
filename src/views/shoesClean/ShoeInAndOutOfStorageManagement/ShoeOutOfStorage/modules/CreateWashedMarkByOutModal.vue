@@ -99,8 +99,8 @@ export default {
         LODOP.SET_PRINT_PAGESIZE(1, "49mm", "50mm", "");
         LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
 
-        // LODOP.PRINT()// 直接打印
-        LODOP.PREVIEW() // 打印预览
+        LODOP.PRINT()// 直接打印
+        // LODOP.PREVIEW() // 打印预览
       }
     },
   }
