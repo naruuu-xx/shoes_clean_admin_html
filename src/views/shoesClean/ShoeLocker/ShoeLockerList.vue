@@ -111,6 +111,9 @@
               <a-menu-item>
                  <a @click="handleGrid(record)">柜子状态</a>
               </a-menu-item>
+                <a-menu-item>
+                <a @click="getSubCommission(record)">机柜分佣人</a>
+              </a-menu-item>
               <a-menu-item>
               <a-popconfirm title="确定一键开柜吗？" @confirm="() => openAllDoor(record.lockerCode)">
                     <a>一键开柜</a>
@@ -135,6 +138,7 @@
     <set-percentage ref="setPercentage" @ok="modalFormOk"></set-percentage>
     <shoe-locker-img-modal ref="imgModal" @ok="modalFormOk"></shoe-locker-img-modal>
     <shoe-locker-move-form ref="moveForm" @ok="modalFormOk"></shoe-locker-move-form>
+    <sub-commission-list ref="subCommissionList"></sub-commission-list>
 
   </a-card>
 </template>
@@ -154,11 +158,13 @@ import {mapGetters} from 'vuex';
 import store from '@/store/'
 import SetPercentage from "@views/shoesClean/shoeCourier/modules/SetPercentage";
 import ShoeLockerMoveForm from "@views/shoesClean/ShoeLockerNew/modules/ShoeLockerMoveForm";
+import SubCommissionList from '@views/shoesClean/ShoeLocker/modules/subCommissionList'
 
 export default {
   name: 'ShoeLockerList',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
+    SubCommissionList,
     ShoeLockerModal,
     shoeLockerGridModal,
     SetPercentage,
@@ -347,16 +353,7 @@ export default {
       return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
     },
   },
-  //==================================================================================================================
-  // mounted() {
-  //   //初始化websocket
-  //   this.initWebSocket()
-  // },
-  // destroyed: function () { // 离开页面生命周期函数
-  //   this.websocketclose();
-  // },
-  //==================================================================================================================
-  methods: {
+    methods: {
     ...mapGetters(["userInfo"]),
     getPcaText(code) {
       return this.pcaData.getText(code);
@@ -407,41 +404,10 @@ export default {
         }
       })
     },
-    //================================================================================================================
-    // initWebSocket: function () {
-    //   // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
-    //   var userId = store.getters.userInfo.id;
-    //   let token = store.getters.token.toString();
-    //   var url = window._CONFIG['domianURL'].replace("https://","ws://").replace("http://","ws://")+"/websocket/"+userId;
-    //   this.websock = new WebSocket(url,[token]);
-    //   this.websock.onopen = this.websocketonopen;
-    //   this.websock.onerror = this.websocketonerror;
-    //   this.websock.onmessage = this.websocketonmessage;
-    //   this.websock.onclose = this.websocketclose;
-    // },
-    // websocketonopen: function () {
-    //   console.log("WebSocket连接成功");
-    // },
-    // websocketonerror: function (e) {
-    //   console.log("WebSocket连接发生错误");
-    // },
-    // websocketonmessage: function (e) {
-    //   var data = eval("(" + e.data + ")");
-    //   //处理订阅信息
-    //   if(data.cmd == "topic"){
-    //     //TODO 系统通知
-    //
-    //   }else if(data.cmd == "user"){
-    //     //TODO 用户消息
-    //     console.log(data.msgTxt);
-    //   }
-    // },
-    // websocketclose: function (e) {
-    //   console.log(e);
-    //   console.log("connection closed (" + e.code + ")");
-    // }
-    //================================================================================================================
-  }
+    getSubCommission(record){
+      this.$refs.subCommissionList.show(record);
+    },
+    }
 }
 </script>
 <style scoped>
