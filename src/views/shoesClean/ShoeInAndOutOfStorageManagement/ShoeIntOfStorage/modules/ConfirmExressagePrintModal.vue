@@ -199,14 +199,6 @@ export default {
         // LODOP.PREVIEW() // 打印预览
       }
     },
-    // 打印
-    doPrint(val) {
-      var ordonnance = document.getElementById(val).contentWindow;
-      setTimeout(() => {
-        // window.print()
-        ordonnance.print();
-      }, 0)
-    }
   }
 }
 </script>

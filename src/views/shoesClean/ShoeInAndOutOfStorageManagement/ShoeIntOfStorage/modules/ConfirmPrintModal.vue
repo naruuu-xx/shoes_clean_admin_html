@@ -178,7 +178,6 @@ export default {
       LODOP = getLodop() // 获取LODOP对象的主过程
       LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
       if (LODOP != false) {
-        // LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","");
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("入库打印水洗唛" + timestamp);
         LODOP.SET_PRINTER_INDEX(printerName);
