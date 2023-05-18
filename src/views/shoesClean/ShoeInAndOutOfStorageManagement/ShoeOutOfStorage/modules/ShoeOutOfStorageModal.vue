@@ -276,6 +276,7 @@ export default {
      */
     printPic(image,printerName){
       LODOP = getLodop() // 获取LODOP对象的主过程
+      LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
       if (LODOP != false) {
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("面单打印" + timestamp);
@@ -289,8 +290,8 @@ export default {
         LODOP.SET_PRINTER_INDEX(index);
         LODOP.SET_SHOW_MODE('PREVIEW_IN_BROWSE', 1)
 
-        // LODOP.PRINT()// 直接打印
-        LODOP.PREVIEW() // 打印预览
+        LODOP.PRINT()// 直接打印
+        // LODOP.PREVIEW() // 打印预览
       }
     },
     /**
