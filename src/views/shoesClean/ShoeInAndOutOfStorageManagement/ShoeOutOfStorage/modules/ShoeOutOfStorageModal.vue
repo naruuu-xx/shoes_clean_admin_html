@@ -204,14 +204,6 @@ export default {
               //打印水洗唛
               this.createWashedMark(res.result.no)
 
-
-              // setTimeout(()=>{
-              //   this.createWashedMark(res.result.no)
-              // },2000)
-              //
-              // 打印快递单
-              //this.createKuaidi(res.result.deliveryId);
-
               //lodop打印快递
               this.printKuaidi(res.result.deliveryId);
 
@@ -236,7 +228,6 @@ export default {
 
             //打印水洗唛
             this.createWashedMark(res.result.no);
-
 
           }
         }).finally(res => {
@@ -263,24 +254,17 @@ export default {
         let content = 'data:image/jpeg;base64,';
 
         let cont
-        let contt
         // data：指待读取blob数据
         let reader = new FileReader();
         reader.onload = event => {
           //读取之后进行操作的代码区域，event.currentTarget.result 指读取到的内容
           cont=content+event.currentTarget.result
 
-
           this.printPic(cont,'快递100')
 
-          //  content = '<img src="'+content+'" />';
-
         }
-//调用方法读取
+        //调用方法读取
         reader.readAsText(res);
-
-
-
 
       })
 
@@ -326,74 +310,40 @@ export default {
       }
       return index;
     },
-    createKuaidi(deliveryId) {
-      let data = {
-        "deliveryId": deliveryId
-      }
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createKuaidiByOut", data, "post").then((res) => {
-        if (!res) {
-          this.$message.warning(res.message)
-          return
-        }
-        const content = res;
-        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
-        // 要不然无法进行打印
-        const blob = new Blob([content], {type: 'image/jpeg'});
-        //=========================================================
-        var date = (new Date()).getTime();
-        var ifr = document.createElement('iframe');
-        ifr.style.frameborder = 'no';
-        ifr.style.display = 'none';
-        ifr.style.pageBreakBefore = 'always';
-        ifr.setAttribute('download', 'printPdf' + date + '.jpeg');
-        ifr.setAttribute('id', 'printPdf' + date + '.jpeg');
-        ifr.src = window.URL.createObjectURL(blob);
-        document.body.appendChild(ifr);
-
-        this.doPrint('printPdf' + date + '.jpeg')
-        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
-        //=========================================================
-      })
-    },
     createWashedMark(no) {
       let data = {
         "no": no
       }
-      downFile("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByOut", data, "post").then((res) => {
+      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByOut", data, "post").then((res) => {
         if (!res) {
           this.$message.warning(res.message)
           return
         }
-        const content = res;
-        // 主要的是在这里的转换，必须要加上{ type: 'application/pdf' }
-        // 要不然无法进行打印
-        const blob = new Blob([content], {type: 'application/pdf'});
-        //=========================================================
-        var date = (new Date()).getTime();
-        var ifr = document.createElement('iframe');
-        ifr.style.frameborder = 'no';
-        ifr.style.display = 'none';
-        ifr.style.pageBreakBefore = 'always';
-        ifr.setAttribute('download', 'printPdf' + date + '.pdf');
-        ifr.setAttribute('id', 'printPdf' + date + '.pdf');
-        ifr.src = window.URL.createObjectURL(blob);
-        document.body.appendChild(ifr);
+        const file = res;
+        this.printThermal(file, "热敏纸")
 
-        this.doPrint('printPdf' + date + '.pdf')
-        window.URL.revokeObjectURL(ifr.src) // 释放URL 对象
-        //=========================================================
+        this.confirmLoading = false;
       })
-    }
-    ,
-// 打印
-    doPrint(val) {
-      var ordonnance = document.getElementById(val).contentWindow;
-      setTimeout(() => {
-        // window.print()
-        ordonnance.print();
-      }, 0)
-    }
-    ,
+    },
+    /**
+     *
+     * @param file base64
+     * @param printerName 打印机名称
+     */
+    printThermal(file,printerName){
+      LODOP = getLodop() // 获取LODOP对象的主过程
+      LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
+      if (LODOP != false) {
+        let timestamp = parseInt(new Date().getTime() / 1000 + '');
+        LODOP.PRINT_INIT("出库打印热敏纸" + timestamp);
+        LODOP.SET_PRINTER_INDEX(printerName);
+        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "50mm", "");
+        LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
+
+        // LODOP.PRINT()// 直接打印
+        LODOP.PREVIEW() // 打印预览
+      }
+    },
   }
 }
 </script>
