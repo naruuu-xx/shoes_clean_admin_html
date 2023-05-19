@@ -130,6 +130,19 @@
             </div>
           </a-col>
         </a-row>
+        <a-row>
+          <div class="title" style="border-bottom-color: transparent;padding: 10px 24px;border-bottom: 1px solid #e3e3e3;border-top: 1px solid #e3e3e3;line-height: 32px; margin-top:20px">
+            平台签到用户数
+          </div>
+          <a-col :xs="24">
+            <a-spin :spinning="spinning">
+              <div class="bar">
+                <xfLine :dataSource="barSignData" alias="用户数" color="#2FC25B"></xfLine>
+              </div>
+            </a-spin>
+
+          </a-col>
+        </a-row>
       </div>
     </a-card>
     <BrandStatistics :pieData="pieBrandData" :queryForm="queryForm" :spinningPie="spinning" type="index"></BrandStatistics>
@@ -251,19 +264,20 @@ export default {
         startTime: '',
         endTime: '',
         selectType: 'day'
-      }
+      },
+      barSignData:[]
     }
   },
   created() {
 
     // this.initLogInfo()
     this.getIndexUp()
-    this.getIndexDown()
+    this.getAllDate()
   },
   methods: {
     changeFilterDate(val) {
       this.queryForm = val
-      this.getIndexDown()
+      this.getAllDate()
     },
     onChangeDate(date,dateString) {
       this.startTime = dateString[0]
@@ -284,6 +298,12 @@ export default {
         case '配送员':
           url = '/courierWithdrawal/list'
           break;
+        case '站长':
+          url = '/shoesClean/ShoeSitemanager/withdrawal'
+          break;
+        case '推广人':
+          url = '/ShoeDistributorWithdrawal'
+          break;
 
         default:
           break;
@@ -293,7 +313,7 @@ export default {
     // 点击tab
     onTab(type, value) {
       this.barQuery[type] = value
-      this.getIndexDown()
+      this.getAllDate()
     },
     initLogInfo() {
       getLoginfo(null).then((res) => {
@@ -316,7 +336,7 @@ export default {
         this.dataObj = res
       })
     },
-    getIndexDown() {
+    getAllDate() {
       let type = this.barQuery.type.value
       let time = this.queryForm.dateType
       let form = {
@@ -325,42 +345,59 @@ export default {
         time
       }
       this.spinning = true
-      getAction('/indexDown',form).then((res) => {
-        if(res.success == false) return
-        this.barData = res.barData
-        this.barUserData = res.userList
-        this.rankingList = [
-          {
-            name:'商品',
-            list:res.goodRankingList || []
-          },
-          {
-            name:'机柜',
-            list:res.lockerRankingList || []
-          },
-          {
-            name:'站点配送',
-            list:res.siteRankingList || []
-          },
-          {
-            name:'站点自提',
-            list:res.siteSelfRankingList || []
-          },
-        ]
-        this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
-          item,count: parseFloat(num)
-        }))
-        this.pieUserData = res.imgDtoUserList.map(({type:item,num}) => ({
-          item,count: parseFloat(num)
-        }))
-        this.pieBrandData = res.imgDtoBrandList.map(({type:item,num}) => ({
-          item,count: parseFloat(num)
-        })).sort((a,b) => b.count-a.count)
-
+      let indexDown = new Promise((resolve, reject) => {
+        getAction('/indexDown',form).then((res) => {
+          if(res.success == false) return reject(res)
+          this.barData = res.barData
+          this.barUserData = res.userList
+          this.rankingList = [
+            {
+              name:'商品',
+              list:res.goodRankingList || []
+            },
+            {
+              name:'机柜',
+              list:res.lockerRankingList || []
+            },
+            {
+              name:'站点配送',
+              list:res.siteRankingList || []
+            },
+            {
+              name:'站点自提',
+              list:res.siteSelfRankingList || []
+            },
+          ]
+          this.pieData = res.imgDtoArrayList.map(({type:item,num}) => ({
+            item,count: parseFloat(num)
+          }))
+          this.pieUserData = res.imgDtoUserList.map(({type:item,num}) => ({
+            item,count: parseFloat(num)
+          }))
+          this.pieBrandData = res.imgDtoBrandList.map(({type:item,num}) => ({
+            item,count: parseFloat(num)
+          })).sort((a,b) => b.count-a.count)
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      });
+      let signList = new Promise((resolve, reject) => {
+        getAction('/signList',form).then((res) => {
+          if(res.success == false) return reject(res)
+          this.barSignData = res.signList
+          
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      });
+      Promise.all([indexDown,signList]).then(res => {
+        console.log(9999,res);
       }).finally(s => {
-        this.spinning = false
-        this.loading = false
-      })
+          this.spinning = false
+          this.loading = false
+        })
     }
 
   },
@@ -408,7 +445,7 @@ export default {
     &-title {
       background: #F5F5F5;
       padding: 16px 0;
-      padding-right: 90px;
+      padding-right: 40px;
       font-size: 16px;
       font-weight: 500;
       line-height: 22px;

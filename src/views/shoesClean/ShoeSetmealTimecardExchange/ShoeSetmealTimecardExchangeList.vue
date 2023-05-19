@@ -89,7 +89,7 @@ export default {
           align: "center",
           dataIndex: 'platform',
           customRender: (text) => {
-            return filterDictTextByCache('setmeal:exchange:name', text);
+            return filterDictTextByCache('setmealTimecard:platform', text);
           }
         },
         {
@@ -139,9 +139,17 @@ export default {
       },
       platformList: [
         {
+          name:'全部',
+          id:'',
+        },
+        {
           name: '洁小兔',
           id: 1,
         },
+        {
+          name: '鞋蜂惊洗',
+          id: 2,
+        }
       ],
       dictOptions: {},
     }
