@@ -91,7 +91,7 @@
 
 
         <span slot="statusAction" slot-scope="text, record">
-          <a-switch v-model:checked="record.eventStatus" @click="switchChange(record.eventStatusGroup, record.eventStatusName, record.eventStatus)" />
+          <a-switch v-if="record.eventName !=='签到'" v-model:checked="record.eventStatus" @click="switchChange(record.eventStatusGroup, record.eventStatusName, record.eventStatus)" />
         </span>
       </a-table>
 
