@@ -37,7 +37,8 @@
     <a-row>
       <a-space>
         <span>特殊天数设置:</span>
-        <a-button @click="onAddSpecialDay" type="primary" :disabled="addSpecialDayDisabled">新增</a-button>
+        <!-- <a-button @click="onAddSpecialDay" type="primary" :disabled="addSpecialDayDisabled">新增</a-button> -->
+        <a-button @click="onAddSpecialDay" type="primary">新增</a-button>
       </a-space>
     </a-row>
 
@@ -279,7 +280,9 @@ export default {
     // 删除特殊天数
     onDelSpecialDay(idx) {
       let integralListIdx = this.specialDays[idx].day - 1
-      this.integralList[integralListIdx].coupons = []
+      if(this.integralList[integralListIdx]) {
+        this.integralList[integralListIdx].coupons = []
+      }
       this.specialDays.splice(idx, 1)
       // 
     },
