@@ -244,7 +244,6 @@ export default {
         label: item.name,
         value: +item.id
       }));
-      console.log(9090,this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].weekList);
     },
     changeType(idx,tableIdx) {
       this.specialDays[idx].coupons[tableIdx].id = ''
@@ -279,7 +278,10 @@ export default {
     },
     // 删除特殊天数
     onDelSpecialDay(idx) {
+      let integralListIdx = this.specialDays[idx].day - 1
+      this.integralList[integralListIdx].coupons = []
       this.specialDays.splice(idx, 1)
+      // 
     },
     // 添加`特殊天数
     onAddSpecialDay() {
@@ -331,8 +333,10 @@ export default {
       this.$router.go(-1)
     },
     onSave() {
+      console.log(333,this.integralList);
       for (let index = 0; index < this.specialDays.length; index++) {
         const specialDay = this.specialDays[index];
+        console.log(1111,specialDay);
         const day = specialDay.day
         const coupons = specialDay.coupons
         if(day == '') {
@@ -351,7 +355,6 @@ export default {
         // this.integralList[item.day-1].describe = item.describe
         this.integralList[item.day-1].day = item.day
       })
-
       this.loading = true
       httpAction('shoeSign/updateOrAdd',this.integralList,'post').then(res => {
         if(res.success) {

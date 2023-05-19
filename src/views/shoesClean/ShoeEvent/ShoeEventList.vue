@@ -228,8 +228,8 @@
           }
         });
       },
-      couponSelect({id,couponId,registerCoupon}){
-        this.$refs.couponSelectModal.show({id,couponId,registerCoupon});
+      couponSelect({id,couponId,couponName,registerCoupon,registerCouponName}){
+        this.$refs.couponSelectModal.show({id,couponId,couponName,registerCoupon,registerCouponName});
 
       },
       cardBagSelect(id,couponId){

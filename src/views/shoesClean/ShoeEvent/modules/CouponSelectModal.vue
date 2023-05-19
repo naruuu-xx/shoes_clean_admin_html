@@ -12,6 +12,7 @@
           <XfSelect
               allowClear
               :list="pullUserCoupons"
+              :rawList="rowPullUserCoupons"
               @changeList="changeSelect($event,'pullUserCoupons')"
               placeholder="请选择优惠券"
               v-model="form.couponId"
@@ -23,6 +24,7 @@
           <XfSelect
               allowClear
               :list="bePulledUserCoupons"
+              :rawList="rowBePulledUserCoupons"
               @changeList="changeSelect($event,'bePulledUserCoupons')"
               placeholder="请选择优惠券"
               v-model="form.registerCoupon"
@@ -58,7 +60,9 @@ export default {
         registerCoupon:''
       },
       pullUserCoupons:[],
-      bePulledUserCoupons:[]
+      bePulledUserCoupons:[],
+      rowPullUserCoupons:[],
+      rowBePulledUserCoupons:[],
     }
   },
   created() {
@@ -72,6 +76,15 @@ export default {
       }));
     },
     show(data){
+      this.rowPullUserCoupons = [{
+        label:data.couponName,
+        value:data.couponId
+      }]
+      
+      this.rowBePulledUserCoupons = [{
+        label:data.registerCouponName,
+        value:data.registerCoupon
+      }]
       this.form = Object.assign({},this.form,data)
       this.visible = true;
     },
