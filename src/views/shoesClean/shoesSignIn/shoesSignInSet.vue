@@ -37,7 +37,8 @@
     <a-row>
       <a-space>
         <span>特殊天数设置:</span>
-        <a-button @click="onAddSpecialDay" type="primary" :disabled="addSpecialDayDisabled">新增</a-button>
+        <!-- <a-button @click="onAddSpecialDay" type="primary" :disabled="addSpecialDayDisabled">新增</a-button> -->
+        <a-button @click="onAddSpecialDay" type="primary">新增</a-button>
       </a-space>
     </a-row>
 
@@ -244,7 +245,6 @@ export default {
         label: item.name,
         value: +item.id
       }));
-      console.log(9090,this.specialDays[additionalData.idx].coupons[additionalData.tableIdx].weekList);
     },
     changeType(idx,tableIdx) {
       this.specialDays[idx].coupons[tableIdx].id = ''
@@ -279,7 +279,12 @@ export default {
     },
     // 删除特殊天数
     onDelSpecialDay(idx) {
+      let integralListIdx = this.specialDays[idx].day - 1
+      if(this.integralList[integralListIdx]) {
+        this.integralList[integralListIdx].coupons = []
+      }
       this.specialDays.splice(idx, 1)
+      // 
     },
     // 添加`特殊天数
     onAddSpecialDay() {
@@ -331,8 +336,10 @@ export default {
       this.$router.go(-1)
     },
     onSave() {
+      console.log(333,this.integralList);
       for (let index = 0; index < this.specialDays.length; index++) {
         const specialDay = this.specialDays[index];
+        console.log(1111,specialDay);
         const day = specialDay.day
         const coupons = specialDay.coupons
         if(day == '') {
@@ -351,7 +358,6 @@ export default {
         // this.integralList[item.day-1].describe = item.describe
         this.integralList[item.day-1].day = item.day
       })
-
       this.loading = true
       httpAction('shoeSign/updateOrAdd',this.integralList,'post').then(res => {
         if(res.success) {

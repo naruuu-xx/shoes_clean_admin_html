@@ -81,7 +81,7 @@
         <span  slot="action" slot-scope="text, record">
           <a v-if="record.eventName=='每周五自动发放卡包'" @click="cardBagSelect(record.id, record.couponId)">设置</a>
 
-          <a v-if="record.eventName=='拉新活动'" @click="couponSelect(record.id, record.couponId)">优惠券设置</a>
+          <a v-if="record.eventName=='拉新活动'" @click="couponSelect(record)">优惠券设置</a>
           <a-divider v-if="record.eventName=='拉新活动'" type="vertical" />
           <a v-if="record.eventName=='拉新活动'" @click="queryEventDetail">查看详情</a>
 
@@ -147,7 +147,7 @@
     data () {
       return {
         description: '活动管理页面',
-        dataSource: '',
+        dataSource: [],
         // 表头
         columns: [
           {
@@ -228,8 +228,8 @@
           }
         });
       },
-      couponSelect(id,couponId){
-        this.$refs.couponSelectModal.show(id,couponId);
+      couponSelect({id,couponId,couponName,registerCoupon,registerCouponName}){
+        this.$refs.couponSelectModal.show({id,couponId,couponName,registerCoupon,registerCouponName});
 
       },
       cardBagSelect(id,couponId){
