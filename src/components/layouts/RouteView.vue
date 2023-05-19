@@ -1,9 +1,19 @@
 <template>
   <div class="main">
-  <keep-alive :include="includedComponents">
+    
+  <!-- <keep-alive :include="includedComponents">
     <router-view v-if="keepAlive" />
   </keep-alive>
-  <router-view v-if="!keepAlive" />
+  <router-view v-if="!keepAlive" /> -->
+
+    <!-- <keep-alive >
+      <router-view/>
+    </keep-alive> -->
+
+    <keep-alive v-if="keepAlive" >
+      <router-view />
+    </keep-alive>
+    <router-view v-if="!keepAlive" />
   </div>
 </template>
 

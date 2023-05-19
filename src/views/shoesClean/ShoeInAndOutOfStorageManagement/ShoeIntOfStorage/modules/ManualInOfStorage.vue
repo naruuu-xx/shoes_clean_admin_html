@@ -156,6 +156,7 @@ export default {
     },
   },
   created() {
+
   },
   methods: {
     changeSelect(data) {
@@ -167,6 +168,12 @@ export default {
     checkedSelect(val) {
     },
     show() {
+      httpAction("/shoeFactoryWasher/getWasher","", "get").then((res) =>{
+      if(!res.success){
+        this.$message.warning(res.message)
+
+      }
+    })
       this.visible = true;
       this.model = {};
 

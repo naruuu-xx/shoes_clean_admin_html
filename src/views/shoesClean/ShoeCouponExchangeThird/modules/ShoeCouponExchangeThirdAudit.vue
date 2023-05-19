@@ -60,9 +60,11 @@
                 :list="weekList"
                 @change="checkedSelect"
                 @changeList="changeSelect"
-                v-model="data.couponId"
+                placeholder="请选择优惠券"
+                v-model="data.couponId "
                 :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
                 style="width: 80%;"
+
               >
               </XfSelect>
             </div>
@@ -76,9 +78,11 @@
                 :list="weekList"
                 @change="checkedSelect"
                 @changeList="changeSelect"
-                v-model="data.timecardId"
+                v-model=" data.timecardId "
                 :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=2`'
                 style="width: 80%;"
+                placeholder="请选择鞋蜂卡"
+
               >
               </XfSelect>
             </div>
@@ -106,7 +110,7 @@ export default {
       data: {},
       auditOption: "1",
       typeOption: "1",
-      confirmLoading: false,
+      confirmLoading: false
     }
   },
   methods: {
@@ -124,6 +128,8 @@ export default {
       this.auditOption = "1";
       this.typeOption = "1";
       this.data.note = "";
+      this.data.couponId =  this.data.couponId === 0 ? null : this.data.couponId;
+      this.data.timecardId =  this.data.timecardId === 0 ? null : this.data.timecardId;
     },
     handleCancel2() {
       this.visible = false;
@@ -131,6 +137,7 @@ export default {
       this.auditOption = "1";
       this.typeOption = "1";
       this.data.note = "";
+
     },
     handleSubmit2() {
       let that = this;
