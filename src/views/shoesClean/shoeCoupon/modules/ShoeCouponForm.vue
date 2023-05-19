@@ -377,7 +377,7 @@
           this.selectedReceiveCount = "2";
 
         } else if ("1" === this.model.way) {
-          this.isSystemCoupon = true;
+          this.isSystemCoupon = false;
           this.isCardBag = false;
 
           //发放数量
