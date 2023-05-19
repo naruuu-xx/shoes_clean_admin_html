@@ -104,9 +104,6 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
               <a-menu slot="overlay">
                 <a-menu-item>
-                   <a @click="setPercentage(record)">机柜收益</a>
-                </a-menu-item>
-                <a-menu-item>
                    <a @click="handleGrid(record)">格子状态</a>
                 </a-menu-item>
                 <a-menu-item>
