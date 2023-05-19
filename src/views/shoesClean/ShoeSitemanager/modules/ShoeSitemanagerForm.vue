@@ -54,7 +54,7 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
+              <a-form-model-item label="站点收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
                 <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off" suffix="%"></a-input>
               </a-form-model-item>
             </a-col>
