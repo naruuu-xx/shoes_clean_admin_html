@@ -2,8 +2,13 @@
   <a-spin tip="请求中..."  :spinning="loading">
   <a-card :bordered="false">
     <a-row>
-      <a-col :xs="24" :sm="24" :md="6">签到周期:<a-input-number @blur="periodBlur" v-model="period" placeholder="请输入签到周期"
-          @change="v => period = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />天</a-col>
+      <a-col :xs="24" :sm="24" :md="6">
+        <a-space>
+          签到周期:
+          <a-input-number @blur="periodBlur" v-model="period" placeholder="请输入签到周期"
+          @change="v => period = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />天
+        </a-space>
+      </a-col>
       <a-col :xs="24" :sm="24" :md="18">
         <a-space>
           <a-button @click="onReset">重置</a-button>
@@ -39,7 +44,9 @@
     <a-row v-for="(specialDay,idx) in specialDays" :key="idx">
       <div class="specialDays">
         <div class="specialDays-top" :data-idx="`(${idx+1})`">
-          第<a-input-number @blur="specialDayBlur(idx,specialDays[idx].day)" v-model="specialDays[idx].day" placeholder="请输入天数" @change="v => specialDays[idx].day = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />天
+          <a-space>
+            第<a-input-number @blur="specialDayBlur(idx,specialDays[idx].day)" v-model="specialDays[idx].day" placeholder="请输入天数" @change="v => specialDays[idx].day = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />天
+          </a-space>
           <a-space style="margin-left: 24px;">
             <a-button @click="onAddCoupon(idx)" type="primary" :disabled="specialDays[idx].day == '' || (!!specialDays[idx].coupons.length && specialDays[idx].coupons.some(coupon => coupon.id == ''))">新增</a-button>
             <a-button @click="onDelSpecialDay(idx)" type="danger">删除</a-button>
@@ -81,8 +88,8 @@
     </a-row>
 
     <a-row style="margin-top: 20px;">
-      <a-col :xs="24" :sm="24" :md="2">签到规则:</a-col>
-      <a-col :xs="24" :sm="24" :md="22"><JEditor v-model="rule" placeholder="请输入签到规则"></JEditor></a-col>
+      <div style="margin-bottom: 12px;">签到规则:</div>
+      <JEditor v-model="rule" placeholder="请输入签到规则"></JEditor>
     </a-row>
 
     <div class="btns">
