@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import {httpAction} from "@api/manage";
 import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
@@ -76,7 +75,12 @@ export default {
           "value": "13",
           "name": "已完成"
         },
-        {"value": "14", "name": "退款中"}, {"value": "15", "name": "已退款"}, {"value": "16", "name": "已取消"}],
+        {"value": "14", "name": "退款中"},
+        {"value": "15", "name": "已退款"},
+        {"value": "16", "name": "已取消"},
+        {"value": "20", "name": "送站点"},
+        {"value":"25","name":"待入库"}
+      ],
       url: {
         list: "/shoes/shoeLocker/sitemanagerOrderList",
       },

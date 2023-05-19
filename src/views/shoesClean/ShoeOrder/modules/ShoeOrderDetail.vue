@@ -67,6 +67,12 @@
           </a-descriptions-item>
         </template>
         <a-descriptions-item label="袋子码"> {{ data.bagCode || "——" }} </a-descriptions-item>
+        <a-descriptions-item label="物流人员(工厂存鞋)">
+          <template v-if="logisticsNameByBefore !== '无' || logisticsNameByBefore !== ' ' ">
+            {{ logisticsNameByBefore }}({{ logisticsPhoneByBefore }})
+          </template>
+          <template v-else>——</template>
+        </a-descriptions-item>
         <a-descriptions-item label="物流人员(工厂取鞋)">
           <template v-if="logisticsNameByAfter !== '无' || logisticsNameByAfter !== ' ' ">
             {{ logisticsNameByAfter }}({{ logisticsPhoneByAfter }})
@@ -376,7 +382,7 @@ export default {
         getAction('/ShoeOrder/shoeOrder/getShoeOrderException', ShoeOrderExceptionData).then((res) => {
           this.orderExceptionInfo = res.result
           this.orderExceptionInfo.title = res.result.title || '无'
-          this.orderExceptionInfo.dealTypeText = res.result.status == 0 ? '未处理' : res.result.dealTypeText 
+          this.orderExceptionInfo.dealTypeText = res.result.status == 0 ? '未处理' : res.result.dealTypeText
         })
       } else {
         this.orderExceptionInfo = {
