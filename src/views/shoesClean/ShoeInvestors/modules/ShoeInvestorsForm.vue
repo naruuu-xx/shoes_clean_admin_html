@@ -53,7 +53,9 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="绑定上级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="investorsPId" v-if="model.level === 2">
+            <a-form-model-item
+              label="绑定上级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="investorsPId"
+              v-if="model.level === '2'">
               <a-select
                 show-search
                 placeholder="选择或搜索需要绑定的用户"
