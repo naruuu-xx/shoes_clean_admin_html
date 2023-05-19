@@ -25,7 +25,7 @@
       </a-spin>
     </div>
 
-    <a-select-option v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]" :disabled="item.disabled"
+    <a-select-option :title="item[labelKey]" v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]" :disabled="item.disabled"
     >{{ item[labelKey] }}
     </a-select-option>
   </a-select>
