@@ -93,6 +93,16 @@
             },
           },
           {
+            title:'创建人',
+            align:"center",
+            dataIndex: 'addUserName'
+          },
+          {
+            title:'创建日期',
+            align:"center",
+            dataIndex: 'createTime'
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",

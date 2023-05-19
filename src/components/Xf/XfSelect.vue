@@ -25,7 +25,7 @@
       </a-spin>
     </div>
 
-    <a-select-option v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]"
+    <a-select-option v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]" :disabled="item.disabled"
     >{{ item[labelKey] }}
     </a-select-option>
   </a-select>
@@ -99,6 +99,11 @@ export default {
     type:{
       type: String,
       default: '', // 简化小程序用户搜索的操作 'customer' 合作下单,'distributor' 推广,'investors' 投资人,'site' 站点
+    },
+    // 额外数据
+    additionalData:{
+      type: Object,
+      default: () => ({})
     }
   },
 
@@ -198,7 +203,7 @@ export default {
           this.page = res.result.current || 1
           this.total = res.result.total || 1
           if(this.isType) {
-            this.$emit('changeList',res.result)
+            this.$emit('changeList',res.result,this.additionalData)
           } else {
             this.dataList = res.result.records.map(item => ({
               label: `${item.nickname}(${item.phone})`,
