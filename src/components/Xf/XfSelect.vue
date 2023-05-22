@@ -105,7 +105,7 @@ export default {
       type: Object,
       default: () => ({})
     },
-    // 需要放进来的数据
+    // 需要放进来的数据 回显的内容
     rawList:{
       type: Array,
       default: () => ([])
@@ -115,13 +115,15 @@ export default {
       type: Boolean,
       default: false
     },
+    // 内部的labelKey
     InternalLabelKey:{
       type: String,
-      default: 'nickname'
+      default: 'label'
     },
+    // 内部的ValueKey
     InternalValueKey:{
       type: String,
-      default: 'userId'
+      default: 'value'
     }
   },
 

@@ -33,7 +33,7 @@
                   isInternalData
                   mode="multiple"
                   v-model="model.lockerCodeList"
-                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=locker`'
                   :rawList="[{label:'zdian1',value:'100005'}]"
                 >
                 </xf-select>

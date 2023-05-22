@@ -23,8 +23,8 @@
                   isInternalData
                   mode="multiple"
                   v-model="model.lockerCodeList"
-                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
-                  :rawList="[{label:'zdian1',value:'100005'}]"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=locker`'
+                  :rawList="[]"
                 >
                 </xf-select>
             </a-form-model-item>
@@ -39,8 +39,8 @@
                   isInternalData
                   mode="multiple"
                   v-model="model.siteCodeList"
-                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
-                  :rawList="[{label:'zdian1',value:'100005'}]"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=site`'
+                  :rawList="[]"
                 >
                 </xf-select>
             </a-form-model-item>
