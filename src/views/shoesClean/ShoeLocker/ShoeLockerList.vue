@@ -260,15 +260,15 @@ export default {
           },
         },
 
-        {
-          title: '收益比例',
-          align: "center",
-          dataIndex: 'percentage',
-          customRender: (text) => {
-            let percentage = (text * 100).toFixed(0) + "%";
-            return percentage;
-          },
-        },
+        // {
+        //   title: '收益比例',
+        //   align: "center",
+        //   dataIndex: 'percentage',
+        //   customRender: (text) => {
+        //     let percentage = (text * 100).toFixed(0) + "%";
+        //     return percentage;
+        //   },
+        // },
         {
           title: '机柜状态',
           align: "center",
