@@ -108,6 +108,47 @@
           </a-col>
 
           <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="是否满减" prop="fullDiscount">
+              <a-radio-group name="radioGroup" v-model="model.fullDiscount" @change="(val) => {
+               if(model.fullDiscount == 0) {fullDiscountList = []}}">
+                <a-radio :value="1">
+                  是
+                </a-radio>
+                <a-radio :value="0">
+                  否
+                </a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24" v-if="model.fullDiscount == 1">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="是否与优惠券叠加优惠" prop="isSuperposition">
+              <div>
+                <a-radio-group name="radioGroup" v-model="model.isSuperposition">
+                <a-radio :value="1">
+                  是
+                </a-radio>
+                <a-radio :value="0">
+                  否
+                </a-radio>
+              </a-radio-group>
+              </div>
+              <a-button type="primary" @click="fullDiscountAdd">新增</a-button>
+              <a-table v-if="fullDiscountList.length" bordered :data-source="fullDiscountList" :columns="fullDiscountColumns" :rowKey="model.uuid" size="small" :pagination="false">
+                <template slot="num" slot-scope="text,record,index">
+                  <a-input-number style="width: 100%;" @blur="numBlur(index,record.num)" v-model="record.num" placeholder="请输双数" @change="v => record.num = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />
+                </template>
+                <template slot="price" slot-scope="text,record,index">
+                  <a-input-number style="width: 100%;" v-model="record.price" placeholder="请输满减金额(元)" @change="v => record.price = isNaN(parseInt(v)) ? 0 : parseInt(v)" :max="fullDiscountList[index].num * 2" :min="0" />
+                </template>
+                <template slot="operation" slot-scope="text,index">
+                  <a href="javascript:;" style="color: red" @click="fullDiscountList.splice(index,1)">删除</a>
+                </template>
+              </a-table>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
             <a-form-model-item label="附加服务项" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="additionalId" >
               <a-select
                 mode="multiple"
@@ -264,6 +305,12 @@ export default {
         status: [
           { required: true, message: '请输入状态' },
         ],
+        fullDiscount: [
+          { required: true, message: '请选择是否满减' },
+        ],
+        isSuperposition: [
+          { required: true, message: '请选择是否满减' },
+        ],
       },
       url: {
         list: "/shoes/shoeGoodsSku/list",
@@ -306,7 +353,28 @@ export default {
         },
       ],
 
-      additionalList:[]
+      additionalList:[],
+      fullDiscountColumns : [
+        {
+          title: '双数',
+          dataIndex: 'num',
+          scopedSlots: { customRender: 'num' },
+          align: 'center'
+        },
+        {
+          title: '满减金额(元)',
+          dataIndex:'price',
+          scopedSlots: {customRender: 'price'},
+          align: 'center'
+        },
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          scopedSlots: { customRender: 'operation' },
+          align: 'center'
+        },
+      ],
+      fullDiscountList:[]
 
 
     }
@@ -326,7 +394,27 @@ export default {
 
   },
   methods: {
+    fullDiscountAdd() {
+      const dataSource  = this.model.skuTable;
+      let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
 
+      const newData = {
+        num: 1,
+        price: 0,
+        uuid
+      };
+      this.fullDiscountList.push(newData)
+      console.log(this.fullDiscountList);
+
+    },
+    numBlur(idx,val) {
+      let list = [...this.fullDiscountList].map(({num}) => num)
+      list.splice(idx,1)
+      if(list.findIndex(item => item == val) != -1) {
+        this.$message.error('已有相同鞋数!')
+        this.fullDiscountList.num = ''
+      }
+    },
     // 是否可用提交规格
     isSubmitSkuTable() {
       let status = true
@@ -408,6 +496,17 @@ export default {
         return
       }
       const that = this
+      let numObj = {}
+      for (let index = 0; index < this.fullDiscountList.length; index++) {
+        const num = this.fullDiscountList[index].num;
+        if (!numObj[num]) {
+          numObj[num] = true
+        } else {
+          this.$message.error('鞋子双数不能重复')
+          break;
+        }
+        
+      }
       console.log(this.model)
       // 触发表单验证
       this.$refs.form.validate(valid => {
