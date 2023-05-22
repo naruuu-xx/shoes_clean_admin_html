@@ -22,9 +22,9 @@
                   style="width: 100%"
                   isInternalData
                   mode="multiple"
-                  v-model="model.lockerCodeList"
+                  v-model="model.lockerIdList"
                   :url='`/shoes/shoeLogistics/lockerOrSiteList?type=locker`'
-                  :rawList="[]"
+                  :rawList="rawLockerList"
                 >
                 </xf-select>
             </a-form-model-item>
@@ -38,9 +38,9 @@
                   style="width: 100%"
                   isInternalData
                   mode="multiple"
-                  v-model="model.siteCodeList"
+                  v-model="model.siteIdList"
                   :url='`/shoes/shoeLogistics/lockerOrSiteList?type=site`'
-                  :rawList="[]"
+                  :rawList="rawSiteList"
                 >
                 </xf-select>
             </a-form-model-item>
@@ -135,6 +135,8 @@
         },
         lockerList:[],
         siteList:[],
+        rawLockerList:[],
+        rawSiteList:[]
       }
     },
     computed: {
@@ -152,7 +154,15 @@
       },
       edit (record) {
         this.model = Object.assign({}, record);
-        this.getLockerList();
+        this.model.lockerIdList = record.lockerCodeList.map(({value}) => value)
+        this.rawLockerList = record.lockerCodeList.map(item => item)
+
+        this.model.siteIdList = record.siteCodeList.map(({value}) => value)
+        this.rawSiteList = record.siteCodeList.map(item => item)
+
+        this.model.lockerCodeList = []
+        this.model.siteCodeList = []
+        // this.getLockerList();
         this.visible = true;
       },
       submitForm () {
@@ -170,7 +180,7 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-            that.setModel();
+            // that.setModel();
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
