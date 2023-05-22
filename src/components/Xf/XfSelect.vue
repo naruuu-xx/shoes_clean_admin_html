@@ -25,7 +25,7 @@
       </a-spin>
     </div>
 
-    <a-select-option v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]" :disabled="item.disabled"
+    <a-select-option :title="item[labelKey]" v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]" :disabled="item.disabled"
     >{{ item[labelKey] }}
     </a-select-option>
   </a-select>
@@ -104,6 +104,11 @@ export default {
     additionalData:{
       type: Object,
       default: () => ({})
+    },
+    // 需要放进来的数据
+    rawList:{
+      type: Array,
+      default: () => ([])
     }
   },
 
@@ -123,7 +128,8 @@ export default {
       spinning: false,
       searchValue: '',
       typeArr:['customer','distributor','investors','site'],
-      dataList:[]
+      dataList:[],
+      first: true
     }
   },
 
@@ -153,7 +159,24 @@ export default {
 
   computed: {
     selectList() {
-      return this.isType ? this.list : this.dataList
+      let list = this.isType ? this.list : this.dataList
+      if(this.first) {
+        if(this.rawList.length) {
+          this.first = false
+          if(this.mode == 'default') {
+            console.log(44444,list.findIndex(l => l.value == this.rawList[0].value) == -1 ? [...this.rawList,...list] : list);
+            return list.findIndex(l => l.value == this.rawList[0].value) == -1 ? [...this.rawList,...list] : list
+          } else {
+            return [...this.rawList.filter(item => list.findIndex(l => l.value == item.value) == -1),...list]
+          }
+        } else {
+          return list
+        }
+        
+      } else {
+        console.log(8989,list);
+        return list
+      }
     },
 
     maxPage() {

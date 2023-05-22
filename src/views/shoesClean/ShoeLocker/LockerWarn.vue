@@ -36,34 +36,34 @@
 
 
 
-    <a-divider/>
-    <h1>优惠券审核通知</h1>
-    <div class="content-font">
-      接收通知人：
-      <XfSelectPlus
-        :list="weekList2"
-        @change="checkedSelect2"
-        @changeList="changeSelect2"
-        v-model="userId2"
-        searchKey="nickname"
-        :url='`/ShoeConfig/shoeConfig/getUser`'
-      >
-      </XfSelectPlus>
-      <a-button type="primary" style="margin: 12px" @click="add2">添加</a-button>
-    </div>
-    <br/>
+<!--    <a-divider/>-->
+<!--    <h1>优惠券审核通知</h1>-->
+<!--    <div class="content-font">-->
+<!--      接收通知人：-->
+<!--      <XfSelectPlus-->
+<!--        :list="weekList2"-->
+<!--        @change="checkedSelect2"-->
+<!--        @changeList="changeSelect2"-->
+<!--        v-model="userId2"-->
+<!--        searchKey="nickname"-->
+<!--        :url='`/ShoeConfig/shoeConfig/getUser`'-->
+<!--      >-->
+<!--      </XfSelectPlus>-->
+<!--      <a-button type="primary" style="margin: 12px" @click="add2">添加</a-button>-->
+<!--    </div>-->
+<!--    <br/>-->
 
-    <div style="display: flex">
-      <a-space>
-        <div class="tag"  v-for="(item, index) in couponNoticeIds" key="index">
-          {{ item.label }}<a-icon @click="handleClose2(index)" type="close"></a-icon>
-        </div>
-      </a-space>
-    </div>
-    <br/>
-    <a-space>
-      <a-button type="primary" @click="save2">保存</a-button>
-    </a-space>
+<!--    <div style="display: flex">-->
+<!--      <a-space>-->
+<!--        <div class="tag"  v-for="(item, index) in couponNoticeIds" key="index">-->
+<!--          {{ item.label }}<a-icon @click="handleClose2(index)" type="close"></a-icon>-->
+<!--        </div>-->
+<!--      </a-space>-->
+<!--    </div>-->
+<!--    <br/>-->
+<!--    <a-space>-->
+<!--      <a-button type="primary" @click="save2">保存</a-button>-->
+<!--    </a-space>-->
 
 
   </a-card>
