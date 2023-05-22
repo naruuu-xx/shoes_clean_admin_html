@@ -25,9 +25,18 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
-              <a-select v-model="model.lockerCodeList" mode="multiple">
+              <!-- <a-select v-model="model.lockerCodeList" mode="multiple">
                 <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
-              </a-select>
+              </a-select> -->
+              <xf-select
+                  style="width: 100%"
+                  isInternalData
+                  mode="multiple"
+                  v-model="model.lockerCodeList"
+                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
+                  :rawList="[{label:'zdian1',value:'100005'}]"
+                >
+                </xf-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -72,10 +81,12 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeCourierForm',
     components: {
+      XfSelect
     },
     props: {
       //表单禁用

@@ -97,7 +97,7 @@
               <div class="locker-label">
                 机柜{{ idx + 1 }}：
                 <a-select style="width: 120px" v-model="investorsLockerDtoList[idx].lockerId">
-                  <a-select-option :value="item.lockerId" v-for="(item, index) in lockerList" :key="index"
+                  <a-select-option :title="item.name" :value="item.lockerId" v-for="(item, index) in lockerList" :key="index"
                                    :disabled="disabledLocker(item.lockerId)">
                     {{ item.name }}
                   </a-select-option>

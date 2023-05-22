@@ -15,16 +15,34 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 绑定快递柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
-              <a-select v-model="model.lockerCodeList" mode="multiple">
+              <!-- <a-select v-model="model.lockerCodeList" mode="multiple">
                 <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
-              </a-select>
+              </a-select> -->
+              <xf-select
+                  style="width: 100%"
+                  isInternalData
+                  mode="multiple"
+                  v-model="model.lockerCodeList"
+                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
+                  :rawList="[{label:'zdian1',value:'100005'}]"
+                >
+                </xf-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 绑定站点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="siteCodeList">
-              <a-select v-model="model.siteCodeList" mode="multiple">
+              <!-- <a-select v-model="model.siteCodeList" mode="multiple">
                 <a-select-option v-for="i in siteList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
-              </a-select>
+              </a-select> -->
+              <xf-select
+                  style="width: 100%"
+                  isInternalData
+                  mode="multiple"
+                  v-model="model.siteCodeList"
+                  :url='`/shoes/shoeUser/getUserListBytype?type=site`'
+                  :rawList="[{label:'zdian1',value:'100005'}]"
+                >
+                </xf-select>
             </a-form-model-item>
           </a-col>
 
@@ -58,10 +76,12 @@
   // import { validateDuplicateValue } from '@/utils/util'
 
   import { httpAction } from '@api/manage'
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeLogisticsForm',
     components: {
+      XfSelect
     },
     props: {
       //表单禁用
