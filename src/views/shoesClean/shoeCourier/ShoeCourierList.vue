@@ -9,6 +9,14 @@
               <a-input placeholder="请输入 姓名" v-model="queryParam.name" autocomplete="off"></a-input>
             </a-form-item>
           </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="接单状态">
+              <a-select v-model="queryParam.orderStatus">
+                <a-select-option :value="1" >正常接单</a-select-option>
+                <a-select-option :value="0" >停止接单</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label=" 电话">
@@ -274,6 +282,11 @@ export default {
           customRender: (text) => {
             return filterDictTextByCache('shoe_courier_status', text);
           },
+        },
+        {
+          title: '接单状态',
+          align: "center",
+          dataIndex: 'orderStatusText'
         },
         // {
         //   title: ' 删除状态',
