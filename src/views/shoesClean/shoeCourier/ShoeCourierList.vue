@@ -12,8 +12,8 @@
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="接单状态">
               <a-select v-model="queryParam.orderStatus">
-                <a-select-option :value="0" >正常接单</a-select-option>
-                <a-select-option :value="1" >停止接单</a-select-option>
+                <a-select-option :value="1" >正常接单</a-select-option>
+                <a-select-option :value="0" >停止接单</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
