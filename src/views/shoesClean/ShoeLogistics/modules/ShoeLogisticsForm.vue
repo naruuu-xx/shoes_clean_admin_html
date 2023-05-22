@@ -15,16 +15,34 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 绑定快递柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
-              <a-select v-model="model.lockerCodeList" mode="multiple">
+              <!-- <a-select v-model="model.lockerCodeList" mode="multiple">
                 <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
-              </a-select>
+              </a-select> -->
+              <xf-select
+                  style="width: 100%"
+                  isInternalData
+                  mode="multiple"
+                  v-model="model.lockerIdList"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=locker`'
+                  :rawList="rawLockerList"
+                >
+                </xf-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label=" 绑定站点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="siteCodeList">
-              <a-select v-model="model.siteCodeList" mode="multiple">
+              <!-- <a-select v-model="model.siteCodeList" mode="multiple">
                 <a-select-option v-for="i in siteList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
-              </a-select>
+              </a-select> -->
+              <xf-select
+                  style="width: 100%"
+                  isInternalData
+                  mode="multiple"
+                  v-model="model.siteIdList"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=site`'
+                  :rawList="rawSiteList"
+                >
+                </xf-select>
             </a-form-model-item>
           </a-col>
 
@@ -58,10 +76,12 @@
   // import { validateDuplicateValue } from '@/utils/util'
 
   import { httpAction } from '@api/manage'
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeLogisticsForm',
     components: {
+      XfSelect
     },
     props: {
       //表单禁用
@@ -115,6 +135,8 @@
         },
         lockerList:[],
         siteList:[],
+        rawLockerList:[],
+        rawSiteList:[]
       }
     },
     computed: {
@@ -132,7 +154,15 @@
       },
       edit (record) {
         this.model = Object.assign({}, record);
-        this.getLockerList();
+        this.model.lockerIdList = record.lockerCodeList.map(({value}) => value)
+        this.rawLockerList = record.lockerCodeList.map(item => item)
+
+        this.model.siteIdList = record.siteCodeList.map(({value}) => value)
+        this.rawSiteList = record.siteCodeList.map(item => item)
+
+        this.model.lockerCodeList = []
+        this.model.siteCodeList = []
+        // this.getLockerList();
         this.visible = true;
       },
       submitForm () {
@@ -150,7 +180,7 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-            that.setModel();
+            // that.setModel();
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

@@ -105,10 +105,25 @@ export default {
       type: Object,
       default: () => ({})
     },
-    // 需要放进来的数据
+    // 需要放进来的数据 回显的内容
     rawList:{
       type: Array,
       default: () => ([])
+    },
+    // 是否只要内部的
+    isInternalData:{
+      type: Boolean,
+      default: false
+    },
+    // 内部的labelKey
+    InternalLabelKey:{
+      type: String,
+      default: 'label'
+    },
+    // 内部的ValueKey
+    InternalValueKey:{
+      type: String,
+      default: 'value'
     }
   },
 
@@ -159,12 +174,11 @@ export default {
 
   computed: {
     selectList() {
-      let list = this.isType ? this.list : this.dataList
+      let list = !this.isInternal ? this.list : this.dataList
       if(this.first) {
-        if(this.rawList.length) {
+        if(this.rawList.length && list.length) {
           this.first = false
           if(this.mode == 'default') {
-            console.log(44444,list.findIndex(l => l.value == this.rawList[0].value) == -1 ? [...this.rawList,...list] : list);
             return list.findIndex(l => l.value == this.rawList[0].value) == -1 ? [...this.rawList,...list] : list
           } else {
             return [...this.rawList.filter(item => list.findIndex(l => l.value == item.value) == -1),...list]
@@ -174,7 +188,6 @@ export default {
         }
         
       } else {
-        console.log(8989,list);
         return list
       }
     },
@@ -189,6 +202,9 @@ export default {
 
     isType() {
       return this.type == '' || !this.typeArr.includes(this.type)
+    },
+    isInternal() {
+      return this.isInternalData || !this.isType
     }
   },
 
@@ -225,13 +241,21 @@ export default {
         if (res.success) {
           this.page = res.result.current || 1
           this.total = res.result.total || 1
-          if(this.isType) {
+          if(!this.isInternal) {
             this.$emit('changeList',res.result,this.additionalData)
           } else {
-            this.dataList = res.result.records.map(item => ({
-              label: `${item.nickname}(${item.phone})`,
-              value: +item.userId
-            }));
+            if(this.isType) {
+              this.dataList = res.result.records.map(item => ({
+                label: item[this.InternalLabelKey],
+                value: item[this.InternalValueKey]
+              }));
+            } else {
+              this.dataList = res.result.records.map(item => ({
+                label: `${item.nickname}(${item.phone})`,
+                value: +item.userId
+              }));
+            }
+            
           }
         }else {
           this.$message.warning(res.message);
