@@ -4,33 +4,40 @@
       <a-form-model ref="form" slot="detail" :model="model" :rules="validatorRules">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商品名称" prop="title">
-              <a-input v-model="model.title" placeholder="请输入商品名称"></a-input>
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品名称" prop="title">
+              <a-input v-model="model.title" placeholder="请输入产品名称"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商品描述" prop="describe">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品描述" prop="describe">
               <a-input v-model="model.describe" placeholder="请输入描述"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商品规格">
-              <a-button class="editable-add-btn" @click="handleAdd">
-                添加规格
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品规格" >
+              <a-button class="editable-add-btn" @click="handleAdd" type="primary">
+                新增
               </a-button>
-              <a-table bordered :data-source="model.skuTable" :columns="columns"
-                        prop="skuTable" :rowKey="model.uuid">
-                <template slot="skuTitle" slot-scope="text,index, record" prop="skuTitle">
-                  <editable-cell :text="text" @change="onCellChange(record, 'skuTitle', $event)" />
+              <a-table bordered :data-source="model.skuTable" :columns="columns" :rowKey="model.uuid" :pagination="false">
+                <template slot="goodId" slot-scope="text,record,index">
+                  <a-select v-model="record.goodId" style="width: 100%" >
+                    <a-select-option value="jack">
+                      Jack
+                    </a-select-option>
+                  </a-select>
                 </template>
-                <template slot="price" slot-scope="text,index, record" prop="price">
-                  <editable-cell type="number" :text="text" @change="onCellChange(record,'price',$event)" />
+                <template slot="skuId" slot-scope="text,record,index">
+                  <a-select v-model="record.skuId" style="width: 100%" >
+                    <a-select-option value="jack">
+                      Jack
+                    </a-select-option>
+                  </a-select>
                 </template>
-                <template slot="originalPrice" slot-scope="text,index, record" prop="originalPrice">
-                  <editable-cell type="number" :text="text" @change="onCellChange(record,'originalPrice',$event)" />
+                <template slot="num" slot-scope="text,record,index">
+                  <a-input-number style="width: 100%"  v-model="record.num" placeholder="请输入双数" @change="v => record.num = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />
                 </template>
-                <template slot="skuImage" slot-scope="skuImage,index, record" prop="skuImage">
-                  <j-image-upload v-model="skuImage" @change="onCellChange(record, 'skuImage',$event)" :isMultiple="false" text="上传"></j-image-upload>
+                <template slot="price" slot-scope="text,record,index">
+                  <a-input-number style="width: 100%"  v-model="record.price" placeholder="请输入秒杀价" @change="v => record.price = isNaN(parseInt(v)) ? 0.01 : parseFloat(parseFloat(v).toFixed(2))" :min="0.01" />
                 </template>
 
 
@@ -39,7 +46,7 @@
                     title="确定要删除该规格么？"
                     @confirm="() => onDelete(index,record)"
                   >
-                    <a href="javascript:;">删除</a>
+                    <a href="javascript:;" style="color: red">删除</a>
                   </a-popconfirm>
                 </template>
               </a-table>
@@ -48,13 +55,19 @@
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品库存" prop="inventory">
-              <a-input-number v-model="model.inventory" :min="1" @change="v => model.inventory = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
+              <a-input-number style="width: 100%" v-model="model.inventory" :min="1" @change="v => model.inventory = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
             </a-form-model-item>
           </a-col>
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="每人限购数量" prop="purchaseMotivation">
-              <a-input-number v-model="model.purchaseMotivation" :min="1" @change="v => model.purchaseMotivation = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
+              <a-input-number style="width: 100%" v-model="model.purchaseMotivation" :min="1" @change="v => model.purchaseMotivation = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="主图" prop="image">
+              <j-image-upload v-model="model.image" :isMultiple="false" text="上传"></j-image-upload>
             </a-form-model-item>
           </a-col>
 
@@ -63,40 +76,22 @@
               <j-image-upload v-model="model.banner" :isMultiple="true" text="上传"></j-image-upload>
             </a-form-model-item>
           </a-col>
+
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="详情" prop="content">
               <JEditor v-model="model.content" placeholder="请输入详情"></JEditor>
             </a-form-model-item>
-
           </a-col>
 
           <a-col :span="24">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="权重" prop="weight">
-              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%"/>
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="秒杀时间" prop="time">
+              <a-range-picker v-model="model.time" :format="dateFormat" />
             </a-form-model-item>
           </a-col>
+          
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="状态" prop="status">
-              <!--              <a-input-number v-model="model.status" placeholder="请输入状态:0=下架,1=上架" style="width: 100%" />-->
               <j-switch v-model="model.status"></j-switch>
-            </a-form-model-item>
-          </a-col>
-
-          <a-col :span="24">
-            <a-form-model-item label="附加服务项" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="additionalId" >
-              <a-select
-                mode="multiple"
-                show-search
-                placeholder="选择或搜索需要绑定的用户"
-                option-filter-prop="children"
-                style="width: 200px"
-                :filter-option="filterOption"
-                v-model="model.additionalIds"
-              >
-                <a-select-option  v-for="i in additionalList" :value="i.additionalId" :key="i.additionalId">
-                  {{i.name}}
-                </a-select-option>
-              </a-select>
             </a-form-model-item>
           </a-col>
 
@@ -108,6 +103,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { getAction, httpAction } from '@/api/manage'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import { mixinDevice } from '@/utils/mixin'
@@ -160,8 +156,6 @@ const EditableCell = {
       this.$emit('change', this.value);
     },
     inputChange(e){
-
-
         this.$emit("input", e.target.value);
     },
     check() {
@@ -207,14 +201,15 @@ export default {
 
       model: {
         skuTable:[],
+        time:[moment('2023-5-20'),moment('2023-5-22')]
       },
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 5 },
+        sm: { span: 4 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 20 },
       },
       confirmLoading: false,
       validatorRules: {
@@ -223,18 +218,6 @@ export default {
         ],
         content: [
           { required: true, message: '请输入详情!' },
-        ],
-        weight: [
-          { required: true, message: '请输入权重!' },
-        ],
-        goodsSku: [
-          { required: true, message: '请填写商品规格！' },
-        ],
-        skuTitle: [
-          { required: true, message: '请填写规格名称!' },
-        ],
-        price: [
-          { required: true, message: '测' },
         ],
         status: [
           { required: true, message: '请输入状态' },
@@ -253,35 +236,43 @@ export default {
 
       columns : [
         {
-          title: '规格名称',
-          dataIndex: 'skuTitle',
-          scopedSlots: { customRender: 'skuTitle' },
+          title: '商品',
+          dataIndex: 'goodId',
+          scopedSlots: { customRender: 'goodId' },
+          align: 'center',
+          width:'180px'
         },
         {
-          title: '规格图片',
-          dataIndex:'skuImage',
-          scopedSlots: {customRender: 'skuImage'},
+          title: '商品规格',
+          dataIndex:'skuId',
+          scopedSlots: {customRender: 'skuId'},
+          align: 'center',
+          width:'180px'
         },
         {
-          title: '原价格',
-          dataIndex: 'originalPrice',
-          scopedSlots: { customRender: 'originalPrice' },
-
+          title: '双数',
+          dataIndex: 'num',
+          scopedSlots: { customRender: 'num' },
+          align: 'center',
+          width:'100px'
         },
         {
-          title: '优惠价格',
+          title: '秒杀价',
           dataIndex: 'price',
           scopedSlots: { customRender: 'price' },
-
+          align: 'center',
+          width:'100px'
         },
         {
           title: '操作',
           dataIndex: 'operation',
           scopedSlots: { customRender: 'operation' },
+          align: 'center',
         },
       ],
 
-      additionalList:[]
+      additionalList:[],
+      dateFormat:"YYYY-MM-DD"
 
 
     }
@@ -334,34 +325,20 @@ export default {
         this.model.skuTable = dataSource;
       }
     },
-    onDelete(index,record) {
-      console.log(444,index,record);
-      /**
-       * 删除存在有bug，待修复。
-       * @type {*[]}
-       */
+    onDelete(index) {
       this.model.skuTable.splice(index,1)
-      console.log(888,this.model.skuTable);
-
     },
     handleAdd() {
-
-      const dataSource  = this.model.skuTable;
-
-
-      let skuids=  [];
-      let count = 0;
       let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
 
       const newData = {
-        skuId : count,
-        skuTitle: '',
+        skuId : '',
+        num: '',
+        goodId: '',
         price:'',
         uuid
       };
-      this.model.skuTable = [...dataSource, newData];
-      this.count = count + 1;
-      console.log(this.model.skuTable);
+      this.model.skuTable.push(newData)
 
     },
 
@@ -379,6 +356,7 @@ export default {
       this.visible = true
     },
     submitForm() {
+      console.log(77,this.model);
       if(!this.isSubmitSkuTable()) {
         return
       }
