@@ -25,7 +25,7 @@
       </a-spin>
     </div>
 
-    <a-select-option v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]" :disabled="item.disabled"
+    <a-select-option :title="item[labelKey]" v-for="(item, index) in selectList" :key="item[valueKey]" :value="item[valueKey]" :disabled="item.disabled"
     >{{ item[labelKey] }}
     </a-select-option>
   </a-select>
@@ -104,6 +104,26 @@ export default {
     additionalData:{
       type: Object,
       default: () => ({})
+    },
+    // 需要放进来的数据 回显的内容
+    rawList:{
+      type: Array,
+      default: () => ([])
+    },
+    // 是否只要内部的
+    isInternalData:{
+      type: Boolean,
+      default: false
+    },
+    // 内部的labelKey
+    InternalLabelKey:{
+      type: String,
+      default: 'label'
+    },
+    // 内部的ValueKey
+    InternalValueKey:{
+      type: String,
+      default: 'value'
     }
   },
 
@@ -123,7 +143,8 @@ export default {
       spinning: false,
       searchValue: '',
       typeArr:['customer','distributor','investors','site'],
-      dataList:[]
+      dataList:[],
+      first: true
     }
   },
 
@@ -153,7 +174,22 @@ export default {
 
   computed: {
     selectList() {
-      return this.isType ? this.list : this.dataList
+      let list = !this.isInternal ? this.list : this.dataList
+      if(this.first) {
+        if(this.rawList.length && list.length) {
+          this.first = false
+          if(this.mode == 'default') {
+            return list.findIndex(l => l.value == this.rawList[0].value) == -1 ? [...this.rawList,...list] : list
+          } else {
+            return [...this.rawList.filter(item => list.findIndex(l => l.value == item.value) == -1),...list]
+          }
+        } else {
+          return list
+        }
+        
+      } else {
+        return list
+      }
     },
 
     maxPage() {
@@ -166,6 +202,9 @@ export default {
 
     isType() {
       return this.type == '' || !this.typeArr.includes(this.type)
+    },
+    isInternal() {
+      return this.isInternalData || !this.isType
     }
   },
 
@@ -202,13 +241,21 @@ export default {
         if (res.success) {
           this.page = res.result.current || 1
           this.total = res.result.total || 1
-          if(this.isType) {
+          if(!this.isInternal) {
             this.$emit('changeList',res.result,this.additionalData)
           } else {
-            this.dataList = res.result.records.map(item => ({
-              label: `${item.nickname}(${item.phone})`,
-              value: +item.userId
-            }));
+            if(this.isType) {
+              this.dataList = res.result.records.map(item => ({
+                label: item[this.InternalLabelKey],
+                value: item[this.InternalValueKey]
+              }));
+            } else {
+              this.dataList = res.result.records.map(item => ({
+                label: `${item.nickname}(${item.phone})`,
+                value: +item.userId
+              }));
+            }
+            
           }
         }else {
           this.$message.warning(res.message);

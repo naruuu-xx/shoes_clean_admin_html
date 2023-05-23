@@ -18,6 +18,7 @@
               <a-select v-model="model.level"  >
                   <a-select-option value = "1" >代理人</a-select-option>
                   <a-select-option value = "2" >投资人</a-select-option>
+                  <a-select-option value="3">合伙人</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -42,7 +43,6 @@
             <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
               <XfSelect
                 :list="weekList"
-                @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="model.userId"
                 :disabled="(!(model.investorsId === null || model.investorsId === ''))"
@@ -52,7 +52,9 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="绑定上级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="investorsPId" v-if="model.level == 2">
+            <a-form-model-item
+              label="绑定上级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="investorsPId"
+              v-if="model.level === '2'">
               <a-select
                 show-search
                 placeholder="选择或搜索需要绑定的用户"
@@ -67,23 +69,58 @@
               </a-select>
             </a-form-model-item>
           </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label="绑定机柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerId" >-->
+<!--              <a-select-->
+<!--                mode="multiple"-->
+<!--                show-search-->
+<!--                placeholder="选择或搜索需要绑定的用户"-->
+<!--                option-filter-prop="children"-->
+<!--                style="width: 200px"-->
+<!--                :filter-option="filterOption"-->
+<!--                v-model="model.lockerIds"-->
+<!--              >-->
+<!--                <a-select-option  v-for="i in lockerList" :value="i.lockerId" :key="i.lockerId">-->
+<!--                  {{i.name}}-->
+<!--                </a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
           <a-col :span="24">
-            <a-form-model-item label="绑定机柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerId" >
-              <a-select
-                mode="multiple"
-                show-search
-                placeholder="选择或搜索需要绑定的用户"
-                option-filter-prop="children"
-                style="width: 200px"
-                :filter-option="filterOption"
-                v-model="model.lockerIds"
-              >
-                <a-select-option  v-for="i in lockerList" :value="i.lockerId" :key="i.lockerId">
-                  {{i.name}}
-                </a-select-option>
-              </a-select>
+            <a-form-model-item label="绑定机柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="investorsLockerDtoList" required>
+              <a-button type="primary" @click="onAddLocker">新增</a-button>
             </a-form-model-item>
           </a-col>
+          <div v-for="(shoeInvestorsLockerDto, idx) in investorsLockerDtoList" :key="`locker${idx}`">
+            <div class="locker">
+              <div class="locker-label">
+                机柜{{ idx + 1 }}：
+                <!-- <a-select style="width: 120px" v-model="investorsLockerDtoList[idx].lockerId">
+                  <a-select-option :title="item.name" :value="item.lockerId" v-for="(item, index) in lockerList" :key="index"
+                                   :disabled="disabledLocker(item.lockerId)">
+                    {{ item.name }}
+                  </a-select-option>
+                </a-select> -->
+                <xf-select
+                  style="width: 260px"
+                  :list="investorsLockerDtoList[idx].weekList"
+                  @change="checkedSelect"
+                  @changeList="changeSelectLocker($event,idx)"
+                  v-model="investorsLockerDtoList[idx].lockerId"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=locker`'
+                  :rawList="[{label: investorsLockerDtoList[idx].name,value: investorsLockerDtoList[idx].lockerId,disabled:true}]"
+                >
+                </xf-select>
+              </div>
+              <div class="locker-label">
+                收益比例(%)：
+                <a-input-number v-model="shoeInvestorsLockerDto.percentage" placeholder="收益比例(%)" />
+              </div>
+              <div class="locker-label">
+                <a-button type="danger" @click="onDeleteLocker(idx)" v-if="investorsLockerDtoList.length > 1">删除</a-button>
+              </div>
+            </div>
+          </div>
           <a-col :span="24" >
             <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="cardNo">
               <a-input v-model="model.cardNo" placeholder="请输入银行卡号"  ></a-input>
@@ -144,6 +181,7 @@
           cardName:'',
           bank:'',
           openBank:'',
+          investorsLockerDtoList:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -192,7 +230,9 @@
         levelTextList:[],
         shoeUserList:[],
         lockerList:[],
-        agentList:[]
+        agentList:[],
+        investorsLockerDtoList:[],
+        // selectListIds:[]
       }
     },
     watch:{
@@ -230,17 +270,26 @@
           }
         },
         immediate:true
-      }
+      },
+      investorsLockerDtoList: {
+        handler(val) {
+          this.model.investorsLockerDtoList = val
+        },
+        deep: true,
+        immediate: true,
+      },
     },
     computed: {
       formDisabled(){
         return this.disabled
       },
+      selectListIds() {
+        return this.investorsLockerDtoList.map(item => +item.lockerId)
+      }
     },
     created () {
        //备份model原始值
 
-      //this.getShoeUserList();
       this.getLockerList();
       this.getAgentList();
 
@@ -255,6 +304,12 @@
       add () {
         this.edit(this.modelDefault);
       },
+      changeSelectLocker(data,idx) {
+        this.investorsLockerDtoList[idx].weekList = data.records.map(item => ({
+          ...item,
+          disabled: this.selectListIds.includes(item.value)
+        }));
+      },
       changeSelect(data) {
         this.weekList = data.records.map(item => ({
           label: item.nickname+'('+item.phone+')',
@@ -262,14 +317,26 @@
         }));
       },
       checkedSelect(val) {
+        // this.selectListIds = this.investorsLockerDtoList.map(item => +item.lockerId)
+        this.investorsLockerDtoList = this.investorsLockerDtoList.map(item => ({
+          ...item,
+          weekList: item.weekList.map(w => ({
+            ...w,
+            disabled: this.selectListIds.includes(w.value)
+          }))
+        }))
       },
       edit (record) {
-        console.log("===",record)
         this.model = Object.assign({}, record,this.model);
+        this.investorsLockerDtoList = record.investorsLockerDtoList.map(item => ({
+          ...item,
+          lockerId: +item.lockerId,
+          weekList:[]
+        }));
+        // this.selectListIds = record.investorsLockerDtoList.map(item => +item.lockerId)
         this.model.investorsId=record.investorsId;
         this.getBank();
         this.getLockerList();
-
        this.getShoeUserList(record.userId);
 
         this.visible = true;
@@ -339,7 +406,48 @@
 
           }
         })
-      }
+      },
+
+      disabledLocker(id) {
+        console.log("===========",id)
+        return this.investorsLockerDtoList.map(item => +item.lockerId).includes(+id)
+      },
+      // 点击新增产品
+      onAddLocker() {
+        this.investorsLockerDtoList.push({
+          lockerId: '',
+          percentage: 0,
+          weekList:[]
+        })
+      },
+      // 删除产品
+      onDeleteLocker(idx) {
+        this.investorsLockerDtoList.splice(idx, 1)
+      },
     }
   }
 </script>
+
+
+<style lang="less" scoped>
+.locker {
+  display: flex;
+  width: calc(100% - 48px);
+  margin-left: 48px;
+  margin-bottom: 24px;
+
+  &-label {
+    margin-left: 32px;
+  }
+}
+
+.required::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #f5222d;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
+}
+</style>
