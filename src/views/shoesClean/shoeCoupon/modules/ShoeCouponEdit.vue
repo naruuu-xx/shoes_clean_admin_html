@@ -35,26 +35,39 @@
               </a-col>
               <a-col :span="24">
                 <a-form-model-item label="使用门槛" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="min">
-                  <a-radio-group v-model:value="threshold" :disabled="true">
+                  <a-radio-group v-model:value="threshold">
                     <a-radio value="1">无门槛</a-radio>
-                    <a-radio value="2">满&nbsp;<a-input-number :min="0" v-model="min" style="width: 70px" :disabled="true"></a-input-number>&nbsp;元可用</a-radio>
+                    <a-radio value="2">满&nbsp;<a-input-number :min="0" v-model="min" style="width: 70px" ></a-input-number>&nbsp;元可用</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
-
               <a-col :span="24">
                 <a-form-model-item label="适用范围" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="range">
-                  <span>{{goodsOptions}}</span>
+                  <a-radio-group v-model:value="model.range">
+                    <a-radio value="1">通用</a-radio>
+                    <a-radio value="2">指定商品&nbsp;
+                      <a-select
+                        v-model:value="selectedGoods"
+                        mode="multiple"
+                        style="width: 400px;"
+                        placeholder="请选择"
+                        :options="goodsOptions"
+                        option-filter-prop="children"
+                        :filter-option="filterOption"
+                      >
+                      </a-select>
+                    </a-radio>
+                  </a-radio-group>
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
                 <a-form-model-item label="使用期限" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="expireType">
-                  <a-radio-group v-model:value="model.expireType" :disabled="true">
+                  <a-radio-group v-model:value="model.expireType">
                     <a-radio value="1">根据领取时间<br>
-                      领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数" :disabled="true"></a-input-number>&nbsp;天后失效
+                      领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数" ></a-input-number>&nbsp;天后失效
                     </a-radio>
-                    <a-radio value="2"  v-if="this.model.startTime !== null">自行设定时间<br>
-                      <span style="font-weight: bold">{{model.startTime+" ~ "+model.endTime}}</span>
+                    <a-radio value="2">自行设定时间<br>
+                      <a-range-picker placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
                     </a-radio>
                   </a-radio-group>
                 </a-form-model-item>
@@ -72,16 +85,16 @@
 
               <a-col :span="24">
                 <a-form-model-item label="发放数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
-                  <a-radio-group v-model:value="numRadio" :disabled="numShouldDisabled">
+                  <a-radio-group v-model:value="numRadio">
                     <a-radio value="1">不限量</a-radio>
-                    <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px" :disabled="numShouldDisabled"></a-input-number>&nbsp;张</a-radio>
+                    <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px"></a-input-number>&nbsp;张</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
 
               <a-col :span="24">
                 <a-form-model-item label="用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
-                  <a-radio-group v-model:value="selectedReceiveCount" :disabled="true">
+                  <a-radio-group v-model:value="selectedReceiveCount">
                     <a-radio value="1">不限次</a-radio>
                     <a-radio value="2">一次</a-radio>
                   </a-radio-group>
@@ -115,7 +128,7 @@
 </template>
 
 <script>
-
+  import moment from 'moment';
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
   import JDateTimeDIY from "./JDateTimeDIY";
@@ -172,12 +185,12 @@
           edit: "/ShoeCoupon/shoeCoupon/edit",
           queryById: "/ShoeCoupon/shoeCoupon/queryById"
         },
-        // threshold: "1",
+        threshold: "",
         goodsOptions: "",
         startAndEndTime: [],
-        // numRadio: "1",
+        numRadio: "",
         selectedGoods: [],
-        // selectedReceiveCount: "2",
+        selectedReceiveCount: "",
         min: "",
         reduce: "",
         numShouldDisabled: false,
@@ -210,6 +223,9 @@
           "receiveCount": "2",
           "status": "0"
         };
+        
+      },
+      edit (record) {
         //弹窗出现的时候请求接口，获取商品列表
         httpAction("/ShoeCoupon/shoeCoupon/getGoodsTypeAndTitleList", null, "get").then((res) => {
           let result = res.result;
@@ -218,8 +234,6 @@
             return c;
           })
         })
-      },
-      edit (record) {
         this.model = Object.assign({}, record);
         this.reduce = (this.model.reduce * 0.01).toFixed(2);
         this.min = (this.model.min * 0.01).toFixed(2);
@@ -227,6 +241,7 @@
         this.model.expireType = this.model.expireType.toString();
         this.model.range = this.model.range.toString();
         this.model.status = this.model.status.toString();
+        this.startAndEndTime = this.model.startTime ? [moment(this.model.startTime),moment(this.model.endTime)] : []
         this.visible = true;
 
         //单选框的判断赋值.
