@@ -69,13 +69,13 @@
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="详情" prop="content">
-              <JEditor v-model="model.content" placeholder="请输入详情"></JEditor>
+              <!-- <JEditor v-model="model.content" placeholder="请输入详情"></JEditor> -->
             </a-form-model-item>
           </a-col>
 
           <a-col :span="24">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="秒杀时间" prop="time">
-              <a-range-picker v-model="model.time" :format="dateFormat" />
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="秒杀时间" prop="startTime">
+              <a-range-picker v-model="startAndEndTime" :format="dateFormat" />
             </a-form-model-item>
           </a-col>
           
@@ -105,76 +105,9 @@ import signMd5Utils from '@/utils/encryption/signMd5Utils'
 import { axios } from '@/utils/request'
 
 
-const EditableCell = {
-  template: `
-    <div class="editable-cell">
-    <div v-if="editable" class="editable-cell-input-wrapper">
-      <a-input :value="value" @change="handleChange" @pressEnter="check" @input="inputChange" v-if="type == 'text'" @blur="editable = false"/>
-      <a-input-number v-model="value" :min="0" @pressEnter="check" @change="handleChange" v-else @blur="editable = false" />
-    </div>
-    <div v-else class="editable-cell-text-wrapper" @click="edit">
-      {{ value || ' ' }}
-      <a-icon type="edit" class="editable-cell-icon"/>
-    </div>
-    </div>
-  `,
-  props: {
-    text: String | Number,
-    type:{
-      type: String,
-      default: 'text'
-    }
-  },
-  model: {
-    prop: "value",
-    event: "input",
-  },
-  data() {
-    return {
-      value: this.text,
-      editable: false,
-    };
-  },
-  watch:{
-    text(value) {
-      this.value = value;
-    }
-  },
-  methods: {
-
-    handleChange(e) {
-      const value = this.type == 'text' ? e.target.value : e
-      console.log(6666,value);
-      this.value = value;
-      
-      this.$emit('change', this.value);
-    },
-    inputChange(e){
-        this.$emit("input", e.target.value);
-    },
-    check() {
-      this.editable = false;
-      this.$emit('change', this.value);
-    },
-    edit() {
-      this.editable = true;
-    },
-  },
-};
-
-
-
-
-// for(let i in model.skuTable){
-//   data.push(model.skuTable[i]);
-// }
-
-
-
 export default {
   name: 'ShoeGoodsForm',
   components: {
-    EditableCell,
   },
   props: {
 
@@ -189,12 +122,10 @@ export default {
 
     return {
       key: 0,
-
       editingKey: '',
-
       model: {
-        skuTable:[],
-        time:[moment('2023-5-20'),moment('2023-5-22')]
+        startTime:'',
+        endTime:'',
       },
       labelCol: {
         xs: { span: 24 },
@@ -227,7 +158,7 @@ export default {
         content: [
           { required: true, message: '请输入产品内容' },
         ],
-        time: [
+        startTime: [
           { required: true, message: '请选择秒杀时间!' },
         ],
         inventory: [
@@ -236,6 +167,9 @@ export default {
         limitNum: [
           { required: true, message: '请输入每人限购数量' },
         ],
+        weight: [
+          { required: true, message: '请输入权重' },
+        ],
       },
       url: {
         list: "/shoes/shoeGoodsSku/list",
@@ -243,10 +177,7 @@ export default {
         edit: '/ShoeSeckill/shoeSeckill/edit',
         queryById: '/ShoeSeckill/shoeSeckill/queryById'
       },
-
-
       count:0,
-
       columns : [
         {
           title: '商品',
@@ -286,9 +217,21 @@ export default {
       dateFormat:"YYYY-MM-DD",
       goodOptions:[],
       skuOptions:[],
-      goodList:[]
+      goodList:[],
+      startAndEndTime:[]
 
 
+    }
+  },
+  watch: {
+    startAndEndTime:{
+      handler(val) {
+        console.log(777,val);
+        this.model.startTime = val.length ? moment(val[0]).format('YYYY-MM-DD HH:mm:ss') : null
+        this.model.endTime = val.length ? moment(val[1]).format('YYYY-MM-DD HH:mm:ss') : null
+      },
+      immediate:true,
+      deep:true
     }
   },
   computed: {
@@ -312,7 +255,18 @@ export default {
       getAction(this.url.queryById,{seckillId}).then((res) => {
           if (res.success) {
             this.model = res.result
-            this.goodList = res.result.seckillGoodsList
+            this.model.banner = res.result.banner.join(',')
+            this.startAndEndTime = [moment(this.model.startTime),moment(this.model.endTime)]
+            res.result.seckillGoodsList.forEach(item => {
+              this.goodList.push({
+                ...item,
+                uuid: this.getUuid()
+              })
+              this.skuOptions.push({
+                label: item.skuName,
+                value: item.skuId
+              })
+            })
           } else {
             this.$message.warning(res.message);
           }
@@ -379,7 +333,7 @@ export default {
 
 
     add() {
-      this.edit(this.modelDefault)
+
     },
     edit(record) {
       this.getDetail(record.seckillId)
@@ -394,21 +348,21 @@ export default {
         return this.$message.warning('请先填写完整再保存！')
       }
       const that = this
-      console.log(this.model)
       // 触发表单验证
       this.$refs.form.validate(valid => {
         if (valid) {
           that.confirmLoading = true
           let httpurl = ''
           let method = ''
-          if (!this.model.goodsId) {
+          if (!this.model.seckillId) {
             httpurl += this.url.add
             method = 'post'
           } else {
             httpurl += this.url.edit
             method = 'put'
           }
-          httpAction(httpurl, this.model, method).then((res) => {
+          console.log(77777777777777777);
+          httpAction(httpurl, Object.assign({},this.model,{seckillGoodsList:this.goodList,banner:this.model.banner.split(',')}), method).then((res) => {
             if (res.success) {
               that.$message.success(res.message)
               that.$emit('ok')
