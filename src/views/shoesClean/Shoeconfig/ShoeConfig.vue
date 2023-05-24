@@ -2,20 +2,22 @@
   <a-card :bordered="false">
     <div>
       <span>(1)</span> <br/>
-      <span>满<a-input-number placeholder="输入金额" style="width: 150px" v-model="freeDeliveryFee" :min="0"
-                              size="small"/>元免配送费。</span><br/>
-      <span>满<a-input-number placeholder="输入金额" style="width: 150px" v-model="freeFreightFree" :min="0"
-                              size="small"/>元免快递费。</span><br/>
+      <a-space>满<a-input-number placeholder="输入金额" style="width: 60px" v-model="freeDeliveryFee" :min="0"
+                              size="small"/>元免配送费。</a-space><br/>
+      <a-space>满<a-input-number placeholder="输入金额" style="width: 60px" v-model="freeFreightFree" :min="0"
+                              size="small"/>元免快递费。</a-space><br/>
+      <br/>
       <a-button type="primary" @click="save(1)">提交</a-button>
       </div>
     <a-divider/>
     <div>
       <span>(2)</span><br/>
-      <span>每个配送订单减<a-input-number placeholder="输入金额" style="width: 150px" v-model="discountDeliveryFee"
+      <a-space>每个配送订单减<a-input-number placeholder="输入金额" style="width: 60px" v-model="discountDeliveryFee"
                                                     :min="0" size="small"/>元配送费，每个快递单减至原快递费的
-        <a-input-number placeholder="输入金额" style="width: 150px" v-model="discountFreightFree" :min="0"
+        <a-input-number placeholder="输入金额" style="width: 60px" v-model="discountFreightFree" :min="0"
                         size="small"/>%
-      </span><br/>
+      </a-space><br/>
+      <br/>
       <a-button type="primary" @click="save(2)">提交</a-button>
     </div>
     <a-divider/>
