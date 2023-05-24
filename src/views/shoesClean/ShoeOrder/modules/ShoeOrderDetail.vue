@@ -36,6 +36,7 @@
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
         <a-descriptions-item label="实付金额(元)"> {{ data.actualPrice }} </a-descriptions-item>
         <a-descriptions-item label="优惠金额(元)"> {{ OrderDetail.discount }} </a-descriptions-item>
+        <!-- <a-descriptions-item v-if="('机柜配送' === data.type || '站点配送' === data.type && data.courierReduce) || ('快递上门' === data.type && data.expressageReduce) " :label="'快递上门' === data.type ? '快递费减免' : '配送费减免'"> {{'快递上门' === data.type ? data.expressageReduce : data.courierReduce }} </a-descriptions-item> -->
         <a-descriptions-item label="优惠券名称">{{ OrderDetail.couponName }} </a-descriptions-item>
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
