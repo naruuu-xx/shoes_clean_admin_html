@@ -69,7 +69,7 @@
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="详情" prop="content">
-              <!-- <JEditor v-model="model.content" placeholder="请输入详情"></JEditor> -->
+              <JEditor v-model="model.content" placeholder="请输入详情"></JEditor>
             </a-form-model-item>
           </a-col>
 
@@ -226,7 +226,6 @@ export default {
   watch: {
     startAndEndTime:{
       handler(val) {
-        console.log(777,val);
         this.model.startTime = val.length ? moment(val[0]).format('YYYY-MM-DD HH:mm:ss') : null
         this.model.endTime = val.length ? moment(val[1]).format('YYYY-MM-DD HH:mm:ss') : null
       },
@@ -271,7 +270,7 @@ export default {
             this.$message.warning(res.message);
           }
         }).finally(() => {
-          // this.confirmLoading = false;
+          this.confirmLoading = false;
         })
     },
     onClickSku(idx) {
@@ -336,12 +335,12 @@ export default {
 
     },
     edit(record) {
+      this.confirmLoading = true
       this.getDetail(record.seckillId)
      //
       
     },
     submitForm() {
-      console.log(77,this.model);
       let keys = ['goodsId','skuId','seckillPrice','num']
       let flag = this.goodList.every(item => keys.every(key => item[key]))
       if(!this.goodList.length || !flag) {
@@ -361,7 +360,6 @@ export default {
             httpurl += this.url.edit
             method = 'put'
           }
-          console.log(77777777777777777);
           httpAction(httpurl, Object.assign({},this.model,{seckillGoodsList:this.goodList,banner:this.model.banner.split(',')}), method).then((res) => {
             if (res.success) {
               that.$message.success(res.message)
