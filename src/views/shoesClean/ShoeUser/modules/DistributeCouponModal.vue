@@ -66,6 +66,7 @@
       @ok="handleOk"
       @cancel="visibleModal = false"
       :confirmLoading="confirmLoading"
+      :maskClosable="false"
     >
       <p style="text-align: center;">目前派发对象为<span style="color:red;font-size: 34px;">全体用户</span>,是否确认派发?</p>
     </a-modal>
