@@ -101,8 +101,6 @@
 <script>
 import moment from 'moment';
 import { getAction, httpAction } from '@/api/manage'
-import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import { mixinDevice } from '@/utils/mixin'
 import signMd5Utils from '@/utils/encryption/signMd5Utils'
 import { axios } from '@/utils/request'
 
@@ -175,7 +173,6 @@ const EditableCell = {
 
 export default {
   name: 'ShoeGoodsForm',
-  mixins: [JeecgListMixin, mixinDevice],
   components: {
     EditableCell,
   },
@@ -246,7 +243,6 @@ export default {
         edit: '/ShoeSeckill/shoeSeckill/edit',
         queryById: '/ShoeSeckill/shoeSeckill/queryById'
       },
-      categoryList:[],
 
 
       count:0,
@@ -287,8 +283,6 @@ export default {
           align: 'center',
         },
       ],
-
-      additionalList:[],
       dateFormat:"YYYY-MM-DD",
       goodOptions:[],
       skuOptions:[],
@@ -309,18 +303,16 @@ export default {
   created() {
     //备份model原始值
     this.getGoodList()
-    this.getCategoryList();
-    this.getAdditonalList();
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
 
   },
   methods: {
     // 获取秒杀产品详情
     getDetail(seckillId) {
-      getAction(url.queryById,{seckillId}).then((res) => {
-        console.log('详情',res);
+      getAction(this.url.queryById,{seckillId}).then((res) => {
           if (res.success) {
-            
+            this.model = res.result
+            this.goodList = res.result.seckillGoodsList
           } else {
             this.$message.warning(res.message);
           }
@@ -371,10 +363,10 @@ export default {
           if (res.success) {
             this.goodOptions = res.result.map(good => ({
               label:good.goodsName,
-              value:good.goodsId,
+              value:+good.goodsId,
               skuTable:good.skuList.map(sku  => ({
                 label:sku.skuName,
-                value:sku.skuId
+                value:+sku.skuId
               }))
             }))
           } else {
@@ -390,13 +382,9 @@ export default {
       this.edit(this.modelDefault)
     },
     edit(record) {
-      this.getDetail(1)
+      this.getDetail(record.seckillId)
      //
-      this.model = Object.assign({}, record)
-      this.model.skuTable = this.model.skuTable.map(item => {
-        return Object.assign({}, item,{uuid: (Math.random() + new Date().getTime()).toString(32).slice(0,8)})
-      })
-      this.visible = true
+      
     },
     submitForm() {
       console.log(77,this.model);
@@ -434,21 +422,6 @@ export default {
 
       })
 
-    },
-    getCategoryList(){
-      httpAction("/shoes/shoeGoods/categoryList","","get").then((res)=>{
-        if(res){
-          this.categoryList = res.result;
-        }
-      })
-    },
-    getAdditonalList(){
-      httpAction("/shoes/shoeAdditional/queryList","", "get").then((res)=>{
-        if(res){
-          this.additionalList = res.result;
-
-        }
-      })
     },
 
   },

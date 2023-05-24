@@ -40,7 +40,7 @@
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="goodsId"
+        rowKey="seckillId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -169,26 +169,20 @@
           }
         ],
         url: {
-          list: "/shoes/shoeGoods/list",
-          delete: "/shoes/shoeGoods/delete",
-          deleteBatch: "/shoes/shoeGoods/deleteBatch",
-          exportXlsUrl: "/shoes/shoeGoods/exportXls",
-          importExcelUrl: "shoes/shoeGoods/importExcel",
+          list: "/ShoeSeckill/shoeSeckill/queryList",
+          delete: "",
+          deleteBatch: "",
+          exportXlsUrl: "",
+          importExcelUrl: "",
 
         },
-        dictOptions:{},
         superFieldList:[],
         typeList:[],
         statusList:[]
       }
     },
     created() {
-    this.getSuperFieldList();
-    this.goodsTypeList();
-    this.goodsStatusList();
-    this.$set(this.dictOptions, 'status', [{text:'上架',value:'1'},{text:'下架',value:'0'}]);
-    console.log("----------------");
-    console.log(this.statusList);
+      
     },
     computed: {
       importExcelUrl: function(){
@@ -198,45 +192,6 @@
     methods: {
       initDictConfig(){
       },
-
-      /**
-       *v-if多判断条件
-       */
-      matchState(state = '', reg) {
-        return !!String(state).match(reg)//返回true/false
-      },
-      getSuperFieldList(){
-        let fieldList=[];
-        fieldList.push({type:'int',value:'goodsId',text:'ID'})
-        fieldList.push({type:'string',value:'type',text:'类型:ordinary=普洗,fine=精洗,repair=修复'})
-        fieldList.push({type:'string',value:'title',text:'商品名称'})
-        fieldList.push({type:'string',value:'image',text:'主图'})
-        fieldList.push({type:'string',value:'describe',text:'描述'})
-        fieldList.push({type:'string',value:'content',text:'详情'})
-        fieldList.push({type:'int',value:'sale',text:'销量'})
-        fieldList.push({type:'int',value:'pv',text:'浏览量'})
-        fieldList.push({type:'int',value:'weight',text:'权重'})
-        fieldList.push({type:'int',value:'status',text:'状态:0=下架,1=上架'})
-        fieldList.push({type:'int',value:'delFlag',text:'删除状态:0=正常,1=删除'})
-        fieldList.push({type:'date',value:'deleteTime',text:'删除时间'})
-        this.superFieldList = fieldList
-      },
-      goodsTypeList(){
-        httpAction("/shoes/shoeGoodsSku/typeList", null, "get").then((res) => {
-          if (res){
-
-            this.typeList = res;
-          }
-        })
-      },
-      goodsStatusList(){
-        httpAction("/shoes/shoeGoodsSku/statusList", null, "get").then((res) => {
-          if (res){
-
-            this.statusList = res;
-          }
-        })
-      }
     }
 
   }
