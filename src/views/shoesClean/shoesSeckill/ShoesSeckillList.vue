@@ -48,31 +48,8 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
-
-        <template slot="htmlSlot" slot-scope="text">
-          <div v-html="text"></div>
-        </template>
-
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
-
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <template v-if="!matchState(record.goodsId,/[12]/)">
-                <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.goodsId)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-              </template>
-
-            </a-menu>
-          </a-dropdown>
         </span>
 
       </a-table>
@@ -124,68 +101,64 @@
           {
             title:'ID',
             align:"center",
-            dataIndex: 'goodsId'
+            dataIndex: 'seckillId'
           },
           {
-            title:'商品名称',
+            title:'产品名称',
             align:"center",
             dataIndex: 'title'
           },
           {
-            title:'商品分类',
+            title:'原价',
             align:"center",
-            dataIndex: 'name'
+            dataIndex: 'originalPrice'
           },
           {
-            title:'类型',
+            title:'售卖价',
             align:"center",
-            dataIndex: 'type',
-            customRender:(text) => (typerender(text)),
+            dataIndex: 'seckillPrice'
           },
-          // {
-          //   title:'描述',
-          //   align:"center",
-          //   dataIndex: 'describe'
-          // },
-          // {
-          //   title:'详情',
-          //   align:"center",
-          //   dataIndex: 'content'
-          // },
           {
-            title:'销量',
+            title:'总份数',
+            align:"center",
+            dataIndex: 'inventory'
+          },
+          {
+            title:'已售分量',
             align:"center",
             dataIndex: 'sale'
           },
           {
-            title:'浏览量',
+            title:'剩余份数',
             align:"center",
-            dataIndex: 'pv'
-          },
-          {
-            title:'权重',
-            align:"center",
-            dataIndex: 'weight'
+            dataIndex: 'surplus'
           },
           {
             title:'状态',
             align:"center",
-            dataIndex: 'status',
-            customRender: (text) => (filterMultiDictText(this.dictOptions['status'], text)),
+            dataIndex: 'seckillStatusText'
           },
-          // {
-          //   title:'删除状态:0=正常,1=删除',
-          //   align:"center",
-          //   dataIndex: 'delFlag'
-          // },
-          // {
-          //   title:'删除时间',
-          //   align:"center",
-          //   dataIndex: 'deleteTime',
-          //   customRender:function (text) {
-          //     return !text?"":(text.length>10?text.substr(0,10):text)
-          //   }
-          // },
+          {
+            title:'是否上架',
+            align:"center",
+            dataIndex: 'statusText'
+          },
+          {
+            title:'开始时间',
+            align:"center",
+            dataIndex: 'startTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'结束时间',
+            align:"center",
+            dataIndex: 'endTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
           {
             title: '操作',
             dataIndex: 'action',

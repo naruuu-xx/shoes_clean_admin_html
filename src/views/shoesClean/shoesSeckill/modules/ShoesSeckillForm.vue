@@ -15,39 +15,29 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品规格" >
-              <a-button class="editable-add-btn" @click="handleAdd" type="primary">
+              <a-button class="editable-add-btn" @click="addProduct" type="primary">
                 新增
               </a-button>
-              <a-table bordered :data-source="model.skuTable" :columns="columns" :rowKey="model.uuid" :pagination="false">
-                <template slot="goodId" slot-scope="text,record,index">
-                  <a-select v-model="record.goodId" style="width: 100%" >
-                    <a-select-option value="jack">
-                      Jack
-                    </a-select-option>
+              <a-table bordered :data-source="goodList" :columns="columns" rowKey="uuid" :pagination="false">
+                <template slot="goodsId" slot-scope="text,record,idx">
+                  <a-select showSearch :filterOption="((input,option) => option.componentOptions.children[0].text.toLowerCase().idxOf(input.toLowerCase()) >= 0)" optionFilterProp="value" v-model="record.goodsId" style="width: 140px" :options="goodOptions" @change="changeGood($event,idx)">
                   </a-select>
                 </template>
-                <template slot="skuId" slot-scope="text,record,index">
-                  <a-select v-model="record.skuId" style="width: 100%" >
-                    <a-select-option value="jack">
-                      Jack
-                    </a-select-option>
+                <template slot="skuId" slot-scope="text,record,idx">
+                  <!--  -->
+                  <a-select ref="skuSelect" v-model="record.skuId" :disabled="record.disabled" style="width: 140px" :options="skuOptions"  @focus="onClickSku(idx)" @change="$refs.skuSelect.blur()">
                   </a-select>
                 </template>
-                <template slot="num" slot-scope="text,record,index">
+                <template slot="num" slot-scope="text,record,idx">
                   <a-input-number style="width: 100%"  v-model="record.num" placeholder="请输入双数" @change="v => record.num = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />
                 </template>
-                <template slot="price" slot-scope="text,record,index">
-                  <a-input-number style="width: 100%"  v-model="record.price" placeholder="请输入秒杀价" @change="v => record.price = isNaN(parseInt(v)) ? 0.01 : parseFloat(parseFloat(v).toFixed(2))" :min="0.01" />
+                <template slot="seckillPrice" slot-scope="text,record,idx">
+                  <a-input-number style="width: 100%"  v-model="record.seckillPrice" placeholder="请输入秒杀价" @change="v => record.seckillPrice = isNaN(parseInt(v)) ? 0.01 : parseFloat(parseFloat(v).toFixed(2))" :min="0.01" />
                 </template>
 
 
-                <template slot="operation" slot-scope="text, record,index">
-                  <a-popconfirm
-                    title="确定要删除该规格么？"
-                    @confirm="() => onDelete(index,record)"
-                  >
-                    <a href="javascript:;" style="color: red">删除</a>
-                  </a-popconfirm>
+                <template slot="operation" slot-scope="text, record,idx">
+                    <a href="javascript:;" style="color: red" @click="onDel(idx,record)">删除</a>
                 </template>
               </a-table>
             </a-form-model-item>
@@ -60,8 +50,8 @@
           </a-col>
 
           <a-col :span="24">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="每人限购数量" prop="purchaseMotivation">
-              <a-input-number style="width: 100%" v-model="model.purchaseMotivation" :min="1" @change="v => model.purchaseMotivation = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="每人限购数量" prop="limitNum">
+              <a-input-number style="width: 100%" v-model="model.limitNum" :min="1" @change="v => model.limitNum = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
             </a-form-model-item>
           </a-col>
 
@@ -92,6 +82,12 @@
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="状态" prop="status">
               <j-switch v-model="model.status"></j-switch>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="权重" prop="weight">
+              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%"/>
             </a-form-model-item>
           </a-col>
 
@@ -214,7 +210,7 @@ export default {
       confirmLoading: false,
       validatorRules: {
         title: [
-          { required: true, message: '请输入商品名称!' },
+          { required: true, message: '请输入产品名称!' },
         ],
         content: [
           { required: true, message: '请输入详情!' },
@@ -222,12 +218,33 @@ export default {
         status: [
           { required: true, message: '请输入状态' },
         ],
+        describe: [
+          { required: true, message: '请输入产品描述' },
+        ],
+        image: [
+          { required: true, message: '请选择产品主图' },
+        ],
+        banner: [
+          { required: true, message: '请选择产品轮播图' },
+        ],
+        content: [
+          { required: true, message: '请输入产品内容' },
+        ],
+        time: [
+          { required: true, message: '请选择秒杀时间!' },
+        ],
+        inventory: [
+          { required: true, message: '请输入库存!' },
+        ],
+        limitNum: [
+          { required: true, message: '请输入每人限购数量' },
+        ],
       },
       url: {
         list: "/shoes/shoeGoodsSku/list",
-        add: '/shoes/shoeGoods/add',
-        edit: '/shoes/shoeGoods/edit',
-        queryById: '/shoes/shoeGoods/queryById'
+        add: '/ShoeSeckill/shoeSeckill/add',
+        edit: '/ShoeSeckill/shoeSeckill/edit',
+        queryById: '/ShoeSeckill/shoeSeckill/queryById'
       },
       categoryList:[],
 
@@ -237,8 +254,8 @@ export default {
       columns : [
         {
           title: '商品',
-          dataIndex: 'goodId',
-          scopedSlots: { customRender: 'goodId' },
+          dataIndex: 'goodsId',
+          scopedSlots: { customRender: 'goodsId' },
           align: 'center',
           width:'180px'
         },
@@ -258,8 +275,8 @@ export default {
         },
         {
           title: '秒杀价',
-          dataIndex: 'price',
-          scopedSlots: { customRender: 'price' },
+          dataIndex: 'seckillPrice',
+          scopedSlots: { customRender: 'seckillPrice' },
           align: 'center',
           width:'100px'
         },
@@ -272,7 +289,10 @@ export default {
       ],
 
       additionalList:[],
-      dateFormat:"YYYY-MM-DD"
+      dateFormat:"YYYY-MM-DD",
+      goodOptions:[],
+      skuOptions:[],
+      goodList:[]
 
 
     }
@@ -282,64 +302,87 @@ export default {
     formDisabled() {
       return this.disabled
     },
+    selectedSkuIds() {
+      return this.goodList.map(good => good.skuId)
+    }
   },
   created() {
     //备份model原始值
-    //  this.loadData(this.model.goodsId);
+    this.getGoodList()
     this.getCategoryList();
     this.getAdditonalList();
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
 
   },
   methods: {
-
-    // 是否可用提交规格
-    isSubmitSkuTable() {
-      let status = true
-      const dataSource = [... this.model.skuTable];
-      dataSource.forEach((item,idx) => {
-        if(!item.originalPrice || !item.price || !item.skuTitle || !item.skuImage ) {
-          this.$message.warning(`第${idx+1}个规格没有填写完整，无法保存`)
-          dataSource.length = 0
-          status = false
-        }
-      });
-      return status
+    // 获取秒杀产品详情
+    getDetail(seckillId) {
+      getAction(url.queryById,{seckillId}).then((res) => {
+        console.log('详情',res);
+          if (res.success) {
+            
+          } else {
+            this.$message.warning(res.message);
+          }
+        }).finally(() => {
+          // this.confirmLoading = false;
+        })
     },
-
-    exceptSkuId(value){
-      if(value.key !== null){
-        return value.key !== value
+    onClickSku(idx) {
+      let value = this.goodList[idx].goodsId
+      this.setSkuOptions(value)
+    },
+    changeGood(value,idx) {
+      this.goodList[idx].skuId = ''
+      this.goodList[idx].disabled = false
+    },
+    setSkuOptions(value) {
+      let skuTable = this.goodOptions.find(good => good.value == value).skuTable
+      this.skuOptions = skuTable.map(sku => ({
+        ...sku,
+        disabled: this.selectedSkuIds.some(item => item == sku.value)
+      }))
+    },
+    getUuid() {
+      return Math.random().toString(16).substr(2)
+    },
+    addProduct() {
+      let keys = ['goodsId','skuId','seckillPrice','num']
+      let flag = this.goodList.every(item => keys.every(key => item[key]))
+      if(!this.goodList.length || flag) {
+        this.goodList.push({
+          goodsId:'',
+          skuId:'',
+          seckillPrice: 0.01,
+          num:1,
+          uuid: this.getUuid(),
+          disabled: true
+        })
+      } else {
+        this.$message.warning('请先填写完整再新增！')
       }
+      
     },
-
-    onCellChange(record, dataIndex, value) {
-
-      console.log(999,value);
-      const dataSource = [... this.model.skuTable];
-
-
-      const target = dataSource[record];
-      if (target) {
-        target[dataIndex] = value;
-        this.model.skuTable = dataSource;
-      }
+    onDel(idx) {
+      this.goodList.splice(idx,1)
     },
-    onDelete(index) {
-      this.model.skuTable.splice(index,1)
-    },
-    handleAdd() {
-      let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
-
-      const newData = {
-        skuId : '',
-        num: '',
-        goodId: '',
-        price:'',
-        uuid
-      };
-      this.model.skuTable.push(newData)
-
+    getGoodList() {
+      getAction('/shoes/shoeCustomerGoods/list').then((res) => {
+          if (res.success) {
+            this.goodOptions = res.result.map(good => ({
+              label:good.goodsName,
+              value:good.goodsId,
+              skuTable:good.skuList.map(sku  => ({
+                label:sku.skuName,
+                value:sku.skuId
+              }))
+            }))
+          } else {
+            this.$message.warning(res.message);
+          }
+        }).finally(() => {
+          this.confirmLoading = false;
+        })
     },
 
 
@@ -347,7 +390,7 @@ export default {
       this.edit(this.modelDefault)
     },
     edit(record) {
-     // this.loadData(record.goodsId);
+      this.getDetail(1)
      //
       this.model = Object.assign({}, record)
       this.model.skuTable = this.model.skuTable.map(item => {
@@ -357,8 +400,10 @@ export default {
     },
     submitForm() {
       console.log(77,this.model);
-      if(!this.isSubmitSkuTable()) {
-        return
+      let keys = ['goodsId','skuId','seckillPrice','num']
+      let flag = this.goodList.every(item => keys.every(key => item[key]))
+      if(!this.goodList.length || !flag) {
+        return this.$message.warning('请先填写完整再保存！')
       }
       const that = this
       console.log(this.model)
@@ -400,7 +445,6 @@ export default {
     getAdditonalList(){
       httpAction("/shoes/shoeAdditional/queryList","", "get").then((res)=>{
         if(res){
-          console.log(res.result);
           this.additionalList = res.result;
 
         }
