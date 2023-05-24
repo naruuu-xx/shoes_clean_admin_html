@@ -12,7 +12,7 @@
     <div>
       <span>(2)</span><br/>
       <span>每个配送订单减<a-input-number placeholder="输入金额" style="width: 150px" v-model="discountDeliveryFee"
-                                                    :min="0" size="small"/>元配送费，每个快递单减原快递费的
+                                                    :min="0" size="small"/>元配送费，每个快递单减至原快递费的
         <a-input-number placeholder="输入金额" style="width: 150px" v-model="discountFreightFree" :min="0"
                         size="small"/>%
       </span><br/>
