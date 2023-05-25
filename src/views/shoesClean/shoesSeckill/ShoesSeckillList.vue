@@ -48,8 +48,14 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
-        <span slot="action" slot-scope="text, record">
+        <div slot="status" slot-scope="text, record">
+          <a-switch v-model="record.status" />
+        </div>
+        <span slot="action" slot-scope="text, record" v-if="record.status == 0">
           <a @click="handleEdit(record)">编辑</a>
+        </span>
+        <span slot="action" slot-scope="text, record" v-if="record.status == 1">
+          <a @click="handleEdit(Object.assign({},record,{disabled:true}))">查看</a>
         </span>
 
       </a-table>
@@ -141,7 +147,8 @@
           {
             title:'是否上架',
             align:"center",
-            dataIndex: 'statusText'
+            dataIndex: 'status',
+            scopedSlots: { customRender: 'status' }
           },
           {
             title:'开始时间',
