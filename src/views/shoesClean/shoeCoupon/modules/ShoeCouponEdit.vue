@@ -53,7 +53,7 @@
                         placeholder="请选择"
                         :options="goodsOptions"
                         option-filter-prop="children"
-                        :filter-option="filterOption"
+                        :filter-option="(input, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0"
                       >
                       </a-select>
                     </a-radio>
@@ -67,7 +67,7 @@
                       领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数" ></a-input-number>&nbsp;天后失效
                     </a-radio>
                     <a-radio value="2">自行设定时间<br>
-                      <a-range-picker placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
+                      <a-range-picker :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
                     </a-radio>
                   </a-radio-group>
                 </a-form-model-item>
@@ -186,7 +186,7 @@
           queryById: "/ShoeCoupon/shoeCoupon/queryById"
         },
         threshold: "",
-        goodsOptions: "",
+        goodsOptions: [],
         startAndEndTime: [],
         numRadio: "",
         selectedGoods: [],
@@ -204,6 +204,16 @@
     created () {
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
+    },
+    watch: {
+      startAndEndTime:{
+        handler(val) {
+          this.model.startTime = val.length ? moment(val[0]).format('YYYY-MM-DD HH:mm:ss') : null
+          this.model.endTime = val.length ? moment(val[1]).format('YYYY-MM-DD HH:mm:ss') : null
+        },
+        immediate:true,
+        deep:true
+      }
     },
     methods: {
       add () {
@@ -235,8 +245,6 @@
           })
         })
         this.model = Object.assign({}, record);
-        this.reduce = (this.model.reduce * 0.01).toFixed(2);
-        this.min = (this.model.min * 0.01).toFixed(2);
         this.model.way = this.model.way.toString();
         this.model.expireType = this.model.expireType.toString();
         this.model.range = this.model.range.toString();
@@ -269,13 +277,6 @@
           this.selectedReceiveCount = "2";
         }
 
-        let range = this.model.range;
-        if (range === "1") {
-          this.goodsOptions = "通用";
-        } else if (range === "2") {
-          this.goodsOptions = this.model.rangeConfig;
-        }
-
         //判断发放方式是 ”自行领取“ and ”平台发放“or”卡包“
         let way = this.model.way;
         if ("0" === way) {
@@ -301,9 +302,6 @@
 
         httpurl+=this.url.edit;
         method = 'put';
-
-        //处理金额
-        this.model.reduce = this.reduce * 100;
 
         //使用范围
         let range = this.model.range;
