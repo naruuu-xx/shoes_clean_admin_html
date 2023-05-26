@@ -136,7 +136,7 @@
                 />
               </a-form-model-item>
             </a-col>
-            <a-col :span="24">
+            <a-col :span="24" v-if ="model.matchingType == 2">
               <a-form-model-item label="配送范围"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paths">
                 <a-input v-model="model.paths" placeholder="请设定配送范围" style="width: 100%" id="c-paths" :disabled="true"/>
               </a-form-model-item>
@@ -441,6 +441,7 @@ export default {
             weight: this.model.weight,
             orderStatus: this.model.orderStatus,
             paths:this.model.paths,
+            matchingType:this.model.matchingType,
           }
 
           // console.log(data);
