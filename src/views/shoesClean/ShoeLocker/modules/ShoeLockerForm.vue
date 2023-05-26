@@ -235,7 +235,9 @@ export default {
     return {
       model: {
         selectedOrderType:[],
-        matchingType:''
+        matchingType:'',
+        isSelf:0,
+        isService:0,
       },
       labelCol: {
         xs: { span: 24 },
@@ -326,6 +328,16 @@ export default {
       return this.disabled
     },
   },
+  watch:{
+    'model.selectedOrderType': {
+      handler(value, oldValue) {
+        this.model.isSelf = value.includes('self') ? 1 : 0
+        this.model.isService = value.includes('service') ? 1 : 0
+      },
+      deep: true,
+      immediate: true
+    },
+  },
   created() {
     //备份model原始值address
     this.modelDefault = JSON.parse(JSON.stringify(this.model))
@@ -347,16 +359,18 @@ export default {
   methods: {
     add() {
       // this.edit(this.modelDefault);
-      this.model = {
+      let model = {
         status: 1,
         type: 'real',
         address: '',
         longitude: '',
         latitude: '',
         orderStatus: 1,
-        paths:''
+        paths:'',
+        selectedOrderType:[]
 
       }
+      this.model = Object.assign({},this.model, model)
       let center = new window.qq.maps.LatLng(24.500646, 118.12699) // 设置地图中心点坐标
       this.option = {
         center: center, // 设置地图中心点坐标
@@ -369,7 +383,7 @@ export default {
 
     },
     edit(record) {
-      this.model = Object.assign({}, record)
+      this.model = Object.assign({},this.model, record)
       this.model.orgCode = record.orgCode + ''
       this.model.departName = record.departName
       let center = new qq.maps.LatLng(record.latitude, record.longitude) // 设置地图中心点坐标
