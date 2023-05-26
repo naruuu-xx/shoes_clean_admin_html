@@ -69,6 +69,22 @@
                 />
               </a-form-model-item>
             </a-col>
+            <a-col :span="24" v-if="model.orderStatus == 1">
+              <a-form-model-item label="接单类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="selectedOrderType">
+                <a-checkbox-group v-model="model.selectedOrderType">
+                  <a-checkbox v-for="item in orderTypeOptions" :value="item.value" :key="item.value">{{ item.name }}</a-checkbox>
+                </a-checkbox-group>
+              </a-form-model-item>
+            </a-col>
+
+            <a-col :span="24" v-if="model.selectedOrderType.includes('service')">
+              <a-form-model-item label="配送范围设置" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="matchingType">
+                <a-radio-group v-model="model.matchingType">
+                  <a-radio value="2">手绘范围</a-radio>
+                  <a-radio value="1">系统设定</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
             <!--          <a-col :span="24">-->
             <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
             <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
@@ -135,7 +151,7 @@
                       <span>设置机柜定位</span>
                     </button>
                   </div>
-                  <div>
+                  <div v-if="model.matchingType == 1">
                     <button
                       @click="setActivePattern('polygon')"
                       :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
@@ -143,7 +159,7 @@
                       设置配送范围
                     </button>
                   </div>
-                  <div v-if="activePattern==='polygon'">
+                  <div v-if="activePattern==='polygon' && model.matchingType == 1">
                     <button class="ant-btn" @click="addPolygon()">添加</button>
                     <button class="ant-btn" @click="editPolygon()">编辑</button>
                     <button class="ant-btn" @click="delPolygon()">删除</button>
@@ -217,7 +233,10 @@ export default {
   },
   data() {
     return {
-      model: {},
+      model: {
+        selectedOrderType:[],
+        matchingType:''
+      },
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 },
@@ -258,6 +277,12 @@ export default {
           {required: true, message: '请设置配送范围'},
           {validator:this.handleIsIn}
         ],
+        selectedOrderType: [
+          {required: true, message: '请选择接单类型!'},
+        ],
+        matchingType: [
+          {required: true, message: '请选择配送范围类型!'},
+        ],
       },
       url: {
         add: '/shoes/shoeLocker/add',
@@ -292,6 +317,7 @@ export default {
       searchList: [],
 
       activePattern:'marker', //地图操作模式，marker设置机柜定位，polygon设置配送范围
+      orderTypeOptions: [{"value":"self", "name":"自提"}, {"value": "service", "name":"配送"}],
       //=================
     }
   },
@@ -328,7 +354,7 @@ export default {
         longitude: '',
         latitude: '',
         orderStatus: 1,
-        paths:'',
+        paths:''
 
       }
       let center = new window.qq.maps.LatLng(24.500646, 118.12699) // 设置地图中心点坐标
