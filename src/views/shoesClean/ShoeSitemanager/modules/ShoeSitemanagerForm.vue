@@ -165,7 +165,7 @@
                       <span>设置机柜定位</span>
                     </button>
                   </div>
-                  <div v-if="model.matchingType == 1">
+                  <div v-if="model.matchingType == 2">
                     <button
                       @click="setActivePattern('polygon')"
                       :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
@@ -173,7 +173,7 @@
                       设置配送范围
                     </button>
                   </div>
-                  <div v-if="activePattern==='polygon' && model.matchingType == 1">
+                  <div v-if="activePattern==='polygon' && model.matchingType == 2">
                     <button class="ant-btn" @click="addPolygon()">添加</button>
                     <button class="ant-btn" @click="editPolygon()">编辑</button>
                     <button class="ant-btn" @click="delPolygon()">删除</button>

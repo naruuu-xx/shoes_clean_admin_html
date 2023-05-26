@@ -114,7 +114,7 @@
                       <span>设置机柜定位</span>
                     </button>
                   </div>
-                  <div v-if="model.matchingType == 1">
+                  <div v-if="model.matchingType == 2">
                     <button
                       @click="setActivePattern('polygon')"
                       :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
@@ -122,7 +122,7 @@
                       设置配送范围
                     </button>
                   </div>
-                  <div v-if="activePattern==='polygon' && model.matchingType == 1">
+                  <div v-if="activePattern==='polygon' && model.matchingType == 2">
                     <button class="ant-btn" @click="addPolygon()">添加</button>
                     <button class="ant-btn" @click="editPolygon()">编辑</button>
                     <button class="ant-btn" @click="delPolygon()">删除</button>
@@ -307,8 +307,8 @@ export default {
   watch:{
     'model.selectedOrderType': {
       handler(value, oldValue) {
-        this.model.isSelf = value.includes('self') ? 1 : 0
-        this.model.isService = value.includes('service') ? 1 : 0
+        this.model.isSelf = value.includes('self') ? '1' : '0'
+        this.model.isService = value.includes('service') ? '1' : '0'
       },
       deep: true,
       immediate: true
@@ -354,6 +354,12 @@ export default {
       this.model = Object.assign({},this.model, record)
       this.model.orgCode = record.orgCode + "";
       this.model.departName = record.departName;
+      if(record.isSelf) {
+        this.model.selectedOrderType.push('self')
+      }
+      if(record.isService) {
+        this.model.selectedOrderType.push('service')
+      }
       let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
       this.option = {
           center: center,// 设置地图中心点坐标
