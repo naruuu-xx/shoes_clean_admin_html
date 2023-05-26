@@ -121,6 +121,15 @@
               </a-form-model-item>
             </a-col>
 
+            <a-col :span="24" v-if="model.selectedOrderType.includes('service')">
+              <a-form-model-item label="配送范围设置" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="matchingType">
+                <a-radio-group v-model="model.matchingType">
+                  <a-radio value="2">手绘范围</a-radio>
+                  <a-radio value="1">系统设定</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
+
             <a-col :span="24">
               <a-form-model-item label="详细地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="address">
                 <!--              <a-input v-model="model.address" placeholder="请输入详细地址" id="c-address" :change="addressOnchange()"></a-input>-->
@@ -141,7 +150,7 @@
               </a-form-model-item>
             </a-col>
 
-            <a-col :span="24">
+            <a-col :span="24" v-if="model.matchingType == 2">
               <a-form-model-item label="配送范围"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paths">
                 <a-input v-model="model.paths" placeholder="请设定配送范围" style="width: 100%" id="c-paths" :disabled="true"/>
               </a-form-model-item>
@@ -156,7 +165,7 @@
                       <span>设置机柜定位</span>
                     </button>
                   </div>
-                  <div>
+                  <div v-if="model.matchingType == 2">
                     <button
                       @click="setActivePattern('polygon')"
                       :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
@@ -164,7 +173,7 @@
                       设置配送范围
                     </button>
                   </div>
-                  <div v-if="activePattern==='polygon'">
+                  <div v-if="activePattern==='polygon' && model.matchingType == 2">
                     <button class="ant-btn" @click="addPolygon()">添加</button>
                     <button class="ant-btn" @click="editPolygon()">编辑</button>
                     <button class="ant-btn" @click="delPolygon()">删除</button>
@@ -255,6 +264,7 @@ export default {
         orderStatusRadio:"",
         paths:'',
         selectedOrderType:[],
+        matchingType:''
       },
       disabledStatus: false,
       departName: '',
@@ -336,6 +346,9 @@ export default {
         ],
         selectedOrderType: [
           {required: true, message: '请选择接单类型!'},
+        ],
+        matchingType: [
+          {required: true, message: '请选择配送范围类型!'},
         ],
 
       },
@@ -485,7 +498,7 @@ export default {
 
         setTimeout(()=>{   //设置延迟执行
           this.initMapByJQ(res.latitude, res.longitude)
-        },1000);
+        },2000);
 
       })
 
@@ -590,6 +603,7 @@ export default {
             "paths":this.model.paths,
             "isSelf": isSelf,
             "isService": isService,
+            "matchingType":this.model.matchingType,
           }
 
           httpAction(httpurl, data, method).then((res) => {
