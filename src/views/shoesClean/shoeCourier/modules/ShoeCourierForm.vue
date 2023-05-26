@@ -24,7 +24,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
+            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerIdList">
               <!-- <a-select v-model="model.lockerCodeList" mode="multiple">
                 <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
               </a-select> -->
@@ -99,6 +99,7 @@
     data () {
       return {
         model:{
+          lockerIdList:[]
          },
         labelCol: {
           xs: { span: 24 },
@@ -132,7 +133,7 @@
            delFlag: [
               { required: true, message: '请选择 删除状态!'},
            ],
-          lockerCodeList: [
+           lockerIdList: [
               { required: true, message: '请选择快递柜!'},
            ],
           cardNo: [
@@ -204,7 +205,8 @@
       add () {
         // this.edit(this.modelDefault);
         this.model = {
-          status: 1
+          status: 1,
+          lockerIdList:[]
         }
       },
       edit (record) {
