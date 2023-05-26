@@ -236,8 +236,8 @@ export default {
       model: {
         selectedOrderType:[],
         matchingType:'',
-        isSelf:0,
-        isService:0,
+        isSelf:'0',
+        isService:'0',
       },
       labelCol: {
         xs: { span: 24 },
@@ -331,8 +331,8 @@ export default {
   watch:{
     'model.selectedOrderType': {
       handler(value, oldValue) {
-        this.model.isSelf = value.includes('self') ? 1 : 0
-        this.model.isService = value.includes('service') ? 1 : 0
+        this.model.isSelf = value.includes('self') ? '1 ': '0'
+        this.model.isService = value.includes('service') ? '1' : '0'
       },
       deep: true,
       immediate: true
@@ -386,10 +386,10 @@ export default {
       this.model = Object.assign({},this.model, record)
       this.model.orgCode = record.orgCode + ''
       this.model.departName = record.departName
-      if(record.isSelf) {
+      if(record.isSelf === '1') {
         this.model.selectedOrderType.push('self')
       }
-      if(record.isService) {
+      if(record.isService === '1') {
         this.model.selectedOrderType.push('service')
       }
       let center = new qq.maps.LatLng(record.latitude, record.longitude) // 设置地图中心点坐标
@@ -417,6 +417,24 @@ export default {
           } else {
             httpurl += this.url.edit
             method = 'put'
+          }
+
+          let selectedOrderTypeArray = this.model.selectedOrderType;
+          let orderStatusRadio = this.model.orderStatus;
+
+
+          let isSelf = '0';
+
+          let isService = '0';
+          if (1 == orderStatusRadio) {
+            for (let i = 0; i < selectedOrderTypeArray.length; i++) {
+              let selectedOrderTypeArrayElement = selectedOrderTypeArray[i];
+              if ("self" === selectedOrderTypeArrayElement) {
+                isSelf = '1';
+              } else if ("service" === selectedOrderTypeArrayElement) {
+                isService = '1';
+              }
+            }
           }
 
           //处理省市区
