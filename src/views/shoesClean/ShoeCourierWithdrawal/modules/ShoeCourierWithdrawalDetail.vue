@@ -68,9 +68,9 @@
           <div class="content-font">申请状态：{{statusText}}</div>
         </a-col>
       </a-row>
-      <a-row v-if="data.status === '2'">
+      <a-row>
         <a-col :span="24">
-          <div class="content-font">拒绝原因：{{data.note}}</div>
+          <div class="content-font">备注：{{data.note}}</div>
         </a-col>
       </a-row>
     </div>
