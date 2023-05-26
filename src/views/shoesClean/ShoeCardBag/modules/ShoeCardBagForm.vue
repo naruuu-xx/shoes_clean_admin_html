@@ -25,7 +25,7 @@
                   :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
                   InternalLabelKey="name"
                   InternalValueKey="id"
-                  :rawList="[{label:record.name,value:+record.couponId}]"
+                  :rawList="[{label:record.name,value:record.couponId+''}]"
                 >
                 </xf-select>
                     <!-- <a-select :text="text" @change="onCellChange(record, 'couponId', $event)" v-if="!editDisabled">
@@ -207,7 +207,7 @@ export default {
   },
   created(){},
   mounted(){
-    this.getCouponList();
+    // this.getCouponList();
   },
   watch: {
     startAndEndTime:{
@@ -225,6 +225,7 @@ export default {
     },
     edit (record) {
       this.model = Object.assign({}, record);
+      this.model.cardCouponList = this.model.cardCouponList.map(item => ({...item,couponId: item.couponId.toString()}))
       this.startAndEndTime = [moment(record.startTime),moment(record.endTime)];
     },
     submitForm () {
