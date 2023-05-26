@@ -5,10 +5,10 @@
     :visible="visible"
     switchFullscreen
     @ok="handleOk"
-    :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
+    :okButtonProps="{ class:{'jee-hidden': disabled} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <ShoesSeckillForm ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></ShoesSeckillForm>
+    <ShoesSeckillForm ref="realForm" @ok="submitCallback" :disabled="disabled"></ShoesSeckillForm>
   </j-modal>
 </template>
 
@@ -19,6 +19,15 @@
     name: 'ShoesSeckillModal',
     components: {
       ShoesSeckillForm
+    },
+    props: {
+
+      //表单禁用
+      disabled: {
+        type: Boolean,
+        default: false,
+        required: false
+      }
     },
     data () {
       return {

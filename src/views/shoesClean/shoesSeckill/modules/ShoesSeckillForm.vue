@@ -5,34 +5,34 @@
         <a-row>
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品名称" prop="title">
-              <a-input v-model="model.title" placeholder="请输入产品名称"></a-input>
+              <a-input :disabled="disabled" v-model="model.title" placeholder="请输入产品名称"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品描述" prop="describe">
-              <a-input v-model="model.describe" placeholder="请输入描述"></a-input>
+              <a-input :disabled="disabled" v-model="model.describe" placeholder="请输入描述"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品规格" >
-              <a-button class="editable-add-btn" @click="addProduct" type="primary">
+              <a-button :disabled="disabled" class="editable-add-btn" @click="addProduct" type="primary">
                 新增
               </a-button>
               <a-table bordered :data-source="goodList" :columns="columns" rowKey="uuid" :pagination="false">
                 <template slot="goodsId" slot-scope="text,record,idx">
-                  <a-select showSearch :filterOption="((input,option) => option.componentOptions.children[0].text.toLowerCase().idxOf(input.toLowerCase()) >= 0)" optionFilterProp="value" v-model="record.goodsId" style="width: 140px" :options="goodOptions" @change="changeGood($event,idx)">
+                  <a-select :disabled="disabled" showSearch :filterOption="((input,option) => option.componentOptions.children[0].text.toLowerCase().idxOf(input.toLowerCase()) >= 0)" optionFilterProp="value" v-model="record.goodsId" style="width: 140px" :options="goodOptions" @change="changeGood($event,idx)">
                   </a-select>
                 </template>
                 <template slot="skuId" slot-scope="text,record,idx">
                   <!--  -->
-                  <a-select ref="skuSelect" v-model="record.skuId" :disabled="record.disabled" style="width: 140px" :options="skuOptions"  @focus="onClickSku(idx)" @change="$refs.skuSelect.blur()">
+                  <a-select ref="skuSelect" v-model="record.skuId" :disabled="disabled || record.disabled" style="width: 140px" :options="skuOptions"  @focus="onClickSku(idx)" @change="$refs.skuSelect.blur()">
                   </a-select>
                 </template>
                 <template slot="num" slot-scope="text,record,idx">
-                  <a-input-number style="width: 100%"  v-model="record.num" placeholder="请输入双数" @change="v => record.num = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />
+                  <a-input-number :disabled="disabled" style="width: 100%"  v-model="record.num" placeholder="请输入双数" @change="v => record.num = isNaN(parseInt(v)) ? 1 : parseInt(v)" :min="1" />
                 </template>
                 <template slot="seckillPrice" slot-scope="text,record,idx">
-                  <a-input-number style="width: 100%"  v-model="record.seckillPrice" placeholder="请输入秒杀价" @change="v => record.seckillPrice = isNaN(parseInt(v)) ? 0.01 : parseFloat(parseFloat(v).toFixed(2))" :min="0.01" />
+                  <a-input-number :disabled="disabled" style="width: 100%"  v-model="record.seckillPrice" placeholder="请输入秒杀价" @change="v => record.seckillPrice = isNaN(parseInt(v)) ? 0.01 : parseFloat(parseFloat(v).toFixed(2))" :min="0.01" />
                 </template>
 
 
@@ -45,25 +45,25 @@
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品库存" prop="inventory">
-              <a-input-number style="width: 100%" v-model="model.inventory" :min="1" @change="v => model.inventory = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
+              <a-input-number :disabled="disabled" style="width: 100%" v-model="model.inventory" :min="1" @change="v => model.inventory = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
             </a-form-model-item>
           </a-col>
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="每人限购数量" prop="limitNum">
-              <a-input-number style="width: 100%" v-model="model.limitNum" :min="1" @change="v => model.limitNum = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
+              <a-input-number :disabled="disabled" style="width: 100%" v-model="model.limitNum" :min="1" @change="v => model.limitNum = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
             </a-form-model-item>
           </a-col>
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="主图" prop="image">
-              <j-image-upload v-model="model.image" :isMultiple="false" text="上传"></j-image-upload>
+              <j-image-upload :disabled="disabled" v-model="model.image" :isMultiple="false" text="上传"></j-image-upload>
             </a-form-model-item>
           </a-col>
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="轮播图" prop="banner">
-              <j-image-upload v-model="model.banner" :isMultiple="true" text="上传"></j-image-upload>
+              <j-image-upload :disabled="disabled" v-model="model.banner" :isMultiple="true" text="上传"></j-image-upload>
             </a-form-model-item>
           </a-col>
 
@@ -75,19 +75,19 @@
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="秒杀时间" prop="startTime">
-              <a-range-picker v-model="startAndEndTime" :format="dateFormat" />
+              <a-range-picker :disabled="disabled" v-model="startAndEndTime" :format="dateFormat" />
             </a-form-model-item>
           </a-col>
           
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="状态" prop="status">
-              <j-switch v-model="model.status"></j-switch>
+              <j-switch :disabled="disabled" v-model="model.status"></j-switch>
             </a-form-model-item>
           </a-col>
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="权重" prop="weight">
-              <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%"/>
+              <a-input-number :disabled="disabled" v-model="model.weight" placeholder="请输入权重" style="width: 100%"/>
             </a-form-model-item>
           </a-col>
 
@@ -214,12 +214,11 @@ export default {
           align: 'center',
         },
       ],
-      dateFormat:"YYYY-MM-DD",
+      dateFormat:"YYYY-MM-DD HH:mm:ss",
       goodOptions:[],
       skuOptions:[],
       goodList:[],
-      startAndEndTime:[]
-
+      startAndEndTime:[],
 
     }
   },
@@ -335,6 +334,7 @@ export default {
 
     },
     edit(record) {
+      // this.disabled = record.disabled
       this.confirmLoading = true
       this.getDetail(record.seckillId)
      //

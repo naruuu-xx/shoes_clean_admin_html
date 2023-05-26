@@ -48,20 +48,19 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
-        <div slot="status" slot-scope="text, record">
-          <a-switch v-model="record.status" />
+        <div slot="status" slot-scope="text, record,idx">
+          <a-switch :defaultChecked="record.status == '1'" :loading="switchLoading" @click="onSwitch($event,record.seckillId,idx)"/>
         </div>
-        <span slot="action" slot-scope="text, record" v-if="record.status == 0">
-          <a @click="handleEdit(record)">编辑</a>
-        </span>
-        <span slot="action" slot-scope="text, record" v-if="record.status == 1">
-          <a @click="handleEdit(Object.assign({},record,{disabled:true}))">查看</a>
+        <span slot="action" slot-scope="text, record">
+
+          <a @click="onAction(Object.assign({},record,{disabled:true}))" v-if="record.status == '1'">查看</a>
+          <a @click="onAction(record)" v-if="record.status == '0'">编辑</a>
         </span>
 
       </a-table>
     </div>
 
-    <ShoesSeckillModal ref="modalForm" @ok="modalFormOk"></ShoesSeckillModal>
+    <ShoesSeckillModal ref="modalForm" @ok="modalFormOk" :disabled="disabled"></ShoesSeckillModal>
   </a-card>
 </template>
 
@@ -185,7 +184,9 @@
         },
         superFieldList:[],
         typeList:[],
-        statusList:[]
+        statusList:[],
+        switchLoading:false,
+        disabled: true
       }
     },
     created() {
@@ -199,6 +200,28 @@
     methods: {
       initDictConfig(){
       },
+      onSwitch(status,seckillId,idx) {
+        status = status ? '1' : '0'
+        let form ={
+          seckillId,
+          status
+        }
+        // this.dataSource[idx].status = status
+        httpAction('ShoeSeckill/shoeSeckill/editStatus', form, 'put').then((res) => {
+            if (res.success) {
+              this.$message.success(res.message)
+              this.dataSource[idx].status = status
+            } else {
+              this.dataSource[idx].status = status ? '0' : '1'
+            }
+          }).finally(() => {
+          })
+        console.log(444,seckillId);
+      },
+      onAction(val) {
+        this.disabled = !!val.disabled
+        this.handleEdit(val)
+      }
     }
 
   }
