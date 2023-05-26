@@ -81,6 +81,10 @@
       </a-button>
     </div>
 
+    <div style="text-align: right; margin-bottom: 20px; font-size: 24px">
+      实际到账总金额: {{totalActualArrivalPrice}}元
+    </div>
+
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
@@ -223,6 +227,15 @@ export default {
           title: '绑定手机号',
           align: "center",
           dataIndex: 'wxPhone'
+        },{
+        title: '优惠券',
+        align: "center",
+        dataIndex: 'couponName',
+        },
+        {
+          title:'鞋蜂卡',
+          align: "center",
+          dataIndex: 'timecardName',
         },
         {
           title: "机柜名称",
@@ -253,6 +266,35 @@ export default {
           title: '分成金额',
           align: "center",
           dataIndex: 'proportionPrice',
+        },
+        {
+          title: '手续费率',
+          align: "center",
+          dataIndex: 'poundageRate',
+        },{
+        title:'实际到账',
+        align: "center",
+        dataIndex: 'actualArrivalPrice',
+        },
+        {
+          title: '订单状态',
+          align: "center",
+          dataIndex: 'status',
+        },
+        {
+          title: '订单类型',
+          align: "center",
+          dataIndex: 'type',
+        },
+        {
+          title: '下单时间',
+          align: "center",
+          dataIndex: 'createTime',
+        },
+        {
+          title: '完成时间',
+          align: "center",
+          dataIndex: 'finishTime',
         },
         {
           title: '订单状态',
@@ -325,11 +367,13 @@ export default {
     }
   },
   mounted() {
-    this.fetchOrderList(); // 页面加载时获取订单列表
+  this.fetchOrderList(); // 页面加载时获取订单列表
+
   },
   created() {
-    this.getSuperFieldList();
-    //获取机柜列表，放入下拉框
+    this.getSuperFieldList()
+    console.log(this.$route.query)
+
 
   },
   watch: {
@@ -364,6 +408,10 @@ export default {
     importExcelUrl: function () {
       return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
     },
+    totalActualArrivalPrice(){
+      return this.dataSource.length ? this.dataSource[0].totalActualArrivalPrice : 0;
+    }
+
   },
   methods: {
     handleMenuClick({ key }) {
@@ -399,19 +447,6 @@ export default {
       this.statusDisable = ['6', '10','13','15','16'].includes(status);
       //this.queryParam.statusList = status;
       this.loadData(1);
-
-      // // 发起请求获取订单列表
-      // const apiUrl = this.url.list + "?statusList=" + status;
-      // // 使用 httpAction 方法发送请求
-      // httpAction(apiUrl, null, "get")
-      //   .then(response => {
-      //     this.dataSource = response.data; // 将获取到的订单列表数据赋值给dataSource
-      //     // this.orderList = response.data; // 将获取到的订单列表数据赋值给orderList
-      //     // console.log(this.orderList)
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //   });
     },
       setQueryParams() {
       return {
