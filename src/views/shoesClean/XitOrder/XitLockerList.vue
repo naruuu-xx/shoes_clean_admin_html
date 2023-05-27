@@ -170,22 +170,22 @@ export default {
           align: "center",
           dataIndex: 'userWaitGet'
         },
-        {
-          title: '订单数',
-          align: "center",
-          dataIndex: 'orderTotal'
-        },
-        {
-          title: '订单总额',
-          align: "center",
-          dataIndex: 'orderMoneyTotal',
-          customRender: (orderMoneyTotal) => {
-            if (orderMoneyTotal == null) {
-              orderMoneyTotal = 0
-            }
-            return orderMoneyTotal;
-          },
-        },
+        // {
+        //   title: '订单数',
+        //   align: "center",
+        //   dataIndex: 'orderTotal'
+        // },
+        // {
+        //   title: '订单总额',
+        //   align: "center",
+        //   dataIndex: 'orderMoneyTotal',
+        //   customRender: (orderMoneyTotal) => {
+        //     if (orderMoneyTotal == null) {
+        //       orderMoneyTotal = 0
+        //     }
+        //     return orderMoneyTotal;
+        //   },
+        // },
         {
           title: '机柜状态',
           align: "center",
