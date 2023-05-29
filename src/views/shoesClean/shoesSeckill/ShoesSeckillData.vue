@@ -15,6 +15,7 @@
         <a-row>
           <a-spin :spinning="spinning">
             <xfLine title="出库数折线图" :dataSource="outHistogram" alias="出库数" color="#FFBB00"></xfLine>
+            <DLine :dataSource="dataSource"></DLine>
           </a-spin>
         </a-row>
       </div>
@@ -24,13 +25,15 @@
 
 <script>
 import xfLine from './components/Line'
+import DLine from './components/DLine'
 import xfDateFilter from './components/xfDateFilter'
 import { getAction } from '@/api/manage'
 export default {
   name: 'ShoeAnalysis',
   components: {
     xfDateFilter,
-    xfLine
+    xfLine,
+    DLine
   },
   data() {
     return {
@@ -40,7 +43,13 @@ export default {
       loading: false,
       center: null,
       inHistogram:[],
-      outHistogram:[],
+      outHistogram:[{
+        x:'02日',
+        y:2
+      },{
+        x:'03日',
+        y:4
+      }],
       visitInfo: [],
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
       rankingList:[], // 排行的列表
@@ -56,38 +65,6 @@ export default {
       },
       spinning: false,
       pieData:[],
-      factoryShoes:[
-        {
-          name:'总鞋数',
-          icon:require('@/assets/data-shoe.png'),
-          color:'#39C9C9',
-          num:0
-        },
-        {
-          name:'机柜',
-          icon:require('@/assets/data-cabinet.png'),
-          color:'#FFB673',
-          num:0
-        },
-        {
-          name:'站点',
-          icon:require('@/assets/data-site.png'),
-          color:'#FC456C',
-          num:0
-        },
-        {
-          name:'快递',
-          icon:require('@/assets/data-express.png'),
-          color:'#48CAF0',
-          num:0
-        },
-        {
-          name:'其他',
-          icon:require('@/assets/data-else.png'),
-          color:'#21C3BC',
-          num:0
-        },
-      ],
       // 入库统计
       warehousingStatistics:[
         {
@@ -126,7 +103,21 @@ export default {
         startTime: '',
         endTime: '',
         selectType: 'day'
-      }
+      },
+      dataSource:[
+        { y: '1', k: 7.0, London: 3.9 },
+        { y: '2', k: 6.9, London: 4.2 },
+        { y: '3', k: 9.5, London: 5.7 },
+        { y: '4', k: 14.5, London: 8.5 },
+        { y: '5', k: 18.4, London: 11.9 },
+        { y: '6', k: 21.5, London: 15.2 },
+        { y: '7', k: 25.2, London: 17.0 },
+        { y: '8', k: 26.5, London: 16.6 },
+        { y: '9', k: 23.3, London: 14.2 },
+        { y: '10', k: 18.3, London: 10.3 },
+        { y: '11', k: 13.9, London: 6.6 },
+        { y: '12', k: 9.6, London: 4.8 },
+      ],
     }
   },
   created() {
@@ -166,11 +157,6 @@ export default {
           this.outboundStatistics[0].num = result.totalOutOfStorage
           this.outboundStatistics[1].num = result.monthOutOfStorage
           this.outboundStatistics[2].num = result.todayOutOfStorage
-          this.factoryShoes[0].num = result.totalRetention
-          this.factoryShoes[1].num = result.lockerRetention
-          this.factoryShoes[2].num = result.siteRetention
-          this.factoryShoes[3].num = result.expressageRetention
-          this.factoryShoes[4].num = result.otherRetention
         }
       })
     },

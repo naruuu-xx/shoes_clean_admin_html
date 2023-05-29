@@ -1,10 +1,18 @@
+<!--
+ * @Descripttion: your project
+ * @version: 1.0
+ * @Author: yizhimao
+ * @Date: 2023-05-29 16:49:02
+ * @LastEditors: yizhimao
+ * @LastEditTime: 2023-05-29 19:45:16
+-->
 <template>
   <div>
     <h4 class="title" v-if="title">{{ title }}</h4>
     <v-chart v-if="dataSource.length" :force-fit="true" :height="height" :data="dataSource" :scale="scale" :onClick="handleClick">
       <v-tooltip/>
       <v-axis dataKey="y" :label="label"/>
-      <!-- <v-legend/> -->
+      <v-legend/>
       <v-line position="x*y" :color="color"/>
       <v-point position="x*y" :color="color" :size="4" :v-style="style" :shape="'circle'"/>
     </v-chart>
