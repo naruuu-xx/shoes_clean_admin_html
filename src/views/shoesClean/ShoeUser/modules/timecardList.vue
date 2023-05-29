@@ -15,6 +15,12 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+            <a-form-item label="是否停用">
+              <a-select v-model="queryParam.delFlag" style="width: 120px" :options="delFlagOption">
+              </a-select>
+            </a-form-item>
+          </a-col>
 
 
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
@@ -47,10 +53,10 @@
 
         <span slot="action" slot-scope="text, record">
 <!--          <a @click="stopStatus(record)" v-if="record.status==1 && record.useStatus=='可使用'" style="color: red">停用</a>-->
-  <a @click="handleDeleteByDiy(record)" v-if="record.status==0 && record.useStatus=='可使用'"
+  <a @click="handleDeleteByDiy(record)" v-if="record.timecardStatus==0 && record.useStatus=='可使用'"
      v-has="'user:status:button'">启用</a>
            <a-popconfirm title="确定停用吗?" @confirm="() => handleDeleteByDiy(record)"
-                         v-if="record.status==1 && record.useStatus=='可使用'">
+                         v-if="record.timecardStatus==1 && record.useStatus=='可使用'">
             <a style="color: red" v-has="'user:status:button'">停用</a>
           </a-popconfirm>
 
@@ -139,6 +145,23 @@ export default {
           align: "center",
           dataIndex: 'remainNum'
         },
+        {
+          title: '是否停用',
+          align: "center",
+          dataIndex: 'timecardStatus',
+          customRender: (timecardStatus) => {
+            if (timecardStatus == 0) {
+              timecardStatus = '是'
+            } else timecardStatus = '否'
+            return timecardStatus;
+          },
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          align: 'center',
+          scopedSlots: { customRender: 'action' }
+        }
 
 
       ],
@@ -148,6 +171,7 @@ export default {
 
   },
   methods: {
+
     show(record) {
       this.visible = true;
       this.id = record.userId;
@@ -171,13 +195,13 @@ export default {
     },
     handleDeleteByDiy(record) {
       let id = record.userTimecardId;
-      let status = record.status;
+      let status = record.timecardStatus;
 
       let form = {
         "id": id,
         "status": status
       }
-      httpAction("/timecard/updateStatus", form, "put").then((res) => {
+      httpAction("/shoeTimecard/updateStatus", form, "put").then((res) => {
         if (res.success) {
           this.initDataByDIY3();
         } else {
@@ -185,6 +209,7 @@ export default {
         }
       })
     },
+
     searchReset2() {
       this.queryParam = {id: this.id}
       this.initDataByDIY2();
