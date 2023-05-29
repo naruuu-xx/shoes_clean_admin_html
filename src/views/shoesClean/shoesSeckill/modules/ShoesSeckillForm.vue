@@ -75,7 +75,7 @@
 
           <a-col :span="24">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="秒杀时间" prop="startTime">
-              <a-range-picker :disabled="disabled" v-model="startAndEndTime" :format="dateFormat" />
+              <a-range-picker :disabled="disabled" v-model="startAndEndTime" :format="dateFormat" show-time />
             </a-form-model-item>
           </a-col>
           
