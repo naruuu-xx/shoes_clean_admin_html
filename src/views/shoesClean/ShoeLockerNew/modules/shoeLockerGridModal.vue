@@ -8,7 +8,7 @@
     cancelText="关闭"
     :footer="null"
   >
-    <div class="lockers">
+    <div class="lockers" :class="{scroll:isScroll}">
       <div class="locker" v-for="(locker, idx) in lockerList" :key="idx">
         <div class="col" v-for="(item, index) in locker" :key="index">
           <div v-for="(item1, index1) in item" :key="index1">
@@ -41,6 +41,7 @@ export default {
       visible: false,
       devicenum: '',
       lockerList: [],
+      isScroll: false
     }
   },
   created() {},
@@ -57,6 +58,7 @@ export default {
       return result
     },
     show(record) {
+      this.isScroll = false
       this.devicenum = record.lockerCode
       // 后期接口拿柜子数量
       let usableNum = record.num;
@@ -128,8 +130,13 @@ export default {
             return idx + 1 // 让编号从1开始
           })
         this.lockerList = this.chunk(arr, 16).map((item) => this.chunk(item, 8))
-        // this.width = this.lockerList.length * 350
-        this.width = 1000
+        if(usableNum == 16) {
+          this.width = this.lockerList.length * 350
+        } else {
+          this.width = '80vw'
+          this.isScroll = true
+        }
+        
       } else if (31 === usableNum) {
         let cabinetNum = usableNum + 1 // 需要加屏幕一个格子
         let arr = Array(cabinetNum)
@@ -179,10 +186,13 @@ export default {
 </script>
 
 <style scoped lang="less">
+.scroll {
+  overflow-x: scroll;
+  justify-content: flex-start !important;
+}
 .lockers {
   display: flex;
   justify-content: center;
-  overflow-x: scroll;
 }
 .locker {
   box-sizing: border-box;
