@@ -24,10 +24,19 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerCodeList">
-              <a-select v-model="model.lockerCodeList" mode="multiple">
+            <a-form-model-item label=" 绑定机柜编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="lockerIdList">
+              <!-- <a-select v-model="model.lockerCodeList" mode="multiple">
                 <a-select-option v-for="i in lockerList" :value="i.lockerCode" :key="i.lockerCode">{{i.name}}</a-select-option>
-              </a-select>
+              </a-select> -->
+              <xf-select
+                  style="width: 100%"
+                  isInternalData
+                  mode="multiple"
+                  v-model="model.lockerIdList"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=locker`'
+                  :rawList="rawList"
+                >
+                </xf-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -72,10 +81,12 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeCourierForm',
     components: {
+      XfSelect
     },
     props: {
       //表单禁用
@@ -88,6 +99,7 @@
     data () {
       return {
         model:{
+          lockerIdList:[]
          },
         labelCol: {
           xs: { span: 24 },
@@ -121,7 +133,7 @@
            delFlag: [
               { required: true, message: '请选择 删除状态!'},
            ],
-          lockerCodeList: [
+           lockerIdList: [
               { required: true, message: '请选择快递柜!'},
            ],
           cardNo: [
@@ -146,6 +158,7 @@
           queryById: "/shoeCourier/shoeCourier/queryById"
         },
         lockerList:[],
+        rawList:[]
       }
     },
     computed: {
@@ -192,12 +205,14 @@
       add () {
         // this.edit(this.modelDefault);
         this.model = {
-          status: 1
+          status: 1,
+          lockerIdList:[]
         }
       },
       edit (record) {
         this.model = Object.assign({}, record);
-        this.model.lockerCode = record.lockerCode;
+        this.model.lockerIdList = record.lockerCodeList.map(({value}) => value);
+        this.rawList = record.lockerCodeList.map(item => item);
         this.visible = true;
       },
       submitForm () {
@@ -215,7 +230,7 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-            that.setModel();
+            // that.setModel();
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

@@ -54,12 +54,22 @@
             <a-button @click="handleCancel">取消</a-button>
           </a-col>
           <a-col :span="6">
-            <a-button @click="handleSubmit">确认</a-button>
+            <a-button @click="handleSubmit" :loading="loading">确认</a-button>
           </a-col>
           <a-col :span="6"></a-col>
         </a-col>
       </a-row>
     </div>
+    <a-modal
+      :title="false"
+      :visible="visibleModal"
+      @ok="handleOk"
+      @cancel="visibleModal = false"
+      :confirmLoading="confirmLoading"
+      :maskClosable="false"
+    >
+      <p style="text-align: center;">目前派发对象为<span style="color:red;font-size: 34px;">全体用户</span>,是否确认派发?</p>
+    </a-modal>
   </j-modal>
 </template>
 
@@ -101,12 +111,37 @@ export default {
         couponType: [{require: true, message: '请选择优惠券或卡包'}],
         note: [{require: true, message: '请输入派发原因'}]
       },
-      userIds:undefined
+      userIds:undefined,
+      visibleModal:false,
+      loading:false,
+      confirmLoading: false
     }
   },
   created() {
   },
   methods: {
+    handleOk() {
+      this.confirmLoading = true
+      let url = "/shoes/shoeUser/sendCouponOrCardBagToAll"
+      let form = {
+            type: this.type,
+            id: this.selectOption,
+            userIds: this.userIds,
+            note: this.note
+          }
+      httpAction(url, form, "post").then((res) => {
+          if (res.success) {
+            this.$message.success(res.message);
+            this.handleCancel()
+          } else {
+            this.$message.warning(res.message);
+          }
+        }).finally(res => {
+          this.visibleModal = false
+          this.confirmLoading = false
+          this.loading = false
+        })
+    },
     changeSelect(data) {
       this.weekList = data.records.map(item => ({
         label: item.name,
@@ -154,16 +189,24 @@ export default {
 
         let url = ''
         let form = {}
+        
         if(this.userIds) {
           // 手动派券
-          url = "/shoes/shoeUser/sendCouponOrCardBagToAll"
-          form = {
-            type: this.type,
-            id: this.selectOption,
-            userIds: this.userIds,
-            note: this.note
+          
+          if(!this.userIds.length) {
+            return this.visibleModal = true
+          } else {
+            this.loading = true
+            url = "/shoes/shoeUser/sendCouponOrCardBagToAll"
+            form = {
+              type: this.type,
+              id: this.selectOption,
+              userIds: this.userIds,
+              note: this.note
+            }
           }
         } else {
+          this.loading = true
           // 当个派券
           url = "/shoes/shoeUser/distribute"
           let userId = this.record.userId;
@@ -182,6 +225,8 @@ export default {
           } else {
             this.$message.warning(res.message);
           }
+        }).finally(res => {
+          this.loading = false
         })
       }
     },

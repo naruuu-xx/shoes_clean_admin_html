@@ -51,6 +51,22 @@
                 />
               </a-form-model-item>
             </a-col>
+            <a-col :span="24" v-if="model.orderStatus == 1">
+              <a-form-model-item label="接单类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="selectedOrderType">
+                <a-checkbox-group v-model="model.selectedOrderType">
+                  <a-checkbox v-for="item in orderTypeOptions" :value="item.value" :key="item.value">{{ item.name }}</a-checkbox>
+                </a-checkbox-group>
+              </a-form-model-item>
+            </a-col>
+
+            <a-col :span="24" v-if="model.selectedOrderType.includes('service')">
+              <a-form-model-item label="配送范围设置" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="matchingType">
+                <a-radio-group v-model="model.matchingType">
+                  <a-radio value="2">手绘范围</a-radio>
+                  <a-radio value="1">系统设定</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
   <!--          <a-col :span="24">-->
   <!--            <a-form-model-item label="省市区" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="province">-->
                 <!--             <j-area-linkage type="cascader" v-model="model.province" placeholder="请输入省市区"  />-->
@@ -83,7 +99,7 @@
                 <a-input-number v-model="model.latitude" placeholder="请输入纬度" style="width: 100%" id="c-lat" :disabled="false"/>
               </a-form-model-item>
             </a-col>
-            <a-col :span="24">
+            <a-col :span="24" v-if =  "model.matchingType == 2">
               <a-form-model-item label="配送范围"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paths">
                 <a-input v-model="model.paths" placeholder="请设定配送范围" style="width: 100%" id="c-paths" :disabled="true"/>
               </a-form-model-item>
@@ -98,7 +114,7 @@
                       <span>设置机柜定位</span>
                     </button>
                   </div>
-                  <div>
+                  <div v-if="model.matchingType == 2">
                     <button
                       @click="setActivePattern('polygon')"
                       :class="['ant-btn', activePattern==='polygon'?'ant-btn-primary':'']"
@@ -106,7 +122,7 @@
                       设置配送范围
                     </button>
                   </div>
-                  <div v-if="activePattern==='polygon'">
+                  <div v-if="activePattern==='polygon' && model.matchingType == 2">
                     <button class="ant-btn" @click="addPolygon()">添加</button>
                     <button class="ant-btn" @click="editPolygon()">编辑</button>
                     <button class="ant-btn" @click="delPolygon()">删除</button>
@@ -172,7 +188,12 @@ export default {
   },
   data() {
     return {
-      model: {},
+      model: {
+        selectedOrderType:[],
+        matchingType:'',
+        isSelf:'0',
+        isService:'0',
+      },
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -233,7 +254,13 @@ export default {
         paths:[
           {required: true, message: '请设置配送范围'},
           {validator:this.handleIsIn}
-        ]
+        ],
+        selectedOrderType: [
+          {required: true, message: '请选择接单类型!'},
+        ],
+        matchingType: [
+          {required: true, message: '请选择配送范围类型!'},
+        ],
       },
       url: {
         add: "/shoes/shoeLocker/addNew",
@@ -268,12 +295,23 @@ export default {
       searchList: [],
 
       activePattern:'marker', //地图操作模式，marker设置机柜定位，polygon设置配送范围
+      orderTypeOptions: [{"value":"self", "name":"自提"}, {"value": "service", "name":"配送"}],
       //=================
     }
   },
   computed: {
     formDisabled() {
       return this.disabled
+    },
+  },
+  watch:{
+    'model.selectedOrderType': {
+      handler(value, oldValue) {
+        this.model.isSelf = value.includes('self') ? '1' : '0'
+        this.model.isService = value.includes('service') ? '1' : '0'
+      },
+      deep: true,
+      immediate: true
     },
   },
   created() {
@@ -295,12 +333,13 @@ export default {
   methods: {
     add() {
       // this.edit(this.modelDefault);
-      this.model = {
+      let model = {
         status: 1,
         type: "real",
         orderStatus: 1,
         paths: '',
       };
+      this.model = Object.assign({},this.model, model)
       let center = new window.qq.maps.LatLng(24.500646, 118.126990);// 设置地图中心点坐标
       this.option = {
         center: center,// 设置地图中心点坐标
@@ -312,9 +351,15 @@ export default {
       },1000);
     },
     edit(record) {
-      this.model = Object.assign({}, record);
+      this.model = Object.assign({},this.model, record)
       this.model.orgCode = record.orgCode + "";
       this.model.departName = record.departName;
+      if(record.isSelf === '1') {
+        this.model.selectedOrderType.push('self')
+      }
+      if(record.isService === '1') {
+        this.model.selectedOrderType.push('service')
+      }
       let center = new qq.maps.LatLng(record.latitude, record.longitude);// 设置地图中心点坐标
       this.option = {
           center: center,// 设置地图中心点坐标
@@ -341,6 +386,23 @@ export default {
             httpurl += this.url.edit;
             method = 'put';
           }
+          let selectedOrderTypeArray = this.model.selectedOrderType;
+          let orderStatusRadio = this.model.orderStatus;
+
+
+          let isSelf = '0';
+
+          let isService = '0';
+          if (1 == orderStatusRadio) {
+            for (let i = 0; i < selectedOrderTypeArray.length; i++) {
+              let selectedOrderTypeArrayElement = selectedOrderTypeArray[i];
+              if ("self" === selectedOrderTypeArrayElement) {
+                isSelf = '1';
+              } else if ("service" === selectedOrderTypeArrayElement) {
+                isService = '1';
+              }
+            }
+          }
 
           //处理省市区
           // let province = this.model.province[0];
@@ -364,6 +426,9 @@ export default {
             "weight": this.model.weight,
             "orderStatus": this.model.orderStatus,
             "paths":this.model.paths,
+            "matchingType": this.model.matchingType,
+            "isSelf":isSelf,
+            "isService":isService,
           }
 
           httpAction(httpurl, data, method).then((res) => {

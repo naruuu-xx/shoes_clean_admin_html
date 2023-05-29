@@ -43,7 +43,6 @@
             <a-form-model-item label="绑定小程序账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="userId">
               <XfSelect
                 :list="weekList"
-                @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="model.userId"
                 :disabled="(!(model.investorsId === null || model.investorsId === ''))"
@@ -96,12 +95,22 @@
             <div class="locker">
               <div class="locker-label">
                 机柜{{ idx + 1 }}：
-                <a-select style="width: 300px" v-model="investorsLockerDtoList[idx].lockerId">
+                <!-- <a-select style="width: 120px" v-model="investorsLockerDtoList[idx].lockerId">
                   <a-select-option :title="item.name" :value="item.lockerId" v-for="(item, index) in lockerList" :key="index"
                                    :disabled="disabledLocker(item.lockerId)">
                     {{ item.name }}
                   </a-select-option>
-                </a-select>
+                </a-select> -->
+                <xf-select
+                  style="width: 260px"
+                  :list="investorsLockerDtoList[idx].weekList"
+                  @change="checkedSelect"
+                  @changeList="changeSelectLocker($event,idx)"
+                  v-model="investorsLockerDtoList[idx].lockerId"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=locker`'
+                  :rawList="[{label: investorsLockerDtoList[idx].name,value: investorsLockerDtoList[idx].lockerId,disabled:true}]"
+                >
+                </xf-select>
               </div>
               <div class="locker-label">
                 收益比例(%)：
@@ -223,6 +232,7 @@
         lockerList:[],
         agentList:[],
         investorsLockerDtoList:[],
+        // selectListIds:[]
       }
     },
     watch:{
@@ -273,6 +283,9 @@
       formDisabled(){
         return this.disabled
       },
+      selectListIds() {
+        return this.investorsLockerDtoList.map(item => +item.lockerId)
+      }
     },
     created () {
        //备份model原始值
@@ -291,6 +304,12 @@
       add () {
         this.edit(this.modelDefault);
       },
+      changeSelectLocker(data,idx) {
+        this.investorsLockerDtoList[idx].weekList = data.records.map(item => ({
+          ...item,
+          disabled: this.selectListIds.includes(item.value)
+        }));
+      },
       changeSelect(data) {
         this.weekList = data.records.map(item => ({
           label: item.nickname+'('+item.phone+')',
@@ -298,10 +317,23 @@
         }));
       },
       checkedSelect(val) {
+        // this.selectListIds = this.investorsLockerDtoList.map(item => +item.lockerId)
+        this.investorsLockerDtoList = this.investorsLockerDtoList.map(item => ({
+          ...item,
+          weekList: item.weekList.map(w => ({
+            ...w,
+            disabled: this.selectListIds.includes(w.value)
+          }))
+        }))
       },
       edit (record) {
         this.model = Object.assign({}, record,this.model);
-        this.investorsLockerDtoList = record.investorsLockerDtoList;
+        this.investorsLockerDtoList = record.investorsLockerDtoList.map(item => ({
+          ...item,
+          lockerId: +item.lockerId,
+          weekList:[]
+        }));
+        // this.selectListIds = record.investorsLockerDtoList.map(item => +item.lockerId)
         this.model.investorsId=record.investorsId;
         this.getBank();
         this.getLockerList();
@@ -385,6 +417,7 @@
         this.investorsLockerDtoList.push({
           lockerId: '',
           percentage: 0,
+          weekList:[]
         })
       },
       // 删除产品

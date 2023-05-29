@@ -16,9 +16,9 @@
           </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="机柜状态">
-               <a-select v-model="queryParam.status">
-                 <a-select-option v-for="item in statusOptions" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
-               </a-select>
+              <a-select v-model="queryParam.status">
+                <a-select-option v-for="item in statusOptions" :value="item.value" :key="item.value">{{item.name}}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
@@ -47,9 +47,7 @@
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
-    <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-    </div>
+
 
     <!-- table区域-begin -->
     <div>
@@ -86,56 +84,14 @@
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
-          <a-button
-            v-else
-            :ghost="true"
-            type="primary"
-            icon="download"
-            size="small"
-            @click="downloadFile(text)">
-            下载
-          </a-button>
         </template>
 
-        <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical"/>
-
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
-              <a-menu slot="overlay">
-              <a-menu-item>
-                 <a @click="handleGrid(record)">柜子状态</a>
-              </a-menu-item>
-                <a-menu-item>
-                <a @click="getSubCommission(record)">机柜分佣人</a>
-              </a-menu-item>
-              <a-menu-item>
-              <a-popconfirm title="确定一键开柜吗？" @confirm="() => openAllDoor(record.lockerCode)">
-                    <a>一键开柜</a>
-                   </a-popconfirm>
-              </a-menu-item>
-              <a-menu-item>
-                <a @click="sceneGraph(record)">位置图</a>
-             </a-menu-item>
-                 <a-menu-item v-has="'locker:move'">
-                   <a @click="move(record)">迁移</a>
-                </a-menu-item>
-            </a-menu>
-          </a-dropdown>
-
-        </span>
 
       </a-table>
     </div>
 
-    <shoe-locker-modal ref="modalForm" @ok="modalFormOk"></shoe-locker-modal>
-    <shoe-locker-grid-modal ref="gridModal"></shoe-locker-grid-modal>
-    <set-percentage ref="setPercentage" @ok="modalFormOk"></set-percentage>
-    <shoe-locker-img-modal ref="imgModal" @ok="modalFormOk"></shoe-locker-img-modal>
-    <shoe-locker-move-form ref="moveForm" @ok="modalFormOk"></shoe-locker-move-form>
-    <sub-commission-list ref="subCommissionList"></sub-commission-list>
+
 
   </a-card>
 </template>
@@ -145,47 +101,20 @@
 import '@/assets/less/TableExpand.less'
 import {mixinDevice} from '@/utils/mixin'
 import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-import ShoeLockerModal from './modules/ShoeLockerModal'
-import shoeLockerGridModal from './modules/shoeLockerGridModal'
-import ShoeLockerImgModal from './modules/ShoeLockerImgModal'
 import Area from '@/components/_util/Area'
 import {filterDictTextByCache} from "@comp/dict/JDictSelectUtil";
-import {httpAction} from "../../../api/manage";
 import {mapGetters} from 'vuex';
-import store from '@/store/'
-import SetPercentage from "@views/shoesClean/shoeCourier/modules/SetPercentage";
-import ShoeLockerMoveForm from "@views/shoesClean/ShoeLockerNew/modules/ShoeLockerMoveForm";
-import SubCommissionList from '@views/shoesClean/ShoeLocker/modules/subCommissionList'
 
 export default {
-  name: 'ShoeLockerList',
+  name: 'XitLockerList',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
-    SubCommissionList,
-    ShoeLockerModal,
-    shoeLockerGridModal,
-    SetPercentage,
-    ShoeLockerImgModal,
-    ShoeLockerMoveForm
   },
   data() {
     return {
       description: 'shoe_locker管理页面',
       // 表头
       columns: [
-        {
-          title:'ID',
-          align:"center",
-          dataIndex: 'lockerId'
-        },
-        // {
-        //   title:'机柜类型',
-        //   align:"center",
-        //   dataIndex: 'type',
-        //   customRender: (text) => {
-        //     return filterDictTextByCache('shoe_locker_type', text);
-        //   },
-        // },
         {
           title: '机柜编码',
           align: "center",
@@ -204,8 +133,7 @@ export default {
         {
           title: '格子数',
           align: "center",
-          dataIndex: 'num',
-
+          dataIndex: 'num'
         },
         {
           title: '可用格子数',
@@ -242,31 +170,20 @@ export default {
           align: "center",
           dataIndex: 'userWaitGet'
         },
-        {
-          title: '订单数',
-          align: "center",
-          dataIndex: 'orderTotal'
-        },
-        {
-          title: '订单总额',
-          align: "center",
-          dataIndex: 'orderMoneyTotal',
-          customRender: (orderMoneyTotal) => {
-
-            if (orderMoneyTotal==null){
-              orderMoneyTotal=0
-            }
-            return orderMoneyTotal;
-          },
-        },
-
         // {
-        //   title: '收益比例',
+        //   title: '订单数',
         //   align: "center",
-        //   dataIndex: 'percentage',
-        //   customRender: (text) => {
-        //     let percentage = (text * 100).toFixed(0) + "%";
-        //     return percentage;
+        //   dataIndex: 'orderTotal'
+        // },
+        // {
+        //   title: '订单总额',
+        //   align: "center",
+        //   dataIndex: 'orderMoneyTotal',
+        //   customRender: (orderMoneyTotal) => {
+        //     if (orderMoneyTotal == null) {
+        //       orderMoneyTotal = 0
+        //     }
+        //     return orderMoneyTotal;
         //   },
         // },
         {
@@ -311,22 +228,9 @@ export default {
             return text;
           },
         },
-        // {
-        //   title:'添加时间',
-        //   align:"center",
-        //   dataIndex: 'createTime'
-        // },
-        {
-          title: '操作',
-          dataIndex: 'action',
-          align: "center",
-          fixed: "right",
-          width: 147,
-          scopedSlots: {customRender: 'action'}
-        }
       ],
       url: {
-        list: "/shoes/shoeLocker/queryList",
+        list: "/shoes/shoeLocker/xitLockerList",
         delete: "/shoes/shoeLocker/delete",
         deleteBatch: "/shoes/shoeLocker/deleteBatch",
         exportXlsUrl: "/shoes/shoeLocker/exportXls",
@@ -344,16 +248,29 @@ export default {
   created() {
     this.pcaData = new Area()
     this.getSuperFieldList();
+    console.log(this.userInfo());
   },
   computed: {
     importExcelUrl: function () {
       return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
     },
   },
-    methods: {
+  //==================================================================================================================
+  // mounted() {
+  //   //初始化websocket
+  //   this.initWebSocket()
+  // },
+  // destroyed: function () { // 离开页面生命周期函数
+  //   this.websocketclose();
+  // },
+  //==================================================================================================================
+  methods: {
     ...mapGetters(["userInfo"]),
     getPcaText(code) {
       return this.pcaData.getText(code);
+    },
+    move(record) {
+      this.$refs.moveForm.edit(record);
     },
     initDictConfig() {
     },
@@ -378,33 +295,17 @@ export default {
     handleGrid(record) {
       this.$refs.gridModal.show(record);
     },
-    move(record) {
-      this.$refs.moveForm.edit(record);
-    },
-    setPercentage(record){
-      this.$refs.setPercentage.show(record);
-
-    },
     sceneGraph(record) {
       this.$refs.imgModal.show(record);
     },
-    openAllDoor(lockerCode) {
-      const that = this;
-      let data = {
-        "devicenum": lockerCode
-      };
-      httpAction("/api/IoT/openAllDoor", data, 'post').then((res) => {
-        if (res.code === 0) {
-          that.$message.success("开门成功")
-        } else {
-          that.$message.warning(res.message);
-        }
-      })
+    setPercentage(record) {
+      this.$refs.setPercentage.show(record);
+
     },
     getSubCommission(record){
       this.$refs.subCommissionList.show(record);
     },
-    }
+  }
 }
 </script>
 <style scoped>

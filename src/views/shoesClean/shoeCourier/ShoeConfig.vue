@@ -1,36 +1,48 @@
 <template>
   <a-card :bordered="false">
+<!--    <div>-->
+<!--      <a-space>取件范围</a-space><br/>-->
+<!--      <br/>-->
+<!--      <a-space>用户下单时匹配<a-input-number placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 60px"-->
+<!--                                         :min="0" size="small"/>km范围内的机柜</a-space>-->
+<!--    </div>-->
+<!--    <a-divider/>-->
     <div>
-      <span>取件范围</span><br/>
-      <span>用户下单时匹配<a-input-number placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 150px"
-                                         :min="0" size="small"/>km范围内的机柜</span>
-    </div>
-    <a-divider/>
-    <div>
-      <span>配送费设置</span><br/>
+      <a-space>配送费设置</a-space><br/>
+      <br/>
       <span>(1)用户配送费</span><br/>
-      <span>在配送范围内每单配送费为<a-input-number placeholder="输入金额" style="width: 150px"
-                                                    v-model="userCourierCost" :min="0" size="small"/>元。</span><br/>
-      <span>满<a-input-number placeholder="输入金额" style="width: 150px" v-model="courierReduce" :min="0"
-                              size="small"/>元免配送费。</span><br/>
-      <span>(2)配送员配送费</span><br/>
-      <span>(2.1)取鞋配送费</span><br/>
-      <span>同一订单第一双鞋配送费为<a-input-number placeholder="输入金额" style="width: 150px" v-model="courierCost"
+      <br/>
+      <a-space>在配送范围内每单配送费为<a-input-number placeholder="输入金额" style="width: 60px"
+                                                    v-model="userCourierCost" :min="0" size="small"/>元。</a-space><br/>
+
+      <br/>
+      <span>(2)配送员配送费</span>
+      <br/>
+      <br/>
+      <a-space>(2.1)取鞋配送费</a-space><br/>
+      <br/>
+      <a-space>同一订单第一双鞋配送费为<a-input-number placeholder="输入金额" style="width: 60px" v-model="courierCost"
                                                     :min="0" size="small"/>元,每增加一双鞋增加配送费为
-        <a-input-number placeholder="输入金额" style="width: 150px" v-model="courierCostIncrease" :min="0"
+        <a-input-number placeholder="输入金额" style="width: 60px" v-model="courierCostIncrease" :min="0"
                         size="small"/>元。
-      </span><br/>
-      <span>(2.2)送鞋配送费</span><br/>
-      <span>一双鞋配送费为<a-input-number placeholder="输入金额" style="width: 150px" v-model="courierSendCost" :min="0"
+      </a-space>
+      <br/>
+      <br/>
+      <a-space>(2.2)送鞋配送费</a-space><br/>
+      <br/>
+      <a-space>一双鞋配送费为<a-input-number placeholder="输入金额" style="width: 60px" v-model="courierSendCost" :min="0"
                                           size="small"/>元
-      </span>
+      </a-space>
     </div>
     <a-divider/>
     <div>
-      <span>提现设置</span><br/>
-      <span>余额冻结天数:<a-input-number placeholder="输入天数" style="width: 150px" v-model="freezingTime" :min="0"
-                                         size="small"/>天</span><br/>
+      <span>提现设置</span>
+      <br/>
+      <br/>
+      <a-space>余额冻结天数:<a-input-number placeholder="输入天数" style="width: 60px" v-model="freezingTime" :min="0"
+                                         size="small"/>天</a-space><br/>
     </div>
+    <br/>
     <a-button type="primary" @click="save">保存</a-button>
   </a-card>
 </template>
@@ -125,7 +137,7 @@ export default {
 <style scoped>
 @import '~@assets/less/common.less';
 
-span {
+a-space {
   display: block;
 }
 </style>
