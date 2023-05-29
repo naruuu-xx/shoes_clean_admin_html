@@ -96,7 +96,7 @@ export default {
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("出库打印热敏纸" + timestamp);
         LODOP.SET_PRINTER_INDEX(printerName);
-        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "50mm", "");
+        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "53mm", "");
         LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
 
         if (process.env.NODE_ENV === 'production') {
