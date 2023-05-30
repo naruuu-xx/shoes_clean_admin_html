@@ -4,7 +4,7 @@
       <v-tooltip />
       <v-axis />
       <v-legend />
-      <v-line position="y*temperature" :color="color" />
+      <v-line position="y*temperature" :color="color" label="temperature"/>
       <v-point position="y*temperature" :color="color" :size="4" :v-style="style" :shape="'circle'"  />
     </v-chart>
     <a-empty v-if="!dataSource.length" style="padding: 20px 0;"/>

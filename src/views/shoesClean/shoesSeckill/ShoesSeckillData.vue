@@ -89,21 +89,21 @@ export default {
           value:[],
           type:'',
           selected: false,
-          dateType: 'number'
+          dataType: 'number'
         },
         {
           label:'产品总访问量',
           value:[],
           type:'',
           selected: false,
-          dateType: 'number'
+          dataType: 'number'
         },
         {
           label:'单产品访问量',
           value:[],
           type:'select',
           selected: false,
-          dateType: 'number'
+          dataType: 'number'
         },
       ],
       visitorCountFilterList:[
@@ -112,23 +112,26 @@ export default {
           value:[],
           type:'',
           selected: false,
-          dateType: 'number'
+          dataType: 'number'
         },
         {
           label:'产品总访问人数',
           value:[],
           type:'',
           selected: false,
-          dateType: 'number'
+          dataType: 'number'
         },
         {
           label:'单产品访问人数',
           value:[],
           type:'select',
           selected: false,
-          dateType: 'number'
+          dataType: 'number'
         },
       ],
+      numberAndSaleData:{},
+      PVData:{},
+      visitorCountData:{},
       loading: false,
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
       spinning: false,
@@ -173,8 +176,8 @@ export default {
       },
       dataSource:[
         { y: '1', k: 7.0, London: 3.9 },
-        { y: '2', k: 6.9, London: 4.2 },
-        { y: '3', k: 9.5, London: 5.7 },
+        { y: '2', k: 6.9, London: 0 },
+        { y: '3', k: 9.5, London: 0 },
         { y: '4', k: 14.5, London: 8.5 },
         { y: '5', k: 18.4, London: 11.9 },
         { y: '6', k: 21.5, London: 15.2 },
@@ -194,14 +197,17 @@ export default {
   },
   
   methods: {
-    changeNumberAndSale() {
-
+    changeNumberAndSale(val) {
+      console.log(777,val);
+      this.numberAndSaleData = val
     },
-    changePV() {
-
+    changePV(val) {
+      console.log(888,val);
+      this.PVData = val
     },
-    changeVisitorCount() {
-
+    changeVisitorCount(val) {
+      console.log(999,val)
+      this.visitorCountData = val
     },
     changeFilterDate(val) {
       // this.queryForm = val
