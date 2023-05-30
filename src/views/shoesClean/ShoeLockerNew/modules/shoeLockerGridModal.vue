@@ -8,7 +8,7 @@
     cancelText="关闭"
     :footer="null"
   >
-    <div class="lockers">
+    <div class="lockers" :class="{scroll:isScroll}">
       <div class="locker" v-for="(locker, idx) in lockerList" :key="idx">
         <div class="col" v-for="(item, index) in locker" :key="index">
           <div v-for="(item1, index1) in item" :key="index1">
@@ -41,6 +41,7 @@ export default {
       visible: false,
       devicenum: '',
       lockerList: [],
+      isScroll: false
     }
   },
   created() {},
@@ -57,6 +58,7 @@ export default {
       return result
     },
     show(record) {
+      this.isScroll = false
       this.devicenum = record.lockerCode
       // 后期接口拿柜子数量
       let usableNum = record.num;
@@ -120,7 +122,7 @@ export default {
           })
         this.lockerList = this.chunk(arr, 32).map((item) => this.chunk(item, 8))
         this.width = this.lockerList.length * 760
-      } else if (16 === usableNum) {
+      } else if (16 === usableNum || 96 === usableNum) {
         let cabinetNum = usableNum + 0 // 不需要加格子
         let arr = Array(cabinetNum)
           .fill(0)
@@ -128,7 +130,33 @@ export default {
             return idx + 1 // 让编号从1开始
           })
         this.lockerList = this.chunk(arr, 16).map((item) => this.chunk(item, 8))
-        this.width = this.lockerList.length * 560
+        if(usableNum == 16) {
+          this.width = this.lockerList.length * 350
+        } else {
+          this.width = '80vw'
+          this.isScroll = true
+        }
+        
+      } else if (31 === usableNum) {
+        let cabinetNum = usableNum + 1 // 需要加屏幕一个格子
+        let arr = Array(cabinetNum)
+          .fill(0)
+          .map((item, idx) => {
+            let num = idx + 1 // 让编号从1开始
+            if (num < 10) {
+              // 前九个格子正常
+              return num
+            } else {
+              if (num == 10) {
+                // 这个是屏幕
+                return -1
+              }
+              // 因为屏幕占一个 所以不需要加一
+              return idx + 1
+            }
+          })
+        this.lockerList = this.chunk(arr, 32).map((item) => this.chunk(item, 8))
+        this.width = this.lockerList.length * 760
       }
 
       this.visible = true
@@ -158,6 +186,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+.scroll {
+  overflow-x: scroll;
+  justify-content: flex-start !important;
+}
 .lockers {
   display: flex;
   justify-content: center;
@@ -168,6 +200,7 @@ export default {
   background-color: #fff;
   box-shadow: 2px 4px 8px -3px rgb(144, 138, 138);
   display: flex;
+  flex-shrink:0;
   .col {
     display: flex;
     flex-direction: column;
