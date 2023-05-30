@@ -13,21 +13,21 @@
         </div>
         <a-row>
           <a-spin :spinning="spinning">
-           <XfDataTypeFilter :filterList="numberAndSale"></XfDataTypeFilter>
+           <XfDataTypeFilter :filterList="numberAndSale" @change="changeNumberAndSale"></XfDataTypeFilter>
             <DLine :dataSource="dataSource"></DLine>
           </a-spin>
         </a-row>
 
         <a-row>
           <a-spin :spinning="spinning">
-           <XfDataTypeFilter :filterList="PVFilterList"></XfDataTypeFilter>
+           <XfDataTypeFilter :filterList="PVFilterList" @change="changePV"></XfDataTypeFilter>
             <DLine :dataSource="dataSource"></DLine>
           </a-spin>
         </a-row>
 
         <a-row>
           <a-spin :spinning="spinning">
-           <XfDataTypeFilter :filterList="visitorCountFilterList"></XfDataTypeFilter>
+           <XfDataTypeFilter :filterList="visitorCountFilterList" @change="changeVisitorCount"></XfDataTypeFilter>
             <DLine :dataSource="dataSource"></DLine>
           </a-spin>
         </a-row>
@@ -129,34 +129,9 @@ export default {
           dateType: 'number'
         },
       ],
-     xljgData: [],
-      xljgFields:['y'],
-      aliases:[{field:'y',alias:'入库数'}],
       loading: false,
-      center: null,
-      inHistogram:[],
-      outHistogram:[{
-        x:'02日',
-        y:2
-      },{
-        x:'03日',
-        y:4
-      }],
-      visitInfo: [],
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
-      rankingList:[], // 排行的列表
-      barQuery: {
-        type: {
-          name: '订单数',
-          value: 'order',
-        },
-        time: {
-          name: '今日',
-          value: 'day',
-        },
-      },
       spinning: false,
-      pieData:[],
       // 入库统计
       warehousingStatistics:[
         {
@@ -219,7 +194,15 @@ export default {
   },
   
   methods: {
-    
+    changeNumberAndSale() {
+
+    },
+    changePV() {
+
+    },
+    changeVisitorCount() {
+
+    },
     changeFilterDate(val) {
       // this.queryForm = val
       // this.getIndexDown()
@@ -258,14 +241,6 @@ export default {
       this.spinning = true
       getAction('/factoryIndexDown',this.queryForm).then((res) => {
         if(res.success == false) return
-        this.inOfStorageCount = res.result.inOfStorageCount
-        this.outOfStorageCount = res.result.outOfStorageCount
-        this.inHistogram = res.result.inHistogram || []
-        this.outHistogram = res.result.outHistogram || []
-        this.pieData = res.result.brandPieChart || []
-        this.xljgData = res.result.inHistogram.map(({x:type,y}) => ({
-          type,y
-        }))
 
       }).finally(s => {
         this.spinning = false

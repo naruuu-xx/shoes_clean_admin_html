@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       style: { stroke: '#fff', lineWidth: 1 },
-      showChart: false
+      showChart: false,
     };
   },
   props: {
@@ -91,13 +91,6 @@ export default {
         let rows =  dv.rows
         return rows
       },
-      label() {
-        return {
-          formatter:(val) => {
-            return val + this.yUnit;
-          }
-        }
-      }
     },
     methods:{
       color16() {   
