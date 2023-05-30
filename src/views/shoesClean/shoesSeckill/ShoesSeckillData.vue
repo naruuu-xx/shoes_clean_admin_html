@@ -5,16 +5,29 @@
       <div class="salesCard">
         <div class="tab">
           <div class="tab-left title">
-            入库鞋数
+            时间筛选
           </div>
           <div class="tab-right">
             <xf-date-filter @change="changeFilterDate"></xf-date-filter>
-            
           </div>
         </div>
         <a-row>
           <a-spin :spinning="spinning">
-            <xfLine title="出库数折线图" :dataSource="outHistogram" alias="出库数" color="#FFBB00"></xfLine>
+           <XfDataTypeFilter :filterList="numberAndSale"></XfDataTypeFilter>
+            <DLine :dataSource="dataSource"></DLine>
+          </a-spin>
+        </a-row>
+
+        <a-row>
+          <a-spin :spinning="spinning">
+           <XfDataTypeFilter :filterList="PVFilterList"></XfDataTypeFilter>
+            <DLine :dataSource="dataSource"></DLine>
+          </a-spin>
+        </a-row>
+
+        <a-row>
+          <a-spin :spinning="spinning">
+           <XfDataTypeFilter :filterList="visitorCountFilterList"></XfDataTypeFilter>
             <DLine :dataSource="dataSource"></DLine>
           </a-spin>
         </a-row>
@@ -24,8 +37,10 @@
 </template>
 
 <script>
+import XfSelect from '@/components/Xf/XfSelect'
 import xfLine from './components/Line'
 import DLine from './components/DLine'
+import XfDataTypeFilter from './components/XfDataTypeFilter'
 import xfDateFilter from './components/xfDateFilter'
 import { getAction } from '@/api/manage'
 export default {
@@ -33,10 +48,87 @@ export default {
   components: {
     xfDateFilter,
     xfLine,
-    DLine
+    DLine,
+    XfSelect,
+    XfDataTypeFilter
   },
   data() {
     return {
+      numberAndSale:[{
+          label:'订单数折线图',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'number'
+        },
+        {
+          label:'销售额折线图',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'sale'
+        },
+        {
+          label:'单产品订单数',
+          value:[],
+          type:'select',
+          selected: false,
+          dataType: 'number'
+        },
+        {
+          label:'单产品销售额',
+          value:[],
+          type:'select',
+          selected: false,
+          dataType: 'sale'
+        },
+      ],
+      PVFilterList:[
+        {
+          label:'会场访问量',
+          value:[],
+          type:'',
+          selected: false,
+          dateType: 'number'
+        },
+        {
+          label:'产品总访问量',
+          value:[],
+          type:'',
+          selected: false,
+          dateType: 'number'
+        },
+        {
+          label:'单产品访问量',
+          value:[],
+          type:'select',
+          selected: false,
+          dateType: 'number'
+        },
+      ],
+      visitorCountFilterList:[
+        {
+          label:'会场访问人数',
+          value:[],
+          type:'',
+          selected: false,
+          dateType: 'number'
+        },
+        {
+          label:'产品总访问人数',
+          value:[],
+          type:'',
+          selected: false,
+          dateType: 'number'
+        },
+        {
+          label:'单产品访问人数',
+          value:[],
+          type:'select',
+          selected: false,
+          dateType: 'number'
+        },
+      ],
      xljgData: [],
       xljgFields:['y'],
       aliases:[{field:'y',alias:'入库数'}],
@@ -118,12 +210,14 @@ export default {
         { y: '11', k: 13.9, London: 6.6 },
         { y: '12', k: 9.6, London: 4.8 },
       ],
+      productOrderIds:[]
     }
   },
   created() {
     // this.factoryIndexUp()
     // this.getIndexDown()
   },
+  
   methods: {
     
     changeFilterDate(val) {

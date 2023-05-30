@@ -7,7 +7,7 @@
  * @LastEditTime: 2023-05-29 19:45:16
 -->
 <template>
-  <div>
+  <div v-if="showChart">
     <h4 class="title" v-if="title">{{ title }}</h4>
     <v-chart v-if="dataSource.length" :force-fit="true" :height="height" :data="dataSource" :scale="scale" :onClick="handleClick">
       <v-tooltip/>
@@ -55,8 +55,12 @@
     },
     data() {
       return {
-        style: { stroke: '#fff', lineWidth: 1 }
+        style: { stroke: '#fff', lineWidth: 1 },
+        showChart: false
       }
+    },
+    mounted() {
+      this.$nextTick(()=>{this.showChart=true})
     },
     computed: {
       scale() {

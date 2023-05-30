@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <v-chart :force-fit="true" :height="height" :data="data" :scale="scale">
+  <div v-if="showChart">
+    <v-chart v-if="dataSource.length" :force-fit="true" :height="height" :data="data" :scale="scale">
       <v-tooltip />
       <v-axis />
       <v-legend />
-      <v-line position="y*temperature" color="city" />
-      <v-point position="y*temperature" color="city" :size="4" :v-style="style" :shape="'circle'" />
+      <v-line position="y*temperature" :color="color" />
+      <v-point position="y*temperature" :color="color" :size="4" :v-style="style" :shape="'circle'"  />
     </v-chart>
+    <a-empty v-if="!dataSource.length" style="padding: 20px 0;"/>
   </div>
 </template>
 
@@ -17,6 +18,7 @@ export default {
   data() {
     return {
       style: { stroke: '#fff', lineWidth: 1 },
+      showChart: false
     };
   },
   props: {
@@ -43,19 +45,27 @@ export default {
     },
     height: {
       type: Number,
-      default: 300
+      default: 400
     },
     alias:{
       type: String,
       default: 'ruku'
     },
-    color:{
-      type:String,
-      default: '#54acff'
+    color:{ 
+      type:Array,
+      default: () => (
+        ['city', ['#ff4d4f', '#ff7a45', '#ffa940', '#facc14', '#bae637', '#73d13d', '#36cfc9', '#40a9ff']]
+      )
     },
     yUnit:{
       type:String,
       default: ''
+    }
+  },
+  mounted() {
+    this.$nextTick(()=>{this.showChart=true})
+    if(!this.color.length) {
+      
     }
   },
   computed: {
@@ -71,7 +81,6 @@ export default {
         let fields = []
         if(this.dataSource.length) {
           fields = Object.keys(this.dataSource[0]).slice(1)
-          console.log(8888,fields);
         }
         dv.transform({
           type: 'fold',
@@ -88,6 +97,11 @@ export default {
             return val + this.yUnit;
           }
         }
+      }
+    },
+    methods:{
+      color16() {   
+          return  '#'+Math.random().toString(16).substring(2, 6)
       }
     }
 };
