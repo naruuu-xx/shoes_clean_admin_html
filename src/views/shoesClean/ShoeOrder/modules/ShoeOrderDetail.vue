@@ -177,6 +177,7 @@
               {{ item.msg }}
               <a v-if="item.status == 0" @click="showShoeImages(orderImagesList)" style="margin-left: 10px; text-decoration: underline">查看鞋子照片</a>
               <a v-if="item.status == 6" @click="showShoeImages(factoryInImages)" style="margin-left: 10px; text-decoration: underline">查看入库照片</a>
+              <a v-if="item.status == 9" @click="showShoeImages(factoryOutImages)" style="margin-left: 10px; text-decoration: underline">查看出库照片</a>
             </div>
           </div>
         </div>
@@ -199,10 +200,12 @@
       <img
         alt="example"
         style="width: 20%; margin: 20px"
-        v-for="item in imagesList"
+        v-for="(item,idx) in imagesList"
         :src="item"
         @click="showShoeImage(item)"
+        :key="idx"
       />
+      <a-empty v-if="!imagesList.length" />
     </a-modal>
 
     <a-modal
@@ -282,7 +285,8 @@ export default {
       logisticsDetails: '',
       orderRefund: null,
       OrderDetail:{},
-      factoryInImages: []
+      factoryInImages: [],
+      factoryOutImages: [],
     }
   },
   created() {},
@@ -313,6 +317,7 @@ export default {
         this.logisticsDetails = res.logisticsDetailList
         this.orderRefund = res.orderRefund
         this.factoryInImages = res.factoryInImages;
+        this.factoryOutImages = res.factoryOutImages || [];
       })
       getAction("/ShoeOrder/shoeOrder/getLogisticsInfo", requestData).then((res) => {
         this.logisticsNameByBefore = res.result.logisticsNameByBefore
