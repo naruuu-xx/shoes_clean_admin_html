@@ -14,7 +14,8 @@
         <a-row>
           <a-spin :spinning="spinning">
            <XfDataTypeFilter :filterList="numberAndSale" @change="changeNumberAndSale"></XfDataTypeFilter>
-            <DLine :dataSource="dataSource"></DLine>
+            <!-- <DLine></DLine> -->
+            <EchartsLine></EchartsLine>
           </a-spin>
         </a-row>
 
@@ -40,6 +41,7 @@
 import XfSelect from '@/components/Xf/XfSelect'
 import xfLine from './components/Line'
 import DLine from './components/DLine'
+import EchartsLine from './components/EchartsLine'
 import XfDataTypeFilter from './components/XfDataTypeFilter'
 import xfDateFilter from './components/xfDateFilter'
 import { getAction } from '@/api/manage'
@@ -50,7 +52,8 @@ export default {
     xfLine,
     DLine,
     XfSelect,
-    XfDataTypeFilter
+    XfDataTypeFilter,
+    EchartsLine
   },
   data() {
     return {

@@ -90,6 +90,19 @@ export default {
         })
         let rows =  dv.rows
         return rows
+        let x = {
+          xData:[1,2,3],
+          yData:[
+            {
+              name:'温度',
+              list:[4,5,6]
+            },
+            {
+              name:'销售',
+              list:[7,8,9]
+            },
+          ]
+        }
       },
     },
     methods:{
