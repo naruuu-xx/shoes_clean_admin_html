@@ -22,7 +22,7 @@
       <j-dict-select-tag type="radio" v-model="model.status" dictCode="withdrawal_audit"/>
     </h2>
 
-    <h2 v-if="this.model.status==1">拒绝原因(必填)：
+    <h2 >备注：
       <a-textarea v-model="model.note" rows="4"/>
     </h2>
 
@@ -56,7 +56,7 @@ export default {
         status: 0
       },
       withdrawalRatio:'',
-      realwithdrawal:''
+      realwithdrawal:'',
 
     }
   },

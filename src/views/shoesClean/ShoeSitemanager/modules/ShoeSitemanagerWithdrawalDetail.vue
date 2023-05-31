@@ -26,6 +26,7 @@
     <h2>开户行：{{bank}}</h2>
     <h2>开户行地址：{{openBank}}</h2>
     <h2>申请状态：{{status}}</h2>
+    <h2>备注：{{note}}</h2>
 
 
   </j-modal>
@@ -59,7 +60,8 @@ export default {
       openBank:'',
       status:'',
       withdrawalRatio:'',
-      realwithdrawal:''
+      realwithdrawal:'',
+      note:'',
     }
   },
   methods: {
@@ -78,6 +80,7 @@ export default {
           this.cardName=res.result.cardName;
           this.bank=res.result.bank;
           this.openBank=res.result.openBank;
+          this.note=res.result.note;
           this.withdrawalRatio=parseFloat(res.result.withdrawalRatio || 0);
           this.realwithdrawal=res.result.realwithdrawal;
 
