@@ -109,7 +109,8 @@ export default {
         name: item.title,
         type: 'line',
         stack: 'Total'+idx,
-        data: item.dataList
+        data: item.dataList,
+        itemStyle : { normal: {label : {show: true}}}
       }))
       let legendData = val.y.map(item => item.title)
       let option = {
