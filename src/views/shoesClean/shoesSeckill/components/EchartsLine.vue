@@ -47,7 +47,7 @@ export default {
   watch:{
     dataSource: {
       handler(val,oldValue) {
-        // if(val.y[0] && this.myChart)
+        // this.myChart && this.myChart.showLoading();
         this.setEcharts()
       },
       //立刻执行handler
@@ -73,6 +73,7 @@ export default {
       });
     },
     setEcharts(val = this.dataSource) {
+      // this.myChart.hideLoading();
       if(!val.y[0]) {
           let option = {
             title: {
