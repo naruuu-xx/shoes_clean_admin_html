@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="main" style="width: 100%;height:400px;"></div>
+    <div :id="elementId" style="width: 100%;height:400px;"></div>
   </div>
 </template>
 
@@ -40,6 +40,10 @@ export default {
         ['city', ['#ff4d4f', '#ff7a45', '#ffa940', '#facc14', '#bae637', '#73d13d', '#36cfc9', '#40a9ff']]
       )
     },
+    elementId:{
+      type: String,
+      default: 'main'
+    }
   },
   mounted() {
     this.change()
@@ -47,8 +51,8 @@ export default {
   watch:{
     dataSource: {
       handler(val,oldValue) {
-        // this.myChart && this.myChart.showLoading();
-        this.setEcharts()
+        this.myChart && this.setEcharts()
+        
       },
       //立刻执行handler
       immediate: true,
@@ -64,7 +68,7 @@ export default {
     },
     change() {
         // 基于准备好的dom，初始化echarts实例
-      this.myChart = this.$echarts.init(document.getElementById('main'))
+      this.myChart = this.$echarts.init(document.getElementById(this.elementId))
       
       this.setEcharts()
       // 根据页面大小自动响应图表大小

@@ -15,14 +15,15 @@
           <a-spin :spinning="spinning">
            <XfDataTypeFilter :filterList="numberAndSale" @change="changeNumberAndSale"></XfDataTypeFilter>
             <!-- <DLine></DLine> -->
-            <EchartsLine :dataSource="numberAndSaleDataSource"></EchartsLine>
+            <EchartsLine :dataSource="numberAndSaleDataSource" elementId="n"></EchartsLine>
           </a-spin>
         </a-row>
 
         <a-row>
           <a-spin :spinning="spinning">
            <XfDataTypeFilter :filterList="PVFilterList" @change="changePV"></XfDataTypeFilter>
-            <DLine :dataSource="dataSource"></DLine>
+            <!-- <DLine :dataSource="dataSource"></DLine> -->
+            <EchartsLine :dataSource="PVDataSource" elementId="p"></EchartsLine>
           </a-spin>
         </a-row>
 
@@ -92,21 +93,21 @@ export default {
           value:[],
           type:'',
           selected: false,
-          dataType: 'number'
+          dataType: 'exhibition'
         },
         {
           label:'产品总访问量',
           value:[],
           type:'',
           selected: false,
-          dataType: 'number'
+          dataType: 'detail'
         },
         {
           label:'单产品访问量',
           value:[],
           type:'select',
           selected: false,
-          dataType: 'number'
+          dataType: 'detail'
         },
       ],
       visitorCountFilterList:[
@@ -162,6 +163,10 @@ export default {
       numberAndSaleDataSource:{
         x:[],
         y:[]
+      },
+      PVDataSource:{
+        x:[],
+        y:[]
       }
     }
   },
@@ -192,6 +197,7 @@ export default {
     changePV(val) {
       console.log(888,val);
       this.PVData = val
+      this.getPv()
     },
     changeVisitorCount(val) {
       console.log(999,val)
@@ -230,9 +236,21 @@ export default {
         this.loading = false
       })
     },
+    // 浏览量
+    getPv() {
+      this.spinning = true
+      getAction('/ShoeSeckill/shoeSeckill/pv',{...this.queryForm,...this.PVData}).then((res) => {
+        if(res.success == false) return
+        this.PVDataSource = res.result
+      }).finally(s => {
+        this.spinning = false
+        this.loading = false
+      })
+    },
     // 获取所有数据
     getAll() {
       this.statistics()
+      this.getPv()
     }
 
   },
