@@ -15,7 +15,7 @@
           <a-spin :spinning="spinning">
            <XfDataTypeFilter :filterList="numberAndSale" @change="changeNumberAndSale"></XfDataTypeFilter>
             <!-- <DLine></DLine> -->
-            <EchartsLine></EchartsLine>
+            <EchartsLine :dataSource="numberAndSaleDataSource"></EchartsLine>
           </a-spin>
         </a-row>
 
@@ -138,39 +138,6 @@ export default {
       loading: false,
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
       spinning: false,
-      // 入库统计
-      warehousingStatistics:[
-        {
-          name:'总入库数(单)',
-          num:0
-        },
-        {
-          name:'本月入库数(单)',
-          num:0
-        },
-        {
-          name:'今日入库数(单)',
-          num:0
-        },
-      ],
-      
-      // 出库统计
-      outboundStatistics:[
-        {
-          name:'总出库数(单)',
-          num:0
-        },
-        {
-          name:'本月出库数(单)',
-          num:0
-        },
-        {
-          name:'今日出库数(单)',
-          num:0
-        },
-      ],
-      inOfStorageCount:[],
-      outOfStorageCount:[],
       queryForm:{
         dateType: 'today',
         startTime: '',
@@ -178,11 +145,11 @@ export default {
         selectType: 'day'
       },
       dataSource:[
-        { y: '1', k: 7.0, London: 3.9 },
-        { y: '2', k: 6.9, London: 0 },
-        { y: '3', k: 9.5, London: 0 },
+        { y: '1', k: 7.0, London: 7.0 },
+        { y: '2', k: 6.9, London: 6.9 },
+        { y: '3', k: 9.5, London: 9.5 },
         { y: '4', k: 14.5, London: 8.5 },
-        { y: '5', k: 18.4, London: 11.9 },
+        { y: '5', k: 7, London: 11.9 },
         { y: '6', k: 21.5, London: 15.2 },
         { y: '7', k: 25.2, London: 17.0 },
         { y: '8', k: 26.5, London: 16.6 },
@@ -191,18 +158,36 @@ export default {
         { y: '11', k: 13.9, London: 6.6 },
         { y: '12', k: 9.6, London: 4.8 },
       ],
-      productOrderIds:[]
+      productOrderIds:[],
+      numberAndSaleDataSource:{
+        x:[],
+        y:[]
+      }
     }
   },
   created() {
-    // this.factoryIndexUp()
-    // this.getIndexDown()
+    this.getAll()
+    // let cc = {
+    //   x: ["00点","01点","02点","03点","04点","05点","06点","07点","08点","09点","10点","11点","12点","13点","14点","15点","16点","17点","18点","19点","20点","21点","22点","23点"],
+    //   y: [
+    //     {
+    //       title: "秒杀活动第二波第二版",
+    //       dataList: [1,1,2,1,4,1,1,1,1,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0]
+    //     },
+    //     {
+    //       title: "秒杀活动第二波第三版",
+    //       dataList: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0]
+    //     }
+    //   ]
+    // }
+    // this.numberAndSaleDataSource = cc
   },
   
   methods: {
     changeNumberAndSale(val) {
       console.log(777,val);
       this.numberAndSaleData = val
+      this.statistics()
     },
     changePV(val) {
       console.log(888,val);
@@ -213,8 +198,8 @@ export default {
       this.visitorCountData = val
     },
     changeFilterDate(val) {
-      // this.queryForm = val
-      // this.getIndexDown()
+      this.queryForm = val
+      this.getAll()
     },
     // 点击
     onClickw(status,val) {
@@ -233,28 +218,21 @@ export default {
       }
       this.$router.push(`${url}?status=${status}`)
     },
-    //
-    factoryIndexUp() {
-      getAction('/factoryIndexUp').then(({success,result}) => {
-        if(success) {
-          this.warehousingStatistics[0].num = result.totalInOfStorage
-          this.warehousingStatistics[1].num = result.monthInOfStorage
-          this.warehousingStatistics[2].num = result.todayInOfStorage
-          this.outboundStatistics[0].num = result.totalOutOfStorage
-          this.outboundStatistics[1].num = result.monthOutOfStorage
-          this.outboundStatistics[2].num = result.todayOutOfStorage
-        }
-      })
-    },
-    getIndexDown() {
+    // 订单数/销售额
+    statistics() {
       this.spinning = true
-      getAction('/factoryIndexDown',this.queryForm).then((res) => {
+      console.log(999999,{...this.queryForm,...this.numberAndSaleData});
+      getAction('/ShoeSeckill/shoeSeckill/statistics',{...this.queryForm,...this.numberAndSaleData}).then((res) => {
         if(res.success == false) return
-
+        this.numberAndSaleDataSource = res.result
       }).finally(s => {
         this.spinning = false
         this.loading = false
       })
+    },
+    // 获取所有数据
+    getAll() {
+      this.statistics()
     }
 
   },

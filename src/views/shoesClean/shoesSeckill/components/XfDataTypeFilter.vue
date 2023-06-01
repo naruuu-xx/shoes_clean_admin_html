@@ -60,11 +60,11 @@ export default {
       }
       this.tabIndex = idx
       let obj = this.filterList[idx]
-      this.$emit('change',{dataType:obj.dataType,value:obj.value})
+      this.$emit('change',{dataType:obj.dataType,setList:JSON.stringify(obj.value)})
     },
     change() {
       let obj = this.filterList[this.tabIndex]
-      this.$emit('change',{dataType:obj.dataType,value:obj.value})
+      this.$emit('change',{dataType:obj.dataType,setList:JSON.stringify(obj.value)})
     }
   },
   created() {
