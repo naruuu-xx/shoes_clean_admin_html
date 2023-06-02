@@ -21,16 +21,22 @@
         </a-col>
       </a-row>
       <a-divider />
-      <a-spin  v-show="shoeOrderInfo" :spinning="confirmLoading" size="large" tip="图片正在上传中，请耐心等待......">
-        <a-row style="margin-bottom: 10px">
-          <XfPhotograph ref="photograph" :photographImg="factoryOutImages"></XfPhotograph>
+      <a-spin v-show="shoeOrderInfo"  :spinning="confirmLoading" size="large" :tip="tip">
+        <a-row style="margin-bottom: 10px" v-if="imagesNo">
+          <a-col :span="20">
+            <XfPhotograph ref="photograph" :photographImg="factoryOutImages"></XfPhotograph>
+          </a-col>
+          <a-col :span="4">
+            <a-button @click="uploadImage" style="width: 100%;height: 50px;background: #1890ff;color:#fff;"  v-if="$refs.photograph && $refs.photograph.images.length"><span
+                style="font-size: 22px;" :loading="loadingBtn">上传照片</span></a-button>
+          </a-col>
         </a-row>
         <a-row style="margin-bottom: 10px">
           <a-col :span="18">
             <span class="content">订单编号：{{ data.no }}</span>
           </a-col>
           <a-col :span="2"></a-col>
-          <a-col :span="4">
+          <a-col :span="4" v-if="!imagesNo">
             <a-button @click="handleOutOfStorage" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span
                 style="font-size: 22px;" :loading="loadingBtn">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
           </a-col>
@@ -103,7 +109,9 @@ export default {
       loadingBtn: false,
       factoryInImages: [],
       factoryOutImages: [],
-      confirmLoading: false
+      confirmLoading: false,
+      imagesNo:'',
+      tip:'图片正在上传中，请耐心等待......'
     }
   },
   created() {
@@ -128,6 +136,8 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+      this.factoryOutImages = [];
+      this.imagesNo = '';
       //关闭弹窗并刷新列表
       this.$emit('ok');
     },
@@ -155,10 +165,13 @@ export default {
               "title": res.result.title,
               "skuTitle": res.result.skuTitle
             }
+            this.factoryOutImages = [];
+            this.imagesNo = '';
             this.imageList = JSON.parse(res.result.orderImages);
-            this.factoryInImages = res.result.factoryInImages;
+            this.factoryInImages = res.result.factoryInImages || [];
             this.shoeOrderInfo = true;
             //清空输入框并重新聚焦
+            
             this.no = "";
             this.$nextTick(() => {
               this.$refs.autoInput.focus();
@@ -181,10 +194,10 @@ export default {
         }
         this.loadingBtn = true
         this.confirmLoading = true
-        this.$refs.photograph.submit().then(Images => {
-          this.factoryOutImages = Images
-          let factoryOutImages = Images.map(item => item.file)
-          httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", Object.assign({},data,{factoryOutImages}), "post").then((res) => {
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {
+            if(res.success) {
+              this.imagesNo = this.data.no;
+            }
             if (res.code !== 200) {
               if (res.code !== 2000 && res.code !== 2001) {
                 this.$message.warning(res.message);
@@ -192,6 +205,7 @@ export default {
 
               //清空输入框并重新聚焦
               this.no = "";
+              
               this.$nextTick(() => {
                 this.$refs.autoInput.focus();
               })
@@ -239,18 +253,39 @@ export default {
             this.confirmLoading = false
             this.loadingBtn = false
           })
-        }).finally(res => {
-         this.loadingBtn = false
-         this.confirmLoading = false
-        })
 
       }
+    },
+    uploadImage(){
+      this.confirmLoading = true;
+      this.$refs.photograph.submit().then(Images => {
+        this.factoryOutImages = Images
+        let factoryOutImages = Images.map(item => item.file)
+        let form = {
+          no: this.imagesNo,
+          factoryOutImages
+        }
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/photo", form, "post").then((res) => {
+          if (res.success) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.warning(res.message)
+          }
+
+          this.confirmLoading = false;
+        })
+      }).finally(res => {
+        this.confirmLoading = false
+      })
+      
     },
     emptyNo() {
       //清空输入框内容
       this.no = "";
       this.data = {};
       this.imageList = [];
+      this.factoryOutImages = [];
+      this.imagesNo = '';
       this.shoeOrderInfo = false;
     },
     printKuaidi(deliveryId) {
@@ -363,7 +398,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+/deep/ .ant-spin-text{
+  font-size: 40px;
+}
 .content {
   font-size: 20px;
   color: #000000;

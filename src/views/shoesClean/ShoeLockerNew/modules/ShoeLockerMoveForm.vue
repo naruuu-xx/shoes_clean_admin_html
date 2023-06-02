@@ -52,12 +52,12 @@
                   （权重值越高，排序越靠前）
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
-                <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">
-                  <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off"
-                           suffix="%"></a-input>
-                </a-form-model-item>
-              </a-col>
+<!--              <a-col :span="24">-->
+<!--                <a-form-model-item label=" 机柜收益" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="percentage">-->
+<!--                  <a-input v-model="model.percentage" placeholder="请输入1-100的整数" autocomplete="off"-->
+<!--                           suffix="%"></a-input>-->
+<!--                </a-form-model-item>-->
+<!--              </a-col>-->
               <a-col :span="24">
                 <a-form-model-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
                   <j-dict-select-tag type="radio" v-model="model.status" dictCode="shoe_locker_status"
@@ -436,7 +436,7 @@ export default {
             "orderStatus": this.model.orderStatus,
             "paths": this.model.paths,
             "supplierType": this.model.supplierType,
-            "percentage": this.model.percentage / 100,
+            // "percentage": this.model.percentage / 100,
           }
 
           httpAction(httpurl, data, method).then((res) => {
