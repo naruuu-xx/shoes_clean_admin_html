@@ -70,6 +70,9 @@ export default {
       this.factoryOutImages = [];
     },
     uploadImage(){
+      if(!this.no) {
+        return this.$message.warning('请输入订单编号!')
+      }
       // if(!this.$refs.photograph.images.length) {
       //   return this.$message.warning('请拍摄出库照片!')
       // }
