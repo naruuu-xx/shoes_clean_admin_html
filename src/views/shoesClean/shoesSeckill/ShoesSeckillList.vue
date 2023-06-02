@@ -152,18 +152,12 @@
           {
             title:'开始时间',
             align:"center",
-            dataIndex: 'startTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'startTime'
           },
           {
             title:'结束时间',
             align:"center",
-            dataIndex: 'endTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'endTime'
           },
           {
             title: '操作',

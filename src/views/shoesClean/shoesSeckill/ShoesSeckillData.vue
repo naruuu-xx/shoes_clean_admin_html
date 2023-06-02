@@ -12,25 +12,23 @@
           </div>
         </div>
         <a-row>
-          <a-spin :spinning="spinning">
+          <a-spin :spinning="nSpinning">
            <XfDataTypeFilter :filterList="numberAndSale" @change="changeNumberAndSale"></XfDataTypeFilter>
-            <!-- <DLine></DLine> -->
             <EchartsLine :dataSource="numberAndSaleDataSource" elementId="n"></EchartsLine>
           </a-spin>
         </a-row>
 
         <a-row>
-          <a-spin :spinning="spinning">
+          <a-spin :spinning="pSpinning">
            <XfDataTypeFilter :filterList="PVFilterList" @change="changePV"></XfDataTypeFilter>
-            <!-- <DLine :dataSource="dataSource"></DLine> -->
             <EchartsLine :dataSource="PVDataSource" elementId="p"></EchartsLine>
           </a-spin>
         </a-row>
 
         <a-row>
-          <a-spin :spinning="spinning">
+          <a-spin :spinning="vSpinning">
            <XfDataTypeFilter :filterList="visitorCountFilterList" @change="changeVisitorCount"></XfDataTypeFilter>
-            <DLine :dataSource="dataSource"></DLine>
+            <EchartsLine :dataSource="visitorCountDataSource" elementId="v"></EchartsLine>/uv
           </a-spin>
         </a-row>
       </div>
@@ -116,29 +114,40 @@ export default {
           value:[],
           type:'',
           selected: false,
-          dataType: 'number'
+          dataType: 'exhibition'
         },
         {
           label:'产品总访问人数',
           value:[],
           type:'',
           selected: false,
-          dataType: 'number'
+          dataType: 'detail'
         },
         {
           label:'单产品访问人数',
           value:[],
           type:'select',
           selected: false,
-          dataType: 'number'
+          dataType: 'detail'
         },
       ],
-      numberAndSaleData:{},
-      PVData:{},
-      visitorCountData:{},
+      numberAndSaleData:{
+        dataType: 'number',
+        setList:'[]'
+      },
+      PVData:{
+        dataType: 'exhibition',
+        setList:'[]'
+      },
+      visitorCountData:{
+        dataType: 'exhibition',
+        setList:'[]'
+      },
       loading: false,
       indicator: <a-icon type="loading" style="font-size: 24px" spin />,
-      spinning: false,
+      nSpinning: false,
+      pSpinning: false,
+      vSpinning: false,
       queryForm:{
         dateType: 'today',
         startTime: '',
@@ -167,41 +176,29 @@ export default {
       PVDataSource:{
         x:[],
         y:[]
+      },
+      visitorCountDataSource:{
+        x:[],
+        y:[]
       }
     }
   },
   created() {
     this.getAll()
-    // let cc = {
-    //   x: ["00点","01点","02点","03点","04点","05点","06点","07点","08点","09点","10点","11点","12点","13点","14点","15点","16点","17点","18点","19点","20点","21点","22点","23点"],
-    //   y: [
-    //     {
-    //       title: "秒杀活动第二波第二版",
-    //       dataList: [1,1,2,1,4,1,1,1,1,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0]
-    //     },
-    //     {
-    //       title: "秒杀活动第二波第三版",
-    //       dataList: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0]
-    //     }
-    //   ]
-    // }
-    // this.numberAndSaleDataSource = cc
   },
   
   methods: {
     changeNumberAndSale(val) {
-      console.log(777,val);
       this.numberAndSaleData = val
       this.statistics()
     },
     changePV(val) {
-      console.log(888,val);
       this.PVData = val
       this.getPv()
     },
     changeVisitorCount(val) {
-      console.log(999,val)
       this.visitorCountData = val
+      this.getUv()
     },
     changeFilterDate(val) {
       this.queryForm = val
@@ -226,24 +223,34 @@ export default {
     },
     // 订单数/销售额
     statistics() {
-      this.spinning = true
-      console.log(999999,{...this.queryForm,...this.numberAndSaleData});
+      this.nSpinning
       getAction('/ShoeSeckill/shoeSeckill/statistics',{...this.queryForm,...this.numberAndSaleData}).then((res) => {
         if(res.success == false) return
         this.numberAndSaleDataSource = res.result
       }).finally(s => {
-        this.spinning = false
+        this.nSpinning = false
         this.loading = false
       })
     },
     // 浏览量
     getPv() {
-      this.spinning = true
+      this.pSpinning = true
       getAction('/ShoeSeckill/shoeSeckill/pv',{...this.queryForm,...this.PVData}).then((res) => {
         if(res.success == false) return
         this.PVDataSource = res.result
       }).finally(s => {
-        this.spinning = false
+        this.pSpinning = false
+        this.loading = false
+      })
+    },
+    // 浏览量
+    getUv() {
+      this.vSpinning = true
+      getAction('/ShoeSeckill/shoeSeckill/uv',{...this.queryForm,...this.visitorCountData}).then((res) => {
+        if(res.success == false) return
+        this.visitorCountDataSource = res.result
+      }).finally(s => {
+        this.vSpinning = false
         this.loading = false
       })
     },
@@ -251,6 +258,7 @@ export default {
     getAll() {
       this.statistics()
       this.getPv()
+      this.getUv()
     }
 
   },
