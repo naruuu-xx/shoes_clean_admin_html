@@ -16,7 +16,7 @@
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
-          <a-row><a-button :loading="loadingBtn" type="primary" @click="uploadImage" style="width: 100%;height: 50px;margin-bottom: 20px;" :disabled="!($refs.photograph && $refs.photograph.images.length)"><span style="font-size: 22px;">上传照片</span></a-button></a-row>
+          <a-row><a-button :loading="loadingBtn" type="primary" @click="uploadImage" style="width: 100%;height: 50px;margin-bottom: 20px;"><span style="font-size: 22px;">上传照片</span></a-button></a-row>
           <a-row><a-button @click="emptyBagCode" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button></a-row>
         </a-col>
       </a-row>
@@ -70,6 +70,9 @@ export default {
       this.factoryOutImages = [];
     },
     uploadImage(){
+      // if(!this.$refs.photograph.images.length) {
+      //   return this.$message.warning('请拍摄出库照片!')
+      // }
       this.confirmLoading = true;
       this.loadingBtn = true
       this.$refs.photograph.submit().then(Images => {
@@ -80,12 +83,9 @@ export default {
           factoryOutImages
         }
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/photo", form, "post").then((res) => {
-          // if (!res) {
-          //   this.$message.warning(res.message)
-          //   return
-          // }
           if (res.success) {
             this.$message.success(res.message)
+            this.emptyBagCode()
           } else {
             this.$message.warning(res.message)
           }
