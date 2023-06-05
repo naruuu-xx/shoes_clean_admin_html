@@ -44,7 +44,7 @@
           </a-col>
 
           <a-col :span="24">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品库存" prop="inventory">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="产品剩余库存" prop="inventory">
               <a-input-number :disabled="disabled" style="width: 100%" v-model="model.inventory" :min="1" @change="v => model.inventory = isNaN(parseInt(v)) ? 1 : parseInt(v)" />
             </a-form-model-item>
           </a-col>
@@ -162,7 +162,7 @@ export default {
           { required: true, message: '请选择秒杀时间!' },
         ],
         inventory: [
-          { required: true, message: '请输入库存!' },
+          { required: true, message: '请输入产品剩余库存!' },
         ],
         limitNum: [
           { required: true, message: '请输入每人限购数量' },
