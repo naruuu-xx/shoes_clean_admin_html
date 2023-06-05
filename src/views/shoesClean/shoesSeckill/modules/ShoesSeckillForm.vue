@@ -297,7 +297,7 @@ export default {
         this.goodList.push({
           goodsId:'',
           skuId:'',
-          seckillPrice: 0.01,
+          seckillPrice: '',
           num:1,
           uuid: this.getUuid(),
           disabled: true
