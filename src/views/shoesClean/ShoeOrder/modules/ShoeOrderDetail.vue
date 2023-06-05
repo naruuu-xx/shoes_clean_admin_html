@@ -31,7 +31,7 @@
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
         <a-descriptions-item :label="('机柜配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
-          {{ data.originalCourierPrice }}
+          {{ data.courierPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
         <a-descriptions-item label="实付金额(元)"> {{ data.actualPrice }} </a-descriptions-item>
@@ -297,6 +297,7 @@ export default {
       let orderInfo = Object.assign({}, record)
       orderInfo.goodsPrice = +(orderInfo.goodsPrice / 100).toFixed(2)
       orderInfo.originalCourierPrice = +(orderInfo.originalCourierPrice / 100).toFixed(2)
+      orderInfo.courierPrice = +(orderInfo.courierPrice / 100).toFixed(2)
       orderInfo.totalPrice = +(orderInfo.totalPrice / 100).toFixed(2)
       orderInfo.price = +(orderInfo.price / 100).toFixed(2)
       orderInfo.couponPrice = +(orderInfo.couponPrice / 100).toFixed(2)

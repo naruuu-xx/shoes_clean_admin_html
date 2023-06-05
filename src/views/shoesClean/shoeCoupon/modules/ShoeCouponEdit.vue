@@ -30,31 +30,44 @@
               </a-col>
               <a-col :span="24">
                 <a-form-model-item label="优惠券面额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reduce">
-                  <a-input-number :min="0" v-model="reduce" placeholder="请输入面额" style="width: 100px" />
+                  <a-input-number :min="0" v-model="model.reduce" placeholder="请输入面额" style="width: 100px" />
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
-                <a-form-model-item label="使用门槛" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="min">
-                  <a-radio-group v-model:value="threshold" :disabled="true">
+                <a-form-model-item label="使用门槛" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="threshold">
+                  <a-radio-group v-model="threshold">
                     <a-radio value="1">无门槛</a-radio>
-                    <a-radio value="2">满&nbsp;<a-input-number :min="0" v-model="min" style="width: 70px" :disabled="true"></a-input-number>&nbsp;元可用</a-radio>
+                    <a-radio value="2">满&nbsp;<a-input-number :min="0" v-model="model.min" style="width: 70px" ></a-input-number>&nbsp;元可用</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
-
               <a-col :span="24">
                 <a-form-model-item label="适用范围" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="range">
-                  <span>{{goodsOptions}}</span>
+                  <a-radio-group v-model="model.range">
+                    <a-radio value="1">通用</a-radio>
+                    <a-radio value="2">指定商品&nbsp;
+                      <a-select
+                        v-model="model.rangeConfig"
+                        mode="multiple"
+                        style="width: 400px;"
+                        placeholder="请选择"
+                        :options="goodsOptions"
+                        option-filter-prop="children"
+                        :filter-option="(input, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0"
+                      >
+                      </a-select>
+                    </a-radio>
+                  </a-radio-group>
                 </a-form-model-item>
               </a-col>
               <a-col :span="24">
                 <a-form-model-item label="使用期限" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="expireType">
-                  <a-radio-group v-model:value="model.expireType" :disabled="true">
+                  <a-radio-group v-model:value="model.expireType">
                     <a-radio value="1">根据领取时间<br>
-                      领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数" :disabled="true"></a-input-number>&nbsp;天后失效
+                      领取&nbsp;<a-input-number :min="0" v-model="model.expireDay" style="width: 70px" placeholder="天数" ></a-input-number>&nbsp;天后失效
                     </a-radio>
-                    <a-radio value="2"  v-if="this.model.startTime !== null">自行设定时间<br>
-                      <span style="font-weight: bold">{{model.startTime+" ~ "+model.endTime}}</span>
+                    <a-radio value="2">自行设定时间<br>
+                      <a-range-picker :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
                     </a-radio>
                   </a-radio-group>
                 </a-form-model-item>
@@ -72,18 +85,18 @@
 
               <a-col :span="24">
                 <a-form-model-item label="发放数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="num">
-                  <a-radio-group v-model:value="numRadio" :disabled="numShouldDisabled">
+                  <a-radio-group v-model:value="numRadio">
                     <a-radio value="1">不限量</a-radio>
-                    <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px" :disabled="numShouldDisabled"></a-input-number>&nbsp;张</a-radio>
+                    <a-radio value="2">限&nbsp;<a-input-number :min="0" v-model="model.num" style="width: 70px"></a-input-number>&nbsp;张</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
 
               <a-col :span="24">
                 <a-form-model-item label="用户领取次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receiveCount">
-                  <a-radio-group v-model:value="selectedReceiveCount" :disabled="true">
-                    <a-radio value="1">不限次</a-radio>
-                    <a-radio value="2">一次</a-radio>
+                  <a-radio-group v-model="model.receiveCount">
+                    <a-radio :value="-1">不限次</a-radio>
+                    <a-radio :value="1">一次</a-radio>
                   </a-radio-group>
                 </a-form-model-item>
               </a-col>
@@ -115,7 +128,7 @@
 </template>
 
 <script>
-
+  import moment from 'moment';
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
   import JDateTimeDIY from "./JDateTimeDIY";
@@ -140,6 +153,7 @@
         visible: false,
         disableSubmit: false,
         model:{
+          receiveCount:''
          },
         labelCol: {
           xs: { span: 24 },
@@ -154,6 +168,9 @@
            couponId: [
               { required: true, message: '请输入优惠券id!'},
            ],
+           reduce: [
+            { required: true, message: '请输入面额!'},
+          ],
            name: [
               { required: true, message: '请输入优惠券名称!'},
            ],
@@ -166,20 +183,21 @@
            weight: [
               { required: true, message: '请输入权重!'},
            ],
+           receiveCount: [
+              { required: true, message: '请选择用户领取次数!'},
+           ],
         },
         url: {
           add: "/ShoeCoupon/shoeCoupon/add",
           edit: "/ShoeCoupon/shoeCoupon/edit",
           queryById: "/ShoeCoupon/shoeCoupon/queryById"
         },
-        // threshold: "1",
-        goodsOptions: "",
+        threshold: "",
+        goodsOptions: [],
         startAndEndTime: [],
-        // numRadio: "1",
+        numRadio: "",
         selectedGoods: [],
-        // selectedReceiveCount: "2",
         min: "",
-        reduce: "",
         numShouldDisabled: false,
       }
     },
@@ -191,6 +209,16 @@
     created () {
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
+    },
+    watch: {
+      startAndEndTime:{
+        handler(val) {
+          this.model.startTime = val.length ? moment(val[0]).format('YYYY-MM-DD HH:mm:ss') : null
+          this.model.endTime = val.length ? moment(val[1]).format('YYYY-MM-DD HH:mm:ss') : null
+        },
+        immediate:true,
+        deep:true
+      }
     },
     methods: {
       add () {
@@ -210,23 +238,21 @@
           "receiveCount": "2",
           "status": "0"
         };
+        
+      },
+      edit (record) {
         //弹窗出现的时候请求接口，获取商品列表
         httpAction("/ShoeCoupon/shoeCoupon/getGoodsTypeAndTitleList", null, "get").then((res) => {
           let result = res.result;
-          this.goodsOptions = res.result.map((item,index,arr)=>{
-            let c = {label:item.title, value:item.goodsId}
-            return c;
-          })
+          this.goodsOptions = res.result.map((item,index,arr)=>({label:item.title, value:item.goodsId+''}))
         })
-      },
-      edit (record) {
-        this.model = Object.assign({}, record);
-        this.reduce = (this.model.reduce * 0.01).toFixed(2);
-        this.min = (this.model.min * 0.01).toFixed(2);
+        this.model = Object.assign({},this.model, record);
         this.model.way = this.model.way.toString();
+        this.model.rangeConfig = this.model.rangeConfig ? this.model.rangeConfig.split(',') : []
         this.model.expireType = this.model.expireType.toString();
         this.model.range = this.model.range.toString();
         this.model.status = this.model.status.toString();
+        this.startAndEndTime = this.model.startTime ? [moment(this.model.startTime),moment(this.model.endTime)] : []
         this.visible = true;
 
         //单选框的判断赋值.
@@ -242,23 +268,9 @@
         let num = this.model.num;
         if (num < 0) {
           this.numRadio = "1";
+          this.model.num = 0
         } else {
           this.numRadio = "2";
-        }
-
-        //用户可领取优惠券次数的判断
-        let receiveCount = this.model.receiveCount;
-        if (receiveCount < 0) {
-          this.selectedReceiveCount = "1";
-        } else {
-          this.selectedReceiveCount = "2";
-        }
-
-        let range = this.model.range;
-        if (range === "1") {
-          this.goodsOptions = "通用";
-        } else if (range === "2") {
-          this.goodsOptions = this.model.rangeConfig;
         }
 
         //判断发放方式是 ”自行领取“ and ”平台发放“or”卡包“
@@ -287,32 +299,28 @@
         httpurl+=this.url.edit;
         method = 'put';
 
-        //处理金额
-        this.model.reduce = this.reduce * 100;
-
         //使用范围
-        let range = this.model.range;
-        if (range === "1") {
-          this.model = Object.assign(this.model, {"rangeConfig": null});
-        }
+        let rangeConfig = this.model.range === "1" ? '' : this.model.rangeConfig.join(',')
+        let min = this.threshold === "1" ? 0 : this.model.min
+        let num = this.numRadio === "1" ? -1 : this.model.num
 
         //发放数量
-        let numRadio = this.numRadio;
-        if (numRadio === "1") {
-          // this.model.num = -1;
-          this.model = Object.assign(this.model, {"num": -1});
-        } else if (numRadio === "2") {
-          if (this.model.num === "" || this.model.num === null || this.model.num === undefined) {
-            this.$message.warning("请输入发放数量");
-            that.confirmLoading = false;
-            return false;
-          }
+        if (this.model.expireType == 2 && !this.model.startTime) {
+          this.$message.warning("请选择自定义时间");
+          that.confirmLoading = false;
+          return false;
+        }
+        //发放数量
+        if (!num) {
+          this.$message.warning("请输入发放数量");
+          that.confirmLoading = false;
+          return false;
         }
 
         // console.log("==========the last line of defense==========");
-        // console.log(this.model);
-
-        httpAction(httpurl,this.model,method).then((res)=>{
+        console.log(this.model);
+        let form = Object.assign({},this.model,{rangeConfig,min,num})
+        httpAction(httpurl,form,method).then((res)=>{
           if(res.success){
             that.$message.success(res.message);
             this.visible = false;

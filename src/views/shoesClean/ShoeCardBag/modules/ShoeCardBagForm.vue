@@ -16,18 +16,24 @@
                 <a-button class="editable-add-btn" @click="handleAdd" :disabled="editDisabled">
                   新增
                 </a-button>
-                <a-table bordered :data-source="model.cardCouponList" :columns="columns" :pagination="paginations">
-                  <template slot="couponId" slot-scope="text,index, record" prop="couponId">
-                    <a-select :text="text" @change="onCellChange(record, 'couponId', $event)" v-if="!editDisabled">
+                <a-table bordered :data-source="model.cardCouponList" :columns="columns" :pagination="false">
+                  <template slot="couponId" slot-scope="text,record,index" prop="couponId">
+                    <xf-select
+                  style="width: 100%"
+                  isInternalData
+                  v-model="record.couponId"
+                  :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
+                  InternalLabelKey="name"
+                  InternalValueKey="id"
+                  :rawList="[{label:record.name,value:record.couponId+''}]"
+                >
+                </xf-select>
+                    <!-- <a-select :text="text" @change="onCellChange(record, 'couponId', $event)" v-if="!editDisabled">
                       <a-select-option v-for="i in couponList" :value="i.couponId" :key="i.couponId" >{{i.name}}</a-select-option>
-                    </a-select>
+                    </a-select> -->
                   </template>
-                  <template slot="name" slot-scope="text,index, record" prop="name">
-                    <template v-if="editDisabled">{{text}}</template>
-                  </template>
-                  <template slot = "num" slot-scope="text,index, record" prop="num">
-                    <a-input-number defaultValue="1" :min="1" :step="1" :text="text" placeholder="请输入数量" style="width: 100px" @change="onCellChange(record,'num',$event)" v-if="!editDisabled"/>
-                    <template v-else>{{text}}</template>
+                  <template slot = "num" slot-scope="text, record,index" prop="num">
+                    <a-input-number :min="1" :step="1" v-model="record.num" placeholder="请输入数量" style="width: 100px"/>
                   </template>
                   <template slot="operation" slot-scope="text, record">
                     <a-popconfirm title="确定要删除么？" @confirm="() => onDelete(record)">
@@ -39,8 +45,9 @@
             </a-col>
 
             <a-col :span="24">
-              <a-form-model-item label="活动时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="startAndEndTime">
-               <a-range-picker format="YYYY-MM-DD HH:mm:ss" :show-time="{ format: 'HH:mm:ss', minuteStep: 5 }" v-model="model.startAndEndTime" :disabled="editDisabled"/>              </a-form-model-item>
+              <a-form-model-item label="活动时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="startTime">
+               <a-range-picker :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" v-model="startAndEndTime" :disabled="editDisabled"/>
+              </a-form-model-item>
             </a-col>
 
             <a-col :span="24">
@@ -98,12 +105,15 @@
 </template>
 
 <script>
-
+import XfSelect from '@/components/Xf/XfSelect'
 import { httpAction, getAction } from '@/api/manage';
 import moment from 'moment'
 
 export default {
   name: 'ShoeCardBagForm',
+  components:{
+    XfSelect
+  },
   data () {
     return {
       confirmLoading: false,
@@ -114,7 +124,6 @@ export default {
       model:{
         cardBagId:"",
         name:"",
-        startAndEndTime:[],
         startTime:null,
         endTime:null,
         num: 1,
@@ -127,6 +136,7 @@ export default {
         timeAfterMessage:"",
         cardCouponList:[],
       },
+      startAndEndTime:[],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 },
@@ -139,7 +149,7 @@ export default {
         name: [
           { required: true, message: '请输入卡包名称!'},
         ],
-        startAndEndTime: [
+        startTime: [
           { required: true, message: '请输入时间!'},
         ],
         num: [
@@ -175,12 +185,6 @@ export default {
           scopedSlots: { customRender: 'couponId' }
         },
         {
-          title: '优惠卷名称',
-          dataIndex: 'name',
-          align:"center",
-          scopedSlots: { customRender: 'name' }
-        },
-        {
           title: '数量',
           dataIndex: 'num',
           align:"center",
@@ -203,22 +207,26 @@ export default {
   },
   created(){},
   mounted(){
-    this.getCouponList();
+    // this.getCouponList();
+  },
+  watch: {
+    startAndEndTime:{
+      handler(val) {
+        this.model.startTime = val.length ? moment(val[0]).format('YYYY-MM-DD HH:mm:ss') : null
+        this.model.endTime = val.length ? moment(val[1]).format('YYYY-MM-DD HH:mm:ss') : null
+      },
+      immediate:true,
+      deep:true
+    }
   },
   methods: {
     add () {
-      //隐藏名称
-      this.columns = this.columns.filter(col => col.dataIndex !== "name");
-      this.editDisabled = false;
       this.setDefaultModel();
     },
     edit (record) {
       this.model = Object.assign({}, record);
-      this.model.startAndEndTime = [this.model.startTime,this.model.endTime];
-      //隐藏下拉列表,操作
-      this.columns = this.columns.filter(col => col.dataIndex !== "couponId");
-      this.columns = this.columns.filter(col => col.dataIndex !== "operation");
-      this.editDisabled = true;
+      this.model.cardCouponList = this.model.cardCouponList.map(item => ({...item,couponId: item.couponId.toString()}))
+      this.startAndEndTime = [moment(record.startTime),moment(record.endTime)];
     },
     submitForm () {
       const that = this;
@@ -230,8 +238,6 @@ export default {
             httpurl = that.url.edit;
           }else{
             httpurl = that.url.add;
-            that.model.startTime = moment(that.model.startAndEndTime[0]).format('YYYY-MM-DD HH:mm:ss');
-            that.model.endTime = moment(that.model.startAndEndTime[1]).format('YYYY-MM-DD HH:mm:ss');
           }
           httpAction(httpurl, this.model,"post").then((res)=>{
             if(res.success){
@@ -249,11 +255,6 @@ export default {
     //校验优惠券列表
     cardCouponListCheck(){
       const that = this;
-
-      //编辑时
-      if(that.model.cardBagId){
-        return true;
-      }
       if(!that.model.cardCouponList || that.model.cardCouponList.length == 0){
         that.$message.warning("请选择优惠卷!");
         return false;
