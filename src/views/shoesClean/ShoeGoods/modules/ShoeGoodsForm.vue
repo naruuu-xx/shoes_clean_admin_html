@@ -411,7 +411,7 @@ export default {
       let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
 
       const newData = {
-        num: 2,
+        num: '',
         reduce: 0,
         uuid
       };
