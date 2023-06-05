@@ -138,7 +138,7 @@
                   <a-input-number style="width: 80px;" @blur="numBlur(index,record.num)" v-model="record.num" placeholder="请输双数" @change="v => record.num = isNaN(parseInt(v)) ? 2 : parseInt(v)" :min="2" />
                 </template>
                 <template slot="reduce" slot-scope="text,record,index">
-                  <a-input-number style="width: 120px;" v-model="record.reduce" placeholder="请输满减金额(元)" @change="v => record.reduce = isNaN(parseInt(v)) ? 0 : parseInt(v)" :min="0" />
+                  <a-input-number style="width: 120px;" v-model="record.reduce" placeholder="请输满减金额(元)" @change="v => record.reduce = isNaN(parseInt(v)) ? 0 : parseFloat(v).toFixed(2)" :min="0" />
                 </template>
                 <template slot="operation" slot-scope="text,record,index">
                   <a href="javascript:;" style="color: red" @click="fullDiscountList.splice(index,1)" v-if="fullDiscountList.length > 1">删除</a>
@@ -399,7 +399,7 @@ export default {
         let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
         this.fullDiscountList = this.fullDiscountList.length ? this.fullDiscountList : [
           {
-            num: 2,
+            num: '',
             reduce: 0,
             uuid
           }
