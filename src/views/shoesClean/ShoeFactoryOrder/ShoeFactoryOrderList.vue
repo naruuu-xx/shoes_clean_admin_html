@@ -28,6 +28,11 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+            <a-form-item label="机柜/服务点">
+              <a-input placeholder="请输入机柜/服务点名称" v-model="queryParam.lockerName"></a-input>
+            </a-form-item>
+          </a-col>
           <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单类型">
               <a-select v-model="queryParam.type">
@@ -114,12 +119,14 @@
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import ShoeFactoryOrderDetailModal from "./modules/ShoeFactoryOrderDetailModal";
   import {httpAction} from "../../../api/manage";
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeOrderList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeFactoryOrderDetailModal
+      ShoeFactoryOrderDetailModal,
+      XfSelect
     },
     data () {
       return {
@@ -190,6 +197,18 @@
             dataIndex: 'type',
             customRender: (text) => {
               return filterDictTextByCache('shoe_factory_order_type', text);
+            }
+          },
+          {
+            title:'机柜/服务点',
+            align:"center",
+            dataIndex: 'lockerName',
+          customRender: (text) => {
+              let result = text;
+              if (result === null) {
+                result = "无";
+              }
+              return result;
             }
           },
           {
