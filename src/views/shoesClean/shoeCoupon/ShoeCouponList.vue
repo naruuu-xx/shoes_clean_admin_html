@@ -198,7 +198,7 @@
           {
             title:'适用商品配置',
             align:"center",
-            dataIndex: 'rangeConfig',
+            dataIndex: 'rangeConfigText',
             customRender: (text) => {
               let result = text;
               if (result === null) {
