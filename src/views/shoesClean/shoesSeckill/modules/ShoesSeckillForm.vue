@@ -262,7 +262,8 @@ export default {
               })
               this.skuOptions.push({
                 label: item.skuName,
-                value: item.skuId
+                value: item.skuId,
+                title: item.skuName,
               })
             })
           } else {
@@ -284,6 +285,7 @@ export default {
       let skuTable = this.goodOptions.find(good => good.value == value).skuTable
       this.skuOptions = skuTable.map(sku => ({
         ...sku,
+        title: sku.label,
         disabled: this.selectedSkuIds.some(item => item == sku.value)
       }))
     },
@@ -316,6 +318,7 @@ export default {
             this.goodOptions = res.result.map(good => ({
               label:good.goodsName,
               value:+good.goodsId,
+              title:good.goodsName,
               skuTable:good.skuList.map(sku  => ({
                 label:sku.skuName,
                 value:+sku.skuId

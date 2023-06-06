@@ -9,10 +9,17 @@
               <a-input placeholder="请输入商品名称" v-model="queryParam.title"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="状态">
-              <a-select v-model="queryParam.statusText"  :allowClear = "true">
-                <a-select-option v-for="i in statusList" :value="i.statusText" :key="i.status">{{i.statusText}}</a-select-option>
+              <a-select v-model="queryParam.seckillStatus"  :allowClear = "true">
+                <a-select-option v-for="i in statusList" :value="i.status" :key="i.status">{{i.statusText}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="是否上架">
+              <a-select v-model="queryParam.status"  :allowClear = "true">
+                <a-select-option v-for="i in statusList1" :value="i.status" :key="i.status">{{i.statusText}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -178,7 +185,38 @@
         },
         superFieldList:[],
         typeList:[],
-        statusList:[],
+        statusList:[
+          {
+            statusText:'全部',
+            status:''
+          },
+          {
+          statusText:'进行中',
+          status:1
+          },
+          {
+          statusText:'即将开始',
+          status:2
+          },
+          {
+          statusText:'已结束',
+          status:3
+          },
+        ],
+        statusList1:[
+          {
+            statusText:'全部',
+            status:''
+          },
+          {
+          statusText:'是',
+          status:1
+          },
+          {
+          statusText:'否',
+          status:0
+          }
+        ],
         switchLoading:false,
         disabled: true
       }
