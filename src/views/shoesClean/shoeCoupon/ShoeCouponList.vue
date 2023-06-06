@@ -179,10 +179,7 @@
           {
             title:'面额',
             align:"center",
-            dataIndex: 'reduce',
-            customRender: (text) => {
-              return (text * 0.01).toFixed(2);
-            }
+            dataIndex: 'reduce'
           },
           {
             title:'使用门槛',
@@ -193,7 +190,7 @@
               if (text < 1) {
                 result = "无门槛";
               } else {
-                result = (text * 0.01).toFixed(2);
+                result = text;
               }
               return result;
             }
