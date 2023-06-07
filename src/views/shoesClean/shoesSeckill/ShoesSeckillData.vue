@@ -28,7 +28,7 @@
         <a-row>
           <a-spin :spinning="vSpinning">
            <XfDataTypeFilter :filterList="visitorCountFilterList" @change="changeVisitorCount"></XfDataTypeFilter>
-            <EchartsLine :dataSource="visitorCountDataSource" elementId="v"></EchartsLine>/uv
+            <EchartsLine :dataSource="visitorCountDataSource" elementId="v"></EchartsLine>
           </a-spin>
         </a-row>
       </div>
