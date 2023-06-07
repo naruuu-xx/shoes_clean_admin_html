@@ -126,6 +126,11 @@
             dataIndex: 'no'
           },
           {
+            title:'区域',
+            align:"center",
+            dataIndex:'orgCodeText'
+          },
+          {
             title:'商品名称',
             align:"center",
             dataIndex: 'title'
