@@ -91,7 +91,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a v-if="0 === record.status" @click="handleOrder(record)">处理</a>
+          <a v-has="'order:handleOrderException'" v-if="0 === record.status" @click="handleOrder(record)">处理</a>
           <a v-if="1 === record.status || 2 === record.status" @click="handleDetail(record)">查看详情</a>
           <a-divider v-if="2 === record.status && 1 === record.dealType" type="vertical" />
           <a v-if="2 === record.status && 1 === record.dealType" @click="handleCreateWashedMark(record)">打印水洗唛</a>
@@ -204,7 +204,6 @@
         ],
         url: {
           list: "/ShoeOrder/shoeOrder/getShoeOrderExceptionList",
-          // exportXlsUrl: "/ShoeOrder/shoeOrder/exportXls",
         },
         dictOptions:{},
         superFieldList:[],
