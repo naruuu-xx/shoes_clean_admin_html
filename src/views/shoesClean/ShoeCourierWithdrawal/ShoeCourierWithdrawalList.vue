@@ -138,6 +138,11 @@
         // 表头
         columns: [
           {
+            title:' 区域',
+            align:"center",
+            dataIndex: 'departName'
+          },
+          {
             title:'申请人',
             align:"center",
             dataIndex: 'name'
