@@ -515,7 +515,9 @@ export default {
         }
         
       }
-      let form = Object.assign({},this.model,{superpositionReduce:this.fullDiscountList})
+      let superpositionReduce = this.fullDiscountList.map(({num,reduce}) => ({num,reduce}))
+      let form = Object.assign({},this.model,{superpositionReduce})
+      console.log(888,form);
       // 触发表单验证
       this.$refs.form.validate(valid => {
         if (valid) {
