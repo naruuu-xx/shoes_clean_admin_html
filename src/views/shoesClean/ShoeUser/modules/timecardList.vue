@@ -57,7 +57,7 @@
      v-has="'timecard:status:button'">启用</a>
            <a-popconfirm title="确定停用吗?" @confirm="() => handleDeleteByDiy(record)"
                          v-if="record.timecardStatus==1 && record.useStatus=='可使用'">
-            <a style="color: red" v-has="'user:status:button'">停用</a>
+            <a style="color: red" v-has="'timecard:status:button'">停用</a>
           </a-popconfirm>
 
 
