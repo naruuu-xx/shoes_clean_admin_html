@@ -63,6 +63,12 @@
             <a-row>
               <a-col :span="24"><p class="label-content">品牌：{{data.brandName}}</p></a-col>
             </a-row>
+            <a-row v-if="data.lockerType === 'real'">
+              <a-col :span="24"><p class="label-content">机柜：{{data.lockerName}}</p></a-col>
+            </a-row>
+            <a-row v-if="data.lockerType === 'virtual'">
+              <a-col :span="24"><p class="label-content">服务点：{{data.lockerName}}</p></a-col>
+            </a-row>
           </a-row>
           <a-row v-if="'expressage' === data.type && 2 === data.status">
             <a-row>

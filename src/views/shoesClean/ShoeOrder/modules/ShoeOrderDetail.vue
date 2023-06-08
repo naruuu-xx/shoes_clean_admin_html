@@ -39,6 +39,7 @@
         <!-- <a-descriptions-item v-if="('机柜配送' === data.type || '站点配送' === data.type && data.courierReduce) || ('快递上门' === data.type && data.expressageReduce) " :label="'快递上门' === data.type ? '快递费减免' : '配送费减免'"> {{'快递上门' === data.type ? data.expressageReduce : data.courierReduce }} </a-descriptions-item> -->
         <a-descriptions-item label="优惠券名称">{{ OrderDetail.couponName }} </a-descriptions-item>
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
+        <a-descriptions-item label="参与活动" v-if="OrderDetail.singleGoodsReduceActivity || OrderDetail.courierReduceActivity">{{ activitiesText }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
         <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
         <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt > 0 && statusInt < 5">
@@ -93,11 +94,11 @@
         <a-descriptions-item label="昵称"> {{ data.nickname }} </a-descriptions-item>
         <a-descriptions-item label="绑定手机"> {{ data.wxPhone }} </a-descriptions-item>
         <a-descriptions-item label="订单类型"> {{ data.type }} </a-descriptions-item>
-        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type">
+        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type || '站点自提' === data.type || '站点配送' === data.type ">
           <a-descriptions-item label="用户姓名"> {{ data.name }} </a-descriptions-item>
           <a-descriptions-item label="手机号码"> {{ data.phone }} </a-descriptions-item>
         </template>
-        <template v-if="'机柜配送' === data.type">
+        <template v-if="'机柜配送' === data.type || '站点配送' === data.type">
           <a-descriptions-item label="预定时间"> {{ data.expect }} </a-descriptions-item>
           <a-descriptions-item label="用户地址"> {{ userAddress }} </a-descriptions-item>
           <a-descriptions-item label="门牌号"> {{ door }} </a-descriptions-item>
@@ -290,6 +291,29 @@ export default {
     }
   },
   created() {},
+  computed:{
+    activitiesText() {
+      let p = ''
+      if(this.OrderDetail.courierReduceActivity) {
+        if(['站点配送','机柜配送'].includes(this.data.type)) {
+          p = '配送费减免'
+        }
+        if(this.data.type == '快递上门') {
+          p = '运费减免'
+        }
+      }
+      if (this.OrderDetail.singleGoodsReduceActivity && this.OrderDetail.courierReduceActivity) {
+        return `产品满减、${p}`
+      }
+      if(this.OrderDetail.singleGoodsReduceActivity) {
+        return `产品满减`
+      }
+      if(this.OrderDetail.courierReduceActivity) {
+        return `产品满减`
+      }
+      
+    }
+  },
   methods: {
     show(record, orderStatus) {
       //处理数据
