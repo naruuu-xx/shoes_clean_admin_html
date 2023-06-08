@@ -54,7 +54,7 @@
         <span slot="action" slot-scope="text, record">
 <!--          <a @click="stopStatus(record)" v-if="record.status==1 && record.useStatus=='可使用'" style="color: red">停用</a>-->
   <a @click="handleDeleteByDiy(record)" v-if="record.timecardStatus==0 && record.useStatus=='可使用'"
-     v-has="'user:status:button'">启用</a>
+     v-has="'timecard:status:button'">启用</a>
            <a-popconfirm title="确定停用吗?" @confirm="() => handleDeleteByDiy(record)"
                          v-if="record.timecardStatus==1 && record.useStatus=='可使用'">
             <a style="color: red" v-has="'user:status:button'">停用</a>
