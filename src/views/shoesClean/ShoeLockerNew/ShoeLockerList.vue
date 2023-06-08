@@ -35,7 +35,18 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 区域">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartList`'
+              >
+              </xf-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -162,6 +173,7 @@ import store from '@/store/'
 import SetPercentage from "@views/shoesClean/shoeCourier/modules/SetPercentage";
 import ShoeLockerMoveForm from "@views/shoesClean/ShoeLockerNew/modules/ShoeLockerMoveForm";
 import SubCommissionList from '@views/shoesClean/ShoeLocker/modules/subCommissionList.vue'
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
   name: 'ShoeLockerList',
@@ -172,7 +184,8 @@ export default {
     shoeLockerGridModal,
     SetPercentage,
     ShoeLockerImgModal,
-    ShoeLockerMoveForm
+    ShoeLockerMoveForm,
+    XfSelect
   },
   data() {
     return {
