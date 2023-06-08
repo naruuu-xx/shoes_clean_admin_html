@@ -185,6 +185,7 @@
 
         this.$refs.DeptBaseInfo.open(record);
         this.$refs.DeptUserInfo.open(record);
+        this.$refs.DeptRoleInfo.onClearSelected();
         this.$refs.DeptRoleInfo.open(record);
         // }
         // else {
@@ -217,5 +218,5 @@
   }
 </script>
 <style scoped>
-  @import '~@assets/less/common.less'
+  @import '~@assets/less/common.less';
 </style>

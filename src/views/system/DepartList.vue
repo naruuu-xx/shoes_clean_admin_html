@@ -6,7 +6,7 @@
         <!-- 按钮操作区域 -->
         <a-row style="margin-left: 14px">
           <a-button @click="handleAdd(1)" type="primary">添加区域</a-button>
-          <a-button @click="handleAdd(2)" type="primary">添加工厂</a-button>
+<!--          <a-button @click="handleAdd(2)" type="primary">添加工厂</a-button>-->
           <a-button title="删除多条数据" @click="batchDel" type="default">批量删除</a-button>
           <!--<a-button @click="refresh" type="default" icon="reload" :loading="loading">刷新</a-button>-->
         </a-row>
@@ -110,7 +110,7 @@
 <!--                </template>-->
 <!--              </a-form-model-item>-->
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
-                <j-select-multi-user v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
+                <j-select-multi-user disabled :buttons="false" v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
               </a-form-model-item>
 <!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="排序">-->
 <!--                <a-input-number v-model="model.departOrder" />-->
@@ -139,6 +139,9 @@
         <a-tab-pane tab="部门权限" key="2" forceRender>
           <depart-auth-modal ref="departAuth"/>
         </a-tab-pane>
+        <a-tab-pane tab="区域角色" key="3" forceRender>
+          <dept-role-info ref="DeptRoleInfo" @clearSelectedDepartKeys="clearSelectedDepartKeys"/>
+        </a-tab-pane>
       </a-tabs>
 
     </a-col>
@@ -151,6 +154,7 @@
   import {httpAction, deleteAction} from '@/api/manage'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import DepartAuthModal from './modules/DepartAuthModal'
+  import DeptRoleInfo from './modules/DeptRoleInfoModal'
   import Vue from 'vue'
   // 表头
   const columns = [
@@ -195,11 +199,13 @@
     name: 'DepartList',
     mixins: [JeecgListMixin],
     components: {
+      DeptRoleInfo,
       DepartAuthModal,
       DepartModal
     },
     data() {
       return {
+        currentDeptId: '',
         iExpandedKeys: [],
         loading: false,
         autoExpandParent: true,
@@ -292,6 +298,13 @@
           }
         }
       },
+      clearSelectedDepartKeys() {
+        this.checkedKeys = [];
+        this.selectedKeys = [];
+        this.currentDeptId = '';
+        this.$refs.DeptUserInfo.currentDeptId='';
+        this.$refs.DeptRoleInfo.currentDeptId='';
+      },
       refresh() {
         this.loading = true
         this.loadTree()
@@ -381,13 +394,17 @@
       },
       onCheck(checkedKeys, info) {
         console.log('onCheck', checkedKeys, info)
+        let record = info.node.dataRef;
+        console.log(record)
         this.hiding = false
+        this.currentDeptId = record.id;
         //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
         if(this.checkStrictly){
           this.checkedKeys = checkedKeys.checked;
         }else{
           this.checkedKeys = checkedKeys
         }
+        // this.$refs.DeptRoleInfo.open(record);
         //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
       },
       onSelect(selectedKeys, e) {
@@ -405,6 +422,8 @@
         this.model.parentId = record.parentId
         this.setValuesToForm(record)
         this.$refs.departAuth.show(record.id);
+        this.$refs.DeptRoleInfo.onClearSelected();
+        this.$refs.DeptRoleInfo.open(record);
         this.oldDirectorUserIds = record.directorUserIds
 
         //update-beign-author:taoyan date:20220316 for: VUEN-329【bug】为什么不是失去焦点的时候，触发手机号校验
