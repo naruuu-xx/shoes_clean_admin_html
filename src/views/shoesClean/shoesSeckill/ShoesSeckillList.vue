@@ -29,7 +29,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="addList" type="primary" icon="plus">新增</a-button>
+      <a-button @click="addList" type="primary" icon="plus" v-has="'seckill:add'">新增</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -54,7 +54,7 @@
         <span slot="action" slot-scope="text, record">
 
           <a @click="onAction(Object.assign({},record,{disabled:true}))" v-if="record.status == '1'">查看</a>
-          <a @click="onAction(record)" v-if="record.status == '0'">编辑</a>
+          <a @click="onAction(record)" v-if="record.status == '0'" v-has="'seckill:edit'">编辑</a>
         </span>
 
       </a-table>
@@ -190,7 +190,7 @@
       }
     },
     created() {
-      
+
     },
     computed: {
       importExcelUrl: function(){
