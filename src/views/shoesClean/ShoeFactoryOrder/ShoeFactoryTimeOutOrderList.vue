@@ -29,7 +29,18 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 工厂">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartFactoryList`'
+              >
+              </xf-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -108,12 +119,14 @@
   import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil";
   import ShoeFactoryOrderDetailModal from "./modules/ShoeFactoryOrderDetailModal";
   import {httpAction} from "../../../api/manage";
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeOrderList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeFactoryOrderDetailModal
+      ShoeFactoryOrderDetailModal,
+      XfSelect
     },
     data () {
       return {
