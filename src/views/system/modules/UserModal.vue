@@ -50,12 +50,12 @@
         </a-form-model-item>
 
         <a-form-model-item v-if="model.belongDepart == '1'" label="角色分配" prop="selectedroles" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
-          <j-multi-select-tag
-                  :disabled="disableSubmit"
-                  v-model="model.selectedroles"
-                  :options="rolesOptions"
-                  placeholder="请选择角色">
-          </j-multi-select-tag>
+          <a-select
+            :disabled="disableSubmit"
+            v-model="model.selectedroles"
+            :options="rolesOptions"
+            placeholder="请选择角色">
+          </a-select>
         </a-form-model-item>
         <!--区域分配-->
         <a-form-model-item v-if="model.belongDepart == '2'" label="区域分配" prop="selecteddeparts" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
