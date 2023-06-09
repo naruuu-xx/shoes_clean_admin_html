@@ -27,6 +27,11 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="创建时间">
+              <a-range-picker v-model="queryParam.createTime" />
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -182,6 +187,11 @@
             }
           },
           {
+            title:'创建时间',
+            align:"center",
+            dataIndex: 'createTime',
+          },
+          {
             title:'处理完成时间',
             align:"center",
             dataIndex: 'dealFinishTime',
@@ -223,11 +233,15 @@
     methods: {
       setQueryParams () {
         let [startTime, endTime] = this.queryParam.dealFinishTime || ['', ''];
+        let [startCreateTime, endCreateTime] = this.queryParam.createTime || ['', ''];
 
         startTime = startTime ? moment(startTime).format('YYYY-MM-DD') : "";
         endTime = endTime ? moment(endTime).format('YYYY-MM-DD') : "";
 
-        return {startTime, endTime}
+        startCreateTime = startCreateTime ? moment(startCreateTime).format('YYYY-MM-DD') : "";
+        endCreateTime = endCreateTime ? moment(endCreateTime).format('YYYY-MM-DD') : "";
+
+        return {startTime, endTime, startCreateTime, endCreateTime}
       },
       initDictConfig(){
       },
