@@ -314,6 +314,7 @@ export default {
       if(this.OrderDetail.courierReduceActivity) {
         return `产品满减`
       }
+      return '-'
       
     }
   },
