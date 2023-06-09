@@ -274,6 +274,7 @@
         var that = this
         that.treeData = []
         that.departTree = []
+
         queryDepartTreeList().then((res) => {
           if (res.success) {
             //部门全选后，再添加部门，选中数量增多
@@ -424,7 +425,9 @@
         this.$refs.departAuth.show(record.id);
         this.$refs.DeptRoleInfo.onClearSelected();
         this.$refs.DeptRoleInfo.open(record);
+        console.log('onSelect-record', record.directorUserIds)
         this.oldDirectorUserIds = record.directorUserIds
+        this.model.directorUserIds = record.directorUserIds
 
         //update-beign-author:taoyan date:20220316 for: VUEN-329【bug】为什么不是失去焦点的时候，触发手机号校验
         this.$nextTick(()=>{
