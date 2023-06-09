@@ -167,7 +167,7 @@
             dataIndex: 'phone'
           },
           {
-            title:'优惠券名称',
+            title:'蜂卡名称',
             align:"center",
             dataIndex: 'timecardName'
           },
