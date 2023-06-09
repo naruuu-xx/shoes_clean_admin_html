@@ -197,7 +197,7 @@ export default {
   },
   data() {
     return {
-      createTime:'',
+      createTime:[],
       queryParam: {
         promotionId: "",
         createTimeLeft: '',
