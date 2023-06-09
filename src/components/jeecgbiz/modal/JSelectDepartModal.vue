@@ -280,7 +280,7 @@
   // 限制部门选择树高度，避免部门太多时点击确定不便
   .my-dept-select-tree{
     height:350px;
-    
+
     &.fullscreen{
       height: calc(100vh - 250px);
     }
