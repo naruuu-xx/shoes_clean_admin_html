@@ -1,41 +1,44 @@
 <template>
-  <j-modal
-    :title="title"
-    :width="1200"
-    :visible="visible"
-    switchFullscreen
-    @cancel="handleCancel"
-    cancelText="关闭"
-    :footer="null"
-    :fullscreen="false">
+  <j-modal :title="title" :width="1200" :visible="visible" switchFullscreen @cancel="handleCancel" cancelText="关闭"
+    :footer="null" :fullscreen="false">
     <div style="margin-left: 20px">
       <a-row>
         <a-col :span="18">
           <a-input style="height: 120px" v-model.trim="no" placeholder="请扫码水洗唛编码或者手动输入水洗唛编码"
-                   @pressEnter="queryOutOfStorageInfo" ref="autoInput"/>
+            @pressEnter="queryOutOfStorageInfo" ref="autoInput" />
         </a-col>
         <a-col :span="2"></a-col>
         <a-col :span="4">
           <a-row>
             <a-button @click="queryOutOfStorageInfo" :loading="loadingBtn"
-                      style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span
-              style="font-size: 22px;">确&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认</span></a-button>
+              style="width: 100%;height: 50px;margin-bottom: 20px;background: rgba(0,229,230,0.39)"><span
+                style="font-size: 22px;">确&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;认</span></a-button>
           </a-row>
           <a-row>
             <a-button @click="emptyNo" style="width: 100%;height: 50px;background: rgba(255,255,102,0.56)"><span
-              style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button>
+                style="font-size: 22px;">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</span></a-button>
           </a-row>
         </a-col>
       </a-row>
-      <a-divider/>
-      <a-row v-show="shoeOrderInfo">
+      <a-divider />
+      <a-spin v-show="shoeOrderInfo"  :spinning="confirmLoading" size="large" :tip="tip">
+        <a-row style="margin-bottom: 10px" v-if="imagesNo">
+          <a-col :span="20">
+            <XfPhotograph ref="photograph" :photographImg="factoryOutImages"></XfPhotograph>
+          </a-col>
+          <a-col :span="4">
+            <a-button @click="uploadImage" style="width: 100%;height: 50px;background: #1890ff;color:#fff;"  v-if="$refs.photograph && $refs.photograph.images.length"><span
+                style="font-size: 22px;" :loading="loadingBtn">上传照片</span></a-button>
+          </a-col>
+        </a-row>
         <a-row style="margin-bottom: 10px">
           <a-col :span="18">
             <span class="content">订单编号：{{ data.no }}</span>
           </a-col>
           <a-col :span="2"></a-col>
-          <a-col :span="4">
-            <a-button @click="handleOutOfStorage" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span style="font-size: 22px;" :loading="loadingBtn">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
+          <a-col :span="4" v-if="!imagesNo">
+            <a-button @click="handleOutOfStorage" style="width: 100%;height: 50px;background: rgba(255,46,77,0.63)"><span
+                style="font-size: 22px;" :loading="loadingBtn">打&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印</span></a-button>
           </a-col>
         </a-row>
         <a-row style="margin-bottom: 30px">
@@ -51,26 +54,25 @@
         <a-row>
           <a-col :span="24">
             <p class="content">订单照片：</p>
-            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
-                 :src="item" @click="showImage(item)">
+            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="(item,idx) in imageList" :src="item"
+              @click="showImage(item)" :key="idx">
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="24">
             <p class="content">入库照片：</p>
-            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in factoryInImages"
-                 :src="item" @click="showImage(item)">
+            <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="(item,idx) in factoryInImages" :src="item"
+              @click="showImage(item)" :key="idx">
+            <a-empty v-if="!factoryInImages.length" />
           </a-col>
         </a-row>
-      </a-row>
+      </a-spin>
     </div>
 
-    <a-modal :zIndex="2000" :width="1000" :visible="showImageModal" :footer="null"
-             @cancel="handleShoeImageModalCancel()">
+    <a-modal :zIndex="2000" :width="1000" :visible="showImageModal" :footer="null" @cancel="handleShoeImageModalCancel()">
       <img alt="example" style="width: 100%" :src="clickedImage">
     </a-modal>
-    <a-modal :zIndex="2000" :width="600" :visible="resDataModal" :footer="null"
-             @cancel="handleResDataModal">
+    <a-modal :zIndex="2000" :width="600" :visible="resDataModal" :footer="null" @cancel="handleResDataModal">
       <h1 style="text-align: center">{{ resData.message }}</h1>
       <div style="display: flex;justify-content: center">
         <a-button type="primary" if="resData.code==2001" @click="routeToDetail">查看详情</a-button>
@@ -82,13 +84,16 @@
 
 <script>
 
-import {downFile, httpAction} from "../../../../../api/manage";
+import { downFile, httpAction } from "../../../../../api/manage";
 import { getLodop } from '@/utils/LodopFuncs';
+import XfPhotograph from "@comp/Xf/XfPhotograph";
 let Lodop;
 
 export default {
   name: "ShoeOutOfStorageModal",
-  components: {},
+  components: {
+    XfPhotograph
+  },
   data() {
     return {
       visible: false,
@@ -102,7 +107,11 @@ export default {
       clickedImage: "",
       resData: {},
       loadingBtn: false,
-      factoryInImages: []
+      factoryInImages: [],
+      factoryOutImages: [],
+      confirmLoading: false,
+      imagesNo:'',
+      tip:'图片正在上传中，请耐心等待......'
     }
   },
   created() {
@@ -127,6 +136,8 @@ export default {
       this.data = {};
       this.imageList = [];
       this.shoeOrderInfo = false;
+      this.factoryOutImages = [];
+      this.imagesNo = '';
       //关闭弹窗并刷新列表
       this.$emit('ok');
     },
@@ -154,10 +165,13 @@ export default {
               "title": res.result.title,
               "skuTitle": res.result.skuTitle
             }
+            this.factoryOutImages = [];
+            this.imagesNo = '';
             this.imageList = JSON.parse(res.result.orderImages);
-            this.factoryInImages = res.result.factoryInImages;
+            this.factoryInImages = res.result.factoryInImages || [];
             this.shoeOrderInfo = true;
             //清空输入框并重新聚焦
+            
             this.no = "";
             this.$nextTick(() => {
               this.$refs.autoInput.focus();
@@ -179,70 +193,102 @@ export default {
           "no": this.data.no
         }
         this.loadingBtn = true
+        this.confirmLoading = true
         httpAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeOutOfStorage", data, "post").then((res) => {
-          if (res.code !== 200) {
-            if (res.code !== 2000 && res.code !== 2001) {
-              this.$message.warning(res.message);
+            if(res.success) {
+              this.imagesNo = this.data.no;
             }
+            if (res.code !== 200) {
+              if (res.code !== 2000 && res.code !== 2001) {
+                this.$message.warning(res.message);
+              }
 
-            //清空输入框并重新聚焦
-            this.no = "";
-            this.$nextTick(() => {
-              this.$refs.autoInput.focus();
-            })
+              //清空输入框并重新聚焦
+              this.no = "";
+              
+              this.$nextTick(() => {
+                this.$refs.autoInput.focus();
+              })
 
-            if (res.code === 2001) {
-              this.resData = res;
-              this.resDataModal = true;
+              if (res.code === 2001) {
+                this.resData = res;
+                this.resDataModal = true;
+                //打印水洗唛
+                this.createWashedMark(res.result.no);
+
+
+              } else if (res.code === 2000) {
+                this.resData = res;
+                this.$message.success(res.message, 5);
+                //打印水洗唛
+                this.createWashedMark(res.result.no)
+
+                //lodop打印快递
+                this.printKuaidi(res.result.deliveryId);
+
+
+              }
+              return false;
+            } else {
+              this.data = {
+                "no": res.result.no,
+                "note": res.result.note,
+                "title": res.result.title,
+                "skuTitle": res.result.skuTitle
+              }
+              this.imageList = JSON.parse(res.result.orderImages);
+              this.shoeOrderInfo = true;
+              this.$message.success(res.message);
+              //清空输入框并重新聚焦
+              this.no = "";
+              this.$nextTick(() => {
+                this.$refs.autoInput.focus();
+              })
+
               //打印水洗唛
               this.createWashedMark(res.result.no);
 
-
-            } else if (res.code === 2000) {
-              this.resData = res;
-              this.$message.success(res.message, 5);
-              //打印水洗唛
-              this.createWashedMark(res.result.no)
-
-              //lodop打印快递
-              this.printKuaidi(res.result.deliveryId);
-
-
             }
-            return false;
-          } else {
-            this.data = {
-              "no": res.result.no,
-              "note": res.result.note,
-              "title": res.result.title,
-              "skuTitle": res.result.skuTitle
-            }
-            this.imageList = JSON.parse(res.result.orderImages);
-            this.shoeOrderInfo = true;
-            this.$message.success(res.message);
-            //清空输入框并重新聚焦
-            this.no = "";
-            this.$nextTick(() => {
-              this.$refs.autoInput.focus();
-            })
+          }).finally(res => {
+            this.confirmLoading = false
+            this.loadingBtn = false
+          })
 
-            //打印水洗唛
-            this.createWashedMark(res.result.no);
-
-          }
-        }).finally(res => {
-          this.loadingBtn = false
-        })
       }
+    },
+    uploadImage(){
+      this.confirmLoading = true;
+      this.$refs.photograph.submit().then(Images => {
+        this.factoryOutImages = Images
+        let factoryOutImages = Images.map(item => item.file)
+        let form = {
+          no: this.imagesNo,
+          factoryOutImages
+        }
+        httpAction("/ShoeFactoryOrder/shoeFactoryOrder/photo", form, "post").then((res) => {
+          if (res.success) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.warning(res.message)
+          }
+
+          this.confirmLoading = false;
+        })
+      }).finally(res => {
+        this.confirmLoading = false
+      })
+      
     },
     emptyNo() {
       //清空输入框内容
       this.no = "";
       this.data = {};
       this.imageList = [];
+      this.factoryOutImages = [];
+      this.imagesNo = '';
       this.shoeOrderInfo = false;
     },
-    printKuaidi(deliveryId){
+    printKuaidi(deliveryId) {
       let data = {
         "deliveryId": deliveryId
       }
@@ -258,9 +304,9 @@ export default {
         let reader = new FileReader();
         reader.onload = event => {
           //读取之后进行操作的代码区域，event.currentTarget.result 指读取到的内容
-          cont=content+event.currentTarget.result
+          cont = content + event.currentTarget.result
 
-          this.printPic(cont,'快递100')
+          this.printPic(cont, '快递100')
 
         }
         //调用方法读取
@@ -274,9 +320,9 @@ export default {
      * @param image 图片
      * @param printerName 打印机名称
      */
-    printPic(image,printerName){
+    printPic(image, printerName) {
       LODOP = getLodop() // 获取LODOP对象的主过程
-      LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
+      LODOP.SET_LICENSES("", "9598E18E55ADC63670695568858B9F880FD", "", "")
       if (LODOP != false) {
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("面单打印" + timestamp);
@@ -331,15 +377,15 @@ export default {
      * @param file base64
      * @param printerName 打印机名称
      */
-    printThermal(file,printerName){
+    printThermal(file, printerName) {
       LODOP = getLodop() // 获取LODOP对象的主过程
-      LODOP.SET_LICENSES("","9598E18E55ADC63670695568858B9F880FD","","")
+      LODOP.SET_LICENSES("", "9598E18E55ADC63670695568858B9F880FD", "", "")
       if (LODOP != false) {
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("出库打印热敏纸" + timestamp);
         LODOP.SET_PRINTER_INDEX(printerName);
-        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "50mm", "");
-        LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
+        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "53mm", "");
+        LODOP.ADD_PRINT_PDF(0, 0, "100%", "100%", file);
 
         if (process.env.NODE_ENV === 'production') {
           LODOP.PRINT() // 直接打印
@@ -352,7 +398,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+/deep/ .ant-spin-text{
+  font-size: 40px;
+}
 .content {
   font-size: 20px;
   color: #000000;

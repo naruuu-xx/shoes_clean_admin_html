@@ -1,12 +1,12 @@
 <template>
   <a-card :bordered="false">
-    <div>
-      <a-space>取件范围</a-space><br/>
-      <br/>
-      <a-space>用户下单时匹配<a-input-number placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 60px"
-                                         :min="0" size="small"/>km范围内的机柜</a-space>
-    </div>
-    <a-divider/>
+<!--    <div>-->
+<!--      <a-space>取件范围</a-space><br/>-->
+<!--      <br/>-->
+<!--      <a-space>用户下单时匹配<a-input-number placeholder="输入距离" id="takeRange" v-model="takeRange" style="width: 60px"-->
+<!--                                         :min="0" size="small"/>km范围内的机柜</a-space>-->
+<!--    </div>-->
+<!--    <a-divider/>-->
     <div>
       <a-space>配送费设置</a-space><br/>
       <br/>

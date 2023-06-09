@@ -48,7 +48,7 @@
                 @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="queryParam.couponId"
-                :url='`/shoes/shoeUser/getCouponOrCardBagOrTimecard?type=0`'
+                :url='`/shoes/shoeUser/getAllCoupon`'
                 style="width: 100%;"
               >
               </XfSelect>

@@ -39,10 +39,10 @@
             </div>
           </a-col>
         </a-row>
-        <a-row v-if="'2' === auditOption">
+        <a-row >
           <a-col :span="24">
             <div class="content-font">
-              拒绝原因：
+              备注：
               <a-textarea v-model="data.note" rows="4" placeholder="请输入备注"/>
             </div>
           </a-col>

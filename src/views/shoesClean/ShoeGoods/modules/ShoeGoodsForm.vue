@@ -108,6 +108,46 @@
           </a-col>
 
           <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="是否满减" prop="superpositionStatus">
+              <a-radio-group name="radioGroup" v-model="model.superpositionStatus" @change="changeSu">
+                <a-radio :value="1">
+                  是
+                </a-radio>
+                <a-radio :value="0">
+                  否
+                </a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24" v-if="model.superpositionStatus == 1">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="是否与优惠券叠加优惠" prop="compatibilityStatus">
+              <div>
+                <a-radio-group name="radioGroup" v-model="model.compatibilityStatus">
+                <a-radio :value="1">
+                  是
+                </a-radio>
+                <a-radio :value="0">
+                  否
+                </a-radio>
+              </a-radio-group>
+              </div>
+              <a-button type="primary" @click="fullDiscountAdd">新增</a-button>
+              <a-table v-if="fullDiscountList.length" bordered :data-source="fullDiscountList" :columns="fullDiscountColumns" :rowKey="model.uuid" size="small" :pagination="false">
+                <template slot="num" slot-scope="text,record,index">
+                  <a-input-number style="width: 80px;" @blur="numBlur(index,record.num)" v-model="record.num" placeholder="请输双数" @change="v => record.num = isNaN(parseInt(v)) ? 2 : parseInt(v)" :min="2" />
+                </template>
+                <template slot="reduce" slot-scope="text,record,index">
+                  <a-input-number style="width: 120px;" v-model="record.reduce" placeholder="请输满减金额(元)" @change="v => record.reduce = isNaN(parseInt(v)) ? 0 : parseFloat(v).toFixed(2)" :min="0" />
+                </template>
+                <template slot="operation" slot-scope="text,record,index">
+                  <a href="javascript:;" style="color: red" @click="fullDiscountList.splice(index,1)" v-if="fullDiscountList.length > 1">删除</a>
+                </template>
+              </a-table>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
             <a-form-model-item label="附加服务项" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="additionalId" >
               <a-select
                 mode="multiple"
@@ -115,7 +155,7 @@
                 placeholder="选择或搜索需要绑定的用户"
                 option-filter-prop="children"
                 style="width: 200px"
-                :filter-option="filterOption"
+                :filter-option="(input, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0"
                 v-model="model.additionalIds"
               >
                 <a-select-option  v-for="i in additionalList" :value="i.additionalId" :key="i.additionalId">
@@ -176,7 +216,6 @@ const EditableCell = {
     }
   },
   methods: {
-
     handleChange(e) {
       const value = this.type == 'text' ? e.target.value : e
       console.log(6666,value);
@@ -264,6 +303,12 @@ export default {
         status: [
           { required: true, message: '请输入状态' },
         ],
+        superpositionStatus: [
+          { required: true, message: '请选择是否满减' },
+        ],
+        compatibilityStatus: [
+          { required: true, message: '请选择是否优惠券叠加优惠' },
+        ],
       },
       url: {
         list: "/shoes/shoeGoodsSku/list",
@@ -306,7 +351,28 @@ export default {
         },
       ],
 
-      additionalList:[]
+      additionalList:[],
+      fullDiscountColumns : [
+        {
+          title: '双数',
+          dataIndex: 'num',
+          scopedSlots: { customRender: 'num' },
+          align: 'center'
+        },
+        {
+          title: '满减金额(元)',
+          dataIndex:'reduce',
+          scopedSlots: {customRender: 'reduce'},
+          align: 'center'
+        },
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          scopedSlots: { customRender: 'operation' },
+          align: 'center'
+        },
+      ],
+      fullDiscountList:[]
 
 
     }
@@ -326,7 +392,40 @@ export default {
 
   },
   methods: {
+    changeSu(val) {
+      if(this.model.superpositionStatus == 0) {
+        // this.fullDiscountList = []
+      } else {
+        let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
+        this.fullDiscountList = this.fullDiscountList.length ? this.fullDiscountList : [
+          {
+            num: '',
+            reduce: 0,
+            uuid
+          }
+        ]
+      }
+    },
+    fullDiscountAdd() {
+      const dataSource  = this.model.skuTable;
+      let uuid = (Math.random() + new Date().getTime()).toString(32).slice(0,8);
 
+      const newData = {
+        num: '',
+        reduce: 0,
+        uuid
+      };
+      this.fullDiscountList.push(newData)
+      console.log(this.fullDiscountList);
+
+    },
+    numBlur(idx,val) {
+      let list = [...this.fullDiscountList].map(({num}) => num)
+      list.splice(idx,1)
+      if(list.findIndex(item => item == val) != -1) {
+        this.$message.error('已有相同鞋数!')
+      }
+    },
     // 是否可用提交规格
     isSubmitSkuTable() {
       let status = true
@@ -348,8 +447,6 @@ export default {
     },
 
     onCellChange(record, dataIndex, value) {
-
-      console.log(999,value);
       const dataSource = [... this.model.skuTable];
 
 
@@ -360,7 +457,6 @@ export default {
       }
     },
     onDelete(index,record) {
-      console.log(444,index,record);
       /**
        * 删除存在有bug，待修复。
        * @type {*[]}
@@ -386,7 +482,6 @@ export default {
       };
       this.model.skuTable = [...dataSource, newData];
       this.count = count + 1;
-      console.log(this.model.skuTable);
 
     },
 
@@ -397,6 +492,7 @@ export default {
     edit(record) {
      // this.loadData(record.goodsId);
      //
+     this.fullDiscountList = record.superpositionReduce || []
       this.model = Object.assign({}, record)
       this.model.skuTable = this.model.skuTable.map(item => {
         return Object.assign({}, item,{uuid: (Math.random() + new Date().getTime()).toString(32).slice(0,8)})
@@ -408,7 +504,20 @@ export default {
         return
       }
       const that = this
-      console.log(this.model)
+      let numObj = {}
+      for (let index = 0; index < this.fullDiscountList.length; index++) {
+        const num = this.fullDiscountList[index].num;
+        if (!numObj[num]) {
+          numObj[num] = true
+        } else {
+          this.$message.error('鞋子双数不能重复')
+          return;
+        }
+        
+      }
+      let superpositionReduce = this.fullDiscountList.map(({num,reduce}) => ({num,reduce}))
+      let form = Object.assign({},this.model,{superpositionReduce})
+      console.log(888,form);
       // 触发表单验证
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -422,7 +531,7 @@ export default {
             httpurl += this.url.edit
             method = 'put'
           }
-          httpAction(httpurl, this.model, method).then((res) => {
+          httpAction(httpurl, form, method).then((res) => {
             if (res.success) {
               that.$message.success(res.message)
               that.$emit('ok')
@@ -447,7 +556,6 @@ export default {
     getAdditonalList(){
       httpAction("/shoes/shoeAdditional/queryList","", "get").then((res)=>{
         if(res){
-          console.log(res.result);
           this.additionalList = res.result;
 
         }

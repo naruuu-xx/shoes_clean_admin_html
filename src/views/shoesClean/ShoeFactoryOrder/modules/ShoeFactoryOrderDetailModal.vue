@@ -63,6 +63,12 @@
             <a-row>
               <a-col :span="24"><p class="label-content">品牌：{{data.brandName}}</p></a-col>
             </a-row>
+            <a-row v-if="data.lockerType === 'real'">
+              <a-col :span="24"><p class="label-content">机柜：{{data.lockerName}}</p></a-col>
+            </a-row>
+            <a-row v-if="data.lockerType === 'virtual'">
+              <a-col :span="24"><p class="label-content">服务点：{{data.lockerName}}</p></a-col>
+            </a-row>
           </a-row>
           <a-row v-if="'expressage' === data.type && 2 === data.status">
             <a-row>
@@ -85,8 +91,8 @@
           <a-row>
             <a-col :span="24"><p class="label-title">订单照片</p></a-col>
             <a-col :span="24">
-              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in imageList"
-                   :src="item" @click="showImage(item)">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="(item,idx) in imageList"
+                   :src="item" @click="showImage(item)" :key="idx">
             </a-col>
           </a-row>
         </a-col>
@@ -105,8 +111,8 @@
             <a-row>
             <a-col :span="24"><p class="label-content">异常照片：</p></a-col>
             <a-col :span="24">
-              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in exceptionImageList"
-                   :src="item" @click="showImage(item)">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="(item,idx) in exceptionImageList"
+                   :src="item" @click="showImage(item)" :key="idx">
             </a-col>
             </a-row>
             <a-row>
@@ -128,8 +134,19 @@
           <a-row>
             <a-col :span="24"><p class="label-title">入库照片</p></a-col>
             <a-col :span="24">
-              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="item in factoryInImages"
-                   :src="item" @click="showImage(item)">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="(item,idx) in factoryInImages"
+                   :src="item" @click="showImage(item)" :key="idx">
+              <a-empty v-if="!factoryInImages.length" />
+            </a-col>
+          </a-row>
+        </a-col>
+        <a-col :span="12">
+          <a-row>
+            <a-col :span="24"><p class="label-title">出库照片</p></a-col>
+            <a-col :span="24">
+              <img alt="example" style="width: 25%;height:25%;margin: 10px" v-for="(item,idx) in factoryOutImages"
+                   :src="item" @click="showImage(item)" :key="idx">
+              <a-empty v-if="!factoryOutImages.length" />
             </a-col>
           </a-row>
         </a-col>
@@ -159,6 +176,7 @@ export default {
       data: {},
       imageList: [],
       factoryInImages: [],
+      factoryOutImages: [],
       showImageModal: false,
       clickedImage: "",
       factoryStatus: "",
@@ -215,6 +233,7 @@ export default {
       }
 
       this.factoryInImages = this.data.factoryInImages;
+      this.factoryOutImages = this.data.factoryOutImages || [];
 
     },
     handleCancel() {
@@ -222,6 +241,7 @@ export default {
       this.data = {};
       this.imageList = [];
       this.factoryInImages = [];
+      this.factoryOutImages = [];
       this.factoryStatus = "";
     },
     showImage(item) {

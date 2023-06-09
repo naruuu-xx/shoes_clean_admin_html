@@ -44,7 +44,7 @@
                       placeholder="请选择"
                       :options="goodsOptions"
                       option-filter-prop="children"
-                      :filter-option="filterOption"
+                      :filter-option="(input, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0"
                     >
                     </a-select>
                   </a-radio>
@@ -59,7 +59,7 @@
                     领取&nbsp;<a-input-number :min="1" v-model="model.expireDay" style="width: 70px" placeholder="天数"></a-input-number>&nbsp;天后失效
                   </a-radio>
                   <a-radio value="2">自行设定时间<br>
-                    <j-date-time-d-i-y placeholder="开始时间" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
+                    <j-date-time-d-i-y :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" class="query-group-cust" v-model="startAndEndTime"/>
                   </a-radio>
                 </a-radio-group>
               </a-form-model-item>

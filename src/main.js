@@ -47,6 +47,7 @@ import '@/assets/less/JAreaLinkage.less'
 import VueAreaLinkage from 'vue-area-linkage'
 import '@/components/jeecg/JVxeTable/install'
 import '@/components/JVxeCells/install'
+import '@/utils/echarts'
 //表单验证
 import { rules } from '@/utils/rules'
 Vue.prototype.rules = rules

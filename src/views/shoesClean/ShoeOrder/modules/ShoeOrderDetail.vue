@@ -31,7 +31,7 @@
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
         <a-descriptions-item :label="('机柜配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
-          {{ data.originalCourierPrice }}
+          {{ data.courierPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="应付金额(元)"> {{ data.price }} </a-descriptions-item>
         <a-descriptions-item label="实付金额(元)"> {{ data.actualPrice }} </a-descriptions-item>
@@ -39,6 +39,7 @@
         <!-- <a-descriptions-item v-if="('机柜配送' === data.type || '站点配送' === data.type && data.courierReduce) || ('快递上门' === data.type && data.expressageReduce) " :label="'快递上门' === data.type ? '快递费减免' : '配送费减免'"> {{'快递上门' === data.type ? data.expressageReduce : data.courierReduce }} </a-descriptions-item> -->
         <a-descriptions-item label="优惠券名称">{{ OrderDetail.couponName }} </a-descriptions-item>
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
+        <a-descriptions-item label="参与活动" v-if="OrderDetail.singleGoodsReduceActivity || OrderDetail.courierReduceActivity">{{ activitiesText }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
         <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
         <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt > 0 && statusInt < 5">
@@ -93,11 +94,11 @@
         <a-descriptions-item label="昵称"> {{ data.nickname }} </a-descriptions-item>
         <a-descriptions-item label="绑定手机"> {{ data.wxPhone }} </a-descriptions-item>
         <a-descriptions-item label="订单类型"> {{ data.type }} </a-descriptions-item>
-        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type">
+        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type || '站点自提' === data.type || '站点配送' === data.type ">
           <a-descriptions-item label="用户姓名"> {{ data.name }} </a-descriptions-item>
           <a-descriptions-item label="手机号码"> {{ data.phone }} </a-descriptions-item>
         </template>
-        <template v-if="'机柜配送' === data.type">
+        <template v-if="'机柜配送' === data.type || '站点配送' === data.type">
           <a-descriptions-item label="预定时间"> {{ data.expect }} </a-descriptions-item>
           <a-descriptions-item label="用户地址"> {{ userAddress }} </a-descriptions-item>
           <a-descriptions-item label="门牌号"> {{ door }} </a-descriptions-item>
@@ -177,6 +178,7 @@
               {{ item.msg }}
               <a v-if="item.status == 0" @click="showShoeImages(orderImagesList)" style="margin-left: 10px; text-decoration: underline">查看鞋子照片</a>
               <a v-if="item.status == 6" @click="showShoeImages(factoryInImages)" style="margin-left: 10px; text-decoration: underline">查看入库照片</a>
+              <a v-if="item.status == 9" @click="showShoeImages(factoryOutImages)" style="margin-left: 10px; text-decoration: underline">查看出库照片</a>
             </div>
           </div>
         </div>
@@ -199,10 +201,12 @@
       <img
         alt="example"
         style="width: 20%; margin: 20px"
-        v-for="item in imagesList"
+        v-for="(item,idx) in imagesList"
         :src="item"
         @click="showShoeImage(item)"
+        :key="idx"
       />
+      <a-empty v-if="!imagesList.length" />
     </a-modal>
 
     <a-modal
@@ -282,10 +286,34 @@ export default {
       logisticsDetails: '',
       orderRefund: null,
       OrderDetail:{},
-      factoryInImages: []
+      factoryInImages: [],
+      factoryOutImages: [],
     }
   },
   created() {},
+  computed:{
+    activitiesText() {
+      let p = ''
+      if(this.OrderDetail.courierReduceActivity) {
+        if(['站点配送','机柜配送'].includes(this.data.type)) {
+          p = '配送费减免'
+        }
+        if(this.data.type == '快递上门') {
+          p = '运费减免'
+        }
+      }
+      if (this.OrderDetail.singleGoodsReduceActivity && this.OrderDetail.courierReduceActivity) {
+        return `产品满减、${p}`
+      }
+      if(this.OrderDetail.singleGoodsReduceActivity) {
+        return `产品满减`
+      }
+      if(this.OrderDetail.courierReduceActivity) {
+        return `产品满减`
+      }
+      
+    }
+  },
   methods: {
     show(record, orderStatus) {
       //处理数据
@@ -293,6 +321,7 @@ export default {
       let orderInfo = Object.assign({}, record)
       orderInfo.goodsPrice = +(orderInfo.goodsPrice / 100).toFixed(2)
       orderInfo.originalCourierPrice = +(orderInfo.originalCourierPrice / 100).toFixed(2)
+      orderInfo.courierPrice = +(orderInfo.courierPrice / 100).toFixed(2)
       orderInfo.totalPrice = +(orderInfo.totalPrice / 100).toFixed(2)
       orderInfo.price = +(orderInfo.price / 100).toFixed(2)
       orderInfo.couponPrice = +(orderInfo.couponPrice / 100).toFixed(2)
@@ -313,6 +342,7 @@ export default {
         this.logisticsDetails = res.logisticsDetailList
         this.orderRefund = res.orderRefund
         this.factoryInImages = res.factoryInImages;
+        this.factoryOutImages = res.factoryOutImages || [];
       })
       getAction("/ShoeOrder/shoeOrder/getLogisticsInfo", requestData).then((res) => {
         this.logisticsNameByBefore = res.result.logisticsNameByBefore
