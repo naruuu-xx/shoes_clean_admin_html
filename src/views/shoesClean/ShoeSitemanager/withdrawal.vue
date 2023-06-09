@@ -4,13 +4,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="申请人">
               <a-input placeholder="请输入申请人" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
-
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="订单状态">
 
               <a-select v-model="queryParam.status" style="width: 180px">
@@ -18,6 +17,17 @@
                   {{ item.name }}
                 </a-select-option>
               </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 区域">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartList`'
+              >
+              </xf-select>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -83,6 +93,7 @@ import { getFileAccessHttpUrl, httpAction } from '@api/manage'
 import ShoeSitemanagerWithdrawalDetail from "@views/shoesClean/ShoeSitemanager/modules/ShoeSitemanagerWithdrawalDetail";
 import ShoeSitemanagerAudit from "@views/shoesClean/ShoeSitemanager/modules/ShoeSitemanagerAudit";
 import ShoeSitemanagerTransfer from "@views/shoesClean/ShoeSitemanager/modules/ShoeSitemanagerTransfer";
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
 name: "ShoeInvestorsWithdrawalList",
@@ -90,7 +101,8 @@ name: "ShoeInvestorsWithdrawalList",
   components: {
     ShoeSitemanagerWithdrawalDetail,
     ShoeSitemanagerAudit,
-    ShoeSitemanagerTransfer
+    ShoeSitemanagerTransfer,
+    XfSelect
   },
   data(){
     return {
@@ -102,6 +114,11 @@ name: "ShoeInvestorsWithdrawalList",
       },
       // 表头
       columns: [
+        {
+          title:' 区域',
+          align:"center",
+          dataIndex: 'departName'
+        },
         {
           title: '申请人',
           align: "center",

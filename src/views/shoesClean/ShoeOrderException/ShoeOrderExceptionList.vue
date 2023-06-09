@@ -25,7 +25,18 @@
             <a-form-item label="处理完成时间">
                 <a-range-picker v-model="queryParam.dealFinishTime" />
             </a-form-item>
-          </a-col>
+          </a-col><a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+          <a-form-item label=" 区域">
+            <xf-select
+              style="width: 100%"
+              isInternalData
+              v-model="queryParam.orgCode"
+              :url='`/sysDepart/getSysDepartList`'
+            >
+            </xf-select>
+          </a-form-item>
+        </a-col>
+
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -118,6 +129,7 @@
   import {downFile, httpAction} from "../../../api/manage";
   import { getLodop } from '@/utils/LodopFuncs';
   import moment from 'moment';
+  import XfSelect from '@/components/Xf/XfSelect'
   let Lodop;
 
   export default {
@@ -125,7 +137,8 @@
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeOrderExceptionModal,
-      ShoeOrderExceptionDetailModal
+      ShoeOrderExceptionDetailModal,
+      XfSelect
     },
     data () {
       return {
@@ -136,6 +149,11 @@
             title:'订单编号',
             align:"center",
             dataIndex: 'no'
+          },
+          {
+            title:' 区域',
+            align:"center",
+            dataIndex: 'departName'
           },
           {
             title:'商品名称',
