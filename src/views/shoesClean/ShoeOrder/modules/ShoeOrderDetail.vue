@@ -312,10 +312,9 @@ export default {
         return `产品满减`
       }
       if(this.OrderDetail.courierReduceActivity) {
-        return `产品满减`
+        return p
       }
-      return '-'
-      
+      return '——'
     }
   },
   methods: {
