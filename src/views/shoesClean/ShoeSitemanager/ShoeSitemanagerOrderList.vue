@@ -37,7 +37,7 @@
       size="middle"
       :scroll="{x:true}"
       bordered
-      rowKey="promotionId"
+      rowKey="no"
       :columns="columns"
       :dataSource="dataSource"
       :pagination="ipagination"
@@ -128,6 +128,11 @@ export default {
 
       ],
     }
+  },
+  beforeRouteLeave (to, from, next) {
+    this.$destroy()
+    next()
+    
   },
   create() {
   },
