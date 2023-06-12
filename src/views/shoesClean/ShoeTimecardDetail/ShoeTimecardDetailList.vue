@@ -37,6 +37,15 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="冻结状态">
+              <a-select v-model="queryParam.timecardStatus">
+                <a-select-option v-for="item in timecardStatusOptionList" :value="item.value" :key="item.value">
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="开始时间">
               <a-range-picker v-model="queryParam.createTime"/>
@@ -115,7 +124,7 @@ export default {
         {
           title: '鞋蜂卡名称',
           align: "center",
-          dataIndex: 'name'
+          dataIndex: 'name' 
         },
         {
           title: '使用双数',
@@ -136,6 +145,17 @@ export default {
           customRender:function (text){
             return filterDictTextByCache('shoe_user_timecard_status', text);
           }
+        },
+        {
+          title: '冻结状态',
+          align: "center",
+          dataIndex: "timecardStatus",
+          customRender: (text) => {
+            if (text == 0) {
+              text = '冻结'
+            } else text = '正常'
+            return text;
+          },
         },
         {
           title: '开始时间',
@@ -165,7 +185,10 @@ export default {
       ],
       sourceOptionList: [
         {"value": "", "name": "全部"}, {"value": "1", "name": "小程序购买"}, {"value": "2", "name": "兑换码兑换"},
-        {"value": "3", "name": "三方平台"},{"value": "4", "name": "他人赠送"},{"value": "5", "name": "团购兑换"}
+        {"value": "3", "name": "三方平台"},{"value": "4", "name": "他人赠送"},{"value": "5", "name": "团购兑换"},{"value": "6", "name": "后台派发"}
+      ],
+      timecardStatusOptionList: [
+        {"value": "", "name": "全部"}, {"value": "1", "name": "正常"}, {"value": "0", "name": "冻结"}
       ],
     }
   },
