@@ -302,6 +302,9 @@ export default {
           p = '运费减免'
         }
       }
+      if(this.OrderDetail.isSeckill){
+        return '秒杀订单'
+      }
       if (this.OrderDetail.singleGoodsReduceActivity && this.OrderDetail.courierReduceActivity) {
         return `产品满减、${p}`
       }
