@@ -39,7 +39,7 @@
         <!-- <a-descriptions-item v-if="('机柜配送' === data.type || '站点配送' === data.type && data.courierReduce) || ('快递上门' === data.type && data.expressageReduce) " :label="'快递上门' === data.type ? '快递费减免' : '配送费减免'"> {{'快递上门' === data.type ? data.expressageReduce : data.courierReduce }} </a-descriptions-item> -->
         <a-descriptions-item label="优惠券名称">{{ OrderDetail.couponName }} </a-descriptions-item>
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
-        <a-descriptions-item label="参与活动" v-if="OrderDetail.singleGoodsReduceActivity || OrderDetail.courierReduceActivity">{{ activitiesText }} </a-descriptions-item>
+        <a-descriptions-item label="参与活动">{{ activitiesText }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
         <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
         <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt > 0 && statusInt < 5">
@@ -309,9 +309,9 @@ export default {
         return `产品满减`
       }
       if(this.OrderDetail.courierReduceActivity) {
-        return `产品满减`
+        return p
       }
-      
+      return '——'
     }
   },
   methods: {
