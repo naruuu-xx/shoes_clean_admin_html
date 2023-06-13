@@ -27,7 +27,7 @@
         <a-descriptions-item label="订单编号"> {{ data.no }}</a-descriptions-item>
         <a-descriptions-item label="支付交易号"> {{ data.outTradeNo }}</a-descriptions-item>
         <a-descriptions-item label="订单金额(元)">
-          {{(data.goodsPrice + data.additionalPrice + data.originalCourierPrice).toFixed(2)}}
+          {{ OrderDetail.orderPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
         <a-descriptions-item :label="('机柜配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
