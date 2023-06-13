@@ -19,6 +19,14 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="蜂卡类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="goodsType">
+              <a-radio-group v-model="model.goodsType">
+                <a-radio :value="'1'">商品维度</a-radio>
+                <a-radio :value="'2'">商品规格维度</a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="商品选择" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="goodList" required>
               <a-button type="primary" @click="onAddGood">新增</a-button>
             </a-form-model-item>
@@ -27,12 +35,13 @@
             <div class="good">
               <div class="good-label">
                 商品{{ idx + 1 }}：
-                <a-select style="width: 120px" v-model="good.goods_id">
-                  <a-select-option :value="item.id" v-for="(item, index) in goods" :key="index"
-                                   :disabled="disabledGood(item.id)">
-                    {{ item.name }}
-                  </a-select-option>
+                <a-select style="width: 120px" v-model="good.goodsId" @change="changeGood($event, idx)" :options="goodOptions">
                 </a-select>
+              </div>
+              <div class="good-label" v-if="model.goodsType == '2'">
+                商品规格:
+                <a-select  style="width: 120px" v-model="good.skuId" @focus="onClickSku(idx)" :options="skuOptions">
+                  </a-select>
               </div>
               <div class="good-label">
                 鞋子总数：
@@ -173,7 +182,7 @@ let validateGood = (rule, value, callback) => {
     callback('请添加适用商品！')
   } else {
     let n = value.every((item) => {
-      return item.goods_id && item.num && item.minimum
+      return item.goodsId && item.num && item.minimum
     })
     if (!n) {
       // this.$refs.ruleForm.validateField('checkPass');
@@ -234,6 +243,7 @@ export default {
         timecardId: [{required: true, message: '请输入次卡ID!'}],
         name: [{required: true, message: '请输入次卡名称!'}],
         color:[{required: true, message: '请输入卡面按钮字体颜色!'}],
+        goodsType: [{required: true, message: '请选择商品类型!'}],
         image: [{required: true, message: '请输入图片!'}],
         num: [{required: true, message: '请输入可洗鞋数!'}],
         expireDay: [{required: true, message: '请输入有效天数!'}],
@@ -259,6 +269,8 @@ export default {
       goodList: [],
       goods: [],
       ClassifyList: [],
+      goodOptions:[],
+      skuOptions:[],
       visibleTip: false,
       tipsContent: "假设总鞋子数为10双，最低下单鞋子数为3双，当用户已经用掉了5双鞋子下单后，<br/>1、选择是的话，最后一次下单用户必须下5双鞋子，只能下单一次；<br/>2、选择否的话，用户可以先下3双的单，再下2双的单，可以下单两次；",
       // 分类折扣
@@ -269,6 +281,9 @@ export default {
     formDisabled() {
       return this.disabled
     },
+    selectedSkuIds() {
+      return this.goodList.map(good => good.skuId)
+    }
   },
   watch: {
     goodList: {
@@ -295,10 +310,29 @@ export default {
   mounted() {
     this.validatorRules.isShow.push({validator: this.validateSell, trigger: 'change'})
   },
+
   methods: {
+    onClickSku(idx) {
+      this.skuOptions = []
+      let value = this.goodList[idx].goodsId
+      if(value) {
+        this.setSkuOptions(value)
+      }
+    },
+    changeGood(value,idx) {
+      this.goodList[idx].skuId = ''
+      this.goodList[idx].disabled = false
+    },
+    setSkuOptions(value) {
+      let skuTable = this.goodOptions.find(good => good.value == value).skuTable
+      this.skuOptions = skuTable.map(sku => ({
+        ...sku,
+        disabled: this.selectedSkuIds.some(item => item == sku.value)
+      }))
+    },
     // 商品不可多个一样
     disabledGood(id) {
-      return this.goodList.map(item => +item.goods_id).includes(+id)
+      return this.goodList.map(item => +item.goodsId).includes(+id)
     },
     // 分类不可多个一样
     disabledGoodClassify(id) {
@@ -322,7 +356,8 @@ export default {
     // 点击新增产品
     onAddGood() {
       this.goodList.push({
-        goods_id: '',
+        goodsId: '',
+        skuId:'',
         num: 1,
         minimum: 1,
       })
@@ -348,7 +383,11 @@ export default {
     },
     edit(record) {
       this.model = Object.assign({}, record);
-      this.goodList = this.model.goodList;
+      this.goodList = this.model.goodList.map(item => ({
+        ...item,
+        goodsId: item.goods_id,
+        skuId : item.sku_id
+      }));
       this.classifyDiscountList = this.model.classifyDiscountList;
       this.visible = true
     },
@@ -375,7 +414,14 @@ export default {
           let form = {
             num
           };
-
+          console.log(this.model)
+         let goodList = this.model.goodList.map(({minimum,num, skuId, goodsId})=>({
+            num,
+           minimum,
+           sku_id: skuId,
+           goods_id: goodsId
+          }));
+          this.model.goodList = goodList;
           httpAction(httpurl, Object.assign({}, this.model, form), method).then((res) => {
             if (res.success) {
               that.$message.success(res.message)
@@ -395,7 +441,15 @@ export default {
       //获取商品列表
       httpAction("/shoes/shoeGoods/getGoodsList", null, "get").then((res) => {
         if (res.success) {
-          this.goods = res.result.map(item => ({id: item.goodsId, name: item.title}));
+          this.goodOptions = res.result.map(good => ({
+            label:good.goodsName,
+            value:+good.goodsId,
+            skuTable:good.skuList.map(sku  => ({
+              label:sku.skuName,
+              value:+sku.skuId
+            }))
+          }))
+            this.skuOptions = this.goodOptions.map(good => good.skuTable).flat()
         } else {
           that.$message.warning(res.message);
         }
@@ -418,7 +472,8 @@ export default {
 <style lang="less" scoped>
 .good {
   display: flex;
-  width: calc(100% - 48px);
+  width: calc(100% - 60px);
+  align-items: flex-end;
   margin-left: 48px;
   margin-bottom: 24px;
 
