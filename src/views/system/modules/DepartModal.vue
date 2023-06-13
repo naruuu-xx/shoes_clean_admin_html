@@ -34,31 +34,14 @@
             :disabled="condition">
           </a-tree-select>
         </a-form-model-item>
-<!--        <a-form-model-item-->
-<!--          :labelCol="labelCol"-->
-<!--          :wrapperCol="wrapperCol"-->
-<!--          label="机构类型">-->
-<!--          <template v-if="seen">-->
-<!--            <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
-<!--              <a-radio value="1">-->
-<!--                公司-->
-<!--              </a-radio>-->
-<!--            </a-radio-group>-->
-<!--          </template>-->
-<!--          <template v-else>-->
-<!--            <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
-<!--              <a-radio value="2">-->
-<!--                部门-->
-<!--              </a-radio>-->
-<!--              <a-radio value="3">-->
-<!--                岗位-->
-<!--              </a-radio>-->
-<!--            </a-radio-group>-->
-<!--          </template>-->
-<!--        </a-form-model-item>-->
-        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
-          <j-select-multi-user v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol"  label="类型" prop="orgCategory">
+          <a-radio-group v-model="model.orgCategory">
+            <a-radio :value="'1'">运营城市</a-radio>
+            <a-radio :value="'2'">工厂</a-radio>
+            <a-radio :value="'3'">运营城市和工厂</a-radio>
+          </a-radio-group>
         </a-form-model-item>
+
         <a-form-model-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
@@ -120,7 +103,7 @@ export default {
       model: {},
       defaultModel: {
         departOrder: 0,
-        orgCategory: '1'
+        orgCategory: ''
       },
       menuhidden: false,
       menuusing: true,
@@ -140,7 +123,7 @@ export default {
           {pattern: /^[A-Za-z]{2}$/, message: '请输入两位且只能为英文的自定义编码!'}],
         orgCode: [{required: true, message: '请输入机构编码!'}],
         mobile: [{validator: this.validateMobile}],
-        orgCategory: [{required: true, message: '请输入机构类型!'}]
+        orgCategory: [{required: true, message: '请选择区域类型'}]
       },
       url: {
         add: "/sys/sysDepart/add",

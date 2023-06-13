@@ -77,38 +77,26 @@
 <!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="orgTypeHideFlg">-->
 <!--                <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>-->
 <!--              </a-form-model-item>-->
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="所属区域">
-                <a-tree-select
-                  style="width:100%"
-                  :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-                  :treeData="treeData"
-                  :disabled="disable"
-                  v-model="model.parentId"
-                  placeholder="无">
-                </a-tree-select>
-              </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode" label="机构编码">
-                <a-input disabled placeholder="请输入机构编码" v-model="model.orgCode" />
-              </a-form-model-item>
-<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="机构类型">-->
-<!--                <template v-if="orgCategoryDisabled">-->
-<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
-<!--                    <a-radio value="1">-->
-<!--                      公司-->
-<!--                    </a-radio>-->
-<!--                  </a-radio-group>-->
-<!--                </template>-->
-<!--                <template v-else>-->
-<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
-<!--                    <a-radio value="2">-->
-<!--                      部门-->
-<!--                    </a-radio>-->
-<!--                    <a-radio value="3">-->
-<!--                      岗位-->
-<!--                    </a-radio>-->
-<!--                  </a-radio-group>-->
-<!--                </template>-->
+<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="所属区域" >-->
+<!--                <a-tree-select-->
+<!--                  style="width:100%"-->
+<!--                  :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"-->
+<!--                  :treeData="treeData"-->
+<!--                  :disabled="disable"-->
+<!--                  v-model="model.parentId"-->
+<!--                  placeholder="无">-->
+<!--                </a-tree-select>-->
 <!--              </a-form-model-item>-->
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode" label="区域编码">
+                <a-input disabled placeholder="请输入区域编码" v-model="model.orgCode" />
+              </a-form-model-item>
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="区域类型" v-if="model.orgCode != 'A01'">
+                <a-radio-group v-model="model.orgCategory" placeholder="请选择区域类型">
+                  <a-radio :value="'1'">运营城市</a-radio>
+                  <a-radio :value="'2'">工厂</a-radio>
+                  <a-radio :value="'3'">运营城市和工厂</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
                 <j-select-multi-user disabled :buttons="false" v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
               </a-form-model-item>
