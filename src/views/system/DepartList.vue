@@ -97,7 +97,7 @@
                   <a-radio :value="'3'">运营城市和工厂</a-radio>
                 </a-radio-group>
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人" v-if="model.directorUserIds">
                 <j-select-multi-user disabled :buttons="false" v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
               </a-form-model-item>
 <!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="排序">-->
