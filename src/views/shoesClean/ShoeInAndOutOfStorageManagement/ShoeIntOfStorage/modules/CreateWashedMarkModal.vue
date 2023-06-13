@@ -76,14 +76,13 @@ export default {
       let data = {
         "no": this.no
       }
-      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMark", data, "post").then((res) => {
-        if (!res) {
+      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/reCreateWashedMark", data, "post").then((res) => {
+        if (res.code !== 200) {
           this.$message.warning(res.message)
-          return
+        } else {
+          const file = res.result;
+          this.printPic(file, "水洗唛")
         }
-        const file = res;
-        this.printPic(file, "水洗唛")
-
         this.confirmLoading = false;
       })
     },
