@@ -227,7 +227,8 @@ export default {
           title: '绑定手机号',
           align: "center",
           dataIndex: 'wxPhone'
-        },{
+        },
+        {
         title: '优惠券',
         align: "center",
         dataIndex: 'couponName',
@@ -246,6 +247,11 @@ export default {
           title: '总金额',
           align: "center",
           dataIndex: 'totalPrice'
+        },
+        {
+          title: '商品金额',
+          align: "center",
+          dataIndex: 'goodsPrice'
         },
         {
           title: '优惠金额',
@@ -275,26 +281,6 @@ export default {
         title:'实际到账',
         align: "center",
         dataIndex: 'actualArrivalPrice',
-        },
-        {
-          title: '订单状态',
-          align: "center",
-          dataIndex: 'status',
-        },
-        {
-          title: '订单类型',
-          align: "center",
-          dataIndex: 'type',
-        },
-        {
-          title: '下单时间',
-          align: "center",
-          dataIndex: 'createTime',
-        },
-        {
-          title: '完成时间',
-          align: "center",
-          dataIndex: 'finishTime',
         },
         {
           title: '订单状态',
