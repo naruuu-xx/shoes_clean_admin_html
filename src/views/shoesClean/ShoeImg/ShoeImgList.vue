@@ -153,7 +153,7 @@
           if(res.success){
             this.$message.success(res.message);
             this.showEditImg = false
-            this.loadData(1);
+            this.loadData();
           }else{
             this.$message.warning(res.message);
           }
