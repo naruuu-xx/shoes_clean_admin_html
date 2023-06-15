@@ -57,11 +57,18 @@
 <!--        </a-menu>-->
 <!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
 <!--      </a-dropdown>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('售后订单列表')" v-if="selectedRowKeys.length > 0">
+        导出选中订单
+      </a-button>
     </div>
 
     <!-- table区域-begin -->
     <div>
-
+      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a
+        style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+      </div>
       <a-table
         ref="table"
         size="middle"
@@ -72,6 +79,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -214,7 +222,7 @@
         ],
         url: {
           list: "/ShoeOrder/shoeOrder/getShoeOrderExceptionList",
-          // exportXlsUrl: "/ShoeOrder/shoeOrder/exportXls",
+          exportXlsUrl: "/ShoeOrder/shoeOrder/exportXlsException",
         },
         dictOptions:{},
         superFieldList:[],
