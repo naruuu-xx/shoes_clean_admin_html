@@ -22,17 +22,13 @@
 
     <!-- table区域-begin -->
     <div>
-      <!-- <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div> -->
 
       <a-table
         ref="table"
         size="middle"
         :scroll="{x:true}"
         bordered
-        rowKey="bannerId"
+        rowKey="imageId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -45,7 +41,7 @@
         </template>
         <template slot="imgSlot" slot-scope="text,record">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img @click="onImg(text)" v-else :src="getImgView(text)" :preview="record.id" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+          <img @click="onImg(text)" v-else :src="text" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
@@ -74,7 +70,7 @@
     <!-- 修改图片 -->
     <a-modal v-model="showEditImg" :footer="null" :maskClosable="false" :closable="false">
       <div class="center">
-        <j-image-upload v-model="form.image" ></j-image-upload>
+        <j-image-upload v-model="form.img" ></j-image-upload>
         <div class="foot">
           <a-button @click="showEditImg = false">取消</a-button>
           <a-button type="primary" style="margin-left: 30px;" @click="onSubmit" :loading="confirmLoading">保存</a-button>
@@ -94,7 +90,7 @@
     name: 'ShoeBannerList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      
+
     },
     data () {
       return {
@@ -104,18 +100,18 @@
           {
             title:'模块',
             align:"center",
-            dataIndex: 'bannerId'
+            dataIndex: 'name'
           },
           {
             title:'图片',
             align:"center",
-            dataIndex: 'image',
+            dataIndex: 'img',
             scopedSlots: {customRender: 'imgSlot'}
           },
           {
             title:'尺寸',
             align:"center",
-            dataIndex: 'url'
+            dataIndex: 'size'
           },
           {
             title: '操作',
@@ -127,14 +123,15 @@
           }
         ],
         url: {
-          list: "/shoes/shoeBanner/list",
+          list: "/ShoeImage/shoeImage/list",
+          edit: "/ShoeImage/shoeImage/edit"
         },
         imgUrl:'',
         showImg:false,
         showEditImg:false,
         form:{
-          image:'',
-          id:''
+          img:'',
+          imageId:''
         },
         confirmLoading:false
       }
@@ -148,11 +145,11 @@
     },
     methods: {
       onSubmit() {
-        if(!this.form.image) {
+        if(!this.form.img) {
           return this.$message.warning('请选择一张图片!');
         }
         this.confirmLoading = true
-        httpAction('',this.form,'post').then((res)=>{
+        httpAction(this.url.edit, this.form, 'post').then((res)=>{
           if(res.success){
             this.$message.success(res.message);
             this.showEditImg = false
@@ -170,8 +167,8 @@
       },
       handleEditImg(record) {
         this.showEditImg = true
-        this.form.image = record.image
-        this.form.id = record.image
+        this.form.img = record.img
+        this.form.imageId = record.imageId
       },
       initDictConfig(){
       },
