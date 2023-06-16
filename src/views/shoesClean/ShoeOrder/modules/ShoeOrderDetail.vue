@@ -10,7 +10,7 @@
     wrapClassName="full-modal"
   >
     <div class="diyDiv">
-      <a-descriptions title="商品信息" layout="vertical" bordered :column="5" size="small" style="margin-bottom: 20px">
+      <a-descriptions title="商品信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="商品">
           <img alt="example" style="width: 120px" :src="data.image" @click="previewModel" />
           {{ data.title }}
@@ -21,6 +21,7 @@
         <a-descriptions-item label="附加服务">{{ data.additionalName || '无' }}</a-descriptions-item>
         <a-descriptions-item label="数量"> 1 </a-descriptions-item>
         <a-descriptions-item label="商品金额(元)">{{ data.goodsPrice }}</a-descriptions-item>
+        <a-descriptions-item label="秒杀价(元)" v-if="1 === OrderDetail.isSeckill" >{{ OrderDetail.seckillPrice }}</a-descriptions-item>
       </a-descriptions>
 
       <a-descriptions title="订单信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">

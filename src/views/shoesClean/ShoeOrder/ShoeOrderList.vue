@@ -356,7 +356,7 @@ export default {
         {"value": "", "name": "全部"}, {"value": "normal", "name": "常规订单"}, {
           "value": "customer",
           "name": "合作客户订单"
-        }
+        }, {"value": "seckill", "name": "秒杀订单"}
       ],
       lockerList: [],
     }

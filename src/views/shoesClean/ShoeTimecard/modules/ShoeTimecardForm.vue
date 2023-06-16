@@ -228,7 +228,8 @@ export default {
       model: {
         goodList: '',
         classifyDiscountList: '',
-        image: "https://shoes-clean.oss-cn-shenzhen.aliyuncs.com/icon/2.0/card-bg.png"
+        image: "https://shoes-clean.oss-cn-shenzhen.aliyuncs.com/icon/2.0/card-bg.png",
+        goodsType: '1'
       },
       labelCol: {
         xs: {span: 24},
