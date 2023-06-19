@@ -125,7 +125,7 @@
           <div v-for="(shoeInvestorsSiteDto, idx) in investorsSiteDtoList" :key="`locker${idx}`">
             <div class="locker">
               <div class="locker-label">
-                机柜{{ idx + 1 }}：
+                站点{{ idx + 1 }}：
                 <xf-select
                   style="width: 260px"
                   :list="investorsSiteDtoList[idx].weekList"
@@ -139,10 +139,10 @@
               </div>
               <div class="locker-label">
                 收益比例(%)：
-                <a-input-number v-model="shoeInvestorsLockerDto.percentage" placeholder="收益比例(%)" />
+                <a-input-number v-model="shoeInvestorsSiteDto.percentage" placeholder="收益比例(%)" />
               </div>
               <div class="locker-label">
-                <a-button type="danger" @click="onDeleteLocker(idx)" v-if="investorsLockerDtoList.length > 1">删除</a-button>
+                <a-button type="danger" @click="onDeleteSite(idx)" v-if="investorsSiteDtoList.length > 1">删除</a-button>
               </div>
             </div>
           </div>
