@@ -113,7 +113,7 @@
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
-              <template v-if="!matchState(record.goodsId,/[12]/)">
+              <template v-if="record.type == 'repair'">
                 <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.goodsId)">
                   <a>删除</a>
