@@ -98,7 +98,7 @@ export default {
     },
     type:{
       type: String,
-      default: '', // 简化小程序用户搜索的操作 'customer' 合作下单,'distributor' 推广,'investors' 投资人,'site' 站点
+      default: '', // 简化小程序用户搜索的操作 'customer' 合作下单,'distributor' 推广,'investors' 受益人,'site' 站点
     },
     // 额外数据
     additionalData:{

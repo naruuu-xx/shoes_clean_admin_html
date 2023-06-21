@@ -18,8 +18,8 @@
     <!--            <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
     <!--              <a-form-item label="身份">-->
     <!--                <a-select v-model="queryParam.level" AllClear="true">-->
-    <!--                  <a-select-option value="1" >代理人</a-select-option>-->
-    <!--                  <a-select-option value="2" >投资人</a-select-option>-->
+    <!--                  <a-select-option value="1" >受益人管理员</a-select-option>-->
+    <!--                  <a-select-option value="2" >受益人</a-select-option>-->
     <!--                </a-select>-->
     <!--              </a-form-item>-->
     <!--            </a-col>-->

@@ -16,8 +16,8 @@
           <a-col :span="24">
             <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="level">
               <a-select v-model="model.level"  >
-                  <a-select-option value = "1" >代理人</a-select-option>
-                  <a-select-option value = "2" >投资人</a-select-option>
+                  <a-select-option value = "1" >受益人管理员</a-select-option>
+                  <a-select-option value = "2" >受益人</a-select-option>
                   <a-select-option value="3">合伙人</a-select-option>
               </a-select>
             </a-form-model-item>
@@ -111,7 +111,7 @@
                 <a-input-number v-model="shoeInvestorsLockerDto.percentage" placeholder="收益比例(%)" />
               </div>
               <div class="locker-label">
-                <a-button type="danger" @click="onDeleteLocker(idx)" v-if="investorsLockerDtoList.length > 1">删除</a-button>
+                <a-button type="danger" @click="onDeleteLocker(idx)" v-if="investorsLockerDtoList.length > 0">删除</a-button>
               </div>
             </div>
           </div>
@@ -142,7 +142,7 @@
                 <a-input-number v-model="shoeInvestorsSiteDto.percentage" placeholder="收益比例(%)" />
               </div>
               <div class="locker-label">
-                <a-button type="danger" @click="onDeleteSite(idx)" v-if="investorsSiteDtoList.length > 1">删除</a-button>
+                <a-button type="danger" @click="onDeleteSite(idx)" v-if="investorsSiteDtoList.length > 0">删除</a-button>
               </div>
             </div>
           </div>
@@ -381,16 +381,17 @@
       },
       edit (record) {
         this.model = Object.assign({}, record,this.model);
-        this.investorsLockerDtoList = record.investorsLockerDtoList.map(item => ({
-          ...item,
-          lockerId: +item.lockerId,
-          weekList:[]
-        }));
         this.investorsSiteDtoList = record.investorsSiteDtoList.map(item => ({
           ...item,
           lockerId: +item.lockerId,
           weekList:[]
         }));
+        this.investorsLockerDtoList = record.investorsLockerDtoList.map(item => ({
+          ...item,
+          lockerId: +item.lockerId,
+          weekList:[]
+        }));
+
         this.model.investorsId=record.investorsId;
         this.getBank();
         this.getLockerList();
