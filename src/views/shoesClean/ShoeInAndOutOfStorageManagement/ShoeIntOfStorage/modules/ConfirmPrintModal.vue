@@ -57,6 +57,16 @@
           </a-form-model-item>
         </a-col>
       </a-row>
+      <a-row>
+        <a-col :span="24">
+          <a-form-model-item label="是否转为异常" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-radio-group v-model:value="data.isException">
+                <a-radio value="1">是</a-radio>
+                <a-radio value="2">否</a-radio>
+              </a-radio-group>
+          </a-form-model-item>
+        </a-col>
+      </a-row>
     </a-spin>
   </j-modal>
 </template>
@@ -78,7 +88,7 @@ export default {
       weekList:[],
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 2 },
+        sm: { span: 6 },
       },
       wrapperCol: {
         xs: { span: 24 },
