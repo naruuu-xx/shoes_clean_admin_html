@@ -9,6 +9,14 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="轮播类型" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="type">
+              <a-radio-group v-model:value="model.type">
+                <a-radio value="1">顶部轮播(750px*600px)</a-radio>
+                <a-radio value="2">中间轮播(690px*192px)</a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="轮播图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="image">
               <j-image-upload isMultiple  v-model="model.image" ></j-image-upload>
             </a-form-model-item>
@@ -58,7 +66,8 @@
         model:{
             status:{
               options: [1,0],
-            }
+            },
+          type:"1"
 
          },
         labelCol: {
@@ -74,6 +83,9 @@
            name: [
               { required: true, message: '请输入名称!'},
            ],
+          type: [
+            { required: true, message: '请选择轮播类型!'},
+          ],
            image: [
               { required: true, message: '请输入轮播图!'},
            ],

@@ -13,6 +13,14 @@
               <a-input-number v-model="model.weight" placeholder="请输入权重" style="width: 100%" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" v-if="model.categoryPId == 2&&model.level==2">
+            <a-form-model-item label="是否展示首页" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="isShow" >
+              <a-radio-group v-model:value="model.isShow">
+                <a-radio value="0">否</a-radio>
+                <a-radio value="1">是</a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
           <a-col :span="24">
             <a-form-model-item label="描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="describe">
               <a-input v-model="model.describe" placeholder="请输入描述" />
@@ -43,7 +51,7 @@
     },
     data () {
       return {
-        model:{
+        model:{isShow:'0'
          },
         labelCol: {
           xs: { span: 24 },
@@ -58,6 +66,9 @@
            name: [
               { required: true, message: '请输入分类名称!'},
            ],
+          isShow: [
+            { required: true, message: '请选择是否展示首页!'},
+          ],
           describe: [
             { required: true, message: '请输入描述!'},
           ],
@@ -86,10 +97,13 @@
     methods: {
       add () {
         this.edit(this.modelDefault);
+        this.model.categoryPId = 2
+        this.model.level = 2
       },
       edit (record) {
         this.model = Object.assign({}, record);
         this.visible = true;
+
 
       },
       submitForm () {
