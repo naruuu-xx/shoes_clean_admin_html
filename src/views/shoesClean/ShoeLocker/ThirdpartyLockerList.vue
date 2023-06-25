@@ -144,7 +144,7 @@ export default {
           },
         },
         {
-          title: '投资人',
+          title: '受益人',
           align: "center",
           dataIndex: 'investor',
           customRender: (text) => {
@@ -202,7 +202,7 @@ export default {
       fieldList.push({type: 'string', value: 'area', text: '区域', dictCode: ''})
       fieldList.push({type: 'string', value: 'num', text: '订单数', dictCode: ''})
       fieldList.push({type: 'string', value: 'amount', text: '订单总额', dictCode: ''})
-      fieldList.push({type: 'string', value: 'investor', text: '投资人', dictCode: ''})
+      fieldList.push({type: 'string', value: 'investor', text: '受益人', dictCode: ''})
       fieldList.push({type: 'string', value: 'startTime', text: '开始时间', dictCode: ''})
       fieldList.push({type: 'string', value: 'endTime', text: '结束时间', dictCode: ''})
       this.superFieldList = fieldList

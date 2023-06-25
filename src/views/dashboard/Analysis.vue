@@ -19,7 +19,7 @@
         <a-col :span="24">
           1.团队
           <br/>
-          &nbsp;&nbsp;蜂鞋创始团队来自阿里、字节、快手等头部互联网公司的连续创业者，人才密度高，已获得多个投资人、机构青睐。
+          &nbsp;&nbsp;蜂鞋创始团队来自阿里、字节、快手等头部互联网公司的连续创业者，人才密度高，已获得多个受益人、机构青睐。
         </a-col>
       </a-row>
       <a-row style="margin-bottom: 10px">
@@ -158,7 +158,7 @@ export default {
       if(+val.num == 0) return
       let url = ''
       switch (val.name) {
-        case '投资人':
+        case '受益人':
           url = '/shoesClean/ShoeInvestors/ShoeInvestorsWithdrawalList'
           break;
         case '配送员':

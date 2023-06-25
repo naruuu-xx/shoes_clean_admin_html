@@ -36,7 +36,7 @@ export default {
       columns: [
 
         {
-          title: '投资人',
+          title: '受益人',
           align: "center",
           dataIndex: 'name'
         },
