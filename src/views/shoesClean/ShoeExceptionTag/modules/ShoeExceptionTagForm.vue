@@ -25,7 +25,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="入库图片" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-model-item label="入库图片" :labelCol="labelCol" :wrapperCol="wrapperCol" help="请选择至少一张图片作为异常图片">
               <j-image-upload isMultiple  v-model="model.factoryImages" ></j-image-upload>
             </a-form-model-item>
           </a-col>
