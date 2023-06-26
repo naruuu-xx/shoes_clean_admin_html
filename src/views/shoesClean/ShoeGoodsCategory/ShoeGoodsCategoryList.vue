@@ -55,6 +55,7 @@
           queryKey="id"
           :columns="columns"
           :tableProps="tableProps"
+          ref="treeTable"
         >
 
           <template v-slot:action="props" >
@@ -69,7 +70,7 @@
         </j-tree-table>
 
     </div>
-    <shoe-goods-category-modal ref="modalForm" @ok="modalFormOk"></shoe-goods-category-modal>
+    <shoe-goods-category-modal ref="modalForm" @ok="modalForm"></shoe-goods-category-modal>
   </a-card>
 </template>
 
@@ -126,11 +127,11 @@
         },
         dictOptions:{},
         superFieldList:[],
+        disableMixinCreated: true
       }
     },
     created() {
     this.getSuperFieldList();
-    this.loadData(this.url.list);
     },
     computed: {
       importExcelUrl: function(){
@@ -150,6 +151,9 @@
       }
     },
     methods: {
+      modalForm() {
+        this.$refs.treeTable.loadData()
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
