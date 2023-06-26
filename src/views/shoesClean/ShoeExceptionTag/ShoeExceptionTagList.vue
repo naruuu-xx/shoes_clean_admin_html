@@ -157,8 +157,7 @@
           }
         ],
         url: {
-          list: "/shoeExceptionTag/shoeExceptionTag/list",
-          edit: "/shoeExceptionTag/shoeExceptionTag/delete",
+          list: "/shoeExceptionTag/list",
 
         },
         statusOptionList: [

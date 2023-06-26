@@ -5,27 +5,44 @@
         <a-row>
           <a-col :span="24">
             <a-form-model-item label="订单编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <h3>{{date.no}}</h3>
+              <h3>{{this.model.no}}</h3>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <h3>{{date.name}}</h3>
+              <h3>{{this.model.title}}</h3>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="商品规格" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <h3>{{date.skuTitle}}</h3>
+              <h3>{{this.model.skuTitle}}</h3>
             </a-form-model-item>
           </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="订单图片" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-image-upload isMultiple  v-model="model.images" ></j-image-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="入库图片" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-image-upload isMultiple  v-model="model.factoryImages" ></j-image-upload>
+            </a-form-model-item>
+          </a-col>
+
+
           <a-col :span="24">
             <a-form-model-item label="处理方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="dealType">
-              <j-date placeholder="请选择处理时间" v-model="model.dealType"  style="width: 100%" />
+              <a-radio-group v-model:value="model.dealType">
+                <a-radio value="1">转异常</a-radio>
+                <a-radio value="2">继续洗</a-radio>
+              </a-radio-group>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="状态：0=未处理，1=已处理（订单状态非洗护中且未处理则标为已失效）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-              <a-input-number v-model="model.status" placeholder="请输入状态：0=未处理，1=已处理（订单状态非洗护中且未处理则标为已失效）" style="width: 100%" />
+
+            <a-form-model-item :label="this.model.dealType==2?'备注':'异常描述'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
+              <a-input placeholder="请输入订单备注" v-model="model.note"  />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -66,22 +83,17 @@
         },
         confirmLoading: false,
         validatorRules: {
-           exceptionTagId: [
-              { required: true, message: '请输入异常id!'},
-           ],
-           orderId: [
-              { required: true, message: '请输入订单id!'},
-           ],
+
            dealType: [
-              { required: true, message: '请输入处理方式：1=转异常，2=继续洗!'},
+              { required: true, message: '请选择处理方式!'},
            ],
-           status: [
-              { required: true, message: '请输入状态：0=未处理，1=已处理（订单状态非洗护中且未处理则标为已失效）!'},
+           note: [
+              { required: true, message: '请输入!'},
            ],
         },
         url: {
-          add: "/shoeExceptionTag/shoeExceptionTag/add",
-          edit: "/shoeExceptionTag/shoeExceptionTag/edit",
+          add: "/shoeExceptionTag/add",
+          edit: "/shoeExceptionTag/edit",
           queryById: "/shoeExceptionTag/shoeExceptionTag/queryById"
         }
       }
@@ -100,8 +112,23 @@
         this.edit(this.modelDefault);
       },
       edit (record) {
-        this.model = Object.assign({}, record);
+        this.model = Object.assign({
+          images:[],
+          factoryImages:[]
+        }, record);
+        this.model.dealType="1"
+        this.getImages(record);
         this.visible = true;
+      },
+      getImages(record){
+        httpAction("/shoeExceptionTag/getImages?no="+record.no,null,"get").then((res)=>{
+          if (res.success){
+            this.model.images=res.result.orderList
+            this.model.factoryImages=res.result.factoryList
+            console.log("111",this.model)
+
+          }
+        })
       },
       submitForm () {
         const that = this;
@@ -111,7 +138,7 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            if(!this.model.id){
+            if(!this.model.exceptionTagId){
               httpurl+=this.url.add;
               method = 'post';
             }else{
