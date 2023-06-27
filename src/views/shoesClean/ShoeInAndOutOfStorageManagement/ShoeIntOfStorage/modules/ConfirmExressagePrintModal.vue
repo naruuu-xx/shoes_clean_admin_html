@@ -51,6 +51,16 @@
             </span>
           </a-col>
         </a-row>
+        <a-row>
+          <a-col :span="24">
+            <span class="content">是否转为异常：
+              <a-radio-group v-model:value="item.isException">
+                <a-radio value="1">是</a-radio>
+                <a-radio value="2">否</a-radio>
+              </a-radio-group>
+              </span>
+          </a-col>
+        </a-row>
 
         <a-divider v-if="dataList.length > idx + 1 "/>
       </div>
@@ -130,7 +140,7 @@ export default {
           this.$message.warning(res.message)
         }
       })
-      this.dataList = record.map(item => Object.assign({},item,{selectedNote: ""}))
+      this.dataList = record.map(item => Object.assign({},item,{selectedNote: "",isException: "2"}))
       //获取备注项列表
       httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
         this.noteOptions = res.result.records.map((item,index,arr)=>{
@@ -143,7 +153,7 @@ export default {
       this.visible = false;
     },
     handleOk(){
-      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId,factoryInImages}) => ({orderId, selectedNote, sortNum,brandId,factoryInImages}))
+      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId,factoryInImages,isException}) => ({orderId, selectedNote, sortNum,brandId,factoryInImages,isException}))
       this.handleInOfStorage(dataList);
     },
     handleInOfStorage(dataList){
