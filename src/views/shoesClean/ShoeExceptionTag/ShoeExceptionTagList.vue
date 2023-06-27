@@ -75,13 +75,15 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)"  v-if="record.status=='未处理'">处理</a>
-        <a @click="handleEdit(record)" v-if="record.status=='已处理'">详情</a>
+        <a @click="handleDetail(record)" v-if="record.status=='已处理'">详情</a>
         </span>
 
       </a-table>
     </div>
 
     <shoe-exception-tag-modal ref="modalForm" @ok="modalFormOk"></shoe-exception-tag-modal>
+    <showExceptionTagDetail ref="showExceptionTagDetail" @ok="modalFormOk"></showExceptionTagDetail>
+    
   </a-card>
 </template>
 
@@ -91,12 +93,14 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import ShoeExceptionTagModal from './modules/ShoeExceptionTagModal'
+  import showExceptionTagDetail from './modules/showExceptionTagDetail'
 
   export default {
     name: 'ShoeExceptionTagList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      ShoeExceptionTagModal
+      ShoeExceptionTagModal,
+      showExceptionTagDetail
     },
     data () {
       return {
@@ -177,6 +181,9 @@
       },
     },
     methods: {
+      handleDetail(record) {
+        this.$refs.showExceptionTagDetail.show(record)
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
