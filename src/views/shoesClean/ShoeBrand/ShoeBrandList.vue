@@ -94,11 +94,6 @@ export default {
           dataIndex: 'name'
         },
         {
-          title: '数量',
-          align: "center",
-          dataIndex: 'num'
-        },
-        {
           title: '权重',
           align: "center",
           dataIndex: 'weight'

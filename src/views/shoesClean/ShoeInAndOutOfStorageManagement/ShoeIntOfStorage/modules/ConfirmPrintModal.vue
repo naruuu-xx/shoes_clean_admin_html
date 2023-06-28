@@ -26,35 +26,32 @@
           <span class="content">附加项：{{data.name}}</span>
         </a-col>
       </a-row>
-      <a-row>
+      <a-row style="margin-bottom: 30px">
         <a-col :span="24">
-          <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
-<!--            <a-select-->
-<!--              v-model:value="selectedNote"-->
-<!--              mode="multiple"-->
-<!--              style="width: 100%;"-->
-<!--              placeholder="请选择"-->
-<!--              :options="noteOptions"-->
-<!--              :z-index="2000"-->
-<!--            >-->
-<!--            </a-select>-->
-            <a-input v-model.trim="data.note" placeholder="请输入备注"/>
-          </a-form-model-item>
+          <div class="content">备注：<a-input style="width: 240px;" v-model.trim="data.note" placeholder="请输入备注"/></div>
         </a-col>
       </a-row>
-      <a-row>
+      <a-row style="margin-bottom: 30px">
         <a-col :span="24">
-          <a-form-model-item label="品牌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="brandId">
-
-              <XfSelect
+          <div class="content">品牌：<XfSelect
                 :list="weekList"
                 @change="checkedSelect"
                 @changeList="changeSelect"
                 v-model="data.brandId"
                 :url='`/shoeBrand/list`'
               >
-              </XfSelect>
-          </a-form-model-item>
+              </XfSelect></div>
+        </a-col>
+      </a-row>
+      <a-row style="margin-bottom: 30px">
+        <a-col :span="24">
+          <div class="content">
+            是否转为异常：
+            <a-radio-group v-model="data.isException">
+                <a-radio value="1">是</a-radio>
+                <a-radio value="2">否</a-radio>
+              </a-radio-group>
+          </div>
         </a-col>
       </a-row>
     </a-spin>
@@ -76,18 +73,9 @@ export default {
   data() {
     return {
       weekList:[],
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 2 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
       visible: false,
       title: '',
       bagCode: "",
-
       data: {},
       imageList: [],
       showImageModal: false,
@@ -114,14 +102,10 @@ export default {
       httpAction("/shoeFactoryWasher/getWasher","", "get").then((res) =>{
         if(!res.success){
           this.$message.warning(res.message)
-
         }
       })
       this.visible = true;
-
-      this.data = record;
-
-
+      this.data = Object.assign({},record,{isException:"2"})
     },
     handleCancel(){
       this.visible = false;
@@ -132,13 +116,14 @@ export default {
 
     },
     handleInOfStorage(){
+      
+      if (!this.data.brandId){
+        return this.$message.warning("请选择品牌");
+      }
+      if (this.data.isException == '1' && !this.data.factoryInImages.length){
+        return this.$message.warning("请拍摄入库照片！");
+      }
       this.confirmLoading = true;
-      if (this.data.brandId==null||this.data.brandId==''){
-        this.$message.warning("请选择品牌");
-        this.confirmLoading = false;
-        return;
-      }else {
-
         //处理入库
         this.loadingBtn = true;
         postAction("/ShoeFactoryOrder/shoeFactoryOrder/shoeInOfStorage", this.data).then((res) => {
@@ -153,7 +138,6 @@ export default {
           this.loadingBtn = false;
           this.confirmLoading = false;
         })
-      }
     },
     downWaterMark(no) {
       let data = {

@@ -28,7 +28,7 @@
             <span class="content">附加项：{{item.name}}</span>
           </a-col>
         </a-row>
-        <a-row>
+        <a-row style="margin-bottom: 30px">
           <a-col :span="24">
             <span class="content">
               备注：
@@ -36,7 +36,7 @@
             </span>
           </a-col>
         </a-row>
-        <a-row>
+        <a-row style="margin-bottom: 30px">
           <a-col :span="24">
             <span class="content">
               品牌：
@@ -49,6 +49,16 @@
               >
               </XfSelect>
             </span>
+          </a-col>
+        </a-row>
+        <a-row style="margin-bottom: 30px">
+          <a-col :span="24">
+            <span class="content">是否转为异常：
+              <a-radio-group v-model="item.isException">
+                <a-radio value="1">是</a-radio>
+                <a-radio value="2">否</a-radio>
+              </a-radio-group>
+              </span>
           </a-col>
         </a-row>
 
@@ -130,7 +140,7 @@ export default {
           this.$message.warning(res.message)
         }
       })
-      this.dataList = record.map(item => Object.assign({},item,{selectedNote: ""}))
+      this.dataList = record.map(item => Object.assign({},item,{selectedNote: "",isException: "2"}))
       //获取备注项列表
       httpAction("/ShoeNote/shoeNote/queryList", null, "GET").then((res) => {
         this.noteOptions = res.result.records.map((item,index,arr)=>{
@@ -143,13 +153,16 @@ export default {
       this.visible = false;
     },
     handleOk(){
-      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId,factoryInImages}) => ({orderId, selectedNote, sortNum,brandId,factoryInImages}))
+      let dataList = this.dataList.map(({orderId, selectedNote, sortNum,brandId,factoryInImages,isException}) => ({orderId, selectedNote, sortNum,brandId,factoryInImages,isException}))
       this.handleInOfStorage(dataList);
     },
     handleInOfStorage(dataList){
-      if(dataList[0].brandId==null||dataList[0].brandId==''){
+      if(dataList.some(item => !item.brandId)){
         this.$message.warning("请选择品牌")
         return;
+      }
+      if(!dataList.every(item => item.isException == 2 || item.factoryInImages.length)) {
+        return this.$message.warning("请拍摄入库照片！")
       }
 
       this.confirmLoading = true;
