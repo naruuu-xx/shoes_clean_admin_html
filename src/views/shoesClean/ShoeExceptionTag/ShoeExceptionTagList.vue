@@ -143,10 +143,7 @@
           {
             title:'处理时间',
             align:"center",
-            dataIndex: 'dealTime',
-            customRender:function (text) {
-              return !text?"-":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'dealTime'
           },
           {
             title: '操作',
