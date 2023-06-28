@@ -171,7 +171,7 @@ export default {
             this.factoryInImages = res.result.factoryInImages || [];
             this.shoeOrderInfo = true;
             //清空输入框并重新聚焦
-            
+
             this.no = "";
             this.$nextTick(() => {
               this.$refs.autoInput.focus();
@@ -205,7 +205,7 @@ export default {
 
               //清空输入框并重新聚焦
               this.no = "";
-              
+
               this.$nextTick(() => {
                 this.$refs.autoInput.focus();
               })
@@ -277,7 +277,7 @@ export default {
       }).finally(res => {
         this.confirmLoading = false
       })
-      
+
     },
     emptyNo() {
       //清空输入框内容
@@ -384,7 +384,7 @@ export default {
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("出库打印热敏纸" + timestamp);
         LODOP.SET_PRINTER_INDEX(printerName);
-        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "53mm", "");
+        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "50mm", "");
         LODOP.ADD_PRINT_PDF(0, 0, "100%", "100%", file);
 
         if (process.env.NODE_ENV === 'production') {

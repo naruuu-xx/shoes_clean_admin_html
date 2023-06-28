@@ -292,7 +292,7 @@ export default {
       if(+val.num == 0) return
       let url = ''
       switch (val.name) {
-        case '投资人':
+        case '受益人':
           url = '/shoesClean/ShoeInvestors/ShoeInvestorsWithdrawalList'
           break;
         case '配送员':

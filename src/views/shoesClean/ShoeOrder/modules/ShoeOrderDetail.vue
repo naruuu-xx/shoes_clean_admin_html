@@ -10,7 +10,7 @@
     wrapClassName="full-modal"
   >
     <div class="diyDiv">
-      <a-descriptions title="商品信息" layout="vertical" bordered :column="5" size="small" style="margin-bottom: 20px">
+      <a-descriptions title="商品信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="商品">
           <img alt="example" style="width: 120px" :src="data.image" @click="previewModel" />
           {{ data.title }}
@@ -21,13 +21,14 @@
         <a-descriptions-item label="附加服务">{{ data.additionalName || '无' }}</a-descriptions-item>
         <a-descriptions-item label="数量"> 1 </a-descriptions-item>
         <a-descriptions-item label="商品金额(元)">{{ data.goodsPrice }}</a-descriptions-item>
+        <a-descriptions-item label="秒杀价(元)" v-if="1 === OrderDetail.isSeckill" >{{ OrderDetail.seckillPrice }}</a-descriptions-item>
       </a-descriptions>
 
       <a-descriptions title="订单信息" layout="vertical" bordered :column="6" size="small" style="margin-bottom: 20px">
         <a-descriptions-item label="订单编号"> {{ data.no }}</a-descriptions-item>
         <a-descriptions-item label="支付交易号"> {{ data.outTradeNo }}</a-descriptions-item>
         <a-descriptions-item label="订单金额(元)">
-          {{(data.goodsPrice + data.additionalPrice + data.originalCourierPrice).toFixed(2)}}
+          {{ OrderDetail.orderPrice }}
         </a-descriptions-item>
         <a-descriptions-item label="附加金额(元)"> {{ data.additionalPrice }} </a-descriptions-item>
         <a-descriptions-item :label="('机柜配送' === data.type || '站点配送' === data.type) ? '配送费(元)' : '运费(元)'">
@@ -39,6 +40,7 @@
         <!-- <a-descriptions-item v-if="('机柜配送' === data.type || '站点配送' === data.type && data.courierReduce) || ('快递上门' === data.type && data.expressageReduce) " :label="'快递上门' === data.type ? '快递费减免' : '配送费减免'"> {{'快递上门' === data.type ? data.expressageReduce : data.courierReduce }} </a-descriptions-item> -->
         <a-descriptions-item label="优惠券名称">{{ OrderDetail.couponName }} </a-descriptions-item>
         <a-descriptions-item label="次卡名称">{{ OrderDetail.timecardName }} </a-descriptions-item>
+        <a-descriptions-item label="参与活动">{{ activitiesText }} </a-descriptions-item>
         <a-descriptions-item label="订单状态"> {{ data.status }} </a-descriptions-item>
         <a-descriptions-item label="下单时间"> {{ data.createTime }} </a-descriptions-item>
         <a-descriptions-item label="机柜名称-格子数" v-if=" ( '快递上门' !== data.type && '站点自提' !== data.type && '站点配送' !== data.type ) && statusInt > 0 && statusInt < 5">
@@ -93,11 +95,11 @@
         <a-descriptions-item label="昵称"> {{ data.nickname }} </a-descriptions-item>
         <a-descriptions-item label="绑定手机"> {{ data.wxPhone }} </a-descriptions-item>
         <a-descriptions-item label="订单类型"> {{ data.type }} </a-descriptions-item>
-        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type">
+        <template v-if="'机柜自提' === data.type || '机柜配送' === data.type || '站点自提' === data.type || '站点配送' === data.type ">
           <a-descriptions-item label="用户姓名"> {{ data.name }} </a-descriptions-item>
           <a-descriptions-item label="手机号码"> {{ data.phone }} </a-descriptions-item>
         </template>
-        <template v-if="'机柜配送' === data.type">
+        <template v-if="'机柜配送' === data.type || '站点配送' === data.type">
           <a-descriptions-item label="预定时间"> {{ data.expect }} </a-descriptions-item>
           <a-descriptions-item label="用户地址"> {{ userAddress }} </a-descriptions-item>
           <a-descriptions-item label="门牌号"> {{ door }} </a-descriptions-item>
@@ -290,6 +292,32 @@ export default {
     }
   },
   created() {},
+  computed:{
+    activitiesText() {
+      let p = ''
+      if(this.OrderDetail.courierReduceActivity) {
+        if(['站点配送','机柜配送'].includes(this.data.type)) {
+          p = '配送费减免'
+        }
+        if(this.data.type == '快递上门') {
+          p = '运费减免'
+        }
+      }
+      if(this.OrderDetail.isSeckill){
+        return '秒杀订单'
+      }
+      if (this.OrderDetail.singleGoodsReduceActivity && this.OrderDetail.courierReduceActivity) {
+        return `产品满减、${p}`
+      }
+      if(this.OrderDetail.singleGoodsReduceActivity) {
+        return `产品满减`
+      }
+      if(this.OrderDetail.courierReduceActivity) {
+        return p
+      }
+      return '——'
+    }
+  },
   methods: {
     show(record, orderStatus) {
       //处理数据

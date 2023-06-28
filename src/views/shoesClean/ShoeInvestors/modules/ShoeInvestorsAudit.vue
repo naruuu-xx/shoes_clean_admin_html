@@ -22,7 +22,7 @@
       <j-dict-select-tag type="radio" v-model="model.status" dictCode="withdrawal_audit"/>
     </h2>
 
-    <h2 >备注：
+    <h2 >{{model.status == 0 ? '备注' : '拒绝理由'}}：
       <a-textarea v-model="model.note" rows="4"/>
     </h2>
 

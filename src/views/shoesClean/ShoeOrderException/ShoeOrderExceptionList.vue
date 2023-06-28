@@ -38,6 +38,11 @@
         </a-col>
 
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="创建时间">
+              <a-range-picker v-model="queryParam.createTime" />
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -63,11 +68,18 @@
 <!--        </a-menu>-->
 <!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
 <!--      </a-dropdown>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('售后订单列表')" v-if="selectedRowKeys.length > 0">
+        导出选中订单
+      </a-button>
     </div>
 
     <!-- table区域-begin -->
     <div>
-
+      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a
+        style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+      </div>
       <a-table
         ref="table"
         size="middle"
@@ -78,6 +90,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -200,6 +213,11 @@
             }
           },
           {
+            title:'创建时间',
+            align:"center",
+            dataIndex: 'createTime',
+          },
+          {
             title:'处理完成时间',
             align:"center",
             dataIndex: 'dealFinishTime',
@@ -222,6 +240,7 @@
         ],
         url: {
           list: "/ShoeOrder/shoeOrder/getShoeOrderExceptionList",
+          exportXlsUrl: "/ShoeOrder/shoeOrder/exportXlsException"
         },
         dictOptions:{},
         superFieldList:[],
@@ -240,11 +259,15 @@
     methods: {
       setQueryParams () {
         let [startTime, endTime] = this.queryParam.dealFinishTime || ['', ''];
+        let [startCreateTime, endCreateTime] = this.queryParam.createTime || ['', ''];
 
         startTime = startTime ? moment(startTime).format('YYYY-MM-DD') : "";
         endTime = endTime ? moment(endTime).format('YYYY-MM-DD') : "";
 
-        return {startTime, endTime}
+        startCreateTime = startCreateTime ? moment(startCreateTime).format('YYYY-MM-DD') : "";
+        endCreateTime = endCreateTime ? moment(endCreateTime).format('YYYY-MM-DD') : "";
+
+        return {startTime, endTime, startCreateTime, endCreateTime}
       },
       initDictConfig(){
       },

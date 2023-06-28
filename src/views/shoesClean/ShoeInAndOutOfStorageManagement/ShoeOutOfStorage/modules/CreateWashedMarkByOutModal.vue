@@ -73,13 +73,13 @@ export default {
       let data = {
         "no": this.no
       }
-      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/createWashedMarkByOut", data, "post").then((res) => {
-        if (!res) {
+      httpAction("/ShoeFactoryOrder/shoeFactoryOrder/reCreateWashedMarkByOut", data, "post").then((res) => {
+        if (res.code != 200) {
           this.$message.warning(res.message)
-          return
+        } else {
+          const file = res.result;
+          this.printPic(file, "热敏纸")
         }
-        const file = res;
-        this.printPic(file, "热敏纸")
 
         this.confirmLoading = false;
       })
@@ -96,7 +96,7 @@ export default {
         let timestamp = parseInt(new Date().getTime() / 1000 + '');
         LODOP.PRINT_INIT("出库打印热敏纸" + timestamp);
         LODOP.SET_PRINTER_INDEX(printerName);
-        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "53mm", "");
+        LODOP.SET_PRINT_PAGESIZE(1, "49mm", "50mm", "");
         LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
 
         if (process.env.NODE_ENV === 'production') {

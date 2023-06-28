@@ -1,217 +1,208 @@
 <template>
   <div class="page-header-index-wide">
-    <a-row :gutter="24">
-      <a-col :sm="24" :md="24" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="box">
-          <div class="box-title">入库统计</div>
-          <div class="box-main">
-            <div class="box-item" v-for="(item,idx) in warehousingStatistics" :key="idx">
-              <div class="box-item-title">{{ item.name }}</div>
-              <div class="box-item-value">{{ item.num }}</div>
-            </div>
-          </div>
-        </div>
-      </a-col>
-      <a-col :sm="24" :md="24" :xl="12" :style="{ marginBottom: '24px' }">
-        <div class="box">
-          <div class="box-title">出库统计</div>
-          <div class="box-main">
-            <div class="box-item" v-for="(item,idx) in outboundStatistics" :key="idx">
-              <div class="box-item-title">{{ item.name }}</div>
-              <div class="box-item-value">{{ item.num }}</div>
-            </div>
-          </div>
-        </div>
-      </a-col>
-    </a-row>
-
-    <a-row :gutter="24">
-      <a-col :sm="24" :md="24" :xl="24" :style="{ marginBottom: '24px' }">
-        <div class="box">
-          <div class="box-title">工厂鞋数</div>
-          <div class="box-main">
-            <div class="box-item-i" v-for="(item,idx) in factoryShoes" :key="idx">
-              <img class="box-item-i-img" :src="item.icon" />
-              <div class="box-item-i-main">
-                <div class="box-item-i-main-title">{{ item.name }}</div>
-                <div class="box-item-i-main-value" :style="{color:item.color}">{{ item.num }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </a-col>
-    </a-row>
 
     <a-card :loading="loading" :bordered="false" :body-style="{ padding: '0' }">
       <div class="salesCard">
         <div class="tab">
           <div class="tab-left title">
-            入库鞋数
+            时间筛选
           </div>
           <div class="tab-right">
             <xf-date-filter @change="changeFilterDate"></xf-date-filter>
-            
           </div>
         </div>
         <a-row>
-          <div class="tabbar">
-            <div class="tabbar-item" v-for="(item,idx) in inOfStorageCount" :key="idx">
-              <div class="tabbar-item-title">{{ item.platformName }}</div>
-              <div class="tabbar-item-value">{{ item.count }}</div>
-            </div>
-          </div>
+          <a-spin :spinning="nSpinning">
+           <XfDataTypeFilter :filterList="numberAndSale" @change="changeNumberAndSale"></XfDataTypeFilter>
+            <EchartsLine :dataSource="numberAndSaleDataSource" elementId="n"></EchartsLine>
+          </a-spin>
         </a-row>
-        <div class="title">
-          出库鞋数
-        </div>
-        <a-row>
-          <div class="tabbar">
-            <div class="tabbar-item" v-for="(item,idx) in outOfStorageCount" :key="idx">
-              <div class="tabbar-item-title">{{ item.platformName }}</div>
-              <div class="tabbar-item-value">{{ item.count }}</div>
-            </div>
-          </div>
-        </a-row>
-        <a-row>
-          <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
-            <a-spin :spinning="spinning">
-              <xfLine title="入库数折线图" :dataSource="inHistogram" alias="入库数" color="#48CAF0"></xfLine>
-            </a-spin>
 
-          </a-col>
-          <a-col :xl="12" :lg="12" :md="24" :sm="24" :xs="24">
-            <a-spin :spinning="spinning">
-              <xfLine title="出库数折线图" :dataSource="outHistogram" alias="出库数" color="#FFBB00"></xfLine>
-            </a-spin>
-          </a-col>
+        <a-row>
+          <a-spin :spinning="pSpinning">
+           <XfDataTypeFilter :filterList="PVFilterList" @change="changePV"></XfDataTypeFilter>
+            <EchartsLine :dataSource="PVDataSource" elementId="p"></EchartsLine>
+          </a-spin>
+        </a-row>
+
+        <a-row>
+          <a-spin :spinning="vSpinning">
+           <XfDataTypeFilter :filterList="visitorCountFilterList" @change="changeVisitorCount"></XfDataTypeFilter>
+            <EchartsLine :dataSource="visitorCountDataSource" elementId="v"></EchartsLine>
+          </a-spin>
         </a-row>
       </div>
     </a-card>
-    <BrandStatistics :pieData="pieData" :queryForm="queryForm" :spinningPie="spinning"></BrandStatistics>
   </div>
 </template>
 
 <script>
-import Bar from './components/Bar'
-import Pie from './components/Pie'
+import XfSelect from '@/components/Xf/XfSelect'
 import xfLine from './components/Line'
-import BrandStatistics from './components/BrandStatistics'
+import DLine from './components/DLine'
+import EchartsLine from './components/EchartsLine'
+import XfDataTypeFilter from './components/XfDataTypeFilter'
 import xfDateFilter from './components/xfDateFilter'
 import { getAction } from '@/api/manage'
 export default {
   name: 'ShoeAnalysis',
   components: {
-    Bar,
-    Pie,
-    BrandStatistics,
     xfDateFilter,
-    xfLine
+    xfLine,
+    DLine,
+    XfSelect,
+    XfDataTypeFilter,
+    EchartsLine
   },
   data() {
     return {
-     xljgData: [],
-      xljgFields:['y'],
-      aliases:[{field:'y',alias:'入库数'}],
-      loading: false,
-      center: null,
-      inHistogram:[],
-      outHistogram:[],
-      visitInfo: [],
-      indicator: <a-icon type="loading" style="font-size: 24px" spin />,
-      rankingList:[], // 排行的列表
-      barQuery: {
-        type: {
-          name: '订单数',
-          value: 'order',
+      numberAndSale:[{
+          label:'订单数折线图',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'number'
         },
-        time: {
-          name: '今日',
-          value: 'day',
+        {
+          label:'销售额折线图',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'sale'
         },
+        {
+          label:'单产品订单数',
+          value:[],
+          type:'select',
+          selected: false,
+          dataType: 'number'
+        },
+        {
+          label:'单产品销售额',
+          value:[],
+          type:'select',
+          selected: false,
+          dataType: 'sale'
+        },
+      ],
+      PVFilterList:[
+        {
+          label:'会场访问量',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'exhibition'
+        },
+        {
+          label:'产品总访问量',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'detail'
+        },
+        {
+          label:'单产品访问量',
+          value:[],
+          type:'select',
+          selected: false,
+          dataType: 'detail'
+        },
+      ],
+      visitorCountFilterList:[
+        {
+          label:'会场访问人数',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'exhibition'
+        },
+        {
+          label:'产品总访问人数',
+          value:[],
+          type:'',
+          selected: false,
+          dataType: 'detail'
+        },
+        {
+          label:'单产品访问人数',
+          value:[],
+          type:'select',
+          selected: false,
+          dataType: 'detail'
+        },
+      ],
+      numberAndSaleData:{
+        dataType: 'number',
+        setList:'[]'
       },
-      spinning: false,
-      pieData:[],
-      factoryShoes:[
-        {
-          name:'总鞋数',
-          icon:require('@/assets/data-shoe.png'),
-          color:'#39C9C9',
-          num:0
-        },
-        {
-          name:'机柜',
-          icon:require('@/assets/data-cabinet.png'),
-          color:'#FFB673',
-          num:0
-        },
-        {
-          name:'站点',
-          icon:require('@/assets/data-site.png'),
-          color:'#FC456C',
-          num:0
-        },
-        {
-          name:'快递',
-          icon:require('@/assets/data-express.png'),
-          color:'#48CAF0',
-          num:0
-        },
-        {
-          name:'其他',
-          icon:require('@/assets/data-else.png'),
-          color:'#21C3BC',
-          num:0
-        },
-      ],
-      // 入库统计
-      warehousingStatistics:[
-        {
-          name:'总入库数(单)',
-          num:0
-        },
-        {
-          name:'本月入库数(单)',
-          num:0
-        },
-        {
-          name:'今日入库数(单)',
-          num:0
-        },
-      ],
-      // 出库统计
-      outboundStatistics:[
-        {
-          name:'总出库数(单)',
-          num:0
-        },
-        {
-          name:'本月出库数(单)',
-          num:0
-        },
-        {
-          name:'今日出库数(单)',
-          num:0
-        },
-      ],
-      inOfStorageCount:[],
-      outOfStorageCount:[],
+      PVData:{
+        dataType: 'exhibition',
+        setList:'[]'
+      },
+      visitorCountData:{
+        dataType: 'exhibition',
+        setList:'[]'
+      },
+      loading: false,
+      indicator: <a-icon type="loading" style="font-size: 24px" spin />,
+      nSpinning: false,
+      pSpinning: false,
+      vSpinning: false,
       queryForm:{
         dateType: 'today',
         startTime: '',
         endTime: '',
         selectType: 'day'
+      },
+      dataSource:[
+        { y: '1', k: 7.0, London: 7.0 },
+        { y: '2', k: 6.9, London: 6.9 },
+        { y: '3', k: 9.5, London: 9.5 },
+        { y: '4', k: 14.5, London: 8.5 },
+        { y: '5', k: 7, London: 11.9 },
+        { y: '6', k: 21.5, London: 15.2 },
+        { y: '7', k: 25.2, London: 17.0 },
+        { y: '8', k: 26.5, London: 16.6 },
+        { y: '9', k: 23.3, London: 14.2 },
+        { y: '10', k: 18.3, London: 10.3 },
+        { y: '11', k: 13.9, London: 6.6 },
+        { y: '12', k: 9.6, London: 4.8 },
+      ],
+      productOrderIds:[],
+      numberAndSaleDataSource:{
+        x:[],
+        y:[]
+      },
+      PVDataSource:{
+        x:[],
+        y:[]
+      },
+      visitorCountDataSource:{
+        x:[],
+        y:[]
       }
     }
   },
   created() {
-    this.factoryIndexUp()
-    this.getIndexDown()
+    this.getAll()
   },
+  
   methods: {
-    
+    changeNumberAndSale(val) {
+      this.numberAndSaleData = val
+      this.statistics()
+    },
+    changePV(val) {
+      this.PVData = val
+      this.getPv()
+    },
+    changeVisitorCount(val) {
+      this.visitorCountData = val
+      this.getUv()
+    },
     changeFilterDate(val) {
       this.queryForm = val
-      this.getIndexDown()
+      this.getAll()
     },
     // 点击
     onClickw(status,val) {
@@ -230,41 +221,44 @@ export default {
       }
       this.$router.push(`${url}?status=${status}`)
     },
-    //
-    factoryIndexUp() {
-      getAction('/factoryIndexUp').then(({success,result}) => {
-        if(success) {
-          this.warehousingStatistics[0].num = result.totalInOfStorage
-          this.warehousingStatistics[1].num = result.monthInOfStorage
-          this.warehousingStatistics[2].num = result.todayInOfStorage
-          this.outboundStatistics[0].num = result.totalOutOfStorage
-          this.outboundStatistics[1].num = result.monthOutOfStorage
-          this.outboundStatistics[2].num = result.todayOutOfStorage
-          this.factoryShoes[0].num = result.totalRetention
-          this.factoryShoes[1].num = result.lockerRetention
-          this.factoryShoes[2].num = result.siteRetention
-          this.factoryShoes[3].num = result.expressageRetention
-          this.factoryShoes[4].num = result.otherRetention
-        }
-      })
-    },
-    getIndexDown() {
-      this.spinning = true
-      getAction('/factoryIndexDown',this.queryForm).then((res) => {
+    // 订单数/销售额
+    statistics() {
+      this.nSpinning
+      getAction('/ShoeSeckill/shoeSeckill/statistics',{...this.queryForm,...this.numberAndSaleData}).then((res) => {
         if(res.success == false) return
-        this.inOfStorageCount = res.result.inOfStorageCount
-        this.outOfStorageCount = res.result.outOfStorageCount
-        this.inHistogram = res.result.inHistogram || []
-        this.outHistogram = res.result.outHistogram || []
-        this.pieData = res.result.brandPieChart || []
-        this.xljgData = res.result.inHistogram.map(({x:type,y}) => ({
-          type,y
-        }))
-
+        this.numberAndSaleDataSource = res.result
       }).finally(s => {
-        this.spinning = false
+        this.nSpinning = false
         this.loading = false
       })
+    },
+    // 浏览量
+    getPv() {
+      this.pSpinning = true
+      getAction('/ShoeSeckill/shoeSeckill/pv',{...this.queryForm,...this.PVData}).then((res) => {
+        if(res.success == false) return
+        this.PVDataSource = res.result
+      }).finally(s => {
+        this.pSpinning = false
+        this.loading = false
+      })
+    },
+    // 浏览量
+    getUv() {
+      this.vSpinning = true
+      getAction('/ShoeSeckill/shoeSeckill/uv',{...this.queryForm,...this.visitorCountData}).then((res) => {
+        if(res.success == false) return
+        this.visitorCountDataSource = res.result
+      }).finally(s => {
+        this.vSpinning = false
+        this.loading = false
+      })
+    },
+    // 获取所有数据
+    getAll() {
+      this.statistics()
+      this.getPv()
+      this.getUv()
     }
 
   },

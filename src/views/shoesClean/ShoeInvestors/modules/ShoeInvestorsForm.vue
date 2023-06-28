@@ -16,8 +16,8 @@
           <a-col :span="24">
             <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="level">
               <a-select v-model="model.level"  >
-                  <a-select-option value = "1" >代理人</a-select-option>
-                  <a-select-option value = "2" >投资人</a-select-option>
+                  <a-select-option value = "1" >受益人管理员</a-select-option>
+                  <a-select-option value = "2" >受益人</a-select-option>
                   <a-select-option value="3">合伙人</a-select-option>
               </a-select>
             </a-form-model-item>
@@ -87,7 +87,7 @@
 <!--            </a-form-model-item>-->
 <!--          </a-col>-->
           <a-col :span="24">
-            <a-form-model-item label="绑定机柜" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="investorsLockerDtoList" required>
+            <a-form-model-item label="绑定机柜" :labelCol="labelCol" :wrapperCol="wrapperCol"  required>
               <a-button type="primary" @click="onAddLocker">新增</a-button>
             </a-form-model-item>
           </a-col>
@@ -95,12 +95,6 @@
             <div class="locker">
               <div class="locker-label">
                 机柜{{ idx + 1 }}：
-                <!-- <a-select style="width: 120px" v-model="investorsLockerDtoList[idx].lockerId">
-                  <a-select-option :title="item.name" :value="item.lockerId" v-for="(item, index) in lockerList" :key="index"
-                                   :disabled="disabledLocker(item.lockerId)">
-                    {{ item.name }}
-                  </a-select-option>
-                </a-select> -->
                 <xf-select
                   style="width: 260px"
                   :list="investorsLockerDtoList[idx].weekList"
@@ -117,10 +111,42 @@
                 <a-input-number v-model="shoeInvestorsLockerDto.percentage" placeholder="收益比例(%)" />
               </div>
               <div class="locker-label">
-                <a-button type="danger" @click="onDeleteLocker(idx)" v-if="investorsLockerDtoList.length > 1">删除</a-button>
+                <a-button type="danger" @click="onDeleteLocker(idx)" v-if="investorsLockerDtoList.length > 0">删除</a-button>
               </div>
             </div>
           </div>
+
+
+          <a-col :span="24">
+            <a-form-model-item label="绑定站点" :labelCol="labelCol" :wrapperCol="wrapperCol"  required>
+              <a-button type="primary" @click="onAddSite">新增</a-button>
+            </a-form-model-item>
+          </a-col>
+          <div v-for="(shoeInvestorsSiteDto, idx) in investorsSiteDtoList" :key="`locker${idx}`">
+            <div class="locker">
+              <div class="locker-label">
+                站点{{ idx + 1 }}：
+                <xf-select
+                  style="width: 260px"
+                  :list="investorsSiteDtoList[idx].weekList"
+                  @change="checkedSelectSite"
+                  @changeList="changeSelectSite($event,idx)"
+                  v-model="investorsSiteDtoList[idx].lockerId"
+                  :url='`/shoes/shoeLogistics/lockerOrSiteList?type=site`'
+                  :rawList="[{label: investorsSiteDtoList[idx].name,value: investorsSiteDtoList[idx].lockerId,disabled:true}]"
+                >
+                </xf-select>
+              </div>
+              <div class="locker-label">
+                收益比例(%)：
+                <a-input-number v-model="shoeInvestorsSiteDto.percentage" placeholder="收益比例(%)" />
+              </div>
+              <div class="locker-label">
+                <a-button type="danger" @click="onDeleteSite(idx)" v-if="investorsSiteDtoList.length > 0">删除</a-button>
+              </div>
+            </div>
+          </div>
+
           <a-col :span="24" >
             <a-form-model-item label="银行卡号" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="cardNo">
               <a-input v-model="model.cardNo" placeholder="请输入银行卡号"  ></a-input>
@@ -182,6 +208,7 @@
           bank:'',
           openBank:'',
           investorsLockerDtoList:'',
+          investorsSiteDtoList:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -232,7 +259,8 @@
         lockerList:[],
         agentList:[],
         investorsLockerDtoList:[],
-        // selectListIds:[]
+        investorsSiteDtoList:[],
+
       }
     },
     watch:{
@@ -278,6 +306,13 @@
         deep: true,
         immediate: true,
       },
+      investorsSiteDtoList: {
+        handler(val) {
+          this.model.investorsSiteDtoList = val
+        },
+        deep: true,
+        immediate: true,
+      },
     },
     computed: {
       formDisabled(){
@@ -285,6 +320,9 @@
       },
       selectListIds() {
         return this.investorsLockerDtoList.map(item => +item.lockerId)
+      },
+      selectSiteListIds() {
+        return this.investorsSiteDtoList.map(item => +item.lockerId)
       }
     },
     created () {
@@ -310,6 +348,12 @@
           disabled: this.selectListIds.includes(item.value)
         }));
       },
+      changeSelectSite(data,idx) {
+        this.investorsSiteDtoList[idx].weekList = data.records.map(item => ({
+          ...item,
+          disabled: this.selectSiteListIds.includes(item.value)
+        }));
+      },
       changeSelect(data) {
         this.weekList = data.records.map(item => ({
           label: item.nickname+'('+item.phone+')',
@@ -326,14 +370,28 @@
           }))
         }))
       },
+      checkedSelectSite(val) {
+        this.investorsSiteDtoList = this.investorsSiteDtoList.map(item => ({
+          ...item,
+          weekList: item.weekList.map(w => ({
+            ...w,
+            disabled: this.selectSiteListIds.includes(w.value)
+          }))
+        }))
+      },
       edit (record) {
         this.model = Object.assign({}, record,this.model);
+        this.investorsSiteDtoList = record.investorsSiteDtoList.map(item => ({
+          ...item,
+          lockerId: +item.lockerId,
+          weekList:[]
+        }));
         this.investorsLockerDtoList = record.investorsLockerDtoList.map(item => ({
           ...item,
           lockerId: +item.lockerId,
           weekList:[]
         }));
-        // this.selectListIds = record.investorsLockerDtoList.map(item => +item.lockerId)
+
         this.model.investorsId=record.investorsId;
         this.getBank();
         this.getLockerList();
@@ -420,9 +478,21 @@
           weekList:[]
         })
       },
+      // 点击新增产品
+      onAddSite() {
+        this.investorsSiteDtoList.push({
+          lockerId: '',
+          percentage: 0,
+          weekList:[]
+        })
+      },
       // 删除产品
       onDeleteLocker(idx) {
         this.investorsLockerDtoList.splice(idx, 1)
+      },
+      // 删除产品
+      onDeleteSite(idx) {
+        this.investorsSiteDtoList.splice(idx, 1)
       },
     }
   }
