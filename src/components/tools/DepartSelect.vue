@@ -36,7 +36,7 @@
 
 
   </a-modal>
-    
+
 </template>
 
 <script>
@@ -131,6 +131,8 @@
             store.commit('SET_INFO', userInfo);
             //console.log("---切换组织机构---userInfo-------",store.getters.userInfo.orgCode);
             this.departClear()
+            this.$router.push('/dashboard/analysis')
+            location.reload()
           }
         })
       },

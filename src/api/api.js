@@ -8,6 +8,8 @@ const editRole = (params)=>putAction("/sys/role/edit",params);
 const checkRoleCode = (params)=>getAction("/sys/role/checkRoleCode",params);
 const queryall = (params)=>getAction("/sys/role/queryall",params);
 
+export const queryDepartUserRole = (params)=>getAction("/sys/sysDepartRole/getDeptRoleList",params);
+
 //用户管理
 const addUser = (params)=>postAction("/sys/user/add",params);
 const editUser = (params)=>putAction("/sys/user/edit",params);

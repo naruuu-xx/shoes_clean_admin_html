@@ -154,8 +154,7 @@
             :rowSelection="{selectedRowKeys: selectedRowKeys2, onChange: onSelectChange2}"
             @change="handleTableChange2">
            <span slot="action" slot-scope="text, record">
-           <a @click="handleEdit2(record)">编辑</a>
-          <a-divider type="vertical"/>
+<!--           <a @click="handleEdit2(record)">编辑</a>-->
           <a-dropdown>
             <a class="ant-dropdown-link">
               更多 <a-icon type="down"/>
