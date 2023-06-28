@@ -70,13 +70,13 @@
               更多 <a-icon type="down"/>
             </a>
             <a-menu slot="overlay">
-                <a-menu-item>
-                <a href="javascript:;" @click="handleDeptRole(record)">部门角色</a>
-              </a-menu-item>
+<!--                <a-menu-item>-->
+<!--                <a href="javascript:;" @click="handleDeptRole(record)">部门角色</a>-->
+<!--              </a-menu-item>-->
 
-              <a-menu-item>
-                <a href="javascript:;" @click="handleDetail(record)">用户详情</a>
-              </a-menu-item>
+<!--              <a-menu-item>-->
+<!--                <a href="javascript:;" @click="handleDetail(record)">用户详情</a>-->
+<!--              </a-menu-item>-->
 
               <a-menu-item>
                 <a-popconfirm title="确定取消与选中部门关联吗?" @confirm="() => handleDelete(record.id)">
@@ -286,6 +286,7 @@
         this.$refs.modalForm.roleDisabled = true
         //update-end---author:wangshuai ---date:20220315  for：[issues/3472]给新建用户赋予角色的逻辑漏洞------------
         this.$refs.modalForm.edit(record);
+        this.loadData(1);
       },
       handleAdd: function () {
         if (this.currentDeptId == '') {

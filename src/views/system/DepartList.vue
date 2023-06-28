@@ -6,7 +6,7 @@
         <!-- 按钮操作区域 -->
         <a-row style="margin-left: 14px">
           <a-button @click="handleAdd(1)" type="primary">添加区域</a-button>
-          <a-button @click="handleAdd(2)" type="primary">添加工厂</a-button>
+<!--          <a-button @click="handleAdd(2)" type="primary">添加工厂</a-button>-->
           <a-button title="删除多条数据" @click="batchDel" type="default">批量删除</a-button>
           <!--<a-button @click="refresh" type="default" icon="reload" :loading="loading">刷新</a-button>-->
         </a-row>
@@ -77,40 +77,28 @@
 <!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="工厂特定编码" prop="code" :hidden="orgTypeHideFlg">-->
 <!--                <a-input placeholder="请输入工厂特定编码（区分袋子所属工厂）" v-model="model.code"/>-->
 <!--              </a-form-model-item>-->
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="所属区域">
-                <a-tree-select
-                  style="width:100%"
-                  :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-                  :treeData="treeData"
-                  :disabled="disable"
-                  v-model="model.parentId"
-                  placeholder="无">
-                </a-tree-select>
-              </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode" label="机构编码">
-                <a-input disabled placeholder="请输入机构编码" v-model="model.orgCode" />
-              </a-form-model-item>
-<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="机构类型">-->
-<!--                <template v-if="orgCategoryDisabled">-->
-<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
-<!--                    <a-radio value="1">-->
-<!--                      公司-->
-<!--                    </a-radio>-->
-<!--                  </a-radio-group>-->
-<!--                </template>-->
-<!--                <template v-else>-->
-<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
-<!--                    <a-radio value="2">-->
-<!--                      部门-->
-<!--                    </a-radio>-->
-<!--                    <a-radio value="3">-->
-<!--                      岗位-->
-<!--                    </a-radio>-->
-<!--                  </a-radio-group>-->
-<!--                </template>-->
+<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="所属区域" >-->
+<!--                <a-tree-select-->
+<!--                  style="width:100%"-->
+<!--                  :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"-->
+<!--                  :treeData="treeData"-->
+<!--                  :disabled="disable"-->
+<!--                  v-model="model.parentId"-->
+<!--                  placeholder="无">-->
+<!--                </a-tree-select>-->
 <!--              </a-form-model-item>-->
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
-                <j-select-multi-user v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode" label="区域编码">
+                <a-input disabled placeholder="请输入区域编码" v-model="model.orgCode" />
+              </a-form-model-item>
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="区域类型" v-if="model.orgCode != 'A01'">
+                <a-radio-group v-model="model.orgCategory" placeholder="请选择区域类型">
+                  <a-radio :value="'1'">运营城市</a-radio>
+                  <a-radio :value="'2'">工厂</a-radio>
+                  <a-radio :value="'3'">运营城市和工厂</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人" v-if="model.directorUserIds">
+                <j-select-multi-user disabled :buttons="false" v-model="model.directorUserIds" valueKey="id"></j-select-multi-user>
               </a-form-model-item>
 <!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="排序">-->
 <!--                <a-input-number v-model="model.departOrder" />-->
@@ -136,8 +124,11 @@
             </a-empty>
           </a-card>
         </a-tab-pane>
-        <a-tab-pane tab="部门权限" key="2" forceRender>
+        <a-tab-pane tab="区域权限" key="2" forceRender>
           <depart-auth-modal ref="departAuth"/>
+        </a-tab-pane>
+        <a-tab-pane tab="区域角色" key="3" forceRender>
+          <dept-role-info ref="DeptRoleInfo" @clearSelectedDepartKeys="clearSelectedDepartKeys"/>
         </a-tab-pane>
       </a-tabs>
 
@@ -151,6 +142,7 @@
   import {httpAction, deleteAction} from '@/api/manage'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import DepartAuthModal from './modules/DepartAuthModal'
+  import DeptRoleInfo from './modules/DeptRoleInfoModal'
   import Vue from 'vue'
   // 表头
   const columns = [
@@ -195,11 +187,13 @@
     name: 'DepartList',
     mixins: [JeecgListMixin],
     components: {
+      DeptRoleInfo,
       DepartAuthModal,
       DepartModal
     },
     data() {
       return {
+        currentDeptId: '',
         iExpandedKeys: [],
         loading: false,
         autoExpandParent: true,
@@ -268,6 +262,7 @@
         var that = this
         that.treeData = []
         that.departTree = []
+
         queryDepartTreeList().then((res) => {
           if (res.success) {
             //部门全选后，再添加部门，选中数量增多
@@ -291,6 +286,13 @@
             this.setThisExpandedKeys(node.children[a])
           }
         }
+      },
+      clearSelectedDepartKeys() {
+        this.checkedKeys = [];
+        this.selectedKeys = [];
+        this.currentDeptId = '';
+        this.$refs.DeptUserInfo.currentDeptId='';
+        this.$refs.DeptRoleInfo.currentDeptId='';
       },
       refresh() {
         this.loading = true
@@ -381,13 +383,17 @@
       },
       onCheck(checkedKeys, info) {
         console.log('onCheck', checkedKeys, info)
+        let record = info.node.dataRef;
+        console.log(record)
         this.hiding = false
+        this.currentDeptId = record.id;
         //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
         if(this.checkStrictly){
           this.checkedKeys = checkedKeys.checked;
         }else{
           this.checkedKeys = checkedKeys
         }
+        // this.$refs.DeptRoleInfo.open(record);
         //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
       },
       onSelect(selectedKeys, e) {
@@ -405,7 +411,11 @@
         this.model.parentId = record.parentId
         this.setValuesToForm(record)
         this.$refs.departAuth.show(record.id);
+        this.$refs.DeptRoleInfo.onClearSelected();
+        this.$refs.DeptRoleInfo.open(record);
+        console.log('onSelect-record', record.directorUserIds)
         this.oldDirectorUserIds = record.directorUserIds
+        this.model.directorUserIds = record.directorUserIds
 
         //update-beign-author:taoyan date:20220316 for: VUEN-329【bug】为什么不是失去焦点的时候，触发手机号校验
         this.$nextTick(()=>{
