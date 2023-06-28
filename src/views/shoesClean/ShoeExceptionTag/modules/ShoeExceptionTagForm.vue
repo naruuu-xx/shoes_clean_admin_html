@@ -32,11 +32,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item prop="factoryImages" label="入库图片" :labelCol="labelCol" :wrapperCol="wrapperCol" help="请选择至少一张图片作为异常图片">
+            <a-form-model-item prop="factoryImages" label="入库图片" :labelCol="labelCol" :wrapperCol="wrapperCol" :help="model.dealType == 1 ? '请选择至少一张图片作为异常图片' : ''">
               <div class="imgs">
                 <div class="imgs-box" v-for="(img,idx) in factoryImages" :key="idx">
                   <img class="imgs-box-img" :src="img.url" alt="" />
-                  <div class="imgs-box-select" :class="{selected: img.select}" @click="onSelect(idx)"></div>
+                  <div class="imgs-box-select" :class="{selected: img.select}" @click="onSelect(idx)" v-show="model.dealType == 1"></div>
                   <div class="show" @click="piveImage(img.url)">
                     <a-icon type="eye" style="color:#fff;font-size: 20px;" />
                   </div>
@@ -102,7 +102,6 @@
         },
         confirmLoading: false,
         validatorRules: {
-
            dealType: [
               { required: true, message: '请选择处理方式!'},
            ],
@@ -136,6 +135,12 @@
       factoryImages: {
         handler(val,oldValue) {
           this.model.factoryImages = val.filter(item => item.select).map(item => item.url)
+        },
+        deep:true
+      },
+      "model.dealType": {
+        handler(val,oldValue) {
+          this.validatorRules.factoryImages[0].required = val == 1
         },
         deep:true
       },
