@@ -57,7 +57,7 @@
           <a-col :span="24">
 
             <a-form-model-item :label="this.model.dealType==2?'备注':'异常描述'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="note">
-              <a-input placeholder="请输入订单备注" v-model="model.note"  />
+              <a-input :placeholder="this.model.dealType==2?'请输入订单备注':'请输入异常描述'" v-model="model.note"  />
             </a-form-model-item>
           </a-col>
         </a-row>
