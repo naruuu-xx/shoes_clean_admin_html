@@ -70,6 +70,17 @@
               <a-range-picker v-model="queryParam.finishTime" />
             </a-form-item>
           </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 区域">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartList`'
+              >
+              </xf-select>
+            </a-form-item>
+          </a-col>
           <!--          <a-col :xl="4" :lg="7" :md="8" :sm="24">-->
           <!--            <a-form-item label="机柜名称">-->
           <!--              <a-select v-model="queryParam.lockerId" style="width: 180px">-->
@@ -164,8 +175,8 @@
           <a v-if=" ( record.type==='service' || record.type==='site' ) && record.status==='12'" @click="getServiceCode(record)">取件码</a>
           </a-popover>
 
-          <a-divider v-if="'9' === record.status && ( record.type==='self' || record.type==='service' ) " type="vertical"/>
-          <a v-if="'9' === record.status && ( record.type==='self' || record.type==='service' ) " @click="handleOrderFinish(record)">完单</a>
+          <a-divider v-if="'9' === record.status && ( record.type==='self' || record.type==='service' ) " type="vertical" v-has="'order:finishOrder'"/>
+          <a v-if="'9' === record.status && ( record.type==='self' || record.type==='service' ) " @click="handleOrderFinish(record)" v-has="'order:finishOrder'">完单</a>
 
         </span>
 
@@ -222,6 +233,11 @@ export default {
           title: '订单编号',
           align: "center",
           dataIndex: 'no'
+        },
+        {
+          title:' 区域',
+          align:"center",
+          dataIndex: 'departName'
         },
         {
           title: '商品名称',

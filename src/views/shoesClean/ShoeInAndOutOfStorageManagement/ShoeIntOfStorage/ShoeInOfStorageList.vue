@@ -29,9 +29,9 @@
     <div class="table-operator">
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('订单列表')" v-if="selectedRowKeys.length > 0">导出订单</a-button>-->
       <a-button type="primary" size="large" @click="handleInOfStorage()" style="width: 200px;height: 50px">袋子码入库</a-button>
-      <a-button type="primary" size="large" @click="handleExpressageInOfStorage()" style="width: 200px;height: 50px">快递单入库</a-button>
+      <a-button type="primary" size="large" @click="handleExpressageInOfStorage()" style="width: 200px;height: 50px" v-has="`expressage:in`">快递单入库</a-button>
       <a-button type="primary" size="large" @click="handleCreateWashedMark()" style="width: 200px;height: 50px">打印入库水洗唛</a-button>
-      <a-button type="primary" size="large" @click="manualInOfStorage()" style="width: 200px;height: 50px">手工录单</a-button>
+      <a-button type="primary" size="large" @click="manualInOfStorage()" style="width: 200px;height: 50px" v-has="`manual:in`">手工录单</a-button>
     </div>
 
     <!-- table区域-begin -->

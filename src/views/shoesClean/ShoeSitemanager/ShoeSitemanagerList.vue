@@ -10,13 +10,15 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="区域">
-              <a-select v-model="queryParam.departName" style="width: 180px">
-                <a-select-option v-for="item in sysDepartVos" :value="item.value" :key="item.value">
-                  {{ item.name }}
-                </a-select-option>
-              </a-select>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 区域">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartList`'
+              >
+              </xf-select>
             </a-form-item>
           </a-col>
 
@@ -85,7 +87,7 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)" v-has="'sitemanager:update'">编辑</a>
 
-          <a-divider type="vertical"/>
+          <a-divider type="vertical" v-has="'sitemanager:update'"/>
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
 
@@ -133,6 +135,7 @@ import {mapGetters} from 'vuex';
 import store from '@/store/'
 import SetPercentage from "@views/shoesClean/ShoeSitemanager/modules/SetPercentage"
 import SiteCourierCost from "@views/shoesClean/ShoeSitemanager/modules/SiteCourierCost";
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
   name: 'ShoeSitemanagerList',
@@ -140,7 +143,8 @@ export default {
   components: {
     ShoeSitemanagerModal,
     SetPercentage,
-    SiteCourierCost
+    SiteCourierCost,
+    XfSelect
   },
   data() {
     return {
@@ -268,15 +272,12 @@ export default {
       dictOptions: {},
       pcaData: '',
       superFieldList: [],
-      sysDepartVos: [],
 
     }
   },
   created() {
     this.pcaData = new Area()
     this.getSuperFieldList();
-    console.log(this.userInfo());
-    this.getDepartName();
   },
   computed: {
     importExcelUrl: function () {
@@ -287,11 +288,6 @@ export default {
     ...mapGetters(["userInfo"]),
     getPcaText(code) {
       return this.pcaData.getText(code);
-    },
-    getDepartName() {
-      httpAction("/shoes/shoeLocker/queryDepartName", null, "get").then((res) => {
-        this.sysDepartVos = res.sysDepartVos
-      })
     },
     initDictConfig() {
     },

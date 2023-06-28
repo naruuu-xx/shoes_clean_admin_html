@@ -17,6 +17,17 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 区域">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartList`'
+              >
+              </xf-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -45,7 +56,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -106,6 +116,7 @@
   import ShoeCourierWithdrawalDetail from "./modules/ShoeCourierWithdrawalDetail";
   import ShoeCourierWithdrawalAudit from "./modules/ShoeCourierWithdrawalAudit";
   import ShoeCourierWithdrawalTransfer from "./modules/ShoeCourierWithdrawalTransfer";
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeCourierWithdrawalList',
@@ -114,7 +125,8 @@
       ShoeCourierWithdrawalTransfer,
       ShoeCourierWithdrawalAudit,
       ShoeCourierWithdrawalDetail,
-      ShoeCourierWithdrawalModal
+      ShoeCourierWithdrawalModal,
+      XfSelect
     },
     data () {
       return {
@@ -124,6 +136,11 @@
         },
         // 表头
         columns: [
+          {
+            title:' 区域',
+            align:"center",
+            dataIndex: 'departName'
+          },
           {
             title:'申请人',
             align:"center",
