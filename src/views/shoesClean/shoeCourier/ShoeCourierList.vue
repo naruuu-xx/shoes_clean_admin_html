@@ -17,6 +17,17 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 区域">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartList`'
+              >
+              </xf-select>
+            </a-form-item>
+          </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label=" 电话">
@@ -175,6 +186,7 @@ import {filterDictTextByCache} from "../../../components/dict/JDictSelectUtil"
 import PasswordModal from './modules/PasswordModal'
 import {deleteAction} from "../../../api/manage";
 import ShoeCourierHistoryList from "@views/shoesClean/shoeCourier/modules/ShoeCourierHistoryList";
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
   name: 'ShoeCourierList',
@@ -183,7 +195,8 @@ export default {
     ShoeCourierModal,
     PasswordModal,
     ShoeScheduleList,
-    ShoeCourierHistoryList
+    ShoeCourierHistoryList,
+    XfSelect
   },
   data() {
     return {
@@ -209,6 +222,11 @@ export default {
           title: ' 姓名',
           align: "center",
           dataIndex: 'name'
+        },
+        {
+          title:' 区域',
+          align:"center",
+          dataIndex: 'departName'
         },
         {
           title: '机柜数量',

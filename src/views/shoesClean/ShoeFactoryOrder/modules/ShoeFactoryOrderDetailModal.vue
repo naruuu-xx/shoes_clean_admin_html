@@ -232,7 +232,7 @@ export default {
         this.data.factoryOutTime="————"
       }
 
-      this.factoryInImages = this.data.factoryInImages;
+      this.factoryInImages = this.data.factoryInImages || [];
       this.factoryOutImages = this.data.factoryOutImages || [];
 
     },

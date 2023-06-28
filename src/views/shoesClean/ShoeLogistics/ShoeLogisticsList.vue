@@ -19,6 +19,17 @@
               <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
             </a-form-item>
           </a-col>
+          <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+            <a-form-item label=" 区域">
+              <xf-select
+                style="width: 100%"
+                isInternalData
+                v-model="queryParam.orgCode"
+                :url='`/sysDepart/getSysDepartList`'
+              >
+              </xf-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -32,7 +43,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus" v-has="'add:logistics'">新增</a-button>
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_logistics')">导出</a-button>-->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
@@ -126,13 +137,15 @@
   import ShoeLogisticsModal from './modules/ShoeLogisticsModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import PasswordModal from './modules/PasswordModal'
+  import XfSelect from '@/components/Xf/XfSelect'
 
   export default {
     name: 'ShoeLogisticsList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeLogisticsModal,
-      PasswordModal
+      PasswordModal,
+      XfSelect
     },
     data () {
       return {
@@ -158,6 +171,11 @@
             title:' 姓名',
             align:"center",
             dataIndex: 'name'
+          },
+          {
+            title:' 区域',
+            align:"center",
+            dataIndex: 'departName'
           },
           {
             title: '快递柜数',

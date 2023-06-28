@@ -25,7 +25,18 @@
             <a-form-item label="处理完成时间">
                 <a-range-picker v-model="queryParam.dealFinishTime" />
             </a-form-item>
-          </a-col>
+          </a-col><a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+          <a-form-item label=" 区域">
+            <xf-select
+              style="width: 100%"
+              isInternalData
+              v-model="queryParam.orgCode"
+              :url='`/sysDepart/getSysDepartList`'
+            >
+            </xf-select>
+          </a-form-item>
+        </a-col>
+
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="创建时间">
               <a-range-picker v-model="queryParam.createTime" />
@@ -104,7 +115,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a v-if="0 === record.status" @click="handleOrder(record)">处理</a>
+          <a v-has="'order:handleOrderException'" v-if="0 === record.status" @click="handleOrder(record)">处理</a>
           <a v-if="1 === record.status || 2 === record.status" @click="handleDetail(record)">查看详情</a>
           <a-divider v-if="2 === record.status && 1 === record.dealType" type="vertical" />
           <a v-if="2 === record.status && 1 === record.dealType" @click="handleCreateWashedMark(record)">打印水洗唛</a>
@@ -131,6 +142,7 @@
   import {downFile, httpAction} from "../../../api/manage";
   import { getLodop } from '@/utils/LodopFuncs';
   import moment from 'moment';
+  import XfSelect from '@/components/Xf/XfSelect'
   let Lodop;
 
   export default {
@@ -138,7 +150,8 @@
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       ShoeOrderExceptionModal,
-      ShoeOrderExceptionDetailModal
+      ShoeOrderExceptionDetailModal,
+      XfSelect
     },
     data () {
       return {
@@ -149,6 +162,11 @@
             title:'订单编号',
             align:"center",
             dataIndex: 'no'
+          },
+          {
+            title:' 区域',
+            align:"center",
+            dataIndex: 'departName'
           },
           {
             title:'商品名称',
@@ -222,7 +240,7 @@
         ],
         url: {
           list: "/ShoeOrder/shoeOrder/getShoeOrderExceptionList",
-          exportXlsUrl: "/ShoeOrder/shoeOrder/exportXlsException",
+          exportXlsUrl: "/ShoeOrder/shoeOrder/exportXlsException"
         },
         dictOptions:{},
         superFieldList:[],

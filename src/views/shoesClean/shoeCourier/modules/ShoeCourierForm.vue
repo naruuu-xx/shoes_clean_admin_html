@@ -157,7 +157,6 @@
           edit: "/shoeCourier/shoeCourier/edit",
           queryById: "/shoeCourier/shoeCourier/queryById"
         },
-        lockerList:[],
         rawList:[]
       }
     },
@@ -167,7 +166,6 @@
       },
     },
     created () {
-      this.getLockerList();
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
@@ -230,7 +228,6 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-            // that.setModel();
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -244,23 +241,6 @@
           }
         })
       },
-      getLockerList(){
-        httpAction("/shoes/shoeLocker/lockerList", null, "get").then((res) => {
-          if (res.success) {
-            this.lockerList = res.result;
-          }
-        })
-      },
-      setModel(){
-        const that = this;
-        let lockerIdList = [];
-        for(let i = 0; i < that.lockerList.length; i++){
-          if(that.model.lockerCodeList.indexOf(that.lockerList[i].lockerCode) !== -1){
-            lockerIdList.push(that.lockerList[i].lockerId);
-          }
-        }
-        that.model.lockerIdList = lockerIdList;
-      }
     }
   }
 </script>

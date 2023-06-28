@@ -1,46 +1,52 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <!--    <div class="table-page-search-wrapper">-->
-    <!--      <a-form layout="inline" @keyup.enter.native="searchQuery">-->
-    <!--        <a-row :gutter="24">-->
-    <!--          <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
-    <!--            <a-form-item label="姓名">-->
-    <!--              <a-input placeholder="请输入姓名"  v-model="queryParam.name"></a-input>-->
-    <!--            </a-form-item>-->
-    <!--          </a-col>-->
-    <!--          <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
-    <!--            <a-form-item label="手机号">-->
-    <!--              <a-input placeholder="请输入手机号"  v-model="queryParam.phone"></a-input>-->
-    <!--            </a-form-item>-->
-    <!--          </a-col>-->
-
-    <!--            <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
-    <!--              <a-form-item label="身份">-->
-    <!--                <a-select v-model="queryParam.level" AllClear="true">-->
-    <!--                  <a-select-option value="1" >受益人管理员</a-select-option>-->
-    <!--                  <a-select-option value="2" >受益人</a-select-option>-->
-    <!--                </a-select>-->
-    <!--              </a-form-item>-->
-    <!--            </a-col>-->
-    <!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-    <!--            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">-->
-    <!--              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>-->
-    <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
-    <!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
-    <!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
-    <!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
-    <!--              </a>-->
-    <!--            </span>-->
-    <!--          </a-col>-->
-    <!--        </a-row>-->
-    <!--      </a-form>-->
-    <!--    </div>-->
+        <div class="table-page-search-wrapper">
+          <a-form layout="inline" @keyup.enter.native="searchQuery">
+            <a-row :gutter="24">
+<!--              <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
+<!--                <a-form-item label="姓名">-->
+<!--                  <a-input placeholder="请输入姓名"  v-model="queryParam.name"></a-input>-->
+<!--                </a-form-item>-->
+<!--              </a-col>-->
+<!--              <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
+<!--                <a-form-item label="手机号">-->
+<!--                  <a-input placeholder="请输入手机号"  v-model="queryParam.phone"></a-input>-->
+<!--                </a-form-item>-->
+<!--              </a-col>-->
+<!--                <a-col :xl="5" :lg="7" :md="8" :sm="24">-->
+<!--                  <a-form-item label="身份">-->
+<!--                    <a-select v-model="queryParam.level" AllClear="true">-->
+<!--                      <a-select-option value="1" >代理人</a-select-option>-->
+<!--                      <a-select-option value="2" >投资人</a-select-option>-->
+<!--                    </a-select>-->
+<!--                  </a-form-item>-->
+<!--                </a-col>-->
+              <a-col :xl="4" :lg="7" :md="8" :sm="24" v-has="'area:list'">
+                <a-form-item label=" 区域">
+                  <xf-select
+                    style="width: 100%"
+                    isInternalData
+                    v-model="queryParam.orgCode"
+                    :url='`/sysDepart/getSysDepartList`'
+                  >
+                  </xf-select>
+                </a-form-item>
+              </a-col>
+              <a-col :xl="6" :lg="7" :md="8" :sm="24">
+                <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+                  <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+                  <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+                </span>
+              </a-col>
+            </a-row>
+          </a-form>
+        </div>
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus" v-has="'investors:add'">新增</a-button>
       <!--      <a-button type="primary" icon="download" @click="handleExportXls('shoe_investors')">导出</a-button>-->
       <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
       <!--        <a-button type="primary" icon="import">导入</a-button>-->
@@ -104,9 +110,9 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)" v-has="'investors:edit'">编辑</a>
 
-          <a-divider type="vertical"/>
+          <a-divider type="vertical" v-has="'investors:edit'"/>
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
@@ -150,12 +156,14 @@ import {mixinDevice} from '@/utils/mixin'
 import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 import ShoeInvestorsModal from './modules/ShoeInvestorsModal'
 import {httpAction} from '@api/manage'
+import XfSelect from '@/components/Xf/XfSelect'
 
 export default {
   name: 'ShoeInvestorsList',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
-    ShoeInvestorsModal
+    ShoeInvestorsModal,
+    XfSelect
   },
   data() {
     return {
@@ -176,6 +184,11 @@ export default {
           title: 'ID',
           align: "center",
           dataIndex: 'investorsId'
+        },
+        {
+          title:' 区域',
+          align:"center",
+          dataIndex: 'departName'
         },
         {
           title: '姓名',
