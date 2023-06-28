@@ -20,8 +20,8 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="代理人用户名">
-          <j-select-user-by-dep :multi="false" placeholder="请输入代理人用户名" v-decorator="['agentUserName', validatorRules.agentUserName]" :trigger-change="true"></j-select-user-by-dep>
+          label="受益人管理员用户名">
+          <j-select-user-by-dep :multi="false" placeholder="请输入受益人管理员用户名" v-decorator="['agentUserName', validatorRules.agentUserName]" :trigger-change="true"></j-select-user-by-dep>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
@@ -94,7 +94,7 @@
         confirmLoading: false,
         form: this.$form.createForm(this),
         validatorRules:{
-          agentUserName:{rules: [{ required: true, message: '请输入代理人用户名!' }]},
+          agentUserName:{rules: [{ required: true, message: '请输入受益人管理员用户名!' }]},
           startTime:{rules: [{ required: true, message: '请输入代理开始时间!' }]},
           endTime:{rules: [{ required: true, message: '请输入代理结束时间!' }]},
         },
