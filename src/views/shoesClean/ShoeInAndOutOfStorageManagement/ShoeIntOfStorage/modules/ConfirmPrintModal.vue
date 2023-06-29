@@ -116,7 +116,7 @@ export default {
 
     },
     handleInOfStorage(){
-      
+
       if (!this.data.brandId){
         return this.$message.warning("请选择品牌");
       }
@@ -168,6 +168,7 @@ export default {
         LODOP.PRINT_INIT("入库打印水洗唛" + timestamp);
         LODOP.SET_PRINTER_INDEX(printerName);
         LODOP.SET_PRINT_PAGESIZE(1, "111mm", "20mm", "");
+        LODOP.SET_PRINT_COPIES(2);
         LODOP.ADD_PRINT_PDF(0,0,"100%","100%",file);
 
         if (process.env.NODE_ENV === 'production') {
